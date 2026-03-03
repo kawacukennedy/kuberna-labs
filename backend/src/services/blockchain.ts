@@ -219,7 +219,7 @@ export class BlockchainService {
       receipt.blockNumber,
       receipt.blockNumber,
     );
-    return events[0].args[0];
+    return (events[0] as ethers.EventLog).args[0];
   }
 
   async verifyCertificate(
