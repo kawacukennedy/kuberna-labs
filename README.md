@@ -86,10 +86,10 @@ Kuberna Labs is a hybrid educational and technological platform that empowers de
 
 ## 🌐 Community & Contact
 
-* **Website:** [kuberna.africa](https://kuberna.africa)
-* **Twitter:** [@kuberna_labs](https://twitter.com/kuberna_labs)
-* **Discord:** [Join the community](https://discord.gg/kuberna)
-* **LinkedIn:** [Kuberna Labs](https://linkedin.com/company/kuberna-labs)
+* **Website:** [Founder Contact](https://arnaudkennedy.vercel.app/)
+* **Twitter:** [@Arnaud_Kennedy](https://x.com/Arnaud_Kennedy)
+* **Discord:** [Join the community](https://discord.gg/bwZmawsv)
+* **LinkedIn:** [Arnaud Kennedy](https://www.linkedin.com/in/kawacu-kennedy-47470a3a6/)
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
