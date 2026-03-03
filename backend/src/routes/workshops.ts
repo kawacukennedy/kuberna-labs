@@ -76,7 +76,7 @@ router.get(
       let registration = null;
       if (req.user) {
         registration =
-          workshop.registrations.find((r) => r.userId === req.user!.id) || null;
+          workshop.registrations.find((r: { userId: string }) => r.userId === req.user!.id) || null;
       }
 
       res.json({ ...workshop, registration });
