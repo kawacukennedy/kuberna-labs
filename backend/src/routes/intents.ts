@@ -297,7 +297,7 @@ router.post(
       }
 
       const existingBid = intent.bids.find(
-        (bid) => bid.agentId === req.user!.id,
+        (bid: { agentId: string }) => bid.agentId === req.user!.id,
       );
       if (existingBid) {
         throw createError(
@@ -373,7 +373,7 @@ router.post(
         );
       }
 
-      const bid = intent.bids.find((b) => b.id === bidId);
+      const bid = intent.bids.find((b: { id: string }) => b.id === bidId);
       if (!bid) {
         throw createError("Bid not found", 404, "BID_NOT_FOUND");
       }
