@@ -136,14 +136,14 @@ router.get(
 
       res.json({
         byStatus: agents.reduce(
-          (acc, a) => {
+          (acc: Record<string, number>, a: { status: string; framework: string; createdAt: Date }) => {
             acc[a.status] = (acc[a.status] || 0) + 1;
             return acc;
           },
           {} as Record<string, number>,
         ),
         byFramework: agents.reduce(
-          (acc, a) => {
+          (acc: Record<string, number>, a: { status: string; framework: string; createdAt: Date }) => {
             acc[a.framework] = (acc[a.framework] || 0) + 1;
             return acc;
           },
@@ -173,7 +173,7 @@ router.get(
 
       res.json({
         byStatus: tasks.reduce(
-          (acc, t) => {
+          (acc: Record<string, number>, t: { status: string; createdAt: Date }) => {
             acc[t.status] = (acc[t.status] || 0) + 1;
             return acc;
           },
