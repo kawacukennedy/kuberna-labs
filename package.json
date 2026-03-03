@@ -1,0 +1,50 @@
+{
+  "name": "kuberna-labs",
+  "version": "1.0.0",
+  "description": "Kuberna Labs - Architecting the Agentic Web3 Enterprise",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
+    "node": "hardhat node",
+    "clean": "hardhat clean",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,sol,json,md}\""
+  },
+  "keywords": [
+    "web3",
+    "defi",
+    "agents",
+    "blockchain"
+  ],
+  "author": "Kuberna Labs",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.0",
+    "chai": "^4.4.1",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.4",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "prettier": "^3.1.1",
+    "prettier-plugin-solidity": "^1.3.1",
+    "solhint": "^4.1.1",
+    "solidity-coverage": "^0.8.5",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@tanstack/react-query": "^5.17.0",
+    "viem": "^2.0.0",
+    "wagmi": "^2.0.0"
+  }
+}
