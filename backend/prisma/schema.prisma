@@ -1,0 +1,443 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  LEARNER
+  REQUESTER
+  SOLVER
+}
+
+enum AuthMethod {
+  EMAIL
+  WEB3
+  OAUTH
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  EXPIRED
+}
+
+enum AgentStatus {
+  DRAFT
+  DEPLOYED
+  RUNNING
+  STOPPED
+  ERROR
+}
+
+enum DeploymentType {
+  CLOUD
+  TEE
+  LOCAL
+}
+
+enum IntentStatus {
+  OPEN
+  BIDDING
+  ASSIGNED
+  EXECUTING
+  COMPLETED
+  EXPIRED
+  DISPUTED
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum TaskStatus {
+  ASSIGNED
+  EXECUTING
+  COMPLETED
+  FAILED
+  DISPUTED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum DisputeStatus {
+  OPEN
+  VOTING
+  RESOLVED
+  APPEALED
+  CLOSED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  fullName      String
+  avatarUrl     String?
+  web3Address   String?   @unique
+  authMethod    AuthMethod @default(EMAIL)
+  roles        Role[]    @default([LEARNER])
+  mfaEnabled    Boolean   @default(false)
+  mfaSecret     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  profile          Profile?
+  coursesCreated   Course[]        @relation("CourseInstructor")
+  enrollments     Enrollment[]
+  agents          Agent[]
+  intents         Intent[]         @relation("IntentRequester")
+  bids            Bid[]
+  tasksAssigned   Task[]          @relation("TaskExecutor")
+  tickets         Ticket[]
+  forumPosts      ForumPost[]
+  certificates    Certificate[]
+
+  @@index([web3Address])
+}
+
+model Profile {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  bio           String?
+  website       String?
+  github        String?
+  twitter       String?
+  discord       String?
+  telegram      String?
+  linkedin      String?
+  skills        String[]
+  reputation    Int      @default(0)
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Course {
+  id                 String        @id @default(uuid())
+  title              String
+  slug               String        @unique
+  description        String
+  level              CourseLevel
+  durationHours      Int
+  price              Float
+  currency           String        @default("USD")
+  cryptoPrice        Json?
+  thumbnailUrl       String?
+  previewVideoUrl    String?
+  learningObjectives String[]
+  prerequisites      String[]
+  published          Boolean       @default(false)
+  publishedAt        DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  
+  instructorId       String
+  instructor        User          @relation("CourseInstructor", fields: [instructorId], references: [id])
+  
+  modules            Module[]
+  enrollments        Enrollment[]
+  workshops          Workshop[]
+  forumTopics        ForumTopic[]
+}
+
+model Module {
+  id              String   @id @default(uuid())
+  courseId        String
+  title          String
+  order          Int
+  contentType    String
+  contentUrl     String?
+  videoDuration  Int?
+  documentText   String?
+  labConfig      Json?
+  estimatedMinutes Int
+  
+  course         Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress       ModuleProgress[]
+}
+
+model Enrollment {
+  id              String          @id @default(uuid())
+  userId          String
+  courseId        String
+  status          EnrollmentStatus @default(ACTIVE)
+  progressPercent Int             @default(0)
+  completedModules String[]
+  certificateId   String?
+  enrolledAt      DateTime        @default(now())
+  completedAt    DateTime?
+  
+  user           User   @relation(fields: [userId], references: [id])
+  course         Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model ModuleProgress {
+  id          String   @id @default(uuid())
+  moduleId    String
+  enrollmentId String
+  completed   Boolean  @default(false)
+  watchTime   Int      @default(0)
+  quizScore   Int?
+  
+  module      Module   @relation(fields: [moduleId], references: [id])
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+
+  @@unique([moduleId, enrollmentId])
+}
+
+model Agent {
+  id              String          @id @default(uuid())
+  ownerId         String
+  name            String
+  description     String
+  framework       String
+  model           String
+  codeRepo        String?
+  config          Json
+  tools           String[]
+  status          AgentStatus     @default(DRAFT)
+  deploymentType  DeploymentType @default(CLOUD)
+  deploymentUrl   String?
+  version         Int             @default(1)
+  lastActive      DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  owner           User           @relation(fields: [ownerId], references: [id])
+  bids            Bid[]
+  tasks           Task[]
+  reputation      Reputation?
+
+  @@unique([ownerId, name])
+}
+
+model Reputation {
+  id              String   @id @default(uuid())
+  agentId         String   @unique
+  totalTasks      Int      @default(0)
+  successfulTasks Int      @default(0)
+  avgRating       Float    @default(0)
+  ratingCount     Int      @default(0)
+  score           Int      @default(0)
+  badges          Json     @default([])
+  updatedAt       DateTime  @updatedAt
+  
+  agent           Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model Intent {
+  id              String      @id @default(uuid())
+  requesterId     String
+  description     String
+  structuredData  Json?
+  sourceChain     String
+  sourceToken     String
+  sourceAmount    String
+  destChain       String
+  destToken       String
+  minDestAmount   String
+  deadline        DateTime
+  budget          String
+  status          IntentStatus @default(OPEN)
+  selectedSolverId String?
+  escrowId        String?
+  autoAcceptRules Json?
+  createdAt       DateTime    @default(now())
+  expiresAt       DateTime
+  completedAt     DateTime?
+  
+  requester       User        @relation("IntentRequester", fields: [requesterId], references: [id])
+  bids            Bid[]
+  task            Task?
+
+  @@index([status])
+  @@index([requesterId])
+}
+
+model Bid {
+  id             String    @id @default(uuid())
+  intentId       String
+  agentId        String
+  price          String
+  estimatedTime  Int
+  routeDetails   Json?
+  status         BidStatus @default(PENDING)
+  createdAt      DateTime  @default(now())
+  
+  intent         Intent    @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  agent          Agent    @relation(fields: [agentId], references: [id])
+
+  @@unique([intentId, agentId])
+}
+
+model Task {
+  id             String      @id @default(uuid())
+  intentId       String      @unique
+  assignedAgentId String
+  status         TaskStatus  @default(ASSIGNED)
+  result         Json?
+  proof          Json?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  txHash         String?
+  disputeReason  String?
+  createdAt      DateTime    @default(now())
+  
+  intent         Intent     @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  executor       User       @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
+  dispute        Dispute?
+}
+
+model Dispute {
+  id             String        @id @default(uuid())
+  taskId         String        @unique
+  raisedBy       String
+  reason         String
+  evidence       String[]
+  status         DisputeStatus @default(OPEN)
+  resolution     String?
+  resolvedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Workshop {
+  id                String   @id @default(uuid())
+  courseId          String
+  title             String
+  description       String
+  instructorId      String
+  scheduledAt        DateTime
+  duration          Int
+  maxParticipants   Int
+  currentParticipants Int @default(0)
+  recordingUrl      String?
+  status            String   @default("SCHEDULED")
+  createdAt         DateTime @default(now())
+  
+  course            Course   @relation(fields: [courseId], references: [id])
+  registrations    WorkshopRegistration[]
+}
+
+model WorkshopRegistration {
+  id          String   @id @default(uuid())
+  workshopId  String
+  userId      String
+  registeredAt DateTime @default(now())
+  
+  workshop    Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+
+  @@unique([workshopId, userId])
+}
+
+model ForumTopic {
+  id          String   @id @default(uuid())
+  courseId    String?
+  userId      String
+  title       String
+  content     String
+  pinned      Boolean  @default(false)
+  locked     Boolean  @default(false)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  course      Course?  @relation(fields: [courseId], references: [id])
+  posts      ForumPost[]
+}
+
+model ForumPost {
+  id        String   @id @default(uuid())
+  topicId   String
+  userId    String
+  content   String
+  upvotes   Int      @default(0)
+  isCorrect Boolean  @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  topic     ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id])
+}
+
+model Ticket {
+  id          String        @id @default(uuid())
+  userId      String
+  subject     String
+  description String
+  status      TicketStatus  @default(OPEN)
+  priority    String        @default("MEDIUM")
+  category    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  resolvedAt  DateTime?
+  
+  user        User         @relation(fields: [userId], references: [id])
+}
+
+model Certificate {
+  id                String   @id @default(uuid())
+  userId            String
+  courseId          String
+  tokenId           BigInt
+  ipfsHash          String?
+  issuedAt          DateTime @default(now())
+  
+  user              User     @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  amount        Float
+  currency      String
+  token         String?
+  txHash        String?
+  status        String   @default("PENDING")
+  type          String
+  createdAt     DateTime @default(now())
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  userId      String
+  key         String   @unique
+  name        String
+  permissions String[]
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  data      Json?
+  createdAt DateTime @default(now())
+}
