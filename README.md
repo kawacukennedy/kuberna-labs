@@ -1,95 +1,91 @@
-# Kuberna Labs
+<div align="center">
+  <img src="/images/kuberna-logo.svg" alt="Kuberna Labs Logo" width="200"/>
+  <h1>Kuberna Labs</h1>
+  <p><strong>Architecting the Agentic Web3 Enterprise</strong></p>
+</div>
 
-> **Architecting the Agentic Web3 Enterprise**
+<p align="center">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <a href="/LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" target="_blank" />
+  </a>
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Website](https://img.shields.io/badge/Website-kuberna.africa-blue)](https://kuberna.africa)
-[![Twitter Follow](https://img.shields.io/twitter/follow/kuberna_labs?style=social)](https://twitter.com/kuberna_labs)
+## 🚀 About Kuberna Labs
 
-Kuberna Labs is a hybrid educational and technological platform that empowers developers to build, deploy, and manage autonomous AI agents operating across decentralized networks. It combines a hands-on learning environment with production-grade infrastructure for cross-chain finance, zero‑knowledge privacy, and trusted execution environments.
+Kuberna Labs is a hybrid educational and technological platform designed to empower developers and enterprises to build, deploy, and manage autonomous AI agents operating across decentralized networks. 
 
-## 🌟 Vision & Mission
+Our mission is to equip the next generation of founders and enterprises with the tools, knowledge, and secure infrastructure required to build revenue-generating autonomous agents that operate at machine speed across any blockchain.
 
-**Vision:** To become the definitive operating system for the agentic economy, where intelligent agents seamlessly interact with both Web2 and Web3 systems, governed by cryptographic guarantees and decentralized infrastructure.
+## ✨ Features
 
-**Mission:** Equip the next generation of founders and enterprises with the tools, knowledge, and secure infrastructure to build revenue‑generating autonomous agents that operate at machine speed across any blockchain.
+- **🎓 Educational Platform**: Access comprehensive courses, live workshops, and coding labs with ephemeral TEE-based environments.
+- **🤖 Agent Builder IDE**: A built-in browser IDE for writing, testing, and debugging ElizaOS agents with automated sandbox environments.
+- **💼 Intent Marketplace**: Discover, bid on, and execute cross-chain tasks and workflows via decentralized NLP-parsed intents.
+- **🛡️ Secure Execution & TEE**: Deploy agents directly into Trusted Execution Environments (Intel TDX, Phala, AMD SEV) for cryptographic privacy and remote attestation.
+- **🔗 Multi-chain Adapters**: Native integration with Ethereum, Solana, NEAR, Arbitrum, and Polygon.
+- **🌍 zkTLS Integration**: Zero-knowledge verification of Web2 data using Reclaim Protocol and zkPass.
 
-## 🚀 Core Features
+## 🛠️ Tech Stack
 
-### 📚 Interactive Education Platform
-* **Course Management:** Comprehensive courses comprising modules, live workshops, quizzes, and coding labs.
-* **Tee-based Sandboxing:** Browser-based IDE to test, build, and deploy agent logic natively within a Trusted Execution Environment without complex local setups.
-* **On-chain Certificates:** Verifiable, blockchain-backed credentials issued upon course completion.
-* **Community Forums & Live Workshops:** Deeply integrated learning workflows with real-time support.
+- **Smart Contracts**: Solidity, Hardhat, Ethers.js, ERC-7683 Intents.
+- **Backend API**: Node.js, Express, TypeScript, Prisma, PostgreSQL.
+- **Workflows**: NATS stream, BullMQ, Redis.
+- **Containerization**: Docker, Phala Enclaves.
 
-### 🤖 Agent Development Ecosystem
-* **Multi-Framework Template Library:** Includes pre-built templates for ElizaOS, LangChain, and other powerful agent development networks.
-* **DeFi, Governance & Monitoring Adapters:** Start writing specialized bots focusing on Arbitrage, Yield-Optimization, Governance Proposals, Protocol Health, and Indexing.
-* **Mock Network Testing:** Full support for mainnet forking and isolated, reproducible data simulations.
+## 📦 Installation & Setup
 
-### 💼 Intent Marketplace
-* **Natural Language Intent Parsing:** Users can deploy complex requests (e.g., cross-chain token swaps, yield staking) using fully natural language phrasing.
-* **Decentralized Solver Network:** Intelligent autonomous agents bid and compete on cost/speed to execute intents.
-* **Smart Contract Escrow:** Escrow mechanism ensures payment security based on cryptographic verifiable execution or solver adherence.
-* **Trust & Dispute Resolution:** Robust agent reputation protocol paired with Kleros-backed decentralized arbitration panels.
+### Prerequisites
+- Node.js (>= v20.0.0)
+- PostgreSQL
+- Redis
+- Hardhat
 
-### 🔐 Execution & Privacy
-* **Cross-Chain Abstraction:** Deep integration bridging EVM chains (Ethereum, Arbitrum, Polygon), Solana, and NEAR.
-* **Trusted Execution Environments (TEE):** Deploy on secure enclaves across Phala Network and Marlin Oyster, utilizing remote attestations on-chain to ensure untempered logic execution.
-* **zkTLS Integration:** Agents cryptographically verify isolated fragments of traditional Web2 data (Bank Balances, Social Handles, Trading APIs) without ever exposing plaintext keys or unrequited data using the Reclaim Protocol and zkPass.
+### 1. Smart Contracts
+```bash
+# Install dependencies
+npm install
 
-## 📂 Project Structure
+# Compile contracts
+npx hardhat compile
 
+# Run tests
+npx hardhat test
 ```
-├── contracts/              # Solidity Smart Contracts (Escrow, AgentRegistry, IntentProtocol, etc.)
-├── backend/                # Node.js Express Backend supporting the Intent Marketplace and Platform
-├── frontend/               # Next.js/React based Frontend Application for the platform (TBA)
-├── specs.json              # Exhaustive Functional & Non-Functional API and Architecture Specifications
+
+### 2. Backend Services
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install backend dependencies
+npm install
+
+# Build and test the project
+npm run build
+npm run test
 ```
 
-## 🛠️ Quick Start
+## 📜 Smart Contracts Overview
 
-### Smart Contracts (Hardhat)
+Our core contracts include:
+- `Escrow.sol`: Manages funds specifically securely locked until agents submit a verified proof of completion.
+- `IntentProtocol.sol`: Routes natural language tasks into verifiable cross-chain intents and handles solver bidding.
+- `AgentRegistry.sol`: Registers and manages agents operating on the network.
+- `Reputation.sol`: Dynamic reputation calculation tracking solver success rates and speeds.
 
-1. Navigate to the root directory and install dependencies:
-   ```bash
-   npm install
-   ```
+## 🤝 Contributing
 
-2. Compile the contracts:
-   ```bash
-   npx hardhat compile
-   ```
+We welcome contributions from the community! Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-3. Run the automated test suite:
-   ```bash
-   npx hardhat test
-   ```
+## 🛡️ Security
 
-### Backend (Node.js/Express)
+If you discover any security related issues, please review our [SECURITY.md](./SECURITY.md) guidelines and email security@kubernalabs.com instead of using the issue tracker.
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   npm install
-   ```
+## 📝 License
 
-2. Copy the example environment variables and configure them:
-   ```bash
-   cp .env.example .env
-   ```
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-3. Start the application in development mode:
-   ```bash
-   npm run dev
-   ```
+---
 
-## 🌐 Community & Contact
-
-* **Website:** [Founder Contact](https://arnaudkennedy.vercel.app/)
-* **Twitter:** [@Arnaud_Kennedy](https://x.com/Arnaud_Kennedy)
-* **Discord:** [Join the community](https://discord.gg/bwZmawsv)
-* **LinkedIn:** [Arnaud Kennedy](https://www.linkedin.com/in/kawacu-kennedy-47470a3a6/)
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+*Architected by the Kuberna Labs Team - Kigali, Rwanda.*
