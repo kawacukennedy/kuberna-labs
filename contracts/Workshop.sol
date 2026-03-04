@@ -25,6 +25,7 @@ contract KubernaWorkshop is Ownable {
     uint256 public workshopCount;
     mapping(uint256 => Workshop) public workshops;
     mapping(uint256 => mapping(address => bool)) public registered;
+    mapping(uint256 => mapping(address => bool)) public attended;
     mapping(uint256 => address[]) public participants;
     mapping(address => uint256[]) public userWorkshops;
 
@@ -33,6 +34,8 @@ contract KubernaWorkshop is Ownable {
     event WorkshopEnded(uint256);
     event ParticipantRegistered(uint256, address);
     event ParticipantRemoved(uint256, address);
+    event RecordingUrlSet(uint256 indexed workshopId, string url);
+    event AttendanceMarked(uint256 indexed workshopId, address indexed participant);
 
     constructor() Ownable(msg.sender) {}
 
@@ -109,6 +112,33 @@ contract KubernaWorkshop is Ownable {
         w.status = WorkshopStatus.Completed;
         
         emit WorkshopEnded(workshopId);
+    }
+
+    /**
+     * @dev Set/update the recording URL after a workshop ends.
+     */
+    function setRecordingUrl(uint256 workshopId, string calldata url) external onlyOwner {
+        Workshop storage w = workshops[workshopId];
+        require(w.status == WorkshopStatus.Completed, "Workshop not completed");
+        w.streamingUrl = url;
+        emit RecordingUrlSet(workshopId, url);
+    }
+
+    /**
+     * @dev Mark a registered participant as having attended.
+     */
+    function markAttendance(uint256 workshopId, address participant) external onlyOwner {
+        require(registered[workshopId][participant], "Not registered");
+        require(!attended[workshopId][participant], "Already marked");
+        attended[workshopId][participant] = true;
+        emit AttendanceMarked(workshopId, participant);
+    }
+
+    /**
+     * @dev Check if a participant attended.
+     */
+    function hasAttended(uint256 workshopId, address participant) external view returns (bool) {
+        return attended[workshopId][participant];
     }
 
     function cancelWorkshop(uint256 workshopId) external onlyOwner {
