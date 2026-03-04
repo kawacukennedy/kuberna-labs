@@ -71,6 +71,7 @@ export interface CrossChainRouterInterface extends Interface {
       | "BPS_DENOMINATOR"
       | "bridgeFee"
       | "chainTokenMapping"
+      | "emergencyHalt"
       | "executeTransfer"
       | "getMessage"
       | "getMinReceived"
@@ -78,10 +79,13 @@ export interface CrossChainRouterInterface extends Interface {
       | "messages"
       | "nonces"
       | "owner"
+      | "paused"
       | "renounceOwnership"
+      | "resume"
       | "setBridgeFee"
       | "setChainSupport"
       | "setSlippageTolerance"
+      | "setTokenMapping"
       | "slippageTolerance"
       | "supportedChains"
       | "transferOwnership"
@@ -94,8 +98,13 @@ export interface CrossChainRouterInterface extends Interface {
       | "ChainSupportUpdated"
       | "CrossChainTransferExecuted"
       | "CrossChainTransferInitiated"
+      | "EmergencyHalted"
       | "FeeUpdated"
       | "OwnershipTransferred"
+      | "Paused"
+      | "Resumed"
+      | "TokenMappingUpdated"
+      | "Unpaused"
   ): EventFragment;
 
   encodeFunctionData(
@@ -106,6 +115,10 @@ export interface CrossChainRouterInterface extends Interface {
   encodeFunctionData(
     functionFragment: "chainTokenMapping",
     values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "emergencyHalt",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "executeTransfer",
@@ -126,10 +139,12 @@ export interface CrossChainRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "messages", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "resume", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setBridgeFee",
     values: [BigNumberish]
@@ -141,6 +156,10 @@ export interface CrossChainRouterInterface extends Interface {
   encodeFunctionData(
     functionFragment: "setSlippageTolerance",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTokenMapping",
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "slippageTolerance",
@@ -173,6 +192,10 @@ export interface CrossChainRouterInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "emergencyHalt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "executeTransfer",
     data: BytesLike
   ): Result;
@@ -188,10 +211,12 @@ export interface CrossChainRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "messages", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "resume", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBridgeFee",
     data: BytesLike
@@ -202,6 +227,10 @@ export interface CrossChainRouterInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setSlippageTolerance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTokenMapping",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -295,6 +324,18 @@ export namespace CrossChainTransferInitiatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace EmergencyHaltedEvent {
+  export type InputTuple = [by: AddressLike];
+  export type OutputTuple = [by: string];
+  export interface OutputObject {
+    by: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace FeeUpdatedEvent {
   export type InputTuple = [newFee: BigNumberish];
   export type OutputTuple = [newFee: bigint];
@@ -313,6 +354,64 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ResumedEvent {
+  export type InputTuple = [by: AddressLike];
+  export type OutputTuple = [by: string];
+  export interface OutputObject {
+    by: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TokenMappingUpdatedEvent {
+  export type InputTuple = [
+    chainId: BigNumberish,
+    localToken: AddressLike,
+    remoteToken: AddressLike
+  ];
+  export type OutputTuple = [
+    chainId: bigint,
+    localToken: string,
+    remoteToken: string
+  ];
+  export interface OutputObject {
+    chainId: bigint;
+    localToken: string;
+    remoteToken: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -372,6 +471,8 @@ export interface CrossChainRouter extends BaseContract {
     [string],
     "view"
   >;
+
+  emergencyHalt: TypedContractMethod<[], [void], "nonpayable">;
 
   executeTransfer: TypedContractMethod<
     [
@@ -441,7 +542,11 @@ export interface CrossChainRouter extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  paused: TypedContractMethod<[], [boolean], "view">;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
+  resume: TypedContractMethod<[], [void], "nonpayable">;
 
   setBridgeFee: TypedContractMethod<
     [newFee: BigNumberish],
@@ -457,6 +562,12 @@ export interface CrossChainRouter extends BaseContract {
 
   setSlippageTolerance: TypedContractMethod<
     [tolerance: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setTokenMapping: TypedContractMethod<
+    [chainId: BigNumberish, localToken: AddressLike, remoteToken: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -500,6 +611,9 @@ export interface CrossChainRouter extends BaseContract {
     [string],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "emergencyHalt"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "executeTransfer"
   ): TypedContractMethod<
@@ -576,7 +690,13 @@ export interface CrossChainRouter extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "paused"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "renounceOwnership"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "resume"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setBridgeFee"
@@ -591,6 +711,13 @@ export interface CrossChainRouter extends BaseContract {
   getFunction(
     nameOrSignature: "setSlippageTolerance"
   ): TypedContractMethod<[tolerance: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setTokenMapping"
+  ): TypedContractMethod<
+    [chainId: BigNumberish, localToken: AddressLike, remoteToken: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "slippageTolerance"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -637,6 +764,13 @@ export interface CrossChainRouter extends BaseContract {
     CrossChainTransferInitiatedEvent.OutputObject
   >;
   getEvent(
+    key: "EmergencyHalted"
+  ): TypedContractEvent<
+    EmergencyHaltedEvent.InputTuple,
+    EmergencyHaltedEvent.OutputTuple,
+    EmergencyHaltedEvent.OutputObject
+  >;
+  getEvent(
     key: "FeeUpdated"
   ): TypedContractEvent<
     FeeUpdatedEvent.InputTuple,
@@ -649,6 +783,34 @@ export interface CrossChainRouter extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "Paused"
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Resumed"
+  ): TypedContractEvent<
+    ResumedEvent.InputTuple,
+    ResumedEvent.OutputTuple,
+    ResumedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TokenMappingUpdated"
+  ): TypedContractEvent<
+    TokenMappingUpdatedEvent.InputTuple,
+    TokenMappingUpdatedEvent.OutputTuple,
+    TokenMappingUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Unpaused"
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
   >;
 
   filters: {
@@ -685,6 +847,17 @@ export interface CrossChainRouter extends BaseContract {
       CrossChainTransferInitiatedEvent.OutputObject
     >;
 
+    "EmergencyHalted(address)": TypedContractEvent<
+      EmergencyHaltedEvent.InputTuple,
+      EmergencyHaltedEvent.OutputTuple,
+      EmergencyHaltedEvent.OutputObject
+    >;
+    EmergencyHalted: TypedContractEvent<
+      EmergencyHaltedEvent.InputTuple,
+      EmergencyHaltedEvent.OutputTuple,
+      EmergencyHaltedEvent.OutputObject
+    >;
+
     "FeeUpdated(uint256)": TypedContractEvent<
       FeeUpdatedEvent.InputTuple,
       FeeUpdatedEvent.OutputTuple,
@@ -705,6 +878,50 @@ export interface CrossChainRouter extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "Paused(address)": TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    "Resumed(address)": TypedContractEvent<
+      ResumedEvent.InputTuple,
+      ResumedEvent.OutputTuple,
+      ResumedEvent.OutputObject
+    >;
+    Resumed: TypedContractEvent<
+      ResumedEvent.InputTuple,
+      ResumedEvent.OutputTuple,
+      ResumedEvent.OutputObject
+    >;
+
+    "TokenMappingUpdated(uint256,address,address)": TypedContractEvent<
+      TokenMappingUpdatedEvent.InputTuple,
+      TokenMappingUpdatedEvent.OutputTuple,
+      TokenMappingUpdatedEvent.OutputObject
+    >;
+    TokenMappingUpdated: TypedContractEvent<
+      TokenMappingUpdatedEvent.InputTuple,
+      TokenMappingUpdatedEvent.OutputTuple,
+      TokenMappingUpdatedEvent.OutputObject
+    >;
+
+    "Unpaused(address)": TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
     >;
   };
 }

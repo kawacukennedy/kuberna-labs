@@ -27,35 +27,65 @@ export interface GovernanceTokenInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "MAX_SUPPLY"
+      | "PROPOSAL_QUORUM"
+      | "PROPOSAL_VOTING_PERIOD"
       | "allowance"
       | "approve"
       | "balanceOf"
       | "burn"
       | "burnFrom"
+      | "cancelProposal"
       | "checkpoints"
+      | "createProposal"
       | "decimals"
       | "delegate"
       | "delegateCheckpoints"
       | "delegates"
+      | "executeProposal"
+      | "getEffectiveVotingPower"
       | "getPastVotes"
       | "getVotes"
       | "mint"
       | "name"
       | "owner"
+      | "proposalCount"
+      | "proposals"
       | "renounceOwnership"
+      | "stake"
+      | "stakedBalance"
       | "symbol"
+      | "totalStaked"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
       | "transferOwnership"
+      | "unstake"
+      | "voteOnProposal"
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "Approval" | "OwnershipTransferred" | "Transfer"
+    nameOrSignatureOrTopic:
+      | "Approval"
+      | "OwnershipTransferred"
+      | "ProposalCancelled"
+      | "ProposalCreated"
+      | "ProposalExecuted"
+      | "Staked"
+      | "Transfer"
+      | "Unstaked"
+      | "VoteCastOnProposal"
   ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "MAX_SUPPLY",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PROPOSAL_QUORUM",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PROPOSAL_VOTING_PERIOD",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -76,8 +106,16 @@ export interface GovernanceTokenInterface extends Interface {
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "cancelProposal",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "checkpoints",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createProposal",
+    values: [string, AddressLike, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
@@ -90,6 +128,14 @@ export interface GovernanceTokenInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "delegates",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "executeProposal",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getEffectiveVotingPower",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -107,10 +153,27 @@ export interface GovernanceTokenInterface extends Interface {
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "proposalCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposals",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "stakedBalance",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "totalStaked",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -127,15 +190,39 @@ export interface GovernanceTokenInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "unstake",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "voteOnProposal",
+    values: [BigNumberish, boolean]
+  ): string;
 
   decodeFunctionResult(functionFragment: "MAX_SUPPLY", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "PROPOSAL_QUORUM",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PROPOSAL_VOTING_PERIOD",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "cancelProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "checkpoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createProposal",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
@@ -146,6 +233,14 @@ export interface GovernanceTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "executeProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getEffectiveVotingPower",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getPastVotes",
     data: BytesLike
   ): Result;
@@ -154,10 +249,24 @@ export interface GovernanceTokenInterface extends Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "proposalCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "stakedBalance",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalStaked",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -169,6 +278,11 @@ export interface GovernanceTokenInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "unstake", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "voteOnProposal",
     data: BytesLike
   ): Result;
 }
@@ -204,6 +318,65 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ProposalCancelledEvent {
+  export type InputTuple = [proposalId: BigNumberish];
+  export type OutputTuple = [proposalId: bigint];
+  export interface OutputObject {
+    proposalId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProposalCreatedEvent {
+  export type InputTuple = [
+    proposalId: BigNumberish,
+    proposer: AddressLike,
+    description: string
+  ];
+  export type OutputTuple = [
+    proposalId: bigint,
+    proposer: string,
+    description: string
+  ];
+  export interface OutputObject {
+    proposalId: bigint;
+    proposer: string;
+    description: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ProposalExecutedEvent {
+  export type InputTuple = [proposalId: BigNumberish];
+  export type OutputTuple = [proposalId: bigint];
+  export interface OutputObject {
+    proposalId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace StakedEvent {
+  export type InputTuple = [user: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [user: string, amount: bigint];
+  export interface OutputObject {
+    user: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -215,6 +388,44 @@ export namespace TransferEvent {
     from: string;
     to: string;
     value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnstakedEvent {
+  export type InputTuple = [user: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [user: string, amount: bigint];
+  export interface OutputObject {
+    user: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace VoteCastOnProposalEvent {
+  export type InputTuple = [
+    proposalId: BigNumberish,
+    voter: AddressLike,
+    support: boolean,
+    weight: BigNumberish
+  ];
+  export type OutputTuple = [
+    proposalId: bigint,
+    voter: string,
+    support: boolean,
+    weight: bigint
+  ];
+  export interface OutputObject {
+    proposalId: bigint;
+    voter: string;
+    support: boolean;
+    weight: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -267,6 +478,10 @@ export interface GovernanceToken extends BaseContract {
 
   MAX_SUPPLY: TypedContractMethod<[], [bigint], "view">;
 
+  PROPOSAL_QUORUM: TypedContractMethod<[], [bigint], "view">;
+
+  PROPOSAL_VOTING_PERIOD: TypedContractMethod<[], [bigint], "view">;
+
   allowance: TypedContractMethod<
     [owner: AddressLike, spender: AddressLike],
     [bigint],
@@ -289,10 +504,22 @@ export interface GovernanceToken extends BaseContract {
     "nonpayable"
   >;
 
+  cancelProposal: TypedContractMethod<
+    [proposalId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   checkpoints: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [[bigint, bigint] & { fromBlock: bigint; votes: bigint }],
     "view"
+  >;
+
+  createProposal: TypedContractMethod<
+    [description: string, target: AddressLike, callData: BytesLike],
+    [bigint],
+    "nonpayable"
   >;
 
   decimals: TypedContractMethod<[], [bigint], "view">;
@@ -306,6 +533,18 @@ export interface GovernanceToken extends BaseContract {
   >;
 
   delegates: TypedContractMethod<[arg0: AddressLike], [string], "view">;
+
+  executeProposal: TypedContractMethod<
+    [proposalId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  getEffectiveVotingPower: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   getPastVotes: TypedContractMethod<
     [account: AddressLike, blockNumber: BigNumberish],
@@ -325,9 +564,34 @@ export interface GovernanceToken extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  proposalCount: TypedContractMethod<[], [bigint], "view">;
+
+  proposals: TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [string, string, string, bigint, bigint, bigint, boolean, boolean] & {
+        description: string;
+        callData: string;
+        target: string;
+        votesFor: bigint;
+        votesAgainst: bigint;
+        endTime: bigint;
+        executed: boolean;
+        cancelled: boolean;
+      }
+    ],
+    "view"
+  >;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
+  stake: TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+
+  stakedBalance: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+
   symbol: TypedContractMethod<[], [string], "view">;
+
+  totalStaked: TypedContractMethod<[], [bigint], "view">;
 
   totalSupply: TypedContractMethod<[], [bigint], "view">;
 
@@ -349,12 +613,26 @@ export interface GovernanceToken extends BaseContract {
     "nonpayable"
   >;
 
+  unstake: TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+
+  voteOnProposal: TypedContractMethod<
+    [proposalId: BigNumberish, support: boolean],
+    [void],
+    "nonpayable"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
     nameOrSignature: "MAX_SUPPLY"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "PROPOSAL_QUORUM"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "PROPOSAL_VOTING_PERIOD"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "allowance"
@@ -384,11 +662,21 @@ export interface GovernanceToken extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "cancelProposal"
+  ): TypedContractMethod<[proposalId: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "checkpoints"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [[bigint, bigint] & { fromBlock: bigint; votes: bigint }],
     "view"
+  >;
+  getFunction(
+    nameOrSignature: "createProposal"
+  ): TypedContractMethod<
+    [description: string, target: AddressLike, callData: BytesLike],
+    [bigint],
+    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "decimals"
@@ -402,6 +690,12 @@ export interface GovernanceToken extends BaseContract {
   getFunction(
     nameOrSignature: "delegates"
   ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "executeProposal"
+  ): TypedContractMethod<[proposalId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getEffectiveVotingPower"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getPastVotes"
   ): TypedContractMethod<
@@ -426,11 +720,41 @@ export interface GovernanceToken extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "proposalCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "proposals"
+  ): TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [string, string, string, bigint, bigint, bigint, boolean, boolean] & {
+        description: string;
+        callData: string;
+        target: string;
+        votesFor: bigint;
+        votesAgainst: bigint;
+        endTime: bigint;
+        executed: boolean;
+        cancelled: boolean;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "stake"
+  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "stakedBalance"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
     nameOrSignature: "symbol"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "totalStaked"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "totalSupply"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -451,6 +775,16 @@ export interface GovernanceToken extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "unstake"
+  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "voteOnProposal"
+  ): TypedContractMethod<
+    [proposalId: BigNumberish, support: boolean],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "Approval"
@@ -467,11 +801,53 @@ export interface GovernanceToken extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "ProposalCancelled"
+  ): TypedContractEvent<
+    ProposalCancelledEvent.InputTuple,
+    ProposalCancelledEvent.OutputTuple,
+    ProposalCancelledEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProposalCreated"
+  ): TypedContractEvent<
+    ProposalCreatedEvent.InputTuple,
+    ProposalCreatedEvent.OutputTuple,
+    ProposalCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "ProposalExecuted"
+  ): TypedContractEvent<
+    ProposalExecutedEvent.InputTuple,
+    ProposalExecutedEvent.OutputTuple,
+    ProposalExecutedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Staked"
+  ): TypedContractEvent<
+    StakedEvent.InputTuple,
+    StakedEvent.OutputTuple,
+    StakedEvent.OutputObject
+  >;
+  getEvent(
     key: "Transfer"
   ): TypedContractEvent<
     TransferEvent.InputTuple,
     TransferEvent.OutputTuple,
     TransferEvent.OutputObject
+  >;
+  getEvent(
+    key: "Unstaked"
+  ): TypedContractEvent<
+    UnstakedEvent.InputTuple,
+    UnstakedEvent.OutputTuple,
+    UnstakedEvent.OutputObject
+  >;
+  getEvent(
+    key: "VoteCastOnProposal"
+  ): TypedContractEvent<
+    VoteCastOnProposalEvent.InputTuple,
+    VoteCastOnProposalEvent.OutputTuple,
+    VoteCastOnProposalEvent.OutputObject
   >;
 
   filters: {
@@ -497,6 +873,50 @@ export interface GovernanceToken extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
+    "ProposalCancelled(uint256)": TypedContractEvent<
+      ProposalCancelledEvent.InputTuple,
+      ProposalCancelledEvent.OutputTuple,
+      ProposalCancelledEvent.OutputObject
+    >;
+    ProposalCancelled: TypedContractEvent<
+      ProposalCancelledEvent.InputTuple,
+      ProposalCancelledEvent.OutputTuple,
+      ProposalCancelledEvent.OutputObject
+    >;
+
+    "ProposalCreated(uint256,address,string)": TypedContractEvent<
+      ProposalCreatedEvent.InputTuple,
+      ProposalCreatedEvent.OutputTuple,
+      ProposalCreatedEvent.OutputObject
+    >;
+    ProposalCreated: TypedContractEvent<
+      ProposalCreatedEvent.InputTuple,
+      ProposalCreatedEvent.OutputTuple,
+      ProposalCreatedEvent.OutputObject
+    >;
+
+    "ProposalExecuted(uint256)": TypedContractEvent<
+      ProposalExecutedEvent.InputTuple,
+      ProposalExecutedEvent.OutputTuple,
+      ProposalExecutedEvent.OutputObject
+    >;
+    ProposalExecuted: TypedContractEvent<
+      ProposalExecutedEvent.InputTuple,
+      ProposalExecutedEvent.OutputTuple,
+      ProposalExecutedEvent.OutputObject
+    >;
+
+    "Staked(address,uint256)": TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
+    Staked: TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
+
     "Transfer(address,address,uint256)": TypedContractEvent<
       TransferEvent.InputTuple,
       TransferEvent.OutputTuple,
@@ -506,6 +926,28 @@ export interface GovernanceToken extends BaseContract {
       TransferEvent.InputTuple,
       TransferEvent.OutputTuple,
       TransferEvent.OutputObject
+    >;
+
+    "Unstaked(address,uint256)": TypedContractEvent<
+      UnstakedEvent.InputTuple,
+      UnstakedEvent.OutputTuple,
+      UnstakedEvent.OutputObject
+    >;
+    Unstaked: TypedContractEvent<
+      UnstakedEvent.InputTuple,
+      UnstakedEvent.OutputTuple,
+      UnstakedEvent.OutputObject
+    >;
+
+    "VoteCastOnProposal(uint256,address,bool,uint256)": TypedContractEvent<
+      VoteCastOnProposalEvent.InputTuple,
+      VoteCastOnProposalEvent.OutputTuple,
+      VoteCastOnProposalEvent.OutputObject
+    >;
+    VoteCastOnProposal: TypedContractEvent<
+      VoteCastOnProposalEvent.InputTuple,
+      VoteCastOnProposalEvent.OutputTuple,
+      VoteCastOnProposalEvent.OutputObject
     >;
   };
 }

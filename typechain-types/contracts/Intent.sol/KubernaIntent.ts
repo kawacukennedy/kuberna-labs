@@ -98,6 +98,7 @@ export interface KubernaIntentInterface extends Interface {
       | "MIN_DEADLINE"
       | "acceptBid"
       | "bids"
+      | "cancelIntent"
       | "completeIntent"
       | "createIntent"
       | "expireIntent"
@@ -111,6 +112,7 @@ export interface KubernaIntentInterface extends Interface {
       | "owner"
       | "rejectBid"
       | "renounceOwnership"
+      | "retractBid"
       | "setEscrow"
       | "solverIntents"
       | "submitBid"
@@ -121,8 +123,10 @@ export interface KubernaIntentInterface extends Interface {
     nameOrSignatureOrTopic:
       | "BidAccepted"
       | "BidRejected"
+      | "BidRetracted"
       | "BidSubmitted"
       | "IntentAssigned"
+      | "IntentCancelled"
       | "IntentCompleted"
       | "IntentCreated"
       | "IntentExpired"
@@ -144,6 +148,10 @@ export interface KubernaIntentInterface extends Interface {
   encodeFunctionData(
     functionFragment: "bids",
     values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelIntent",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "completeIntent",
@@ -202,6 +210,10 @@ export interface KubernaIntentInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "retractBid",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setEscrow",
     values: [BytesLike, BytesLike]
   ): string;
@@ -228,6 +240,10 @@ export interface KubernaIntentInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "acceptBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bids", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelIntent",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "completeIntent",
     data: BytesLike
@@ -262,6 +278,7 @@ export interface KubernaIntentInterface extends Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "retractBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setEscrow", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "solverIntents",
@@ -300,6 +317,19 @@ export namespace BidRejectedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace BidRetractedEvent {
+  export type InputTuple = [arg0: BytesLike, arg1: AddressLike];
+  export type OutputTuple = [arg0: string, arg1: string];
+  export interface OutputObject {
+    arg0: string;
+    arg1: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace BidSubmittedEvent {
   export type InputTuple = [
     arg0: BytesLike,
@@ -324,6 +354,18 @@ export namespace IntentAssignedEvent {
   export interface OutputObject {
     arg0: string;
     arg1: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace IntentCancelledEvent {
+  export type InputTuple = [arg0: BytesLike];
+  export type OutputTuple = [arg0: string];
+  export interface OutputObject {
+    arg0: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -454,6 +496,12 @@ export interface KubernaIntent extends BaseContract {
     "view"
   >;
 
+  cancelIntent: TypedContractMethod<
+    [intentId: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
   completeIntent: TypedContractMethod<
     [intentId: BytesLike],
     [void],
@@ -554,6 +602,8 @@ export interface KubernaIntent extends BaseContract {
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
+  retractBid: TypedContractMethod<[intentId: BytesLike], [void], "nonpayable">;
+
   setEscrow: TypedContractMethod<
     [intentId: BytesLike, escrowId: BytesLike],
     [void],
@@ -616,6 +666,9 @@ export interface KubernaIntent extends BaseContract {
     ],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "cancelIntent"
+  ): TypedContractMethod<[intentId: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "completeIntent"
   ): TypedContractMethod<[intentId: BytesLike], [void], "nonpayable">;
@@ -718,6 +771,9 @@ export interface KubernaIntent extends BaseContract {
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "retractBid"
+  ): TypedContractMethod<[intentId: BytesLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "setEscrow"
   ): TypedContractMethod<
     [intentId: BytesLike, escrowId: BytesLike],
@@ -762,6 +818,13 @@ export interface KubernaIntent extends BaseContract {
     BidRejectedEvent.OutputObject
   >;
   getEvent(
+    key: "BidRetracted"
+  ): TypedContractEvent<
+    BidRetractedEvent.InputTuple,
+    BidRetractedEvent.OutputTuple,
+    BidRetractedEvent.OutputObject
+  >;
+  getEvent(
     key: "BidSubmitted"
   ): TypedContractEvent<
     BidSubmittedEvent.InputTuple,
@@ -774,6 +837,13 @@ export interface KubernaIntent extends BaseContract {
     IntentAssignedEvent.InputTuple,
     IntentAssignedEvent.OutputTuple,
     IntentAssignedEvent.OutputObject
+  >;
+  getEvent(
+    key: "IntentCancelled"
+  ): TypedContractEvent<
+    IntentCancelledEvent.InputTuple,
+    IntentCancelledEvent.OutputTuple,
+    IntentCancelledEvent.OutputObject
   >;
   getEvent(
     key: "IntentCompleted"
@@ -827,6 +897,17 @@ export interface KubernaIntent extends BaseContract {
       BidRejectedEvent.OutputObject
     >;
 
+    "BidRetracted(bytes32,address)": TypedContractEvent<
+      BidRetractedEvent.InputTuple,
+      BidRetractedEvent.OutputTuple,
+      BidRetractedEvent.OutputObject
+    >;
+    BidRetracted: TypedContractEvent<
+      BidRetractedEvent.InputTuple,
+      BidRetractedEvent.OutputTuple,
+      BidRetractedEvent.OutputObject
+    >;
+
     "BidSubmitted(bytes32,address,uint256)": TypedContractEvent<
       BidSubmittedEvent.InputTuple,
       BidSubmittedEvent.OutputTuple,
@@ -847,6 +928,17 @@ export interface KubernaIntent extends BaseContract {
       IntentAssignedEvent.InputTuple,
       IntentAssignedEvent.OutputTuple,
       IntentAssignedEvent.OutputObject
+    >;
+
+    "IntentCancelled(bytes32)": TypedContractEvent<
+      IntentCancelledEvent.InputTuple,
+      IntentCancelledEvent.OutputTuple,
+      IntentCancelledEvent.OutputObject
+    >;
+    IntentCancelled: TypedContractEvent<
+      IntentCancelledEvent.InputTuple,
+      IntentCancelledEvent.OutputTuple,
+      IntentCancelledEvent.OutputObject
     >;
 
     "IntentCompleted(bytes32)": TypedContractEvent<

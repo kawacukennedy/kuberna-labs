@@ -64,6 +64,7 @@ export interface KubernaCourseNFTInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "approve"
+      | "archiveCourse"
       | "balanceOf"
       | "courseEnrolled"
       | "courseStudents"
@@ -81,6 +82,7 @@ export interface KubernaCourseNFTInterface extends Interface {
       | "owner"
       | "ownerOf"
       | "publishCourse"
+      | "removeStudent"
       | "renounceOwnership"
       | "revokeAccess"
       | "safeTransferFrom(address,address,uint256)"
@@ -101,18 +103,24 @@ export interface KubernaCourseNFTInterface extends Interface {
       | "Approval"
       | "ApprovalForAll"
       | "BatchMetadataUpdate"
+      | "CourseArchived"
       | "CourseCreated"
       | "CoursePublished"
       | "CourseUpdated"
       | "MetadataUpdate"
       | "OwnershipTransferred"
       | "StudentEnrolled"
+      | "StudentRemoved"
       | "Transfer"
   ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "archiveCourse",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
@@ -186,6 +194,10 @@ export interface KubernaCourseNFTInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeStudent",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -232,6 +244,10 @@ export interface KubernaCourseNFTInterface extends Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "archiveCourse",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "courseEnrolled",
@@ -277,6 +293,10 @@ export interface KubernaCourseNFTInterface extends Interface {
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "publishCourse",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeStudent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -392,6 +412,18 @@ export namespace BatchMetadataUpdateEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace CourseArchivedEvent {
+  export type InputTuple = [courseId: BigNumberish];
+  export type OutputTuple = [courseId: bigint];
+  export interface OutputObject {
+    courseId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace CourseCreatedEvent {
   export type InputTuple = [
     arg0: BigNumberish,
@@ -472,6 +504,19 @@ export namespace StudentEnrolledEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace StudentRemovedEvent {
+  export type InputTuple = [courseId: BigNumberish, student: AddressLike];
+  export type OutputTuple = [courseId: bigint, student: string];
+  export interface OutputObject {
+    courseId: bigint;
+    student: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TransferEvent {
   export type InputTuple = [
     from: AddressLike,
@@ -535,6 +580,12 @@ export interface KubernaCourseNFT extends BaseContract {
 
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  archiveCourse: TypedContractMethod<
+    [courseId: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -650,6 +701,12 @@ export interface KubernaCourseNFT extends BaseContract {
     "nonpayable"
   >;
 
+  removeStudent: TypedContractMethod<
+    [courseId: BigNumberish, student: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   revokeAccess: TypedContractMethod<
@@ -733,6 +790,9 @@ export interface KubernaCourseNFT extends BaseContract {
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "archiveCourse"
+  ): TypedContractMethod<[courseId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
@@ -854,6 +914,13 @@ export interface KubernaCourseNFT extends BaseContract {
     nameOrSignature: "publishCourse"
   ): TypedContractMethod<[courseId: BigNumberish], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "removeStudent"
+  ): TypedContractMethod<
+    [courseId: BigNumberish, student: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
@@ -959,6 +1026,13 @@ export interface KubernaCourseNFT extends BaseContract {
     BatchMetadataUpdateEvent.OutputObject
   >;
   getEvent(
+    key: "CourseArchived"
+  ): TypedContractEvent<
+    CourseArchivedEvent.InputTuple,
+    CourseArchivedEvent.OutputTuple,
+    CourseArchivedEvent.OutputObject
+  >;
+  getEvent(
     key: "CourseCreated"
   ): TypedContractEvent<
     CourseCreatedEvent.InputTuple,
@@ -999,6 +1073,13 @@ export interface KubernaCourseNFT extends BaseContract {
     StudentEnrolledEvent.InputTuple,
     StudentEnrolledEvent.OutputTuple,
     StudentEnrolledEvent.OutputObject
+  >;
+  getEvent(
+    key: "StudentRemoved"
+  ): TypedContractEvent<
+    StudentRemovedEvent.InputTuple,
+    StudentRemovedEvent.OutputTuple,
+    StudentRemovedEvent.OutputObject
   >;
   getEvent(
     key: "Transfer"
@@ -1051,6 +1132,17 @@ export interface KubernaCourseNFT extends BaseContract {
       BatchMetadataUpdateEvent.InputTuple,
       BatchMetadataUpdateEvent.OutputTuple,
       BatchMetadataUpdateEvent.OutputObject
+    >;
+
+    "CourseArchived(uint256)": TypedContractEvent<
+      CourseArchivedEvent.InputTuple,
+      CourseArchivedEvent.OutputTuple,
+      CourseArchivedEvent.OutputObject
+    >;
+    CourseArchived: TypedContractEvent<
+      CourseArchivedEvent.InputTuple,
+      CourseArchivedEvent.OutputTuple,
+      CourseArchivedEvent.OutputObject
     >;
 
     "CourseCreated(uint256,string,uint256)": TypedContractEvent<
@@ -1117,6 +1209,17 @@ export interface KubernaCourseNFT extends BaseContract {
       StudentEnrolledEvent.InputTuple,
       StudentEnrolledEvent.OutputTuple,
       StudentEnrolledEvent.OutputObject
+    >;
+
+    "StudentRemoved(uint256,address)": TypedContractEvent<
+      StudentRemovedEvent.InputTuple,
+      StudentRemovedEvent.OutputTuple,
+      StudentRemovedEvent.OutputObject
+    >;
+    StudentRemoved: TypedContractEvent<
+      StudentRemovedEvent.InputTuple,
+      StudentRemovedEvent.OutputTuple,
+      StudentRemovedEvent.OutputObject
     >;
 
     "Transfer(address,address,uint256)": TypedContractEvent<

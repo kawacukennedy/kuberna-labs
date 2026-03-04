@@ -60,18 +60,22 @@ export type WorkshopStructOutput = [
 export interface KubernaWorkshopInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "attended"
       | "cancelWorkshop"
       | "createWorkshop"
       | "endWorkshop"
       | "getParticipants"
       | "getUserWorkshops"
       | "getWorkshop"
+      | "hasAttended"
       | "isRegistered"
+      | "markAttendance"
       | "owner"
       | "participants"
       | "register"
       | "registered"
       | "renounceOwnership"
+      | "setRecordingUrl"
       | "startWorkshop"
       | "transferOwnership"
       | "unregister"
@@ -82,14 +86,20 @@ export interface KubernaWorkshopInterface extends Interface {
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "AttendanceMarked"
       | "OwnershipTransferred"
       | "ParticipantRegistered"
       | "ParticipantRemoved"
+      | "RecordingUrlSet"
       | "WorkshopCreated"
       | "WorkshopEnded"
       | "WorkshopStarted"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "attended",
+    values: [BigNumberish, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelWorkshop",
     values: [BigNumberish]
@@ -123,7 +133,15 @@ export interface KubernaWorkshopInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "hasAttended",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isRegistered",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "markAttendance",
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -142,6 +160,10 @@ export interface KubernaWorkshopInterface extends Interface {
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRecordingUrl",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "startWorkshop",
@@ -168,6 +190,7 @@ export interface KubernaWorkshopInterface extends Interface {
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "attended", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelWorkshop",
     data: BytesLike
@@ -193,7 +216,15 @@ export interface KubernaWorkshopInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "hasAttended",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isRegistered",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "markAttendance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -205,6 +236,10 @@ export interface KubernaWorkshopInterface extends Interface {
   decodeFunctionResult(functionFragment: "registered", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRecordingUrl",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -225,6 +260,19 @@ export interface KubernaWorkshopInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "workshops", data: BytesLike): Result;
+}
+
+export namespace AttendanceMarkedEvent {
+  export type InputTuple = [workshopId: BigNumberish, participant: AddressLike];
+  export type OutputTuple = [workshopId: bigint, participant: string];
+  export interface OutputObject {
+    workshopId: bigint;
+    participant: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace OwnershipTransferredEvent {
@@ -259,6 +307,19 @@ export namespace ParticipantRemovedEvent {
   export interface OutputObject {
     arg0: bigint;
     arg1: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace RecordingUrlSetEvent {
+  export type InputTuple = [workshopId: BigNumberish, url: string];
+  export type OutputTuple = [workshopId: bigint, url: string];
+  export interface OutputObject {
+    workshopId: bigint;
+    url: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -351,6 +412,12 @@ export interface KubernaWorkshop extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  attended: TypedContractMethod<
+    [arg0: BigNumberish, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
+
   cancelWorkshop: TypedContractMethod<
     [workshopId: BigNumberish],
     [void],
@@ -395,10 +462,22 @@ export interface KubernaWorkshop extends BaseContract {
     "view"
   >;
 
+  hasAttended: TypedContractMethod<
+    [workshopId: BigNumberish, participant: AddressLike],
+    [boolean],
+    "view"
+  >;
+
   isRegistered: TypedContractMethod<
     [workshopId: BigNumberish, user: AddressLike],
     [boolean],
     "view"
+  >;
+
+  markAttendance: TypedContractMethod<
+    [workshopId: BigNumberish, participant: AddressLike],
+    [void],
+    "nonpayable"
   >;
 
   owner: TypedContractMethod<[], [string], "view">;
@@ -422,6 +501,12 @@ export interface KubernaWorkshop extends BaseContract {
   >;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
+  setRecordingUrl: TypedContractMethod<
+    [workshopId: BigNumberish, url: string],
+    [void],
+    "nonpayable"
+  >;
 
   startWorkshop: TypedContractMethod<
     [workshopId: BigNumberish],
@@ -482,6 +567,13 @@ export interface KubernaWorkshop extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "attended"
+  ): TypedContractMethod<
+    [arg0: BigNumberish, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "cancelWorkshop"
   ): TypedContractMethod<[workshopId: BigNumberish], [void], "nonpayable">;
   getFunction(
@@ -512,11 +604,25 @@ export interface KubernaWorkshop extends BaseContract {
     nameOrSignature: "getWorkshop"
   ): TypedContractMethod<[id: BigNumberish], [WorkshopStructOutput], "view">;
   getFunction(
+    nameOrSignature: "hasAttended"
+  ): TypedContractMethod<
+    [workshopId: BigNumberish, participant: AddressLike],
+    [boolean],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "isRegistered"
   ): TypedContractMethod<
     [workshopId: BigNumberish, user: AddressLike],
     [boolean],
     "view"
+  >;
+  getFunction(
+    nameOrSignature: "markAttendance"
+  ): TypedContractMethod<
+    [workshopId: BigNumberish, participant: AddressLike],
+    [void],
+    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "owner"
@@ -541,6 +647,13 @@ export interface KubernaWorkshop extends BaseContract {
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setRecordingUrl"
+  ): TypedContractMethod<
+    [workshopId: BigNumberish, url: string],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "startWorkshop"
   ): TypedContractMethod<[workshopId: BigNumberish], [void], "nonpayable">;
@@ -591,6 +704,13 @@ export interface KubernaWorkshop extends BaseContract {
   >;
 
   getEvent(
+    key: "AttendanceMarked"
+  ): TypedContractEvent<
+    AttendanceMarkedEvent.InputTuple,
+    AttendanceMarkedEvent.OutputTuple,
+    AttendanceMarkedEvent.OutputObject
+  >;
+  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -610,6 +730,13 @@ export interface KubernaWorkshop extends BaseContract {
     ParticipantRemovedEvent.InputTuple,
     ParticipantRemovedEvent.OutputTuple,
     ParticipantRemovedEvent.OutputObject
+  >;
+  getEvent(
+    key: "RecordingUrlSet"
+  ): TypedContractEvent<
+    RecordingUrlSetEvent.InputTuple,
+    RecordingUrlSetEvent.OutputTuple,
+    RecordingUrlSetEvent.OutputObject
   >;
   getEvent(
     key: "WorkshopCreated"
@@ -634,6 +761,17 @@ export interface KubernaWorkshop extends BaseContract {
   >;
 
   filters: {
+    "AttendanceMarked(uint256,address)": TypedContractEvent<
+      AttendanceMarkedEvent.InputTuple,
+      AttendanceMarkedEvent.OutputTuple,
+      AttendanceMarkedEvent.OutputObject
+    >;
+    AttendanceMarked: TypedContractEvent<
+      AttendanceMarkedEvent.InputTuple,
+      AttendanceMarkedEvent.OutputTuple,
+      AttendanceMarkedEvent.OutputObject
+    >;
+
     "OwnershipTransferred(address,address)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
@@ -665,6 +803,17 @@ export interface KubernaWorkshop extends BaseContract {
       ParticipantRemovedEvent.InputTuple,
       ParticipantRemovedEvent.OutputTuple,
       ParticipantRemovedEvent.OutputObject
+    >;
+
+    "RecordingUrlSet(uint256,string)": TypedContractEvent<
+      RecordingUrlSetEvent.InputTuple,
+      RecordingUrlSetEvent.OutputTuple,
+      RecordingUrlSetEvent.OutputObject
+    >;
+    RecordingUrlSet: TypedContractEvent<
+      RecordingUrlSetEvent.InputTuple,
+      RecordingUrlSetEvent.OutputTuple,
+      RecordingUrlSetEvent.OutputObject
     >;
 
     "WorkshopCreated(uint256,string,uint256)": TypedContractEvent<

@@ -39,6 +39,7 @@ export interface KubernaFeeManagerInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "addRecipient"
+      | "addTier"
       | "distributeFees"
       | "getRecipients"
       | "getTierFee"
@@ -48,6 +49,7 @@ export interface KubernaFeeManagerInterface extends Interface {
       | "recipientShares"
       | "recipients"
       | "removeRecipient"
+      | "removeTier"
       | "renounceOwnership"
       | "setPlatformFee"
       | "tiers"
@@ -61,11 +63,17 @@ export interface KubernaFeeManagerInterface extends Interface {
       | "OwnershipTransferred"
       | "RecipientAdded"
       | "RecipientRemoved"
+      | "TierAdded"
+      | "TierRemoved"
   ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "addRecipient",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addTier",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "distributeFees",
@@ -101,6 +109,10 @@ export interface KubernaFeeManagerInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeTier",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -118,6 +130,7 @@ export interface KubernaFeeManagerInterface extends Interface {
     functionFragment: "addRecipient",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "addTier", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "distributeFees",
     data: BytesLike
@@ -145,6 +158,7 @@ export interface KubernaFeeManagerInterface extends Interface {
     functionFragment: "removeRecipient",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "removeTier", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -223,6 +237,31 @@ export namespace RecipientRemovedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace TierAddedEvent {
+  export type InputTuple = [threshold: BigNumberish, percentage: BigNumberish];
+  export type OutputTuple = [threshold: bigint, percentage: bigint];
+  export interface OutputObject {
+    threshold: bigint;
+    percentage: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TierRemovedEvent {
+  export type InputTuple = [index: BigNumberish];
+  export type OutputTuple = [index: bigint];
+  export interface OutputObject {
+    index: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface KubernaFeeManager extends BaseContract {
   connect(runner?: ContractRunner | null): KubernaFeeManager;
   waitForDeployment(): Promise<this>;
@@ -272,6 +311,12 @@ export interface KubernaFeeManager extends BaseContract {
     "nonpayable"
   >;
 
+  addTier: TypedContractMethod<
+    [threshold: BigNumberish, percentage: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   distributeFees: TypedContractMethod<
     [token: AddressLike, amount: BigNumberish],
     [void],
@@ -308,6 +353,8 @@ export interface KubernaFeeManager extends BaseContract {
     "nonpayable"
   >;
 
+  removeTier: TypedContractMethod<[index: BigNumberish], [void], "nonpayable">;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   setPlatformFee: TypedContractMethod<
@@ -336,6 +383,13 @@ export interface KubernaFeeManager extends BaseContract {
     nameOrSignature: "addRecipient"
   ): TypedContractMethod<
     [account: AddressLike, share: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "addTier"
+  ): TypedContractMethod<
+    [threshold: BigNumberish, percentage: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -380,6 +434,9 @@ export interface KubernaFeeManager extends BaseContract {
   getFunction(
     nameOrSignature: "removeRecipient"
   ): TypedContractMethod<[account: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "removeTier"
+  ): TypedContractMethod<[index: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
@@ -431,6 +488,20 @@ export interface KubernaFeeManager extends BaseContract {
     RecipientRemovedEvent.InputTuple,
     RecipientRemovedEvent.OutputTuple,
     RecipientRemovedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TierAdded"
+  ): TypedContractEvent<
+    TierAddedEvent.InputTuple,
+    TierAddedEvent.OutputTuple,
+    TierAddedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TierRemoved"
+  ): TypedContractEvent<
+    TierRemovedEvent.InputTuple,
+    TierRemovedEvent.OutputTuple,
+    TierRemovedEvent.OutputObject
   >;
 
   filters: {
@@ -487,6 +558,28 @@ export interface KubernaFeeManager extends BaseContract {
       RecipientRemovedEvent.InputTuple,
       RecipientRemovedEvent.OutputTuple,
       RecipientRemovedEvent.OutputObject
+    >;
+
+    "TierAdded(uint256,uint256)": TypedContractEvent<
+      TierAddedEvent.InputTuple,
+      TierAddedEvent.OutputTuple,
+      TierAddedEvent.OutputObject
+    >;
+    TierAdded: TypedContractEvent<
+      TierAddedEvent.InputTuple,
+      TierAddedEvent.OutputTuple,
+      TierAddedEvent.OutputObject
+    >;
+
+    "TierRemoved(uint256)": TypedContractEvent<
+      TierRemovedEvent.InputTuple,
+      TierRemovedEvent.OutputTuple,
+      TierRemovedEvent.OutputObject
+    >;
+    TierRemoved: TypedContractEvent<
+      TierRemovedEvent.InputTuple,
+      TierRemovedEvent.OutputTuple,
+      TierRemovedEvent.OutputObject
     >;
   };
 }

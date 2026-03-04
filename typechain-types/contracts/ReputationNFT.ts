@@ -40,15 +40,19 @@ export declare namespace ReputationNFT {
 export interface ReputationNFTInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "DECAY_PERIOD"
+      | "DECAY_RATE_BPS"
       | "MIN_TASKS_FOR_REP"
       | "agentBadges"
       | "agentRatingHistory"
       | "agentReputations"
+      | "applyDecay"
       | "approve"
       | "balanceOf"
       | "calculateScore"
       | "getApproved"
       | "getBadges"
+      | "getStarRating"
       | "getSuccessRate"
       | "hasBadge"
       | "isApprovedForAll"
@@ -78,10 +82,19 @@ export interface ReputationNFTInterface extends Interface {
       | "MetadataUpdate"
       | "OwnershipTransferred"
       | "RatingSubmitted"
+      | "ReputationDecayed"
       | "ReputationUpdated"
       | "Transfer"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "DECAY_PERIOD",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DECAY_RATE_BPS",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "MIN_TASKS_FOR_REP",
     values?: undefined
@@ -96,6 +109,10 @@ export interface ReputationNFTInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "agentReputations",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "applyDecay",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -116,6 +133,10 @@ export interface ReputationNFTInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getBadges",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStarRating",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -183,6 +204,14 @@ export interface ReputationNFTInterface extends Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "DECAY_PERIOD",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DECAY_RATE_BPS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "MIN_TASKS_FOR_REP",
     data: BytesLike
   ): Result;
@@ -198,6 +227,7 @@ export interface ReputationNFTInterface extends Interface {
     functionFragment: "agentReputations",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "applyDecay", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -209,6 +239,10 @@ export interface ReputationNFTInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBadges", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getStarRating",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getSuccessRate",
     data: BytesLike
@@ -378,6 +412,28 @@ export namespace RatingSubmittedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ReputationDecayedEvent {
+  export type InputTuple = [
+    tokenId: BigNumberish,
+    periodsDecayed: BigNumberish,
+    newScore: BigNumberish
+  ];
+  export type OutputTuple = [
+    tokenId: bigint,
+    periodsDecayed: bigint,
+    newScore: bigint
+  ];
+  export interface OutputObject {
+    tokenId: bigint;
+    periodsDecayed: bigint;
+    newScore: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace ReputationUpdatedEvent {
   export type InputTuple = [
     arg0: BigNumberish,
@@ -464,6 +520,10 @@ export interface ReputationNFT extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  DECAY_PERIOD: TypedContractMethod<[], [bigint], "view">;
+
+  DECAY_RATE_BPS: TypedContractMethod<[], [bigint], "view">;
+
   MIN_TASKS_FOR_REP: TypedContractMethod<[], [bigint], "view">;
 
   agentBadges: TypedContractMethod<
@@ -499,6 +559,12 @@ export interface ReputationNFT extends BaseContract {
     "view"
   >;
 
+  applyDecay: TypedContractMethod<
+    [tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   approve: TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
     [void],
@@ -520,6 +586,8 @@ export interface ReputationNFT extends BaseContract {
     [ReputationNFT.BadgeStructOutput[]],
     "view"
   >;
+
+  getStarRating: TypedContractMethod<[tokenId: BigNumberish], [bigint], "view">;
 
   getSuccessRate: TypedContractMethod<
     [tokenId: BigNumberish],
@@ -619,6 +687,12 @@ export interface ReputationNFT extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "DECAY_PERIOD"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "DECAY_RATE_BPS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "MIN_TASKS_FOR_REP"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -658,6 +732,9 @@ export interface ReputationNFT extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "applyDecay"
+  ): TypedContractMethod<[tokenId: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
     [to: AddressLike, tokenId: BigNumberish],
@@ -680,6 +757,9 @@ export interface ReputationNFT extends BaseContract {
     [ReputationNFT.BadgeStructOutput[]],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getStarRating"
+  ): TypedContractMethod<[tokenId: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "getSuccessRate"
   ): TypedContractMethod<[tokenId: BigNumberish], [bigint], "view">;
@@ -826,6 +906,13 @@ export interface ReputationNFT extends BaseContract {
     RatingSubmittedEvent.OutputObject
   >;
   getEvent(
+    key: "ReputationDecayed"
+  ): TypedContractEvent<
+    ReputationDecayedEvent.InputTuple,
+    ReputationDecayedEvent.OutputTuple,
+    ReputationDecayedEvent.OutputObject
+  >;
+  getEvent(
     key: "ReputationUpdated"
   ): TypedContractEvent<
     ReputationUpdatedEvent.InputTuple,
@@ -916,6 +1003,17 @@ export interface ReputationNFT extends BaseContract {
       RatingSubmittedEvent.InputTuple,
       RatingSubmittedEvent.OutputTuple,
       RatingSubmittedEvent.OutputObject
+    >;
+
+    "ReputationDecayed(uint256,uint256,uint256)": TypedContractEvent<
+      ReputationDecayedEvent.InputTuple,
+      ReputationDecayedEvent.OutputTuple,
+      ReputationDecayedEvent.OutputObject
+    >;
+    ReputationDecayed: TypedContractEvent<
+      ReputationDecayedEvent.InputTuple,
+      ReputationDecayedEvent.OutputTuple,
+      ReputationDecayedEvent.OutputObject
     >;
 
     "ReputationUpdated(uint256,uint256,uint256,uint256)": TypedContractEvent<
