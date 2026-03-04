@@ -32,7 +32,6 @@ struct EscrowData {
 contract KubernaEscrow is ReentrancyGuard, Ownable {
     uint256 public immutable FEE_BASIS_POINTS = 250;
     mapping(bytes32 => EscrowData) public escrows;
-    mapping(address => bool) public authorizedExecutors;
 
     event EscrowCreated(bytes32 indexed, address, address, uint256, uint256);
     event EscrowFunded(bytes32 indexed, address, uint256);
@@ -43,25 +42,20 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
     event DisputeRaised(bytes32 indexed, address, string);
     event DisputeResolved(bytes32 indexed, bool);
 
-    modifier onlyExecutor() {
-        require(authorizedExecutors[msg.sender]);
+    modifier onlyAssignedExecutor(bytes32 escrowId) {
+        require(escrows[escrowId].executor == msg.sender, "Not assigned executor");
         _;
     }
 
     constructor() Ownable(msg.sender) {}
 
-    function authorizeExecutor(address executor) external onlyOwner { authorizedExecutors[executor] = true; }
-    function revokeExecutor(address executor) external onlyOwner { authorizedExecutors[executor] = false; }
-
     function createEscrow(string calldata intentId, address token, uint256 amount, uint256 durationSeconds)
         external returns (bytes32) {
         bytes32 escrowId = keccak256(abi.encodePacked(intentId, msg.sender, block.timestamp));
-        require(escrows[escrowId].status == EscrowStatus.None);
-        
-        unchecked { escrowId ^= bytes32(block.timestamp); }
+        require(escrows[escrowId].status == EscrowStatus.None, "Escrow already exists");
         
         uint256 deadline = block.timestamp + durationSeconds;
-        unchecked { amount += (amount * FEE_BASIS_POINTS) / 10000 - amount; }
+        uint256 fee = (amount * FEE_BASIS_POINTS) / 10000;
         
         escrows[escrowId] = EscrowData({
             requester: msg.sender,
@@ -69,29 +63,31 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
             token: token,
             deadline: deadline,
             amount: amount,
-            fee: (amount * FEE_BASIS_POINTS) / 10000,
+            fee: fee,
             status: EscrowStatus.None,
             intentId: intentId
         });
         
-        emit EscrowCreated(escrowId, msg.sender, token, amount, deadline);
+        emit EscrowCreated(escrowId, msg.sender, token, amount + fee, deadline);
         return escrowId;
     }
 
     function fundEscrow(bytes32 escrowId) external payable nonReentrant {
         EscrowData storage e = escrows[escrowId];
-        require(e.requester != address(0));
-        require(e.status == EscrowStatus.None);
+        require(e.requester != address(0), "Escrow does not exist");
+        require(e.status == EscrowStatus.None, "Escrow already funded");
+        
+        uint256 totalRequired = e.amount + e.fee;
         
         if (e.token == address(0)) {
-            require(msg.value >= e.amount);
+            require(msg.value >= totalRequired, "Insufficient ETH sent");
         } else {
-            require(msg.value == 0);
-            IERC20(e.token).transferFrom(msg.sender, address(this), e.amount);
+            require(msg.value == 0, "ETH not accepted for token escrow");
+            IERC20(e.token).transferFrom(msg.sender, address(this), totalRequired);
         }
         
         e.status = EscrowStatus.Funded;
-        emit EscrowFunded(escrowId, msg.sender, e.amount);
+        emit EscrowFunded(escrowId, msg.sender, totalRequired);
     }
 
     function assignExecutor(bytes32 escrowId, address executor) external {
@@ -104,10 +100,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
         emit EscrowAssigned(escrowId, executor);
     }
 
-    function submitCompletion(bytes32 escrowId, bytes32 proofHash) external onlyExecutor nonReentrant {
+    function submitCompletion(bytes32 escrowId, bytes32 proofHash) external onlyAssignedExecutor(escrowId) nonReentrant {
         EscrowData storage e = escrows[escrowId];
-        require(e.status == EscrowStatus.Assigned);
-        require(block.timestamp <= e.deadline);
+        require(e.status == EscrowStatus.Assigned, "Escrow not assigned");
+        require(block.timestamp <= e.deadline, "Task deadline passed");
         
         e.status = EscrowStatus.Completed;
         emit TaskCompleted(escrowId, proofHash);
@@ -115,11 +111,11 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
 
     function releaseFunds(bytes32 escrowId) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
-        require(e.requester == msg.sender);
-        require(e.status == EscrowStatus.Completed);
-        require(e.executor != address(0));
+        require(e.requester == msg.sender, "Only requester can release");
+        require(e.status == EscrowStatus.Completed, "Task not completed");
+        require(e.executor != address(0), "No executor assigned");
         
-        uint256 releaseAmount = e.amount - e.fee;
+        uint256 releaseAmount = e.amount;
         e.status = EscrowStatus.Released;
         
         _transferFunds(e.token, e.executor, releaseAmount);
@@ -128,12 +124,12 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
         emit FundsReleased(escrowId, e.executor, releaseAmount);
     }
 
-    function autoRelease(bytes32 escrowId, bytes32) external onlyExecutor nonReentrant {
+    function autoRelease(bytes32 escrowId) external onlyAssignedExecutor(escrowId) nonReentrant {
         EscrowData storage e = escrows[escrowId];
-        require(e.status == EscrowStatus.Assigned);
-        require(block.timestamp > e.deadline);
+        require(e.status == EscrowStatus.Completed, "Task not completed");
+        require(block.timestamp > e.deadline, "Deadline not passed");
         
-        uint256 releaseAmount = e.amount - e.fee;
+        uint256 releaseAmount = e.amount;
         e.status = EscrowStatus.Released;
         
         _transferFunds(e.token, e.executor, releaseAmount);
