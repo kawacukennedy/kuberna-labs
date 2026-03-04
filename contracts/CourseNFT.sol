@@ -33,6 +33,8 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
     event CourseUpdated(uint256);
     event CoursePublished(uint256);
     event StudentEnrolled(uint256, address);
+    event StudentRemoved(uint256 indexed courseId, address indexed student);
+    event CourseArchived(uint256 indexed courseId);
     event AccessGranted(uint256, address);
 
     constructor() ERC721("Kuberna Course", "KBC") Ownable(msg.sender) {}
@@ -120,6 +122,26 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
 
     function revokeAccess(uint256 courseId, address student) external onlyOwner {
         courseEnrolled[courseId][student] = false;
+    }
+
+    /**
+     * @dev Archive a published course (removes from active listings).
+     */
+    function archiveCourse(uint256 courseId) external onlyOwner {
+        Course storage c = courses[courseId];
+        require(c.status == CourseStatus.Published, "Course not published");
+        c.status = CourseStatus.Archived;
+        emit CourseArchived(courseId);
+    }
+
+    /**
+     * @dev Remove a student from a course (for refund scenarios).
+     */
+    function removeStudent(uint256 courseId, address student) external onlyOwner {
+        require(courseEnrolled[courseId][student], "Student not enrolled");
+        courseEnrolled[courseId][student] = false;
+        unchecked { courses[courseId].enrolledCount--; }
+        emit StudentRemoved(courseId, student);
     }
 
     function isEnrolled(uint256 courseId, address student) external view returns (bool) {
