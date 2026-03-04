@@ -74,9 +74,9 @@ export const ESCROW_ABI = [
           { name: "requester", type: "address" },
           { name: "executor", type: "address" },
           { name: "token", type: "address" },
+          { name: "deadline", type: "uint256" },
           { name: "amount", type: "uint256" },
           { name: "fee", type: "uint256" },
-          { name: "deadline", type: "uint256" },
           { name: "status", type: "uint8" },
           { name: "intentId", type: "string" },
         ],
@@ -232,42 +232,25 @@ export const ERC20_ABI = [
     stateMutability: "nonpayable",
     type: "function",
   },
-] as const;
+]} as const ;
 
-export const CONTRACT_ADDRESSES = {
-  11155111: {
-    escrow: "0x0000000000000000000000000000000000000001",
-    certificate: "0x0000000000000000000000000000000000000002",
-    governanceToken: "0x0000000000000000000000000000000000000003",
-    attestation: "0x0000000000000000000000000000000000000004",
-    priceOracle: "0x0000000000000000000000000000000000000005",
-    crossChainRouter: "0x0000000000000000000000000000000000000006",
-  },
-  1: {
-    escrow: "0x0000000000000000000000000000000000000001",
-    certificate: "0x0000000000000000000000000000000000000002",
-    governanceToken: "0x0000000000000000000000000000000000000003",
-    attestation: "0x0000000000000000000000000000000000000004",
-    priceOracle: "0x0000000000000000000000000000000000000005",
-    crossChainRouter: "0x0000000000000000000000000000000000000006",
-  },
-  137: {
-    escrow: "0x0000000000000000000000000000000000000001",
-    certificate: "0x0000000000000000000000000000000000000002",
-    governanceToken: "0x0000000000000000000000000000000000000003",
-    attestation: "0x0000000000000000000000000000000000000004",
-    priceOracle: "0x0000000000000000000000000000000000000005",
-    crossChainRouter: "0x0000000000000000000000000000000000000006",
-  },
-  42161: {
-    escrow: "0x0000000000000000000000000000000000000001",
-    certificate: "0x0000000000000000000000000000000000000002",
-    governanceToken: "0x0000000000000000000000000000000000000003",
-    attestation: "0x0000000000000000000000000000000000000004",
-    priceOracle: "0x0000000000000000000000000000000000000005",
-    crossChainRouter: "0x0000000000000000000000000000000000000006",
-  },
-} as const;
+// Environment-driven contract address configuration
+// In production, set VITE_ESCROW_ADDRESS, VITE_CERTIFICATE_ADDRESS, etc.
+const envAddresses = {
+  escrow: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_ESCROW_ADDRESS) || "0x0000000000000000000000000000000000000000",
+  certificate: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_CERTIFICATE_ADDRESS) || "0x0000000000000000000000000000000000000000",
+  governanceToken: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GOVERNANCE_TOKEN_ADDRESS) || "0x0000000000000000000000000000000000000000",
+  attestation: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_ATTESTATION_ADDRESS) || "0x0000000000000000000000000000000000000000",
+  priceOracle: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_PRICE_ORACLE_ADDRESS) || "0x0000000000000000000000000000000000000000",
+  crossChainRouter: (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_CROSS_CHAIN_ROUTER_ADDRESS) || "0x0000000000000000000000000000000000000000",
+};
+
+export const CONTRACT_ADDRESSES: Record<number, Record<ContractName, string>> = {
+  11155111: { ...envAddresses },
+  1: { ...envAddresses },
+  137: { ...envAddresses },
+  42161: { ...envAddresses },
+};
 
 export type ContractName =
   | "escrow"
