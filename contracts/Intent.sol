@@ -48,9 +48,11 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
     event BidSubmitted(bytes32, address, uint256);
     event BidAccepted(bytes32, address);
     event BidRejected(bytes32, address);
+    event BidRetracted(bytes32, address);
     event IntentAssigned(bytes32, address);
     event IntentCompleted(bytes32);
     event IntentExpired(bytes32);
+    event IntentCancelled(bytes32);
 
     constructor() Ownable(msg.sender) {}
 
@@ -141,6 +143,47 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
         bid.status = BidStatus.Rejected;
 
         emit BidRejected(intentId, bid.solver);
+    }
+
+    /**
+     * @dev Allows a solver to retract their pending bid before it is accepted.
+     * Spec: "Agents can retract bids before acceptance."
+     */
+    function retractBid(bytes32 intentId) external {
+        IntentData storage i = intents[intentId];
+        require(i.requester != address(0), "Intent does not exist");
+        require(hasBid[intentId][msg.sender], "No bid found");
+
+        BidData[] storage b = bids[intentId];
+        for (uint256 j = 0; j < b.length; j++) {
+            if (b[j].solver == msg.sender && b[j].status == BidStatus.Pending) {
+                b[j].status = BidStatus.Rejected;
+                emit BidRetracted(intentId, msg.sender);
+                return;
+            }
+        }
+        revert("Bid already accepted or rejected");
+    }
+
+    /**
+     * @dev Allows the requester to cancel an intent that is still open or in bidding.
+     */
+    function cancelIntent(bytes32 intentId) external {
+        IntentData storage i = intents[intentId];
+        require(i.requester == msg.sender, "Only requester can cancel");
+        require(i.status == IntentStatus.Open || i.status == IntentStatus.Bidding, "Cannot cancel");
+
+        // Reject all pending bids
+        BidData[] storage b = bids[intentId];
+        for (uint256 j = 0; j < b.length; j++) {
+            if (b[j].status == BidStatus.Pending) {
+                b[j].status = BidStatus.Rejected;
+                emit BidRejected(intentId, b[j].solver);
+            }
+        }
+
+        i.status = IntentStatus.Expired;
+        emit IntentCancelled(intentId);
     }
 
     function setEscrow(bytes32 intentId, bytes32 escrowId) external {
