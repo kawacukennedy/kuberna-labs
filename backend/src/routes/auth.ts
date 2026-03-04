@@ -1,7 +1,9 @@
 import { Router, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { z } from "zod";
+import { verifyMessage } from "viem";
 import { prisma } from "../utils/prisma.js";
 import { createError } from "../middleware/errorHandler.js";
 import type { AuthRequest } from "../types/express.d.js";
@@ -278,14 +280,71 @@ router.post(
   },
 );
 
+// Generate a one-time nonce for Web3 signature verification
+router.post(
+  "/web3-nonce",
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { web3Address } = req.body;
+
+      if (!web3Address) {
+        throw createError("Wallet address required", 400, "MISSING_ADDRESS");
+      }
+
+      const nonce = crypto.randomUUID();
+      const message = `Sign this message to authenticate with Kuberna Labs.\n\nNonce: ${nonce}\nAddress: ${web3Address.toLowerCase()}\nTimestamp: ${new Date().toISOString()}`;
+
+      // Store nonce - upsert in case user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { web3Address: web3Address.toLowerCase() },
+      });
+
+      if (existingUser) {
+        await prisma.user.update({
+          where: { web3Address: web3Address.toLowerCase() },
+          data: { web3Nonce: nonce },
+        });
+      }
+
+      // Return nonce and message to be signed (even for non-existing users, for registration)
+      res.json({ nonce, message });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 router.post(
   "/web3-login",
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { web3Address, signature, message } = req.body;
 
+      if (!web3Address || !signature || !message) {
+        throw createError(
+          "Address, signature, and message are required",
+          400,
+          "MISSING_FIELDS",
+        );
+      }
+
+      // Verify signature using viem
+      const isValid = await verifyMessage({
+        address: web3Address.toLowerCase() as `0x${string}`,
+        message,
+        signature: signature as `0x${string}`,
+      });
+
+      if (!isValid) {
+        throw createError(
+          "Invalid signature",
+          401,
+          "INVALID_SIGNATURE",
+        );
+      }
+
       const user = await prisma.user.findUnique({
-        where: { web3Address },
+        where: { web3Address: web3Address.toLowerCase() },
       });
 
       if (!user) {
@@ -295,6 +354,25 @@ router.post(
           "USER_NOT_FOUND",
         );
       }
+
+      // Verify the nonce in the message matches the stored nonce
+      if (!user.web3Nonce || !message.includes(user.web3Nonce)) {
+        throw createError(
+          "Invalid or expired nonce",
+          401,
+          "INVALID_NONCE",
+        );
+      }
+
+      // Invalidate nonce after use (one-time use)
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          web3Nonce: null,
+          lastLogin: new Date(),
+          loginCount: { increment: 1 },
+        },
+      });
 
       const token = jwt.sign(
         { id: user.id, email: user.email, roles: user.roles },
@@ -323,10 +401,33 @@ router.post(
   "/web3-register",
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { web3Address, fullName } = req.body;
+      const { web3Address, fullName, signature, message } = req.body;
+
+      if (!web3Address || !signature || !message) {
+        throw createError(
+          "Address, signature, and message are required",
+          400,
+          "MISSING_FIELDS",
+        );
+      }
+
+      // Verify signature using viem
+      const isValid = await verifyMessage({
+        address: web3Address.toLowerCase() as `0x${string}`,
+        message,
+        signature: signature as `0x${string}`,
+      });
+
+      if (!isValid) {
+        throw createError(
+          "Invalid signature",
+          401,
+          "INVALID_SIGNATURE",
+        );
+      }
 
       const existingUser = await prisma.user.findUnique({
-        where: { web3Address },
+        where: { web3Address: web3Address.toLowerCase() },
       });
 
       if (existingUser) {
