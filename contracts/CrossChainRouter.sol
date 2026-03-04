@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -22,7 +23,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
  * - Emergency halt capability
  * - Fee distribution
  */
-contract CrossChainRouter is Ownable, ReentrancyGuard {
+contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
 
     enum ChainId {
@@ -75,6 +76,9 @@ contract CrossChainRouter is Ownable, ReentrancyGuard {
     );
     event ChainSupportUpdated(uint256 chainId, bool supported);
     event FeeUpdated(uint256 newFee);
+    event TokenMappingUpdated(uint256 chainId, address localToken, address remoteToken);
+    event EmergencyHalted(address indexed by);
+    event Resumed(address indexed by);
 
     /**
      * @dev Initializes the cross-chain router.
@@ -96,7 +100,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard {
         address token,
         uint256 amount,
         uint256 minReceived
-    ) external payable nonReentrant {
+    ) external payable nonReentrant whenNotPaused {
         require(supportedChains[destinationChainId], "Unsupported chain");
         require(recipient != address(0), "Invalid recipient");
         require(amount > 0, "Invalid amount");
@@ -156,7 +160,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard {
         address token,
         uint256 amount,
         uint256 minReceived
-    ) external onlyOwner nonReentrant {
+    ) external onlyOwner nonReentrant whenNotPaused {
         CrossChainMessage storage message = messages[messageId];
         require(!message.executed, "Already executed");
         require(amount >= minReceived, "Slippage exceeded");
@@ -189,6 +193,33 @@ contract CrossChainRouter is Ownable, ReentrancyGuard {
     function setBridgeFee(uint256 newFee) external onlyOwner {
         bridgeFee = newFee;
         emit FeeUpdated(newFee);
+    }
+
+    /**
+     * @dev Sets token address mapping between chains.
+     * @param chainId The destination chain ID
+     * @param localToken The local token address
+     * @param remoteToken The corresponding remote token address
+     */
+    function setTokenMapping(uint256 chainId, address localToken, address remoteToken) external onlyOwner {
+        chainTokenMapping[chainId][localToken] = remoteToken;
+        emit TokenMappingUpdated(chainId, localToken, remoteToken);
+    }
+
+    /**
+     * @dev Emergency halt — pauses all cross-chain operations.
+     */
+    function emergencyHalt() external onlyOwner {
+        _pause();
+        emit EmergencyHalted(msg.sender);
+    }
+
+    /**
+     * @dev Resume operations after emergency halt.
+     */
+    function resume() external onlyOwner {
+        _unpause();
+        emit Resumed(msg.sender);
     }
 
     /**
