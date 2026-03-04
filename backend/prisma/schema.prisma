@@ -27,6 +27,13 @@ enum CourseLevel {
   ADVANCED
 }
 
+enum ContentType {
+  VIDEO
+  DOCUMENT
+  LAB
+  QUIZ
+}
+
 enum EnrollmentStatus {
   ACTIVE
   COMPLETED
@@ -97,6 +104,17 @@ model User {
   roles        Role[]    @default([LEARNER])
   mfaEnabled    Boolean   @default(false)
   mfaSecret     String?
+  mfaMethod     String?
+  phone         String?
+  emailVerified Boolean   @default(false)
+  emailVerificationToken String?
+  emailVerificationSentAt DateTime?
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
+  lastLogin     DateTime?
+  loginCount    Int       @default(0)
+  settings      Json      @default("{}")
+  web3Nonce     String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
@@ -160,15 +178,16 @@ model Course {
 }
 
 model Module {
-  id              String   @id @default(uuid())
+  id              String      @id @default(uuid())
   courseId        String
   title          String
   order          Int
-  contentType    String
+  contentType    ContentType
   contentUrl     String?
   videoDuration  Int?
   documentText   String?
   labConfig      Json?
+  quizQuestions  Json?
   estimatedMinutes Int
   
   course         Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -183,11 +202,14 @@ model Enrollment {
   progressPercent Int             @default(0)
   completedModules String[]
   certificateId   String?
+  certificateIpfsHash String?
   enrolledAt      DateTime        @default(now())
   completedAt    DateTime?
+  paymentTxHash  String?
   
   user           User   @relation(fields: [userId], references: [id])
   course         Course @relation(fields: [courseId], references: [id])
+  moduleProgress ModuleProgress[]
 
   @@unique([userId, courseId])
 }
@@ -219,8 +241,12 @@ model Agent {
   status          AgentStatus     @default(DRAFT)
   deploymentType  DeploymentType @default(CLOUD)
   deploymentUrl   String?
+  teeAttestation  Json?
   version         Int             @default(1)
   lastActive      DateTime?
+  lastPing        DateTime?
+  pricingModel    String          @default("fixed")
+  price           Float?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   
