@@ -153,14 +153,13 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
         
         if (refundToRequester) {
             e.status = EscrowStatus.Refunded;
-            _transferFunds(e.token, e.requester, e.amount);
-            emit FundsRefunded(escrowId, e.requester, e.amount);
+            _transferFunds(e.token, e.requester, e.amount + e.fee);
+            emit FundsRefunded(escrowId, e.requester, e.amount + e.fee);
         } else {
-            uint256 releaseAmount = e.amount - e.fee;
             e.status = EscrowStatus.Released;
-            _transferFunds(e.token, e.executor, releaseAmount);
+            _transferFunds(e.token, e.executor, e.amount);
             _transferFunds(e.token, owner(), e.fee);
-            emit FundsReleased(escrowId, e.executor, releaseAmount);
+            emit FundsReleased(escrowId, e.executor, e.amount);
         }
         
         emit DisputeResolved(escrowId, refundToRequester);
