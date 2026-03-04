@@ -13,6 +13,8 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     mapping(uint256 => mapping(bytes32 => bool)) public hasBadge;
 
     uint256 public immutable MIN_TASKS_FOR_REP = 5;
+    uint256 public constant DECAY_PERIOD = 30 days;
+    uint256 public constant DECAY_RATE_BPS = 1000; // 10% decay per period
 
     struct AgentReputation {
         uint256 totalTasks;
@@ -32,6 +34,7 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     event ReputationUpdated(uint256, uint256, uint256, uint256);
     event BadgeEarned(uint256, string, string);
     event RatingSubmitted(uint256, uint256, string);
+    event ReputationDecayed(uint256 indexed tokenId, uint256 periodsDecayed, uint256 newScore);
 
     constructor() ERC721("Kuberna Agent Reputation", "KBR") Ownable(msg.sender) {}
 
@@ -124,6 +127,46 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     }
 
     function getBadges(uint256 tokenId) external view returns (Badge[] memory) { return agentBadges[tokenId]; }
+
+    /**
+     * @dev Apply reputation decay for inactive agents.
+     * Reduces successfulTasks by DECAY_RATE_BPS for each DECAY_PERIOD of inactivity.
+     */
+    function applyDecay(uint256 tokenId) external {
+        require(ownerOf(tokenId) != address(0));
+        AgentReputation storage rep = agentReputations[tokenId];
+        require(rep.totalTasks > 0, "No tasks to decay");
+
+        uint256 elapsed = block.timestamp - rep.lastUpdated;
+        if (elapsed < DECAY_PERIOD) return;
+
+        uint256 periods = elapsed / DECAY_PERIOD;
+        uint256 decayAmount = 0;
+
+        for (uint256 i = 0; i < periods; i++) {
+            uint256 reduction = (rep.successfulTasks * DECAY_RATE_BPS) / 10000;
+            if (reduction == 0) break;
+            decayAmount += reduction;
+            rep.successfulTasks -= reduction;
+        }
+
+        rep.lastUpdated = block.timestamp;
+        emit ReputationDecayed(tokenId, periods, calculateScore(tokenId));
+    }
+
+    /**
+     * @dev Returns the star rating (1-5) based on the reputation score.
+     * Spec: "Star rating (1-5) and percentile rank."
+     */
+    function getStarRating(uint256 tokenId) external view returns (uint256) {
+        uint256 score = calculateScore(tokenId);
+        if (score == 0) return 0; // Not enough tasks
+        if (score >= 900) return 5;
+        if (score >= 700) return 4;
+        if (score >= 500) return 3;
+        if (score >= 300) return 2;
+        return 1;
+    }
 
     function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
