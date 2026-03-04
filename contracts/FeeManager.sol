@@ -34,6 +34,8 @@ contract KubernaFeeManager is Ownable {
     event RecipientAdded(address, uint256);
     event RecipientRemoved(address);
     event FeeDistributed(address, uint256);
+    event TierAdded(uint256 threshold, uint256 percentage);
+    event TierRemoved(uint256 index);
 
     function setPlatformFee(uint256 fee) external onlyOwner {
         require(fee <= 1000);
@@ -43,6 +45,7 @@ contract KubernaFeeManager is Ownable {
 
     function addRecipient(address account, uint256 share) external onlyOwner {
         require(!isRecipient[account]);
+        require(_totalActiveShares() + share <= 10000, "Total shares exceed 10000 BPS");
         
         recipients.push(Recipient(account, share, true));
         recipientShares[account] = share;
@@ -100,6 +103,36 @@ contract KubernaFeeManager is Ownable {
 
     function getRecipients() external view returns (Recipient[] memory) {
         return recipients;
+    }
+
+    /**
+     * @dev Add a new fee tier.
+     */
+    function addTier(uint256 threshold, uint256 percentage) external onlyOwner {
+        require(percentage <= 1000, "Fee too high");
+        tiers.push(FeeTier({threshold: threshold, percentage: percentage}));
+        emit TierAdded(threshold, percentage);
+    }
+
+    /**
+     * @dev Remove a fee tier by index.
+     */
+    function removeTier(uint256 index) external onlyOwner {
+        require(index < tiers.length, "Invalid index");
+        tiers[index] = tiers[tiers.length - 1];
+        tiers.pop();
+        emit TierRemoved(index);
+    }
+
+    /**
+     * @dev Get total active recipient shares.
+     */
+    function _totalActiveShares() internal view returns (uint256 total) {
+        for (uint256 i = 0; i < recipients.length; i++) {
+            if (recipients[i].active) {
+                total += recipients[i].share;
+            }
+        }
     }
 
     receive() external payable {}
