@@ -3,13 +3,7 @@
   "version": "1.0.0",
   "description": "Kuberna Labs - Architecting the Agentic Web3 Enterprise",
   "main": "index.js",
-  "workspaces": [
-    "sdk",
-    "backend",
-    "frontend"
-  ],
   "scripts": {
-    "setup": "npm install && cd backend && npx prisma generate",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
@@ -48,6 +42,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@chainlink/contracts": "^1.4.0",
     "@openzeppelin/contracts": "^5.0.2",
     "@tanstack/react-query": "^5.17.0",
     "viem": "^2.0.0",
