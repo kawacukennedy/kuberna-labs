@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Kuberna Labs - Architecting the Agentic Web3 Enterprise",
   "main": "index.js",
+  "workspaces": [
+    "sdk",
+    "backend",
+    "frontend"
+  ],
   "scripts": {
+    "setup": "npm install && cd backend && npx prisma generate",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
