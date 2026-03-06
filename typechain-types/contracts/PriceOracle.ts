@@ -37,9 +37,11 @@ export interface PriceOracleInterface extends Interface {
       | "paused"
       | "pendingPriceTimestamps"
       | "pendingPrices"
+      | "priceFeeds"
       | "priceHistory"
       | "renounceOwnership"
       | "setPendingPrice"
+      | "setPriceFeed"
       | "tokenPrices"
       | "transferOwnership"
       | "unpause"
@@ -47,6 +49,7 @@ export interface PriceOracleInterface extends Interface {
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "FeedUpdated"
       | "OwnershipTransferred"
       | "Paused"
       | "PricePending"
@@ -90,6 +93,10 @@ export interface PriceOracleInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "priceFeeds",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "priceHistory",
     values: [AddressLike, BigNumberish]
   ): string;
@@ -100,6 +107,10 @@ export interface PriceOracleInterface extends Interface {
   encodeFunctionData(
     functionFragment: "setPendingPrice",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPriceFeed",
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "tokenPrices",
@@ -143,6 +154,7 @@ export interface PriceOracleInterface extends Interface {
     functionFragment: "pendingPrices",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "priceFeeds", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "priceHistory",
     data: BytesLike
@@ -156,6 +168,10 @@ export interface PriceOracleInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "tokenPrices",
     data: BytesLike
   ): Result;
@@ -164,6 +180,19 @@ export interface PriceOracleInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
+}
+
+export namespace FeedUpdatedEvent {
+  export type InputTuple = [token: AddressLike, feed: AddressLike];
+  export type OutputTuple = [token: string, feed: string];
+  export interface OutputObject {
+    token: string;
+    feed: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace OwnershipTransferredEvent {
@@ -324,6 +353,8 @@ export interface PriceOracle extends BaseContract {
 
   pendingPrices: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
+  priceFeeds: TypedContractMethod<[arg0: AddressLike], [string], "view">;
+
   priceHistory: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [bigint],
@@ -334,6 +365,12 @@ export interface PriceOracle extends BaseContract {
 
   setPendingPrice: TypedContractMethod<
     [token: AddressLike, price: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setPriceFeed: TypedContractMethod<
+    [token: AddressLike, feed: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -404,6 +441,9 @@ export interface PriceOracle extends BaseContract {
     nameOrSignature: "pendingPrices"
   ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "priceFeeds"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
     nameOrSignature: "priceHistory"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
@@ -417,6 +457,13 @@ export interface PriceOracle extends BaseContract {
     nameOrSignature: "setPendingPrice"
   ): TypedContractMethod<
     [token: AddressLike, price: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "setPriceFeed"
+  ): TypedContractMethod<
+    [token: AddressLike, feed: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -440,6 +487,13 @@ export interface PriceOracle extends BaseContract {
     nameOrSignature: "unpause"
   ): TypedContractMethod<[], [void], "nonpayable">;
 
+  getEvent(
+    key: "FeedUpdated"
+  ): TypedContractEvent<
+    FeedUpdatedEvent.InputTuple,
+    FeedUpdatedEvent.OutputTuple,
+    FeedUpdatedEvent.OutputObject
+  >;
   getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
@@ -477,6 +531,17 @@ export interface PriceOracle extends BaseContract {
   >;
 
   filters: {
+    "FeedUpdated(address,address)": TypedContractEvent<
+      FeedUpdatedEvent.InputTuple,
+      FeedUpdatedEvent.OutputTuple,
+      FeedUpdatedEvent.OutputObject
+    >;
+    FeedUpdated: TypedContractEvent<
+      FeedUpdatedEvent.InputTuple,
+      FeedUpdatedEvent.OutputTuple,
+      FeedUpdatedEvent.OutputObject
+    >;
+
     "OwnershipTransferred(address,address)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,

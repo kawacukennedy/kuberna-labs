@@ -5779,9 +5779,7 @@
         "description": "Authenticated regular user",
         "permissions": [
           "view:dashboard",
-          "manage "view:dashboard","manage:own_profile","enroll:course",
-          "create:agent:own_profile",
-          "enroll:course",
+          "manage "view:dashboard","manage:own_profile","enroll:course","create:agent:own_profile","enroll:course",
           "create:agent",
           "manage:own_agents",
           "post:intent",
@@ -5835,12 +5833,8 @@
       {
         "name": "instructor",
         "description": "Can create and create and edit courses, but not delete",
-        edit courses, but not delete","permissions": ["create:course",
-        "edit:course",
-        "view:enrollments",
-        "grade "permissions": ["create:course","edit:course",
-        "view:enrollments",
-        "grade:assignments",
+        edit courses, but not delete","permissions": ["create:course","edit:course","view:enrollments",
+        "grade "permissions": ["create:course","edit:course","view:enrollments","grade:assignments",
         "moderate:forum"
       ]
     },
@@ -5852,32 +5846,30 @@
   "description": "Enterprise tier users with TEE and compliance features",
   "permissions": [
     "deploy:tee",
-    "view:att {"name": "enterprise","description": "Enterprise tier users with TEE and compliance features",
-    "permissions": [
-      "deploy:tee",
-      "view:attestations",
-      "accessestations",
-      "access:zk:zk_tls_tls",
-      "view",
-      "view:compliance_reports",
-      "ip_whitel:compliance_reports",
-      "ip_whitelist:manage",
-      "priority_support"
-    ]
-  },
-  {
-    "name": "admin",
-ist:manage","priority_support"
+    "view:att {"name": "enterprise","description": "Enterprise tier users with TEE and compliance features","permissions": ["deploy:tee",
+    "view:attestations",
+    "accessestations",
+    "access:zk:zk_tls_tls",
+    "view",
+    "view:compliance_reports",
+    "ip_whitel:compliance_reports",
+    "ip_whitelist:manage",
+    "priority_support"
   ]
 },
 {
   "name": "admin",
-  "description        "description": "Full": " system access",
+ist:manage","priority_support"
+]
+},
+{
+"name": "admin",
+"description        "description": "Full": " system access",
 Full system access","permissions        "": [
-    "*permissions": [
-      ""
-    ]
-  }
+  "*permissions": [
+    ""
+  ]
+}
 *"]
 ],
 "role_assignment":
@@ -5888,7 +5880,9 @@ Full system access","permissions        "": [
 "analytics": Roles are checked via middleware in each service."
 },
 "analytics": {
-    "events {": ["events": [{
+"events {": [
+"events": [
+{
 "name      {": " "name": "user_suser_signed_upigned_up", "properties":",
 "properties": [
 "method"
@@ -5905,9 +5899,7 @@ Full system access","permissions        "": [
 ]
 },
 {
-"name ["method"] },{"name": "user_logged_out",
-"": "user_logged_out",
-"properties": []
+"name ["method"] },{"name": "user_logged_out","": "user_logged_out","properties": []
 },
 {
 "name": "course_viewed",
@@ -5929,16 +5921,23 @@ Full system access","permissions        "": [
 },
 {
 "name": "course_enrolled",
-"properties":properties": ["course_id", "price", "currency"] },{" ["course_id", "price", "currency"] },{"name": "modulename": "module_completed_completed",
+"properties":properties": ["course_id", "price", "currency"] },{"[
+"course_id",
+"price",
+"currency"
+]
+},
+{
+"name": "modulename": "module_completed_completed",
 "properties": ", "properties": ["course [
 "course_id",
 "module_id",
 "module_id",_id", "time_spent "time_spent"
 ]
 },
-"] },{"name": "quiz_      { "name": "quiz_attempted", "properties":attempted",
-"properties": [
-"module_id",
+"] },{"name": "quiz_      {
+"name": "quiz_attempted",
+"properties":attempted","properties": ["module_id",
 "score",
 "passed"
 ]
@@ -5963,15 +5962,17 @@ Full system access","permissions        "": [
 },
 {
 "name": "lab_completed",
-" { "name": "lab_completed", "properties": ["lab_id", "success"] },{"name": "properties": [
-"lab_id",
-"success"
+" { "name": "lab_completed", "properties": ["lab_id", "success"] },{"name": "properties": ["lab_id","success"
 ]
 },
 {
 "name": "certificatecertificate_issued",
-"properties":_issued", "properties": ["course_id"] },{"name": "agent_created",
-" ["course_id"] },{"name": "agent_createdproperties": [
+"properties":_issued", "properties": ["course_id"] },{"name": "agent_created","[
+"course_id"
+]
+},
+{
+"name": "agent_createdproperties": [
 "framework",
 "model"
 ]
@@ -5979,8 +5980,7 @@ Full system access","permissions        "": [
 {
 ", "properties": ["framework", "model"] },"name": "agent {
 "name": "agent_deployed",
-"properties":_deployed","properties": [
-"deployment_type"
+"properties":_deployed","properties": ["deployment_type"
 ]
 },
 [
@@ -6040,7 +6040,14 @@ Full system access","permissions        "": [
 },
 {
 " "task_completed", "properties": ["task_id", "execution_time", "success"] },
-     name": "task_disputed", "properties": ["task_id"] },{"name": "payment { "name": "task_disputed", "properties": ["task_id"] },{"name": "payment_succeeded_succeeded",
+     name": "task_disputed", "properties": ["task_id"] },{"name": "payment {
+"name": "task_disputed",
+"properties": [
+"task_id"
+]
+},
+{
+"name": "payment_succeeded_succeeded",
 "properties": [
 "amount",
 "currency",
@@ -6103,12 +6110,23 @@ Full system access","permissions        "": [
 },
 {
 "name": "zk_tls_proof_generated",
-", "properties": ["provider"] },{"name": "workshop "properties": ["provider"] },{"name": "workshop_reg_registered",istered", ""propertiesproperties": [
+", "properties": ["provider"] },{"name": "workshop "properties": [
+"provider"
+]
+},
+{
+"name": "workshop_reg_registered",istered", ""propertiesproperties": [
 "workshop_id"
 ]
 },
 {
-": ["workshop_id"] },{"name": "workshop_attended "name": "workshop_attended", "properties": ["workshop_id"] },{", "properties": ["workshop_id"] },"name": "api_key_created      {
+": ["workshop_id"] },{"name": "workshop_attended "name": "workshop_attended",
+"properties": [
+"workshop_id"
+]
+},
+{
+", "properties": ["workshop_id"] },"name": "api_key_created      {
 "name": "api_key",
 "properties": [
 "scopes"
@@ -6139,7 +6157,11 @@ Full system access","permissions        "": [
 "resolution"
 ]
 },
-resolution"] },{"name": "      { "name": "forum_post_created", "properties": ["topicforum_post_created", "properties":_id"
+resolution"] },{"name": "{
+"name": "forum_post_created",
+"properties": [
+"topicforum_post_created",
+"properties":_id"
 ] [
 "topic_id"
 ]
@@ -6159,9 +6181,7 @@ resolution"] },{"name": "      { "name": "forum_post_created", "properties": ["t
 ")",
 "Mixpanel (backMixpanelup)"
 ],
-    (backup)"],"dashboards": [{
-"name": "Growth",
-"dashboards": [
+    (backup)"],"dashboards": [{"name": "Growth","dashboards": [
 {
 "name": "Growth",
 "metrics": [
@@ -6173,9 +6193,7 @@ resolution"] },{"name": "      { "name": "forum_post_created", "properties": ["t
 ]
 },
 {
-"name "churn"] },{"": "Education",
-"metrics": [
-"course_completion_rate",
+"name "churn"] },{"": "Education","metrics": ["course_completion_rate",
 "avgname": "Education",
 "metrics": [
 "course_completion_rate",
@@ -6186,14 +6204,27 @@ resolution"] },{"name": "      { "name": "forum_post_created", "properties": ["t
 "worksattendance"
 ]
 },
-hop_attendance"] },{{
-"name "name":": " "Marketplace", "Marketplace", "metrics": ["intmetrics": ["intents_postents_posted", "tasksed", "tasks_completed_completed", "total_value_locked", "total_value_locked", "", "avg_bavg_bid", "avgid", "avg_completion_time"] },
-     _completion_time"] },{"name": "Agents",
-"metrics { "name": "Agents",": [
-"active_agents",
+hop_attendance"] },{{"name "name": ": ""Marketplace",
+"Marketplace",
+"metrics": [
+"intmetrics": [
+"intents_postents_posted",
+"tasksed",
+"tasks_completed_completed",
+"total_value_locked",
+"total_value_locked",
+"",
+"avg_bavg_bid",
+"avgid",
+"avg_completion_time"
+]
+},
+     _completion_time"] },{"name": "Agents","metrics {
+"name": "Agents",": ["active_agents",
 "success_rate",
 "avg_response_time",
-" "metrics": ["active_agents", "success_rate", "avg_response_timetotal_earnings"] },", "total_earnings      {"name": ""
+" "metrics": ["active_agents", "success_rate", "avg_response_timetotal_earnings"] },",
+"total_earnings      {"name": ""
 ]
 },
 {
@@ -6207,9 +6238,7 @@ hop_attendance"] },{{
 "error_rate"
 ]
 },
-", "api_latency", "error_rate"] },{"name": "Enterprise",
-"metrics": [
-"enterprise_users",
+", "api_latency", "error_rate"] },{"name": "Enterprise","metrics": ["enterprise_users",
 {
 "name": "Enterprise",
 "metrics": [
@@ -6217,17 +6246,22 @@ hop_attendance"] },{{
 "tee_deployments",
 "tee_deployments",
 "zk "zk_tls_sessions"] },
-_tls_sessions"] },{{
-"name "name": "Support", "metrics": "Support", "metrics": ["": ["ticket_volume", "avg_response_time", "satisfaction"] }
+_tls_sessions"] },{{"name "name": "Support",
+"metrics": "Support",
+"metrics": [
+"": [
+"ticket_volume",
+"avg_response_time",
+"satisfaction"
+]
+}
 ]
  ticket_volume", "avg_response_time", "satisfaction"] }
 ]
 },
 },
 "security": {
-"authentication "security": {"aut": "hentication": "JWT with refresh tokens; Web3JWT with refresh tokens; Web3 auth (SIWE auth (SIWE) for crypto wallets. Access) for crypto wallets. Access token short token short‑lived (15 min‑lived (15 min), refresh token 7 days stored in httpOnly cookie.","encryption": "AES), refresh token 7 days stored in httpOnly cookie.",
-"encryption": "AES‑256‑256‑GCM for‑GCM for sensitive data sensitive data at rest; TLS at rest; TLS 1 1.3 in transit.3 in transit. Database. Database encryption at rest (RDS encryption at rest (RDS encryption). encryption).",
-"api_security",
+"authentication "security": {"aut": "hentication": "JWT with refresh tokens; Web3JWT with refresh tokens; Web3 auth (SIWE auth (SIWE) for crypto wallets. Access) for crypto wallets. Access token short token short‑lived (15 min‑lived (15 min), refresh token 7 days stored in httpOnly cookie.","encryption": "AES), refresh token 7 days stored in httpOnly cookie.","encryption": "AES‑256‑256‑GCM for‑GCM for sensitive data sensitive data at rest; TLS at rest; TLS 1 1.3 in transit.3 in transit. Database. Database encryption at rest (RDS encryption at rest (RDS encryption). encryption).","api_security",
 "api_security": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access;": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access; scoped permissions. CORS restricted to scoped permissions. CORS allowed domains.",
     restricted to allowed domains.","smart_contracts": "smart_contracts": "All contracts audited by "All contracts audited by third‑party (e.g third‑party (e., Hack.g., Hacken, CertiK);en, CertiK); bug bounty program. Upgradable via bug bounty program. Upgradable via UUPS proxy.",
 "infrastructure": "Kuber UUPS proxy.",
@@ -6243,15 +6277,16 @@ _tls_sessions"] },{{
 "performance_considerations": {},
 "performance_considerations": {
 "caching": {
-"    "caching": {"strategy": "Redis for frequently accessed data (course catalog, user sessions, intents list).","ttstrategy": "Redis for frequently accessed data (course catalog, user sessions, intents list).",
-"ttl": "varies (l": "var5 minies (5 min for catalog,  for catalog24h, 24h for static content, for static 1h for user sessions)"
+"    "caching": {"strategy": "Redis for frequently accessed data (course catalog, user sessions, intents list).","ttstrategy": "Redis for frequently accessed data (course catalog, user sessions, intents list).","ttl": "varies (l": "var5 minies (5 min for catalog,  for catalog24h,
+24h for static content, for static 1h for user sessions)"
 },
     content,
 1h for user sessions)"
 },
 "database "database_indexing": "_indexing": "Indexes on foreign keys, frequently queried fields (email, status, timestamps). Use composite indexes forIndexes on foreign keys, frequently queried fields (email, status, timestamps). Use composite indexes for common filters.","cdn": "CloudFront for static assets (images, videos, documentation). Edge caching for API responses.","api_latency": "GraphQL with DataLoader to batch database queries. Pagination for large lists.",
- common filters.","cdn": "CloudFront for static assets (images, videos, documentation). Edge caching for API responses.","api_latency": "GraphQL with DataLoader to batch database queries. Pagination for large lists.",
-"agent_execution": "Agents run in isolated containers with    "agent_execution": "Agents run in isolated containers with resource limits; execution logs streamed; use WebSocket for real‑time logs.","image resource limits; execution logs streamed; use WebSocket for real‑time logs.","image_optim_optimization": "Nextization": "Next.js automatic.js automatic image optimization with Web image optimizationP format.",
+ common filters.","cdn": "CloudFront for static assets (images, videos, documentation). Edge caching for API responses.","api_latency": "GraphQL with DataLoader to batch database queries. Pagination for large lists.","agent_execution": "Agents run in isolated containers with    "agent_execution": "Agents run in isolated containers with resource limits; execution logs streamed; use WebSocket for real‑time logs.",
+"image resource limits; execution logs streamed; use WebSocket for real‑time logs.",
+"image_optim_optimization": "Nextization": "Next.js automatic.js automatic image optimization with Web image optimizationP format.",
 "code_spl with WebP format.",
 "code_splitting":itting": "Next "Next.js dynamic.js dynamic imports for route‑ imports for route‑based codebased code splitting."
  splitting."
@@ -6284,22 +6319,21 @@ caching": ""caching": "Distributed Redis clusterDistributed Redis cluster to red
    "
 },
 "integration "integration_tests":_tests": {
-" {"tools": "Supertesttools": "Supertest (API), Testcontainers (DB, Redis, NATS)","scope": "API endpoints, database interactions, message queues, external service (API), Testcontainers (DB, Redis, NATS)",
-"scope": "API endpoints, database interactions, message queues, external service mocks"
+" {"tools": "Supertesttools": "Supertest (API), Testcontainers (DB, Redis, NATS)","scope": "API endpoints, database interactions, message queues, external service (API), Testcontainers (DB, Redis, NATS)","scope": "API endpoints, database interactions, message queues, external service mocks"
 },
 "e2e mocks"
 },
 "e2e_tests": {
 _tests": {""tools": "Playtools": "Playwright (frontend), Cypwright (frontend), Cypress (ress (critical paths)",
-critical paths)","sc      "scenarios":enarios": ["User ["User registration and login","Course enrollment and module completion",
+critical paths)","sc      "scenarios":enarios": ["User [
+"User registration and login",
+"Course enrollment and module completion",
 "Agent creation and deployment",
 "Post intent and accept bid",
 "Complete task and release payment",
 "TEE deployment and attestation"
 ],
-"headless": true registration and login","Course enrollment and module completion","Agent creation and deployment",
-"Post intent and accept bid",
-"Complete task and release payment",
+"headless": true registration and login","Course enrollment and module completion","Agent creation and deployment","Post intent and accept bid","Complete task and release payment",
 "TEE deployment and attestation"
 ],
 "headless": true,
@@ -6309,8 +6343,7 @@ critical paths)","sc      "scenarios":enarios": ["User ["User registration and l
 },
 "smart_contract_tests": {
 "tools": "Hardhat, Waffle, Slither",
-     _contract_tests": {"tools": "Hardhat, Waffle, Slither","coverage": "coverage": "100% of core functions",
-"testnet_deployment": "Goerli, Mumbai, NEAR testnet"
+     _contract_tests": {"tools": "Hardhat, Waffle, Slither","coverage": "coverage": "100% of core functions","testnet_deployment": "Goerli, Mumbai, NEAR testnet"
 },
 "load_tests": {
 "tools": " "100% of core functions","testnet_deployment": "Goerli, Mumbai, NEAR testnet"
@@ -6321,9 +6354,7 @@ critical paths)","sc      "scenarios":enarios": ["User ["User registration and l
 "target": "Simulate": "Simulate 10k concurrent 10k concurrent users, users, measure response times and measure response times and error rates. Scenarios: error rates. Scenarios: browse courses, post int browse courses, postents, bid."
     intents, bid."
 },
-"security_tests    },"security": {"_tests": {
-"tools": "OWASP ZAP, Sonartools": "OWASP ZAP, SonarQubeQube, Snyk, Slither (for contracts)",
-"frequency": "Weekly automated scans; manual pentest quarterly"
+"security_tests    },"security": {"_tests": {"tools": "OWASP ZAP, Sonartools": "OWASP ZAP, SonarQubeQube, Snyk, Slither (for contracts)","frequency": "Weekly automated scans; manual pentest quarterly"
 }
 },
 "ci_cd": {
@@ -6338,16 +6369,10 @@ critical paths)","sc      "scenarios":enarios": ["User ["User registration and l
 "pipelines": [
 {
 "name": "frontend",
-"trigger": "push to "name": "frontend","trigger": "push to apps/web","steps apps/web",
-"steps": [
-": ["install dependencies          "install dependencies",
-","lint","test",
-"build",
-"docker build",
+"trigger": "push to "name": "frontend","trigger": "push to apps/web","steps apps/web","steps": [": ["install dependencies          "install dependencies",
+","lint","test","build","docker build",
 "push to registry (GHCR)",
-"de "lint","test","build",
-"docker build",
-"push to registry (GHCR)",
+"de "lint","test","build","docker build","push to registry (GHCR)",
 "deploy to staging (ploy to staging (via Helm)"
        via Helm)"
 ],
@@ -6359,15 +6384,12 @@ critical paths)","sc      "scenarios":enarios": ["User ["User registration and l
        "]
 },
 {
-"name": "backend "name": "backend-service-service",","trigger": "push to "trigger": "push to any service any service folder (e.g folder (e.g., apps/user-service)",
-"steps": [
-"install deps",
+"name": "backend "name": "backend-service-service",",
+"trigger": "push to "trigger": "push to any service any service folder (e.g folder (e.g., apps/user-service)","steps": ["install deps",
 "lint",
 "test",
 "docker build",
-         ., apps/user-service)","steps": ["install deps",
-"lint",
-"test",
+         ., apps/user-service)","steps": ["install deps","lint","test",
 "docker build",
 "push "push to registry","deploy to staging (rolling update)"
 ]
@@ -6376,10 +6398,12 @@ critical paths)","sc      "scenarios":enarios": ["User ["User registration and l
 ]
 },
 {
-"name {"name": "contracts",": "contracts","trigger": ""trigger": "push to contracts/push to contracts/",
-"steps": [
-","steps": ["          "install","test","compile",
-install","test","          "deploycompile","deploy to testnet (if main branch)"
+"name {"name": "contracts",": "contracts",
+"trigger": ""trigger": "push to contracts/push to contracts/","steps": [","steps": [""install",
+"test",
+"compile",
+install","test",""deploycompile",
+"deploy to testnet (if main branch)"
 ]
 },
 {
@@ -6388,10 +6412,10 @@ install","test","          "deploycompile","deploy to testnet (if main branch)"
 ]
 },
 {
-" "trigger": "release tagname": "deploy-production","trigger": " (v*)","steps":release tag (v*)","steps": [[
-"run migrations ( "run migrations (via jobvia job)","de)","deploy servicesploy services to production to production (can (canary 10%, then full)",
-"ary 10%, then full)",
-"smoke tests",
+" "trigger": "release tagname": "deploy-production","trigger": " (v*)","steps":release tag (v*)",
+"steps": [
+[
+"run migrations ( "run migrations (via jobvia job)","de)","deploy servicesploy services to production to production (can (canary 10%, then full)","ary 10%, then full)","smoke tests",
 "notify #deployments channel"
 ]
 }
@@ -6411,8 +6435,9 @@ install","test","          "deploycompile","deploy to testnet (if main branch)"
 "de"
 }
 },
-"deployment":ployment": {"environ {"environments": {"developmentments": ": {"url": {"development": {
-"https        "url":://dev.kuberna "https: //dev.ku.africa",
+"deployment":ployment": {"environ {
+"environments": {
+"developmentments": ": {"url": {"development": {"https        "url": : //dev.kuberna "https: //dev.ku.africa",
 "berna.africa",
 "database": "dev cluster (database": "dev cluster (postgres, redis, clickpostgres, redis, clickhouse)",
 "features": "allhouse)",
@@ -6472,9 +6497,7 @@ install","test","          "deploycompile","deploy to testnet (if main branch)"
 "user_service": {
 ": {"SMTP_HOST": "smt      "SMTP_HOST": "sp.resend.com",
 "mtp.resend.com",
-SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587",
-"SMTP_USER": "…",
-"SMTP_PASS": "…",
+SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587","SMTP_USER": "…","SMTP_PASS": "…",
 "      "SMTP_PASS": "…","FROM_EMAIL": "nFROM_EMAIL": "noreply@kubernaoreply@kuberna.africa"
 },
 .africa"
@@ -6490,9 +6513,7 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587",
    DRESS": "…"
 },
 "execution_service": {
-"AKASH_MNEMON },"execution_service": {"AKASH_MNEMONIC": "word1 word2 ...IC": "word1 word",
-"PHALA_API2 ...",
-"PHALA_API_KEY": "…",
+"AKASH_MNEMON },"execution_service": {"AKASH_MNEMONIC": "word1 word2 ...IC": "word1 word","PHALA_API2 ...","PHALA_API_KEY": "…",
      _KEY": "… "HYPERBOLIC_API_KEY",
 "HYPERBOLIC_API_KEY": "…",
 ": "…",""DEFAULT_COMPUTE_PROVIDER": "akDEFAULT_COMPUTE_PROVIDER":ash"
@@ -6508,8 +6529,7 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587",
 "ATTESTATION_VERIFICATION_KEY": "…"
    _KEY": "…"
 },
-"anal },"analytics_serviceytics_service": {"CLICKHOUSE": {
-"CLICKHOUSE_HOST": "clickhouse._HOST": "clickhouse.kuberna.internal",
+"anal },"analytics_serviceytics_service": {"CLICKHOUSE": {"CLICKHOUSE_HOST": "clickhouse._HOST": "clickhouse.kuberna.internal",
      kuberna.internal","CLICKHOUSE_USER "CLICKHOUSE_USER": "default",
 "CLICKHOUSE_PASSWORD": "…"
 }
@@ -6521,10 +6541,9 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587",
 },
 "documentation_structure": {
 "overviewoverview": "README.md": ", projectREADME.md, project vision, architecture diagram vision, architecture diagram (C4 model)",
-    (C4 model)","user_docs": {"user_docs": "getting_started": {
-"getting_start "How to sign up,ed": "How to sign connect wallet up, connect wallet, navigate, navigate dashboard"," dashboard","courses":courses": "How to enroll, learn, earn certificates",""How to enroll, learn, earn certificates",
-"agents":agents": "How to create "How to create, configure, deploy agents",
-"marketplace": "How to post tasks, configure, deploy agents",
+    (C4 model)","user_docs": {"user_docs": "getting_started": {"getting_start "How to sign up,ed": "How to sign connect wallet up, connect wallet, navigate, navigate dashboard",
+" dashboard",
+"courses":courses": "How to enroll, learn, earn certificates",""How to enroll, learn, earn certificates","agents":agents": "How to create "How to create, configure, deploy agents","marketplace": "How to post tasks, configure, deploy agents",
 "marketplace": "How to post tasks, bid, complete tasks",
 , bid, complete tasks","enterprise": ""enterprise": "TEE, zkTLS, compliance features"
 },
@@ -6556,9 +6575,7 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587",
 },
   instructions, audit reports"
 },
-"technology "technology_stack": {"front_stack": {"frontend": {
-"framework": "Next.js 14 (React 18)",
-"styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS end": {
+"technology "technology_stack": {"front_stack": {"frontend": {"framework": "Next.js 14 (React 18)","styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS end": {
 "framework": "Next.js 14 (React 18)",
 "styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS 26)",
 "state": "Zustand 426)",
@@ -6583,9 +6600,7 @@ forms": "React Hook Form      "forms": "React 7 + Zod 3",
 "database": "PostgreSQL 15PostgreSQL 15, Redis, Redis 7, Click 7, ClickHouse House 23",
 "orm": "Pr23",
 "orm": "Prisma 5",
-isma 5","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9",
-"queue": "BullMQ 4 + Redis",
-"message_bus": "NATS 2.9",
+isma 5","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9",
 "      "blockchain": "ethers.js vblockchain": "ethers6, web3.js.js v6, web3.js  4, near-api-js 24, near-api-js 2, solana/web3.js 1, solana/web3.js 1"
 },
 "infrastructure": {
@@ -6615,9 +6630,7 @@ ers","vector_db": ""vector_db": "Qdrant 1.Qdrant 1.7 (self‑hosted7 (self‑hos
    customized), LangChain 0.1, AutoGen"
 },
 "security": {
-" },"security": {"vault": "HashiCorp Vaultvault": "HashiCorp Vault",
-"tee": "Phala",
-"tee": "Phala Network (Intel TDX), Mar Network (Intel TDX),lin Oyster (AMD SEV)",
+" },"security": {"vault": "HashiCorp Vaultvault": "HashiCorp Vault","tee": "Phala","tee": "Phala Network (Intel TDX), Mar Network (Intel TDX),lin Oyster (AMD SEV)",
 "zk_tls Marlin Oyster (AMD SEV)",
 "zk_tls": "": "Reclaim Protocol,Reclaim Protocol, zk zkPass"
 Pass"
@@ -6628,9 +6641,7 @@ Pass"
 "  "codebase_organizationcodebase_organization": {"root":": {
 "root": {
 {
-"apps "apps": ["": ["web",
-"api-gateway",
-"user-service",
+"apps "apps": ["": ["web","api-gateway","user-service",
 "course-service",
 "agentweb",
 "api-gateway",
@@ -6641,17 +6652,12 @@ Pass"
 "execution-service",
 "marketplace-service",
 "execution-service",
--service","payment-service","payment-service",
-"tee-service",
-"blockchain-listener",
+-service","payment-service","payment-service","tee-service","blockchain-listener",
 "worker",
 "analytics-service",
 "dispute-service",
-"report "tee-service","blockchain-listener","worker",
-"analytics-service",
-"dispute-service",
-       ing-service","reporting-service","notification-service",
-" "notification-service",
+"report "tee-service","blockchain-listener","worker","analytics-service","dispute-service",
+       ing-service","reporting-service","notification-service",""notification-service",
 forum-service","support-service"
 ],
 "        "forum-service","support-service"
@@ -6662,9 +6668,7 @@ shared-types        "",
 "databaseshared-types",
 "database",
 "ui",
-","ui","agent-framework",
-"agent-framework",
-"block "blockchain-utils","config"
+","ui","agent-framework","agent-framework","block "blockchain-utils","config"
 ],
 "chain-utils",
 "contracts": [
@@ -6690,8 +6694,7 @@ config"
       TypeScript config"
 },
 "details": {
-"apps/web": "Next.js app with pages "apps/web": "Next.js app with pages/, components/, components/, hooks/, hooks/, contexts/, styles/, public/","apps/api/, contexts/, styles/, public/","apps/api-gateway": "Apollo Server with schema-gateway": "Apollo Server with/ and resolvers schema/",
-"apps/*/ and resolvers/",
+"apps/web": "Next.js app with pages "apps/web": "Next.js app with pages/, components/, components/, hooks/, hooks/, contexts/, styles/, public/","apps/api/, contexts/, styles/, public/","apps/api-gateway": "Apollo Server with schema-gateway": "Apollo Server with/ and resolvers schema/","apps/*/ and resolvers/",
 "apps/*-service": "Nest-service": "NestJS structure: src/ (JS structure: src/ (controllers, services, models, dtocontrollers, services, models, dto, modules)",
 "pack, modules)",
 "packages/shared-types": "ages/shared-types": "TypeScript interfaces and enums",
@@ -6720,8 +6723,7 @@ s"
 "de section. Manual deploy: `kubectl apply -fployment": "See CI/CD section. Manual deploy: `kubectl apply -f k8s/ k8s/` after building images` after building images."
  ."
 },
-"de },"deployment_andployment_and_distribution_distribution": {"web_app": "Deployed to Vercel (production) or": {
-"web_app": "Deployed to Vercel (production Kubernetes (enterprise self‑) or Kubernetes (enterprisehost).",
+"de },"deployment_andployment_and_distribution_distribution": {"web_app": "Deployed to Vercel (production) or": {"web_app": "Deployed to Vercel (production Kubernetes (enterprise self‑) or Kubernetes (enterprisehost).",
 "backend_services": " self‑host).",
 "backend_services": "Deployed as Docker containers toDeployed as Docker containers to Kubernetes cluster. Each service has Kubernetes cluster. Each service has its own its own deployment and service.",
 "smart_ deployment and service.",
@@ -6741,13 +6743,11 @@ s"
 "email",
 "discord",email", "discord", "telegram"],"triggers": "telegram"
 ],
-    "trig [{"eventgers": [
-{
+"trig [{"eventgers": [{
 "": "course_enrolled",
 "event": "course_enrolledin_app": true,
 "",
-"in_app": trueemail":, "email": true, "discord": false, "telegram": false },{"event": "workshop_reminder",
-"in_app": true,
+"in_app": trueemail":, "email": true, "discord": false, "telegram": false },{"event": "workshop_reminder","in_app": true,
 "email": true,
 "discord": true,
 "telegram": true true,
@@ -6761,8 +6761,11 @@ s"
 "discord": true,
 "telegram": true
 },
-{ " },{"event": "intent_posted",event": "intent_post "in_app":ed", "in_app": true, true, "email "email": false": false, ",
-"discord": false,
+{
+" },{"event": "intent_posted",event": "intent_post "in_app":ed",
+"in_app": true,
+true,
+"email "email": false": false, ","discord": false,
 "discord": false,
 "telegram": false
 },
@@ -6778,8 +6781,7 @@ s"
 "telegram": false
 },
 {
-"event":": false },{"event": "bid_received",
-"in_app": true "bid_received",
+"event": ": false },{"event": "bid_received","in_app": true "bid_received",
 "in_app, "email": false, "disc": true, "email": false, "discord": false, "teleord": false,gram": "telegram": false
 },
 {
@@ -6822,8 +6824,7 @@ false
 "": false
 },
 {
-"event":telegram": false },{"event": "agent_stopped",
-"agent_stopped",
+"event":telegram": false },{"event": "agent_stopped","agent_stopped",
 "in_app": true,
 "email": false "in_app": true,
 "email": false,
@@ -6870,8 +6871,7 @@ false
 )."
 },
 "autonomous_tasks": {
-"agent_s  "autonomous_tasks": {"agent_scheduler":cheduler": "Agents can be scheduled "Agents can be scheduled to run recurring tasks (e.g., daily reports to run recurring tasks (e.g., daily reports) via) via a cron a cron expression in expression in their config. The execution-service triggers them.","mon their config. The execution-service triggers them.",
-"monitoring_agent": "A built‑in agentitoring_agent": "A built‑in agent monitors system monitors system health (API latency, error rates) health (API latency, error rates) and alerts admins via Discord.",
+"agent_s  "autonomous_tasks": {"agent_scheduler":cheduler": "Agents can be scheduled "Agents can be scheduled to run recurring tasks (e.g., daily reports to run recurring tasks (e.g., daily reports) via) via a cron a cron expression in expression in their config. The execution-service triggers them.","mon their config. The execution-service triggers them.","monitoring_agent": "A built‑in agentitoring_agent": "A built‑in agent monitors system monitors system health (API latency, error rates) health (API latency, error rates) and alerts admins via Discord.",
     and alerts admins via Discord.","arbitrage "arbitrage_bot": "Example agent_bot": "Example agent that watches DEX that watches DEX prices on multiple chains and executes arbitrage when profitable.",
 "reputation_updater": "Background prices on multiple chains and executes arbitrage when profitable.",
 "reputation_updater": "Background job (not an agent) recalculates agent reputation daily.",
@@ -6886,7 +6886,9 @@ false
 "name": ": {"name": "Kuberna Design System – iOS 26 "Kuberna Design System – iOS 26 Edition",
 " Edition",
 "foundations": {
-"colors":foundations": {"colors": {"primary {"primary": "#6366F1","secondary": "#10B981",
+"colors":foundations": {"colors": {"primary {
+"primary": "#6366F1",
+"secondary": "#10B981",
 "accent": "#F59E0B",
 "background": "#FFFFFF": "#6366F1",
 "secondary": "#10B981",
@@ -6899,24 +6901,26 @@ false
 "success":EF4444",""#10B981",
        success": "#10B981","warning": "#F59 "warning": "#F59E0B",
 E0B",""info": "#3B82F6",
-       info": "#3B82F6","glass": "rgba        "glass": "(255,255,
-255rgba(255,
+       info": "#3B82F6","glass": "rgba        "glass": "(255,255,255rgba(255,
 255,
 255,
 ,
 0.7)","glass_dark": "rgba(0,
 0,
-00.7)","glass_dark": "rgba(0,0,0.7)",
-,
+00.7)","glass_dark": "rgba(0,
 0,
-0.7 "label_primary":)","label_primary": "#1C1C1E"," "#1C1C1E","label_label_secondary": "#3secondary": "#3AA3A3A3C",3C","label_terti "label_tertiary": "#8Eary": "#8E8E93",
+0.7)",,
+0,
+0.7 "label_primary":)","label_primary": "#1C1C1E",""#1C1C1E",
+"label_label_secondary": "#3secondary": "#3AA3A3A3C",
+3C","label_terti "label_tertiary": "#8Eary": "#8E8E93",
 "separator": "#C6C6C8"
 },
 8E93","separator": "#C6C6C8"
 },
 "typography": {
-"font_family": "SF Pro "typography": {"font_family": "SF Pro, system‑ui, system‑ui, -, -apple-systemapple-system, Bl, BlinkMacSystemFontinkMacSystemFont",","headings": "font‑sem "headings":ibold, letter "font‑semibold, letter‑sp‑spacing -0.acing -0.02em02em",
-"body": "font‑normal, letter‑spacing normal",
+"font_family": "SF Pro "typography": {"font_family": "SF Pro, system‑ui, system‑ui, -, -apple-systemapple-system, Bl, BlinkMacSystemFontinkMacSystemFont",",
+"headings": "font‑sem "headings":ibold, letter "font‑semibold, letter‑sp‑spacing -0.acing -0.02em02em","body": "font‑normal, letter‑spacing normal",
 "",
 "body": "font‑normal, letter‑spacing normal",
 sizes": {"xs": "0.75        "sizes": {
@@ -6930,23 +6934,23 @@ base": "1rem","lg": "1          "lg": "1.125rem",
 "2xl": "1.rem",
 "2xl": "1.55rem",
 "3xl": "1.875rem",
-rem","3xl": "1.875rem","4xl": "          "4xl": "2.25rem"
+rem","3xl": "1.875rem","4xl": ""4xl": "2.25rem"
 },
 "2.25rem"
 },
-       dynamic_type": true,"dynamic_type": true,"weights": {
-"ultralight        "weights": {"ult": "200","light": "300",
-"ralight": "200",
+       dynamic_type": true,"dynamic_type": true,"weights": {"ultralight        "weights": {"ult": "200","light": "300","ralight": "200",
 "light": "300",
 regular": "400","medium": "500          "regular": "400",
 "medium": "",
 "semib500",
-"semibold": "600old": ","600","bold": " "bold": "700"
+"semibold": "600old": ","600","bold": ""bold": "700"
 }
 },
 700"
 }
-      "spacing      },"spacing": {"unit": ": {"unit": 4 4,"scale,"scale":": [
+      "spacing      },"spacing": {"unit": ": {
+"unit": 4 4,
+"scale,"scale":": [
 0,
 4,
 [
@@ -6989,7 +6993,9 @@ regular": "400","medium": "500          "regular": "400",
 "md": "0.0.25rem",
 "md": "0.375rem375rem",
 "lg": "0.5rem",
-","lg": "0.5rem","xl": " "xl": "0.75rem","20.75rem","2xl": "1rem",
+","lg": "0.5rem","xl": ""xl": "0.75rem",
+"20.75rem",
+"2xl": "1rem",
 xl": "1rem","full": "9999px"
 },
 "shadows": {
@@ -6997,9 +7003,9 @@ xl": "1rem","full": "9999px"
 },
 "shadows": {
 "sm": "0 1px 20 rgb(0 0px 0 rgb(0 0 0 / 0. 0 / 0.05)",
-"base": 05)",""0 base": "0 11px 3pxpx 3px 0 rgb(0  0 rgb(0 0 0 / 0.1),0 1px 2px -1px0 0 / 0.1),
-0 1px 2px -1px rgb( rgb(0 0 0 0 0 /0 / 0 0.1)","md.1)","md": "": "0 4px 60 4px 6px -1px rgb(px -1px rgb(0 0 0 /0 0 0 / 0.1), 0 2px 4 0.1), 0 2px 4px -px -2px2px rgb rgb(0 0 0 / 0(0 0 0 / 0.1)",
-"lg.1)",
+"base": 05)",""0 base": "0 11px 3pxpx 3px 0 rgb(0  0 rgb(0 0 0 / 0.1),0 1px 2px -1px0 0 / 0.1),0 1px 2px -1px rgb( rgb(0 0 0 0 0 /0 / 0 0.1)","md.1)","md": "": "0 4px 60 4px 6px -1px rgb(px -1px rgb(0 0 0 /0 0 0 / 0.1),
+0 2px 4 0.1),
+0 2px 4px -px -2px2px rgb rgb(0 0 0 / 0(0 0 0 / 0.1)","lg.1)",
 "lg": "0 10px 15px -3px rgb(0 ": "0 10px 15px -3px rgb(0 0 0 0 / 00 / 0.1), 0 4px 6px -.1), 0 4px 64px rgb(0 px -4px rgb(0 0 0 / 00 0 / 0.1)",
 "xl": "0 20px.1)",
 "xl": "0 20px 25px -5px rgb(0  25px -5px rgb(0 0 0 / 00 0 / 0.1), .1), 0 0 8px 10px -6px rgb(0 8px 10px -6px rgb(0 0 0 00 / 0.1 / 0.1)",
@@ -7018,11 +7024,12 @@ sm": "blur(        "sm": "blur(4px)",
 "animations": 12px)"
 },
 "animations": {
-"spring": " {"spring": "spring( stiffness: 100spring( stiffness: 100, damping: 10 ), damping: 10 )","ease": "cubic-b",
-"ease": "cubic-bezier(0ezier(0.4, 0,.4, 0, 0.2, 1)",
+"spring": " {"spring": "spring( stiffness: 100spring( stiffness: 100, damping: 10 ), damping: 10 )","ease": "cubic-b","ease": "cubic-bezier(0ezier(0.4, 0,.4, 0, 0.2, 1)",
 0.2,
 "duration": {
-1)","duration": {"fast "fast": "150ms": "150ms","normal": "300ms","normal": "",
+1)","duration": {"fast "fast": "150ms": "150ms",
+"normal": "300ms",
+"normal": "",
 "slow": "500ms"300ms","slow": "500ms"
 }
 }
@@ -7031,26 +7038,22 @@ sm": "blur(        "sm": "blur(4px)",
 }
 },
 "components": [
-": [{"name": "Button",
-{
+": [{"name": "Button",{
 "name": "Button "variants": ["primary", "secondary", "outline",",
 "variants": [
 "primary",
 "secondary",
-"out "ghost", "glass"],"states": ["default",
-"hover",
-"active",line", "ghost", "glass"],"states": ["default",
-"hover",
+"out "ghost", "glass"],"states": ["default","hover",
+"active",line", "ghost", "glass"],"states": ["default","hover",
 " "disabled", "active", "disabled", "loading"],
-loading"],"sizes": ["sm",
-"md",
+loading"],"sizes": ["sm","md",
 "lg"
 ],
 "sizes": [
 "sm",
 "md",
-"        "lg"],"features":features": ["h ["haptic feedbackaptic feedback on tap",
-" on tap",
+"        "lg"],"features":features": [
+"h ["haptic feedbackaptic feedback on tap"," on tap",
 "spring animationspring animation on press",
 "loading spinner"
 ]
@@ -7075,15 +7078,15 @@ loading"],"sizes": ["sm",
 },
 {
 "name": {
-"name": " "Input","variants": ["default",Input","variants": ["default",
+"name": " "Input","variants": ["default",Input",
+"variants": [
+"default",
 "outline",
-"under "outline", "underlined"],"states": ["default",
-"focused",
+"under "outline", "underlined"],"states": ["default","focused",
 "error",
 "disabled"
 ],
-       lined"],"states": ["default",
-"focused",
+       lined"],"states": ["default","focused",
 "error",
 "disabled"
 ],
@@ -7099,8 +7102,7 @@ loading"],"sizes": ["sm",
 },
 {
 {
-"name": "name": "Select "Select","features": ["native‑like picker on mobile",
-"dropdown with search",
+"name": "name": "Select "Select","features": ["native‑like picker on mobile","dropdown with search",
 "features": [
 "native‑like picker on mobile",
 "dropdown with search"
@@ -7126,8 +7128,7 @@ loading"],"sizes": ["sm",
 "name": "Toast",
 "name": "Toast",
 "variants": [
-"        "variants": ["info", "success", "info", "success", "warning", "error"],"features": ["auto‑dismiss",
-"undo action",
+"        "variants": ["info", "success", "info", "success", "warning", "error"],"features": ["auto‑dismiss","undo action",
 "warning",
 "error"
 ],
@@ -7137,15 +7138,16 @@ loading"],"sizes": ["sm",
 "stackable"
 ]
 },
-     stackable"]{"name": "Tabs },{"name": "Tabs",
-"variants": ","variants": ["underlined",
-"pill",
+     stackable"]{"name": "Tabs
+},
+{
+"name": "Tabs",
+"variants": ","variants": ["underlined","pill",
 "segmented"
 ],
 "features": [
 "animated indicator",
-" ["underlined", "pill", "segmented"],"features": ["animated indicator",
-"swipe on mobile"
+" ["underlined", "pill", "segmented"],"features": ["animated indicator","swipe on mobile"
 ]
 },
 {
@@ -7162,8 +7164,7 @@ loading"],"sizes": ["sm",
 },
 {},
 "      {"name": "Avatar",
-       name": "Avatar","sizes": "sizes": ["xs",
-" ["xs", "sm",sm",
+       name": "Avatar","sizes": "sizes": ["xs"," ["xs", "sm",sm",
 "md",
 " "md", "lg"],"features":lg"
 ],
@@ -7171,8 +7172,7 @@ loading"],"sizes": ["sm",
      grouped"]
 },
 {
-        "name },{"name": "Badge",
-"variants": [
+"name },{"name": "Badge","variants": [
 "default",
 "primary",
 "success",
@@ -7199,8 +7199,7 @@ md"]
 },
 {
 "name": "name": "Progress",
-"vari "Progress","variants": ["linear",
-"ants": [
+"vari "Progress","variants": ["linear","ants": [
 "linear",
 "circularcircular"
 ],
@@ -7219,8 +7218,7 @@ md"]
 {
 "name": "Skeleton",
 "variants": [
-"        "name": "Skeleton","variants": ["text",
-"circletext",
+"        "name": "Skeleton","variants": ["text","circletext",
 "circle",
 "rectangle"
 ],
@@ -7233,7 +7231,9 @@ animation": "pulse"
 },
 {
 "name": "NavigationBar",
-"      {"name": "features": ["transparent",NavigationBar","features": ["transparent",
+"      {"name": "features": ["transparent",NavigationBar",
+"features": [
+"transparent",
 "blur",
 "blur",
 "large "large title", "search title", "search bar"]
@@ -7241,8 +7241,8 @@ animation": "pulse"
 },
 {
 "name": "TabBar",
-"features": ["icon      },{"name": "TabBar",
 "features": [
+"icon      },{"name": "TabBar","features": [
 "icon + label + label",
 "badge",
 "spring transition"
@@ -7251,15 +7251,13 @@ animation": "pulse"
 },
 },
 {
-"name      {"name": "Dynamic Island","description": "Dynamic Island",
-": "For live notifications ( "description": "For livetask updates, agent status) – mimics iOS Dynamic Island with expandable pill."
+"name      {"name": "Dynamic Island","description": "Dynamic Island",": "For live notifications ( "description": "For livetask updates, agent status) – mimics iOS Dynamic Island with expandable pill."
 },
  notifications (task updates, agent status) – mimics iOS Dynamic Island with expandable pill."
 },
 {
 "name": "Switch",
-"features      {"name": "Switch","features": [
-"on/": [
+"features      {"name": "Switch","features": ["on/": [
 "on/off",off", "spring animation", "spring animation", "iOS "iOS‑style"
 ]
      ‑style"]
@@ -7279,8 +7277,7 @@ animation": "pulse"
 {
 "name": "Tooltip",
 "features": [
-"appears on      {"name": "Tooltip","features": [
-"app hover",ears on "arrow hover",
+"appears on      {"name": "Tooltip","features": ["app hover",ears on "arrow hover",
 "arrow",
 "delay"
 ]
@@ -7291,15 +7288,14 @@ animation": "pulse"
 {
 "name": "Stepper",
 "features": [
-"in        "name": "Stepper","features": ["increment/decrement",
-"numeric input"
+"in        "name": "Stepper","features": ["increment/decrement","numeric input"
 ]
 crement/decrement", "numeric input"]
 },
 {
 "name": "Rating",
-"features": ["      },{"name": "Rating",
 "features": [
+"      },{"name": "Rating","features": [
 "stars",
 "half stars allowed"
 ]
@@ -7311,8 +7307,7 @@ crement/decrement", "numeric input"]
 ]
   "pricing_models": [
 },
-"pricing_ {"tier": "SDK","price": 397,
-"currency": "models": [
+"pricing_ {"tier": "SDK","price": 397,"currency": "models": [
 {
 "tier": "SDK",
 "price": 397,
@@ -7334,8 +7329,8 @@ crement/decrement", "numeric input"]
        ord)"
 ],
 "crypto_price": {
-"NEAR": "NEAR": "120 "120",","ETH": ""ETH": "0.0.15",
-"15",
+"NEAR": "NEAR": "120 "120",",
+"ETH": ""ETH": "0.0.15","15",
 "USDC": "397"
 }
 },
@@ -7346,12 +7341,13 @@ crement/decrement", "numeric input"]
 {
 tier      "tier": "": "Accelerator",
 Acceler      "price": 25000,
-"currency":ator","price": 25000," "USD","billing": "one‑time","features": [
+"currency":ator","price": 25000,""USD",
+"billing": "one‑time",
+"features": [
 "12‑week intensive cohort",
 "1:1 mentorship (4 sessions)",
 "Fine‑tuning and RAG training",
-       currency": "USD","billing": "one‑time","features": [
-"12‑week intensive cohort",
+       currency": "USD","billing": "one‑time","features": ["12‑week intensive cohort",
 "1:1 mentorship (4 sessions)",
 "Fine‑tuning and RAG training",
 "Cross‑chain intent deployment",
@@ -7406,8 +7402,7 @@ DC":        "USDC": "25000""25000"
 },
 {
 "tier": "Enterprise Plus",
-"price      "tier": "Enterprise Plus","price": 250000,"currency": "USD",
-"billing": "": 250000,
+"price      "tier": "Enterprise Plus","price": 250000,"currency": "USD","billing": "": 250000,
 "currency": "USD",
 "billing": "annual",
 "features": [
@@ -7426,8 +7421,7 @@ DC":        "USDC": "25000""25000"
      "
 ],
 ],
-"c "crypto_pricerypto_price": {"NEAR": {"": "75000NEAR": "75000",
-"ETH": "",
+"c "crypto_pricerypto_price": {"NEAR": {"": "75000NEAR": "75000","ETH": "",
 "ETH": "95",
 "95",
 "USDCUSDC": "250000"
@@ -7444,14 +7438,12 @@ DC":        "USDC": "25000""25000"
 "crypto": {
 "supported_chains": [
 "Ethereum",
-"Sol "crypto": {"supported_chains": ["Ethereum",
-"Solana",ana", "NEAR", "Poly "NEAR",
+"Sol "crypto": {"supported_chains": ["Ethereum","Solana",ana", "NEAR", "Poly "NEAR",
 "Polygon",
 "Arbitrumgon",
 "Arbitrum"
 ],
-"tokens": "],"tokens": ["USDC",
-"USDT",
+"tokens": "],"tokens": ["USDC","USDT",
 "NEAR",
 [
 "USDC",
@@ -7459,7 +7451,8 @@ DC":        "USDC": "25000""25000"
 "NEAR",
 "ETH "ETH", "SOL", "DA", "SOL", "DAI"],"payment_processor":I"
 ],
-"payment_processor": "Custom escrow "Custom escrow smart contracts (deployed on smart contracts (deployed on each chain each chain)","onramp": ")","onrampMoonPay, Transak,": "MoonPay, Transak, Stripe Crypto (integrated Stripe Crypto ( via iframe)"
+"payment_processor": "Custom escrow "Custom escrow smart contracts (deployed on smart contracts (deployed on each chain each chain)","onramp": ")","onrampMoonPay, Transak,
+": "MoonPay, Transak, Stripe Crypto (integrated Stripe Crypto ( via iframe)"
 },
 "fiatintegrated via iframe)"
 },
@@ -7514,8 +7507,7 @@ DC":        "USDC": "25000""25000"
 "on code repos."
 },
 "onboarding": {
-"new_user":boarding": {"new_user": {"steps": [
-{
+"new_user":boarding": {"new_user": {"steps": [{
 "steps": [
 {
 "        {"name": "Sign up","description": "User provides email/password or connects wallet. Email verification sent if email."
@@ -7588,8 +7580,7 @@ DC":        "USDC": "25000""25000"
 },
 "requ "requester": {
      ester": {"steps "steps": [
-": [{{
-"name": "name": "Fund "Fund wallet"," wallet","description": "Deposit cryptodescription": "Deposit crypto or use f or use fiatiat on‑ramp on‑ramp."
+": [{{"name": "name": "Fund "Fund wallet"," wallet","description": "Deposit cryptodescription": "Deposit crypto or use f or use fiatiat on‑ramp on‑ramp."
        ."
 },
 {
@@ -7598,8 +7589,7 @@ DC":        "USDC": "25000""25000"
 },
 {
 "name": "Review bids",
-"description": "See incoming },{"name": "Post first intent",
-"description": "Use natural language to describe a task."
+"description": "See incoming },{"name": "Post first intent","description": "Use natural language to describe a task."
 },
 {
 "name": "Review bids",
@@ -7624,8 +7614,7 @@ DC":        "USDC": "25000""25000"
 "enterprise": {
 "steps": [
 {
-"name": " {"name": "Contact sales","descriptionContact sales",
-"description": "Fill out form, schedule call."
+"name": " {"name": "Contact sales","descriptionContact sales","description": "Fill out form, schedule call."
 },
 {
 "name": "Contract signing",
@@ -7638,8 +7627,7 @@ DC":        "USDC": "25000""25000"
 "description": "Digital signature via DocuSign."
 },
 {
-"name": "Onboarding {"name": "Onboarding call"," call",
-"description": "1description": "1‑hour session with solutions architect."
+"name": "Onboarding {"name": "Onboarding call"," call","description": "1description": "1‑hour session with solutions architect."
        ‑hour session with solutions architect
 },
 {
@@ -7668,13 +7656,15 @@ DC":        "USDC": "25000""25000"
 "ui_cross_platform": {
 "responsive": "Mobile‑first design; works on all screen sizes from 320px to 4K.",
 "pwa": "Web app installable as PWA with offline support for course materials (downloaded videos, documents). Service worker caches static assets.",
- app installable as PWA with offline support for course materials (downloaded videos, documents). Service worker caches static assets.","mobile_app": "Future: React Native wrapper for iOS/Android, sharing components via `packages/ui`. Will use native navigation and gestures.","touch    "mobile_app": "Future: React Native wrapper for iOS/Android, sharing components via `packages/ui`. Will use native navigation and gestures.","touch_optimized": "L_optimized": "Larger tap targets,arger tap targets, swipe gestures, haptic feedback."
+ app installable as PWA with offline support for course materials (downloaded videos, documents). Service worker caches static assets.","mobile_app": "Future: React Native wrapper for iOS/Android, sharing components via `packages/ui`. Will use native navigation and gestures.","touch    "mobile_app": "Future: React Native wrapper for iOS/Android, sharing components via `packages/ui`. Will use native navigation and gestures.",
+"touch_optimized": "L_optimized": "Larger tap targets,arger tap targets, swipe gestures, haptic feedback."
   swipe gestures, haptic feedback."
 },
 },
 "authentication": "authentication": {
-"methods {"methods": [
-": [{"      {"type":type": "email/password "email/password",","flow": "User provides email and password; password hashed with bcrypt; JWT issued. Email verification required for full access."
+"methods {"methods": [": [{"{
+"type":type": "email/password "email/password",
+","flow": "User provides email and password; password hashed with bcrypt; JWT issued. Email verification required for full access."
 },
 {
 "type": "web3",
