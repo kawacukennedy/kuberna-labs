@@ -5,6 +5,10 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+error ReputationNFT__InvalidToken();
+error ReputationNFT__OnlyMinter();
+error ReputationNFT__NotAuthorized();
+
 contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
     mapping(uint256 => AgentReputation) public agentReputations;
@@ -46,7 +50,8 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     }
 
     function updateReputation(uint256 tokenId, bool success, uint256 responseTimeSeconds) external onlyOwner {
-        require(ownerOf(tokenId) != address(0));
+        if (_ownerOf(tokenId) == address(0)) revert ReputationNFT__InvalidToken();
+        
         AgentReputation storage rep = agentReputations[tokenId];
         
         unchecked { rep.totalTasks++; }
