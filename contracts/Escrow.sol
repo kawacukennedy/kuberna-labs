@@ -12,6 +12,7 @@ error Escrow__NotFunded();
 error Escrow__TaskNotAssigned();
 error Escrow__OnlyRequester();
 error Escrow__OnlyExecutor();
+error Escrow__InvalidAddress();
 error Escrow__TaskExpired();
 error Escrow__TaskNotCompleted();
 error Escrow__DisputeActive();
@@ -41,6 +42,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
     event FundsRefunded(bytes32 indexed, address, uint256);
     event DisputeRaised(bytes32 indexed, address, string);
     event DisputeResolved(bytes32 indexed, bool);
+    event ExecutorChanged(bytes32 indexed, address indexed oldExecutor, address indexed newExecutor);
 
     modifier onlyAssignedExecutor(bytes32 escrowId) {
         require(escrows[escrowId].executor == msg.sender, "Not assigned executor");
@@ -95,6 +97,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable {
         require(e.requester == msg.sender);
         require(e.status == EscrowStatus.Funded);
         
+        require(executor != address(0), "Invalid executor address");
         e.executor = executor;
         e.status = EscrowStatus.Assigned;
         emit EscrowAssigned(escrowId, executor);
