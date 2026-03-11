@@ -8,8 +8,11 @@ declare global {
         email: string;
         roles: string[];
       };
+      params?: Record<string, string>;
+      query?: Record<string, unknown>;
+      body?: Record<string, unknown>;
     }
   }
 }
 
-export interface AuthRequest extends Request { }
+export type AuthRequest = Request;

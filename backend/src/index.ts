@@ -15,6 +15,8 @@ import { workshopRouter } from "./routes/workshops.js";
 import { forumRouter } from "./routes/forum.js";
 import { notificationRouter } from "./routes/notifications.js";
 import { analyticsRouter } from "./routes/analytics.js";
+import { apiKeyRouter } from "./routes/apiKeys.js";
+import { disputeRouter } from "./routes/disputes.js";
 
 dotenv.config();
 
@@ -46,6 +48,8 @@ app.use("/api/workshops", workshopRouter);
 app.use("/api/forum", forumRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/analytics", analyticsRouter);
+app.use("/api/api-keys", apiKeyRouter);
+app.use("/api/disputes", disputeRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
