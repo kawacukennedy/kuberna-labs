@@ -5,7 +5,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 error Intent__Invalid();
-error Intent__Unauthorized();
+error Intent__InsufficientBudget();
+error Intent__InvalidDeadline();
+error Intent__OnlyRequester();
 
 enum IntentStatus { Open, Bidding, Assigned, Executing, Completed, Expired, Disputed }
 enum BidStatus { Pending, Accepted, Rejected }
@@ -58,7 +60,7 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
 
     function createIntent(
         bytes32 intentId,
-        string calldata,
+        string calldata description,
         bytes calldata structuredData,
         address sourceToken,
         uint256 sourceAmount,
@@ -67,6 +69,8 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
         uint256 budget,
         uint256 durationSeconds
     ) external returns (bytes32) {
+        if (budget == 0) revert Intent__InsufficientBudget();
+        if (durationSeconds < 1 hours) revert Intent__InvalidDeadline(); // Assuming 1 hour is the new minimum
         require(durationSeconds >= MIN_DEADLINE && durationSeconds <= MAX_DEADLINE);
         require(intents[intentId].requester == address(0));
 
@@ -74,7 +78,7 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
 
         intents[intentId] = IntentData({
             requester: msg.sender,
-            description: "",
+            description: description,
             structuredData: structuredData,
             sourceToken: sourceToken,
             sourceAmount: sourceAmount,
