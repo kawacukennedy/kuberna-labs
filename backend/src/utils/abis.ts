@@ -39,3 +39,30 @@ export const REPUTATION_ABI = [
   "function getSuccessRate(uint256 tokenId) external view returns (uint256)",
   "function agentReputations(uint256) external view returns (uint256, uint256, uint256, uint256, uint256, uint256)",
 ];
+
+export const PAYMENT_ABI = [
+  "function addToken(address token, uint256 minAmount, uint256 maxAmount) external",
+  "function removeToken(address token) external",
+  "function processPayment(address token, uint256 amount) external payable",
+  "function batchProcessPayment(address[] calldata tokens, uint256[] calldata amounts) external payable",
+  "function withdraw(address token, uint256 amount) external",
+  "function withdrawFees(address token, uint256 amount) external",
+  "function getBalance(address user, address token) external view returns (uint256)",
+  "function getSupportedTokens() external view returns (address[])",
+  "event TokenAdded(address token, uint256 minAmount, uint256 maxAmount)",
+  "event TokenRemoved(address token)",
+  "event PaymentReceived(address user, address token, uint256 amount)",
+  "event Withdrawal(address user, address token, uint256 amount)",
+];
+
+export const ATTESTATION_ABI = [
+  "function attest(bytes32 schema, address recipient, uint64 expirationTime, bytes memory data) external returns (bytes32)",
+  "function attestBySignature(bytes32 schema, address recipient, uint64 expirationTime, bytes memory data, bytes calldata signature) external returns (bytes32)",
+  "function revoke(bytes32 attestationId) external",
+  "function verify(bytes32 attestationId) external view returns (bool)",
+  "function getAttestation(bytes32 attestationId) external view returns (tuple(bytes32 schema, address recipient, address issuer, uint64 expirationTime, uint64 issuedAt, bytes data, bool revoked))",
+  "function getIssuerAttestations(address issuer) external view returns (bytes32[])",
+  "function getRecipientAttestations(address recipient) external view returns (bytes32[])",
+  "event AttestationCreated(bytes32 indexed attestationId, bytes32 indexed schema, address indexed recipient, address issuer, uint64 expirationTime)",
+  "event AttestationRevoked(bytes32 indexed attestationId, address indexed revoker)",
+];
