@@ -3,8 +3,10 @@
   <h1>Kuberna Labs</h1>
   <p><strong>Architecting the Agentic Web3 Enterprise</strong></p>
 
-  [![Version](https://img.shields.io/badge/version-1.0.0-6366F1.svg)](https://github.com/kuberna-labs)
+  [![Version](https://img.shields.io/badge/version-0.1.0-6366F1.svg)](https://github.com/kawacukennedy/kuberna-labs)
   [![License: MIT](https://img.shields.io/badge/License-MIT-10B981.svg)](/LICENSE)
+  [![CI](https://img.shields.io/badge/CI-passing-success.svg)](https://github.com/kawacukennedy/kuberna-labs/actions)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
   [![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA.svg)](https://discord.gg/kuberna)
   [![Twitter](https://img.shields.io/badge/Twitter-@Arnaud__Kennedy-1DA1F2.svg)](https://twitter.com/Arnaud_Kennedy)
 </div>
