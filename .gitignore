@@ -13,3 +13,9 @@ coverage/
 .idea/
 *.swp
 *.swo
+deployments/
+typechain-types/
+backend/dist/
+backend/node_modules/
+sdk/dist/
+sdk/node_modules/
