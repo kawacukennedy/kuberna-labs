@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 error Intent__Invalid();
 error Intent__InsufficientBudget();
@@ -36,7 +37,7 @@ struct BidData {
     uint256 createdAt;
 }
 
-contract KubernaIntent is Ownable, ReentrancyGuard {
+contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
     uint256 public intentCount;
     uint256 public immutable MIN_DEADLINE = 300;
     uint256 public immutable MAX_DEADLINE = 2592000;
@@ -56,7 +57,16 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
     event IntentExpired(bytes32);
     event IntentCancelled(bytes32);
 
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) Pausable() {}
+
+    // Emergency pause functions
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
+    }
 
     function createIntent(
         bytes32 intentId,
@@ -68,7 +78,7 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
         uint256 minDestAmount,
         uint256 budget,
         uint256 durationSeconds
-    ) external returns (bytes32) {
+    ) external whenNotPaused returns (bytes32) {
         if (budget == 0) revert Intent__InsufficientBudget();
         if (durationSeconds < 1 hours) revert Intent__InvalidDeadline(); // Assuming 1 hour is the new minimum
         require(durationSeconds >= MIN_DEADLINE && durationSeconds <= MAX_DEADLINE);
@@ -96,7 +106,7 @@ contract KubernaIntent is Ownable, ReentrancyGuard {
         return intentId;
     }
 
-    function submitBid(bytes32 intentId, uint256 price, uint256 estimatedTime, bytes calldata routeDetails) external {
+    function submitBid(bytes32 intentId, uint256 price, uint256 estimatedTime, bytes calldata routeDetails) external whenNotPaused {
         IntentData storage i = intents[intentId];
         require(i.requester != address(0));
         require(block.timestamp < i.deadline);
