@@ -1,0 +1,47 @@
+# Code Owners for Kuberna Labs
+# 
+# This file defines individuals or teams responsible for code in this repository.
+# Code owners are automatically requested for review when someone opens a pull request
+# that modifies code that they own.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @kawacukennedy
+
+# Smart Contracts
+/contracts/ @kawacukennedy
+/test/ @kawacukennedy
+/scripts/ @kawacukennedy
+hardhat.config.ts @kawacukennedy
+
+# Backend Services
+/backend/ @kawacukennedy
+/backend/src/services/ @kawacukennedy
+/backend/src/config/ @kawacukennedy
+
+# SDK
+/sdk/ @kawacukennedy
+
+# Documentation
+*.md @kawacukennedy
+/docs/ @kawacukennedy
+
+# Configuration Files
+/.github/ @kawacukennedy
+.gitignore @kawacukennedy
+.env.example @kawacukennedy
+package.json @kawacukennedy
+tsconfig.json @kawacukennedy
+
+# Specs and Design Documents
+/.kiro/specs/ @kawacukennedy
+
+# CI/CD
+/.github/workflows/ @kawacukennedy
+
+# Security-sensitive files
+SECURITY.md @kawacukennedy
+/contracts/Escrow.sol @kawacukennedy
+/contracts/Payment.sol @kawacukennedy
+/contracts/CrossChainRouter.sol @kawacukennedy
