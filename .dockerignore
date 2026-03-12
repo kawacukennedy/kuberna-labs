@@ -1,0 +1,82 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Build outputs
+dist
+build
+out
+.next
+
+# Cache
+.cache
+.parcel-cache
+.eslintcache
+.stylelintcache
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.spec.ts
+__tests__
+__mocks__
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp
+temp
+*.tmp
+
+# Hardhat
+cache
+artifacts/build-info
+artifacts/**/*.dbg.json
+
+# Specs and development files
+.kiro
+specs.json
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Scripts (keep only necessary ones)
+scripts/*.sh
+make-commits.sh
+commit-open-source-files.sh
