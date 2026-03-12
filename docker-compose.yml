@@ -1,0 +1,193 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: kuberna-postgres
+    environment:
+      POSTGRES_DB: kuberna
+      POSTGRES_USER: kuberna
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kuberna_dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kuberna"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kuberna-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: kuberna-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - kuberna-network
+
+  # NATS Message Broker
+  nats:
+    image: nats:2-alpine
+    container_name: kuberna-nats
+    ports:
+      - "4222:4222"  # Client connections
+      - "8222:8222"  # HTTP monitoring
+      - "6222:6222"  # Cluster connections
+    command: ["-js", "-m", "8222"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - kuberna-network
+
+  # Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kuberna-backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      DATABASE_URL: postgresql://kuberna:${POSTGRES_PASSWORD:-kuberna_dev_password}@postgres:5432/kuberna
+      REDIS_URL: redis://redis:6379
+      NATS_URL: nats://nats:4222
+      
+      # Blockchain RPC URLs
+      ETHEREUM_RPC_URL: ${ETHEREUM_RPC_URL}
+      POLYGON_RPC_URL: ${POLYGON_RPC_URL}
+      BASE_RPC_URL: ${BASE_RPC_URL}
+      
+      # Contract Addresses
+      ESCROW_ADDRESS: ${ESCROW_ADDRESS}
+      INTENT_ADDRESS: ${INTENT_ADDRESS}
+      PAYMENT_ADDRESS: ${PAYMENT_ADDRESS}
+      
+      # TEE Configuration
+      PHALA_ENDPOINT: ${PHALA_ENDPOINT}
+      MARLIN_ENDPOINT: ${MARLIN_ENDPOINT}
+      
+      # API Keys
+      CHAINLINK_API_KEY: ${CHAINLINK_API_KEY}
+      ALCHEMY_API_KEY: ${ALCHEMY_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    volumes:
+      - ./backend/.env:/app/backend/.env
+      - ./logs:/app/logs
+    networks:
+      - kuberna-network
+    restart: unless-stopped
+
+  # Hardhat Node (for local development)
+  hardhat:
+    image: node:18-alpine
+    container_name: kuberna-hardhat
+    working_dir: /app
+    command: sh -c "npm install && npx hardhat node"
+    ports:
+      - "8545:8545"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - kuberna-network
+    profiles:
+      - dev
+
+  # Blockchain Listener Service
+  blockchain-listener:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kuberna-blockchain-listener
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://kuberna:${POSTGRES_PASSWORD:-kuberna_dev_password}@postgres:5432/kuberna
+      REDIS_URL: redis://redis:6379
+      NATS_URL: nats://nats:4222
+      
+      # Blockchain RPC URLs
+      ETHEREUM_RPC_URL: ${ETHEREUM_RPC_URL}
+      POLYGON_RPC_URL: ${POLYGON_RPC_URL}
+      BASE_RPC_URL: ${BASE_RPC_URL}
+    command: ["node", "backend/dist/scripts/startBlockchainListener.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    volumes:
+      - ./backend/.env:/app/backend/.env
+      - ./logs:/app/logs
+    networks:
+      - kuberna-network
+    restart: unless-stopped
+
+  # Grafana (Monitoring)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kuberna-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - kuberna-network
+    profiles:
+      - monitoring
+
+  # Prometheus (Metrics)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kuberna-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - kuberna-network
+    profiles:
+      - monitoring
+
+volumes:
+  postgres_data:
+  redis_data:
+  grafana_data:
+  prometheus_data:
+
+networks:
+  kuberna-network:
+    driver: bridge
