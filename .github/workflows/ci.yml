@@ -1,0 +1,175 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+      
+      - name: Run Prettier
+        run: npm run format:check
+      
+      - name: Run Solhint
+        run: npx solhint 'contracts/**/*.sol'
+
+  test-contracts:
+    name: Test Smart Contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Compile contracts
+        run: npx hardhat compile
+      
+      - name: Run contract tests
+        run: npx hardhat test
+      
+      - name: Generate coverage report
+        run: npx hardhat coverage
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: contracts
+
+  test-backend:
+    name: Test Backend Services
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm test
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage/lcov.info
+          flags: backend
+
+  test-sdk:
+    name: Test SDK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          cd sdk
+          npm ci
+      
+      - name: Run SDK tests
+        run: |
+          cd sdk
+          npm test
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+      
+      - name: Run Slither (Smart Contract Security)
+        uses: crytic/slither-action@v0.3.0
+        continue-on-error: true
+        with:
+          target: 'contracts/'
+          slither-args: '--filter-paths "node_modules|test"'
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test-contracts, test-backend, test-sdk]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build contracts
+        run: npx hardhat compile
+      
+      - name: Build backend
+        run: |
+          cd backend
+          npm ci
+          npm run build
+      
+      - name: Build SDK
+        run: |
+          cd sdk
+          npm ci
+          npm run build
+      
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
