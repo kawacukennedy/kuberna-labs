@@ -1,6 +1,7 @@
 # Quick Start Guide
 
 ## Prerequisites
+
 - Node.js >= 18.0.0
 - npm >= 9.0.0
 - Git
@@ -322,7 +323,6 @@ redis-cli ping
 
 - GitHub Issues: <repository-url>/issues
 - Documentation: See `SETUP.md` for detailed setup instructions
-- Project Status: See `PROJECT_STATUS.md` for current progress
 
 ## Next Steps
 
