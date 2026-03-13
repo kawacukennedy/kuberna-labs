@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="/images/kuberna-logo.svg" alt="Kuberna Labs" width="200"/>
   <h1>Kuberna Labs</h1>
   <p><strong>Architecting the Agentic Web3 Enterprise</strong></p>
 
@@ -11,14 +10,6 @@
 [![Twitter](https://img.shields.io/badge/Twitter-@Arnaud__Kennedy-1DA1F2.svg)](https://twitter.com/Arnaud_Kennedy)
 
 </div>
-
----
-
-### 🎥 Terminal Execution Demo
-
-<!-- [PLACEHOLDER: Insert vhs-terminal-demo.gif here] -->
-
-![Kuberna Demo Placeholder](https://via.placeholder.com/800x400/000000/FFFFFF?text=VHS+Terminal+Execution+Demo+Coming+Soon)
 
 ---
 
