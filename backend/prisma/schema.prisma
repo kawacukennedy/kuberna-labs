@@ -124,11 +124,12 @@ model User {
   enrollments     Enrollment[]
   agents          Agent[]
   intents         Intent[]         @relation("IntentRequester")
-  bids            Bid[]
   tasksAssigned   Task[]          @relation("TaskExecutor")
+  submittedBids   Bid[]           @relation("BidSolver")
   tickets         Ticket[]
   forumPosts      ForumPost[]
   certificates    Certificate[]
+  workshopRegistrations WorkshopRegistration[]
 
   @@index([web3Address])
 }
@@ -239,7 +240,7 @@ model Agent {
   config          Json
   tools           String[]
   status          AgentStatus     @default(DRAFT)
-  deploymentType  DeploymentType @default(CLOUD)
+  deploymentType  DeploymentType  @default(CLOUD)
   deploymentUrl   String?
   teeAttestation  Json?
   version         Int             @default(1)
@@ -252,7 +253,6 @@ model Agent {
   
   owner           User           @relation(fields: [ownerId], references: [id])
   bids            Bid[]
-  tasks           Task[]
   reputation      Reputation?
 
   @@unique([ownerId, name])
@@ -266,7 +266,7 @@ model Reputation {
   avgRating       Float    @default(0)
   ratingCount     Int      @default(0)
   score           Int      @default(0)
-  badges          Json     @default([])
+  badges          Json     @default("[]")
   updatedAt       DateTime  @updatedAt
   
   agent           Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
@@ -305,6 +305,7 @@ model Bid {
   id             String    @id @default(uuid())
   intentId       String
   agentId        String
+  solverId        String?
   price          String
   estimatedTime  Int
   routeDetails   Json?
@@ -313,6 +314,7 @@ model Bid {
   
   intent         Intent    @relation(fields: [intentId], references: [id], onDelete: Cascade)
   agent          Agent    @relation(fields: [agentId], references: [id])
+  solver         User?    @relation("BidSolver", fields: [solverId], references: [id])
 
   @@unique([intentId, agentId])
 }
@@ -374,6 +376,7 @@ model WorkshopRegistration {
   registeredAt DateTime @default(now())
   
   workshop    Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
 
   @@unique([workshopId, userId])
 }
