@@ -1,0 +1,105 @@
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  TOO_MANY_REQUESTS: 429,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
+
+export const ERROR_CODES = {
+  // Authentication
+  NO_TOKEN: 'NO_TOKEN',
+  INVALID_TOKEN: 'INVALID_TOKEN',
+  TOKEN_EXPIRED: 'TOKEN_EXPIRED',
+  USER_NOT_FOUND: 'USER_NOT_FOUND',
+
+  // Authorization
+  FORBIDDEN: 'FORBIDDEN',
+  INSUFFICIENT_PERMISSIONS: 'INSUFFICIENT_PERMISSIONS',
+
+  // Resources
+  NOT_FOUND: 'NOT_FOUND',
+  ALREADY_EXISTS: 'ALREADY_EXISTS',
+
+  // Validation
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  INVALID_INPUT: 'INVALID_INPUT',
+
+  // Business logic
+  INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
+  INVALID_STATUS: 'INVALID_STATUS',
+  DUPLICATE_BID: 'DUPLICATE_BID',
+  NO_AGENT: 'NO_AGENT',
+
+  // External
+  BLOCKCHAIN_ERROR: 'BLOCKCHAIN_ERROR',
+  EXTERNAL_SERVICE_ERROR: 'EXTERNAL_SERVICE_ERROR',
+
+  // Rate limiting
+  RATE_LIMITED: 'RATE_LIMITED',
+} as const;
+
+export const DEFAULT_PAGINATION = {
+  PAGE: 1,
+  LIMIT: 20,
+  MAX_LIMIT: 100,
+} as const;
+
+export const CACHE_TTL = {
+  SHORT: 60,
+  MEDIUM: 300,
+  LONG: 3600,
+  VERY_LONG: 86400,
+} as const;
+
+export const TOKEN_DECIMALS = 18;
+
+export const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'solana', 'near'] as const;
+
+export const NATIVE_TOKENS: Record<string, string> = {
+  ethereum: '0x0000000000000000000000000000000000000000',
+  polygon: '0x0000000000000000000000000000000000000000',
+  arbitrum: '0x0000000000000000000000000000000000000000',
+};
+
+export const INTENT_STATUSES = {
+  OPEN: 'OPEN',
+  BIDDING: 'BIDDING',
+  ASSIGNED: 'ASSIGNED',
+  EXECUTING: 'EXECUTING',
+  COMPLETED: 'COMPLETED',
+  EXPIRED: 'EXPIRED',
+  DISPUTED: 'DISPUTED',
+} as const;
+
+export const BID_STATUSES = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export const AGENT_STATUSES = {
+  DRAFT: 'DRAFT',
+  DEPLOYED: 'DEPLOYED',
+  RUNNING: 'RUNNING',
+  STOPPED: 'STOPPED',
+  ERROR: 'ERROR',
+} as const;
+
+export const DEPLOYMENT_TYPES = {
+  CLOUD: 'CLOUD',
+  TEE: 'TEE',
+  LOCAL: 'LOCAL',
+} as const;
+
+export const PRICING_MODELS = {
+  FIXED: 'fixed',
+  HOURLY: 'hourly',
+  SUCCESS: 'success',
+} as const;
