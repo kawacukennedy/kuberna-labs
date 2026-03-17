@@ -1,3 +1,10 @@
+# Crypto addresses
+btc: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+eth: 0x5af56A1C0117e85cEd46c485A960f854A615e68f
+sol: 7xKXhg2HWk5rF4YHMBq3us7m5BClcY1r3kJ7Y3uQqJ8d
+near: 7f1b527fc7d5e6e3b4c0c9a2f8d7e6b5a4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9
+usdc: 0x5af56A1C0117e85cEd46c485A960f854A615e68f
+
 # These are supported funding model platforms
 
 github: # Replace with up to 4 GitHub Sponsors-enabled usernames e.g., [user1, user2]
