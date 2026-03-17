@@ -1,20 +1,20 @@
-import { Router, Response, NextFunction } from "express";
-import { z } from "zod";
-import { prisma } from "../utils/prisma.js";
-import { createError } from "../middleware/errorHandler.js";
-import type { AuthRequest } from "../types/express.d.js";
-import { authenticate, requireRoles } from "../middleware/auth.js";
+import { Router, Response, NextFunction } from 'express';
+import { z } from 'zod';
+import { prisma } from '../utils/prisma.js';
+import { createError } from '../middleware/errorHandler.js';
+import type { AuthRequest } from '../types/express.d.js';
+import { authenticate, requireRoles } from '../middleware/auth.js';
 
 const router = Router();
 
 const resolveDisputeSchema = z.object({
-  resolution: z.enum(["requester_refund", "agent_paid"]),
+  resolution: z.enum(['requester_refund', 'agent_paid']),
 });
 
 router.get(
-  "/",
+  '/',
   authenticate,
-  requireRoles("ADMIN"),
+  requireRoles('ADMIN'),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { page = 1, limit = 20, status } = req.query;
@@ -47,7 +47,7 @@ router.get(
               },
             },
           },
-          orderBy: { createdAt: "desc" },
+          orderBy: { createdAt: 'desc' },
         }),
         prisma.dispute.count({ where }),
       ]);
@@ -64,67 +64,59 @@ router.get(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
-router.get(
-  "/:id",
-  authenticate,
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
-    try {
-      const { id } = req.params;
+router.get('/:id', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
 
-      const dispute = await prisma.dispute.findUnique({
-        where: { id },
-        include: {
-          task: {
-            include: {
-              intent: {
-                select: {
-                  id: true,
-                  description: true,
-                  requesterId: true,
-                  budget: true,
-                },
+    const dispute = await prisma.dispute.findUnique({
+      where: { id },
+      include: {
+        task: {
+          include: {
+            intent: {
+              select: {
+                id: true,
+                description: true,
+                requesterId: true,
+                budget: true,
               },
-              executor: {
-                select: {
-                  id: true,
-                  fullName: true,
-                  email: true,
-                },
+            },
+            executor: {
+              select: {
+                id: true,
+                fullName: true,
+                email: true,
               },
             },
           },
         },
-      });
+      },
+    });
 
-      if (!dispute) {
-        throw createError("Dispute not found", 404, "NOT_FOUND");
-      }
-
-      const isParty =
-        dispute.task.intent.requesterId === req.user!.id ||
-        dispute.task.executorId === req.user!.id ||
-        req.user!.roles.includes("ADMIN");
-
-      if (!isParty) {
-        throw createError(
-          "Not authorized to view this dispute",
-          403,
-          "FORBIDDEN",
-        );
-      }
-
-      res.json(dispute);
-    } catch (error) {
-      next(error);
+    if (!dispute) {
+      throw createError('Dispute not found', 404, 'NOT_FOUND');
     }
-  },
-);
+
+    const isParty =
+      dispute.task.intent.requesterId === req.user!.id ||
+      dispute.task.assignedAgentId === req.user!.id ||
+      req.user!.roles.includes('ADMIN');
+
+    if (!isParty) {
+      throw createError('Not authorized to view this dispute', 403, 'FORBIDDEN');
+    }
+
+    res.json(dispute);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post(
-  "/:id/evidence",
+  '/:id/evidence',
   authenticate,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
@@ -143,41 +135,33 @@ router.post(
       });
 
       if (!dispute) {
-        throw createError("Dispute not found", 404, "NOT_FOUND");
+        throw createError('Dispute not found', 404, 'NOT_FOUND');
       }
 
       const isParty =
         dispute.task.intent.requesterId === req.user!.id ||
-        dispute.task.executorId === req.user!.id;
+        dispute.task.assignedAgentId === req.user!.id;
 
       if (!isParty) {
-        throw createError(
-          "Not authorized to submit evidence",
-          403,
-          "FORBIDDEN",
-        );
+        throw createError('Not authorized to submit evidence', 403, 'FORBIDDEN');
       }
 
-      if (dispute.status !== "OPEN") {
-        throw createError(
-          "Dispute is not open for evidence",
-          400,
-          "INVALID_STATUS",
-        );
+      if (dispute.status !== 'OPEN') {
+        throw createError('Dispute is not open for evidence', 400, 'INVALID_STATUS');
       }
 
-      const currentEvidence = dispute.evidence || [];
+      const newEvidence = JSON.stringify({
+        submittedBy: req.user!.id,
+        content: evidence,
+        timestamp: new Date().toISOString(),
+      });
+
       const updatedDispute = await prisma.dispute.update({
         where: { id },
         data: {
-          evidence: [
-            ...currentEvidence,
-            {
-              submittedBy: req.user!.id,
-              content: evidence,
-              timestamp: new Date().toISOString(),
-            },
-          ],
+          evidence: {
+            push: newEvidence,
+          },
         },
       });
 
@@ -185,13 +169,13 @@ router.post(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 router.post(
-  "/:id/resolve",
+  '/:id/resolve',
   authenticate,
-  requireRoles("ADMIN"),
+  requireRoles('ADMIN'),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -209,18 +193,21 @@ router.post(
       });
 
       if (!dispute) {
-        throw createError("Dispute not found", 404, "NOT_FOUND");
+        throw createError('Dispute not found', 404, 'NOT_FOUND');
       }
 
-      if (dispute.status === "RESOLVED") {
-        throw createError("Dispute already resolved", 400, "ALREADY_RESOLVED");
+      if (dispute.status === 'RESOLVED') {
+        throw createError('Dispute already resolved', 400, 'ALREADY_RESOLVED');
       }
+
+      const newStatus = data.resolution === 'requester_refund' ? 'FAILED' : 'COMPLETED';
+      const intentStatus = data.resolution === 'requester_refund' ? 'DISPUTED' : 'COMPLETED';
 
       await prisma.$transaction([
         prisma.dispute.update({
           where: { id },
           data: {
-            status: "RESOLVED",
+            status: 'RESOLVED',
             resolution: data.resolution,
             resolvedAt: new Date(),
           },
@@ -228,67 +215,61 @@ router.post(
         prisma.task.update({
           where: { id: dispute.taskId },
           data: {
-            status:
-              data.resolution === "requester_refund" ? "FAILED" : "COMPLETED",
-            resolution: data.resolution,
-            disputeResolvedAt: new Date(),
+            status: newStatus,
           },
         }),
         prisma.intent.update({
           where: { id: dispute.task.intentId },
           data: {
-            status:
-              data.resolution === "requester_refund" ? "DISPUTED" : "COMPLETED",
-            completedAt:
-              data.resolution === "agent_paid" ? new Date() : undefined,
+            status: intentStatus,
+            completedAt: data.resolution === 'agent_paid' ? new Date() : undefined,
           },
         }),
       ]);
 
       const resolutionMessage =
-        data.resolution === "requester_refund"
-          ? "Funds will be refunded to the requester"
-          : "Funds will be released to the agent";
+        data.resolution === 'requester_refund'
+          ? 'Funds will be refunded to the requester'
+          : 'Funds will be released to the agent';
 
       await prisma.notification.create({
         data: {
           userId: dispute.task.intent.requesterId,
-          type: "info",
-          title: "Dispute Resolved",
+          type: 'info',
+          title: 'Dispute Resolved',
           message: resolutionMessage,
         },
       });
 
       await prisma.notification.create({
         data: {
-          userId: dispute.task.executorId,
-          type: "info",
-          title: "Dispute Resolved",
+          userId: dispute.task.assignedAgentId,
+          type: 'info',
+          title: 'Dispute Resolved',
           message: resolutionMessage,
         },
       });
 
       res.json({
-        message: "Dispute resolved successfully",
+        message: 'Dispute resolved successfully',
         resolution: data.resolution,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        next(createError("Validation error", 400, "VALIDATION_ERROR"));
+        next(createError('Validation error', 400, 'VALIDATION_ERROR'));
       } else {
         next(error);
       }
     }
-  },
+  }
 );
 
 router.post(
-  "/:id/appeal",
+  '/:id/appeal',
   authenticate,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const { reason } = req.body;
 
       const dispute = await prisma.dispute.findUnique({
         where: { id },
@@ -302,49 +283,45 @@ router.post(
       });
 
       if (!dispute) {
-        throw createError("Dispute not found", 404, "NOT_FOUND");
+        throw createError('Dispute not found', 404, 'NOT_FOUND');
       }
 
       const isParty =
         dispute.task.intent.requesterId === req.user!.id ||
-        dispute.task.executorId === req.user!.id;
+        dispute.task.assignedAgentId === req.user!.id;
 
       if (!isParty) {
-        throw createError("Not authorized to appeal", 403, "FORBIDDEN");
+        throw createError('Not authorized to appeal', 403, 'FORBIDDEN');
       }
 
-      if (dispute.status !== "RESOLVED") {
-        throw createError(
-          "Can only appeal resolved disputes",
-          400,
-          "INVALID_STATUS",
-        );
+      if (dispute.status !== 'RESOLVED') {
+        throw createError('Can only appeal resolved disputes', 400, 'INVALID_STATUS');
       }
 
       const updatedDispute = await prisma.dispute.update({
         where: { id },
         data: {
-          status: "APPEALED",
+          status: 'APPEALED',
         },
       });
 
       await prisma.notification.create({
         data: {
           userId: req.user!.id,
-          type: "info",
-          title: "Appeal Submitted",
+          type: 'info',
+          title: 'Appeal Submitted',
           message: `Your appeal has been submitted for dispute ${id}`,
         },
       });
 
       res.json({
-        message: "Appeal submitted successfully",
+        message: 'Appeal submitted successfully',
         dispute: updatedDispute,
       });
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 export const disputeRouter = router;
