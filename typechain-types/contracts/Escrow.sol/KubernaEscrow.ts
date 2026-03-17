@@ -30,6 +30,7 @@ export type EscrowDataStruct = {
   deadline: BigNumberish;
   amount: BigNumberish;
   fee: BigNumberish;
+  completionTime: BigNumberish;
   status: BigNumberish;
   intentId: string;
 };
@@ -41,6 +42,7 @@ export type EscrowDataStructOutput = [
   deadline: bigint,
   amount: bigint,
   fee: bigint,
+  completionTime: bigint,
   status: bigint,
   intentId: string
 ] & {
@@ -50,6 +52,7 @@ export type EscrowDataStructOutput = [
   deadline: bigint;
   amount: bigint;
   fee: bigint;
+  completionTime: bigint;
   status: bigint;
   intentId: string;
 };
@@ -57,7 +60,9 @@ export type EscrowDataStructOutput = [
 export interface KubernaEscrowInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "AUTO_RELEASE_DELAY"
       | "FEE_BASIS_POINTS"
+      | "MIN_DEADLINE"
       | "assignExecutor"
       | "autoRelease"
       | "createEscrow"
@@ -67,12 +72,15 @@ export interface KubernaEscrowInterface extends Interface {
       | "getEscrow"
       | "getEscrowStatus"
       | "owner"
+      | "pause"
+      | "paused"
       | "raiseDispute"
       | "releaseFunds"
       | "renounceOwnership"
       | "resolveDispute"
       | "submitCompletion"
       | "transferOwnership"
+      | "unpause"
   ): FunctionFragment;
 
   getEvent(
@@ -82,14 +90,25 @@ export interface KubernaEscrowInterface extends Interface {
       | "EscrowAssigned"
       | "EscrowCreated"
       | "EscrowFunded"
+      | "ExecutorChanged"
       | "FundsRefunded"
       | "FundsReleased"
       | "OwnershipTransferred"
+      | "Paused"
       | "TaskCompleted"
+      | "Unpaused"
   ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "AUTO_RELEASE_DELAY",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "FEE_BASIS_POINTS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MIN_DEADLINE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -122,6 +141,8 @@ export interface KubernaEscrowInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "raiseDispute",
     values: [BytesLike, string]
@@ -146,9 +167,18 @@ export interface KubernaEscrowInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(
+    functionFragment: "AUTO_RELEASE_DELAY",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "FEE_BASIS_POINTS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MIN_DEADLINE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -175,6 +205,8 @@ export interface KubernaEscrowInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "raiseDispute",
     data: BytesLike
@@ -199,6 +231,7 @@ export interface KubernaEscrowInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 }
 
 export namespace DisputeRaisedEvent {
@@ -287,6 +320,28 @@ export namespace EscrowFundedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ExecutorChangedEvent {
+  export type InputTuple = [
+    arg0: BytesLike,
+    oldExecutor: AddressLike,
+    newExecutor: AddressLike
+  ];
+  export type OutputTuple = [
+    arg0: string,
+    oldExecutor: string,
+    newExecutor: string
+  ];
+  export interface OutputObject {
+    arg0: string;
+    oldExecutor: string;
+    newExecutor: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace FundsRefundedEvent {
   export type InputTuple = [
     arg0: BytesLike,
@@ -336,12 +391,36 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace TaskCompletedEvent {
   export type InputTuple = [arg0: BytesLike, arg1: BytesLike];
   export type OutputTuple = [arg0: string, arg1: string];
   export interface OutputObject {
     arg0: string;
     arg1: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -392,7 +471,11 @@ export interface KubernaEscrow extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  AUTO_RELEASE_DELAY: TypedContractMethod<[], [bigint], "view">;
+
   FEE_BASIS_POINTS: TypedContractMethod<[], [bigint], "view">;
+
+  MIN_DEADLINE: TypedContractMethod<[], [bigint], "view">;
 
   assignExecutor: TypedContractMethod<
     [escrowId: BytesLike, executor: AddressLike],
@@ -416,13 +499,24 @@ export interface KubernaEscrow extends BaseContract {
   escrows: TypedContractMethod<
     [arg0: BytesLike],
     [
-      [string, string, string, bigint, bigint, bigint, bigint, string] & {
+      [
+        string,
+        string,
+        string,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        string
+      ] & {
         requester: string;
         executor: string;
         token: string;
         deadline: bigint;
         amount: bigint;
         fee: bigint;
+        completionTime: bigint;
         status: bigint;
         intentId: string;
       }
@@ -447,6 +541,10 @@ export interface KubernaEscrow extends BaseContract {
   getEscrowStatus: TypedContractMethod<[escrowId: BytesLike], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
+
+  pause: TypedContractMethod<[], [void], "nonpayable">;
+
+  paused: TypedContractMethod<[], [boolean], "view">;
 
   raiseDispute: TypedContractMethod<
     [escrowId: BytesLike, reason: string],
@@ -480,12 +578,20 @@ export interface KubernaEscrow extends BaseContract {
     "nonpayable"
   >;
 
+  unpause: TypedContractMethod<[], [void], "nonpayable">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
+    nameOrSignature: "AUTO_RELEASE_DELAY"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "FEE_BASIS_POINTS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MIN_DEADLINE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "assignExecutor"
@@ -514,13 +620,24 @@ export interface KubernaEscrow extends BaseContract {
   ): TypedContractMethod<
     [arg0: BytesLike],
     [
-      [string, string, string, bigint, bigint, bigint, bigint, string] & {
+      [
+        string,
+        string,
+        string,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        string
+      ] & {
         requester: string;
         executor: string;
         token: string;
         deadline: bigint;
         amount: bigint;
         fee: bigint;
+        completionTime: bigint;
         status: bigint;
         intentId: string;
       }
@@ -546,6 +663,12 @@ export interface KubernaEscrow extends BaseContract {
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "pause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "paused"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "raiseDispute"
   ): TypedContractMethod<
@@ -576,6 +699,9 @@ export interface KubernaEscrow extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "unpause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
 
   getEvent(
     key: "DisputeRaised"
@@ -613,6 +739,13 @@ export interface KubernaEscrow extends BaseContract {
     EscrowFundedEvent.OutputObject
   >;
   getEvent(
+    key: "ExecutorChanged"
+  ): TypedContractEvent<
+    ExecutorChangedEvent.InputTuple,
+    ExecutorChangedEvent.OutputTuple,
+    ExecutorChangedEvent.OutputObject
+  >;
+  getEvent(
     key: "FundsRefunded"
   ): TypedContractEvent<
     FundsRefundedEvent.InputTuple,
@@ -634,11 +767,25 @@ export interface KubernaEscrow extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "Paused"
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
     key: "TaskCompleted"
   ): TypedContractEvent<
     TaskCompletedEvent.InputTuple,
     TaskCompletedEvent.OutputTuple,
     TaskCompletedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Unpaused"
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
   >;
 
   filters: {
@@ -697,6 +844,17 @@ export interface KubernaEscrow extends BaseContract {
       EscrowFundedEvent.OutputObject
     >;
 
+    "ExecutorChanged(bytes32,address,address)": TypedContractEvent<
+      ExecutorChangedEvent.InputTuple,
+      ExecutorChangedEvent.OutputTuple,
+      ExecutorChangedEvent.OutputObject
+    >;
+    ExecutorChanged: TypedContractEvent<
+      ExecutorChangedEvent.InputTuple,
+      ExecutorChangedEvent.OutputTuple,
+      ExecutorChangedEvent.OutputObject
+    >;
+
     "FundsRefunded(bytes32,address,uint256)": TypedContractEvent<
       FundsRefundedEvent.InputTuple,
       FundsRefundedEvent.OutputTuple,
@@ -730,6 +888,17 @@ export interface KubernaEscrow extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
+    "Paused(address)": TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
     "TaskCompleted(bytes32,bytes32)": TypedContractEvent<
       TaskCompletedEvent.InputTuple,
       TaskCompletedEvent.OutputTuple,
@@ -739,6 +908,17 @@ export interface KubernaEscrow extends BaseContract {
       TaskCompletedEvent.InputTuple,
       TaskCompletedEvent.OutputTuple,
       TaskCompletedEvent.OutputObject
+    >;
+
+    "Unpaused(address)": TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
     >;
   };
 }

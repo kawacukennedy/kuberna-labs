@@ -1,234 +1,236 @@
-import { ethers } from "ethers";
-import { 
-  ESCROW_ABI, 
-  INTENT_ABI, 
-  AGENT_REGISTRY_ABI, 
-  CERTIFICATE_ABI, 
-  REPUTATION_ABI 
-} from "../utils/abis.js";
+import { ethers, Contract, JsonRpcProvider, Wallet, Interface } from 'ethers';
+import { prisma } from '../utils/prisma.js';
+import {
+  ESCROW_ABI,
+  INTENT_ABI,
+  AGENT_REGISTRY_ABI,
+  CERTIFICATE_ABI,
+  REPUTATION_ABI,
+} from '../utils/abis.js';
+import logger from '../utils/logger.js';
+
+export interface ChainConfig {
+  rpcUrl: string;
+  privateKey: string;
+  escrowAddress: string;
+  intentAddress: string;
+  agentRegistryAddress: string;
+  certificateAddress: string;
+  reputationAddress: string;
+}
+
+export interface BlockchainConfig {
+  chains: Record<string, ChainConfig>;
+  defaultChain: string;
+}
+
+export interface EscrowData {
+  requester: string;
+  executor: string;
+  token: string;
+  deadline: bigint;
+  amount: bigint;
+  fee: bigint;
+  status: number;
+  intentId: string;
+}
+
+export interface IntentData {
+  requester: string;
+  description: string;
+  structuredData: string;
+  sourceToken: string;
+  sourceAmount: bigint;
+  destToken: string;
+  minDestAmount: bigint;
+  budget: bigint;
+  status: number;
+  selectedSolver: string;
+  intentId: string;
+}
+
+export interface BidData {
+  solver: string;
+  price: bigint;
+  estimatedTime: bigint;
+  routeDetails: string;
+  status: number;
+}
 
 export class BlockchainService {
-  private provider: ethers.JsonRpcProvider;
-  private wallet: ethers.Wallet;
+  private providers: Map<string, JsonRpcProvider>;
+  private wallets: Map<string, Wallet>;
+  private config: BlockchainConfig;
+  private defaultChain: string;
 
-  constructor() {
-    const rpcUrl = process.env.RPC_URL || "http://localhost:8545";
-    const privateKey =
-      process.env.PRIVATE_KEY ||
-      "0x0000000000000000000000000000000000000000000000000000000000000000";
-    this.provider = new ethers.JsonRpcProvider(rpcUrl);
-    this.wallet = new ethers.Wallet(privateKey, this.provider);
+  constructor(config: BlockchainConfig) {
+    this.config = config;
+    this.defaultChain = config.defaultChain || 'ethereum';
+    this.providers = new Map();
+    this.wallets = new Map();
+    this.initializeProviders();
   }
 
-  getSigner(): ethers.Signer {
-    return this.wallet;
-  }
+  private initializeProviders(): void {
+    for (const [chain, chainConfig] of Object.entries(this.config.chains)) {
+      const provider = new JsonRpcProvider(chainConfig.rpcUrl);
+      this.providers.set(chain, provider);
 
-  getEscrowContract(address: string): ethers.Contract {
-    return new ethers.Contract(address, ESCROW_ABI, this.wallet);
-  }
+      const wallet = new Wallet(chainConfig.privateKey, provider);
+      this.wallets.set(chain, wallet);
 
-  getIntentContract(address: string): ethers.Contract {
-    return new ethers.Contract(address, INTENT_ABI, this.wallet);
-  }
-
-  getAgentRegistryContract(address: string): ethers.Contract {
-    return new ethers.Contract(address, AGENT_REGISTRY_ABI, this.wallet);
-  }
-
-  getCertificateContract(address: string): ethers.Contract {
-    return new ethers.Contract(address, CERTIFICATE_ABI, this.wallet);
-  }
-
-  getReputationContract(address: string): ethers.Contract {
-    return new ethers.Contract(address, REPUTATION_ABI, this.wallet);
-  }
-
-  async createEscrow(
-    intentId: string,
-    token: string,
-    amount: bigint,
-    durationSeconds: number,
-    contractAddress: string,
-  ): Promise<string> {
-    const contract = this.getEscrowContract(contractAddress);
-    try {
-      const tx = await contract.createEscrow(
-        intentId,
-        token,
-        amount,
-        durationSeconds,
-      );
-      const receipt = await tx.wait();
-      return receipt.hash;
-    } catch (error: any) {
-      console.error("Error creating escrow:", error);
-      throw new Error(`Failed to create escrow: ${error.message}`);
+      logger.info(`Initialized blockchain provider for ${chain}`);
     }
   }
 
-  async fundEscrow(
-    escrowId: string,
-    amount: bigint,
-    contractAddress: string,
-    isNative: boolean = true,
-  ): Promise<string> {
-    const contract = this.getEscrowContract(contractAddress);
-    const overrides = isNative ? { value: amount } : {};
-    const tx = await contract.fundEscrow(escrowId, overrides);
-    const receipt = await tx.wait();
-    return receipt.hash;
+  getProvider(chain?: string): JsonRpcProvider {
+    const targetChain = chain || this.defaultChain;
+    const provider = this.providers.get(targetChain);
+    if (!provider) {
+      throw new Error(`Provider not configured for chain: ${targetChain}`);
+    }
+    return provider;
   }
 
-  async createIntent(
-    intentId: string,
-    description: string,
-    structuredData: string,
-    sourceToken: string,
-    sourceAmount: bigint,
-    destToken: string,
-    minDestAmount: bigint,
-    budget: bigint,
-    durationSeconds: number,
-    contractAddress: string,
-  ): Promise<string> {
-    const contract = this.getIntentContract(contractAddress);
-    const tx = await contract.createIntent(
-      intentId,
-      description,
-      structuredData,
-      sourceToken,
-      sourceAmount,
-      destToken,
-      minDestAmount,
-      budget,
-      durationSeconds,
-    );
-    const receipt = await tx.wait();
-    return receipt.hash;
+  getWallet(chain?: string): Wallet {
+    const targetChain = chain || this.defaultChain;
+    const wallet = this.wallets.get(targetChain);
+    if (!wallet) {
+      throw new Error(`Wallet not configured for chain: ${targetChain}`);
+    }
+    return wallet;
   }
 
-  async submitBid(
-    intentId: string,
-    price: bigint,
-    estimatedTime: number,
-    routeDetails: string,
-    contractAddress: string,
-  ): Promise<string> {
-    const contract = this.getIntentContract(contractAddress);
-    const tx = await contract.submitBid(
-      intentId,
-      price,
-      estimatedTime,
-      routeDetails,
-    );
-    const receipt = await tx.wait();
-    return receipt.hash;
+  getChainConfig(chain?: string): ChainConfig {
+    const targetChain = chain || this.defaultChain;
+    const config = this.config.chains[targetChain];
+    if (!config) {
+      throw new Error(`Chain config not found for: ${targetChain}`);
+    }
+    return config;
   }
 
-  async acceptBid(
-    intentId: string,
-    solverIndex: number,
-    contractAddress: string,
-  ): Promise<string> {
-    const contract = this.getIntentContract(contractAddress);
-    const tx = await contract.acceptBid(intentId, solverIndex);
-    const receipt = await tx.wait();
-    return receipt.hash;
+  private getContract<T extends Contract>(address: string, abi: any[], chain?: string): T {
+    const wallet = this.getWallet(chain);
+    return new Contract(address, abi, wallet) as T;
   }
 
-  async registerAgent(
-    owner: string,
-    name: string,
-    description: string,
-    framework: string,
-    model: string,
-    config: string,
-    tools: string[],
-    contractAddress: string,
-  ): Promise<bigint> {
-    const contract = this.getAgentRegistryContract(contractAddress);
-    const tx = await contract.registerAgent(
-      owner,
-      name,
-      description,
-      framework,
-      model,
-      config,
-      tools,
-    );
-    const receipt = await tx.wait();
-
-    const agentId = await contract.getOwnerAgents(owner);
-    return agentId[agentId.length - 1];
+  getEscrowContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.escrowAddress, ESCROW_ABI, chain);
   }
 
-  async mintCertificate(
-    recipient: string,
-    recipientName: string,
-    courseTitle: string,
-    courseId: string,
-    instructorName: string,
-    verificationHash: string,
-    contractAddress: string,
-  ): Promise<bigint> {
-    const contract = this.getCertificateContract(contractAddress);
-    const tx = await contract.mintCertificate(
-      recipient,
-      recipientName,
-      courseTitle,
-      courseId,
-      instructorName,
-      verificationHash,
-    );
-    const receipt = await tx.wait();
-
-    const filter = contract.filters.CertificateMinted();
-    const events = await contract.queryFilter(
-      filter,
-      receipt.blockNumber,
-      receipt.blockNumber,
-    );
-    return (events[0] as ethers.EventLog).args[0];
+  getIntentContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.intentAddress, INTENT_ABI, chain);
   }
 
-  async verifyCertificate(
-    tokenId: bigint,
-    contractAddress: string,
-  ): Promise<boolean> {
-    const contract = this.getCertificateContract(contractAddress);
-    return contract.verifyCertificate(tokenId);
+  getAgentRegistryContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.agentRegistryAddress, AGENT_REGISTRY_ABI, chain);
   }
 
-  async updateReputation(
-    tokenId: bigint,
-    success: boolean,
-    responseTimeSeconds: number,
-    contractAddress: string,
-  ): Promise<string> {
-    const contract = this.getReputationContract(contractAddress);
-    const tx = await contract.updateReputation(
-      tokenId,
-      success,
-      responseTimeSeconds,
-    );
-    const receipt = await tx.wait();
-    return receipt.hash;
+  getCertificateContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.certificateAddress, CERTIFICATE_ABI, chain);
   }
 
-  async getBalance(address: string): Promise<bigint> {
-    return this.provider.getBalance(address);
+  getReputationContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.reputationAddress, REPUTATION_ABI, chain);
   }
 
-  async getTransactionReceipt(
-    txHash: string,
-  ): Promise<ethers.TransactionReceipt | null> {
-    return this.provider.getTransactionReceipt(txHash);
+  async waitForTransaction(
+    tx: ethers.TransactionResponse,
+    confirmations: number = 1
+  ): Promise<ethers.TransactionReceipt> {
+    logger.info(`Waiting for transaction: ${tx.hash}`);
+    const receipt = await tx.wait(confirmations);
+    if (!receipt) {
+      throw new Error(`Transaction ${tx.hash} failed`);
+    }
+    logger.info(`Transaction confirmed: ${tx.hash} at block ${receipt.blockNumber}`);
+    return receipt;
   }
 
-  async getGasPrice(): Promise<bigint> {
-    return this.provider.getFeeData().then((fee) => fee.gasPrice || BigInt(0));
+  async getBalance(address: string, chain?: string): Promise<bigint> {
+    const provider = this.getProvider(chain);
+    return provider.getBalance(address);
+  }
+
+  async getGasPrice(chain?: string): Promise<bigint> {
+    const provider = this.getProvider(chain);
+    const feeData = await provider.getFeeData();
+    return feeData.gasPrice || BigInt(0);
+  }
+
+  async estimateGas(fn: () => Promise<any>, chain?: string): Promise<bigint> {
+    const wallet = this.getWallet(chain);
+    try {
+      return await fn();
+    } catch (originalError: any) {
+      const error = originalError as { error?: { code?: number; data?: { gas?: bigint } } };
+      if (error.error?.code === -32000 && error.error?.data?.gas) {
+        return error.error.data.gas;
+      }
+      throw originalError;
+    }
+  }
+
+  parseLog(contract: Contract, log: any): any {
+    try {
+      const iface = contract.interface;
+      return iface.parseLog({
+        topics: log.topics,
+        data: log.data,
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  encodeFunctionData(contract: Contract, functionName: string, args: any[]): string {
+    const iface = new Interface(contract.interface.fragments);
+    return iface.encodeFunctionData(functionName, args);
+  }
+
+  decodeFunctionResult(contract: Contract, functionName: string, result: string): any {
+    const iface = new Interface(contract.interface.fragments);
+    return iface.decodeFunctionResult(functionName, result);
   }
 }
 
-export const blockchainService = new BlockchainService();
+let blockchainServiceInstance: BlockchainService | null = null;
+
+export function initializeBlockchainService(config?: BlockchainConfig): BlockchainService {
+  if (config) {
+    blockchainServiceInstance = new BlockchainService(config);
+    return blockchainServiceInstance;
+  }
+
+  if (blockchainServiceInstance) {
+    return blockchainServiceInstance;
+  }
+
+  const defaultConfig: BlockchainConfig = {
+    defaultChain: process.env.DEFAULT_CHAIN || 'ethereum',
+    chains: {
+      ethereum: {
+        rpcUrl: process.env.ETHEREUM_RPC_URL || 'http://localhost:8545',
+        privateKey:
+          process.env.PRIVATE_KEY ||
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        escrowAddress: process.env.ESCROW_ADDRESS || '',
+        intentAddress: process.env.INTENT_ADDRESS || '',
+        agentRegistryAddress: process.env.AGENT_REGISTRY_ADDRESS || '',
+        certificateAddress: process.env.CERTIFICATE_ADDRESS || '',
+        reputationAddress: process.env.REPUTATION_ADDRESS || '',
+      },
+    },
+  };
+
+  blockchainServiceInstance = new BlockchainService(defaultConfig);
+  return blockchainServiceInstance;
+}
+
+export const blockchainService = initializeBlockchainService();

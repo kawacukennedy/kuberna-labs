@@ -110,6 +110,8 @@ export interface KubernaIntentInterface extends Interface {
       | "intentCount"
       | "intents"
       | "owner"
+      | "pause"
+      | "paused"
       | "rejectBid"
       | "renounceOwnership"
       | "retractBid"
@@ -117,6 +119,7 @@ export interface KubernaIntentInterface extends Interface {
       | "solverIntents"
       | "submitBid"
       | "transferOwnership"
+      | "unpause"
   ): FunctionFragment;
 
   getEvent(
@@ -131,6 +134,8 @@ export interface KubernaIntentInterface extends Interface {
       | "IntentCreated"
       | "IntentExpired"
       | "OwnershipTransferred"
+      | "Paused"
+      | "Unpaused"
   ): EventFragment;
 
   encodeFunctionData(
@@ -201,6 +206,8 @@ export interface KubernaIntentInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "intents", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rejectBid",
     values: [BytesLike, BigNumberish]
@@ -229,6 +236,7 @@ export interface KubernaIntentInterface extends Interface {
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "MAX_DEADLINE",
@@ -273,6 +281,8 @@ export interface KubernaIntentInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "intents", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rejectBid", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -289,6 +299,7 @@ export interface KubernaIntentInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 }
 
 export namespace BidAcceptedEvent {
@@ -428,6 +439,30 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface KubernaIntent extends BaseContract {
   connect(runner?: ContractRunner | null): KubernaIntent;
   waitForDeployment(): Promise<this>;
@@ -511,7 +546,7 @@ export interface KubernaIntent extends BaseContract {
   createIntent: TypedContractMethod<
     [
       intentId: BytesLike,
-      arg1: string,
+      description: string,
       structuredData: BytesLike,
       sourceToken: AddressLike,
       sourceAmount: BigNumberish,
@@ -594,6 +629,10 @@ export interface KubernaIntent extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  pause: TypedContractMethod<[], [void], "nonpayable">;
+
+  paused: TypedContractMethod<[], [boolean], "view">;
+
   rejectBid: TypedContractMethod<
     [intentId: BytesLike, solverIndex: BigNumberish],
     [void],
@@ -632,6 +671,8 @@ export interface KubernaIntent extends BaseContract {
     [void],
     "nonpayable"
   >;
+
+  unpause: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -677,7 +718,7 @@ export interface KubernaIntent extends BaseContract {
   ): TypedContractMethod<
     [
       intentId: BytesLike,
-      arg1: string,
+      description: string,
       structuredData: BytesLike,
       sourceToken: AddressLike,
       sourceAmount: BigNumberish,
@@ -761,6 +802,12 @@ export interface KubernaIntent extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "pause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "paused"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "rejectBid"
   ): TypedContractMethod<
     [intentId: BytesLike, solverIndex: BigNumberish],
@@ -802,6 +849,9 @@ export interface KubernaIntent extends BaseContract {
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "unpause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
 
   getEvent(
     key: "BidAccepted"
@@ -872,6 +922,20 @@ export interface KubernaIntent extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "Paused"
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Unpaused"
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
   >;
 
   filters: {
@@ -983,6 +1047,28 @@ export interface KubernaIntent extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "Paused(address)": TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    "Unpaused(address)": TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
     >;
   };
 }
