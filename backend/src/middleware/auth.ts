@@ -1,36 +1,34 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { createError } from "./errorHandler.js";
-import { prisma } from "../utils/prisma.js";
+import { Request, Response, NextFunction } from 'express';
+import jwt, { JsonWebTokenError, TokenExpiredError, SignOptions } from 'jsonwebtoken';
+import { UnauthorizedError, ForbiddenError } from './errorHandler.js';
+import { prisma } from '../utils/prisma.js';
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    roles: string[];
-  };
+export interface UserPayload {
+  id: string;
+  email: string;
+  roles: string[];
 }
 
-export const authenticate = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserPayload;
+    }
+  }
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || 'kuberna-secret-key-change-in-production';
+
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw createError("No token provided", 401, "NO_TOKEN");
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedError('No token provided');
     }
 
-    const token = authHeader.split(" ")[1];
-    const secret = process.env.JWT_SECRET || "kuberna-secret-key";
-
-    const decoded = jwt.verify(token, secret) as {
-      id: string;
-      email: string;
-      roles: string[];
-    };
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -38,7 +36,7 @@ export const authenticate = async (
     });
 
     if (!user || user.deletedAt) {
-      throw createError("User not found", 401, "USER_NOT_FOUND");
+      throw new UnauthorizedError('User not found');
     }
 
     req.user = {
@@ -49,50 +47,26 @@ export const authenticate = async (
 
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      next(createError("Invalid token", 401, "INVALID_TOKEN"));
+    if (error instanceof TokenExpiredError) {
+      next(new UnauthorizedError('Token expired'));
+    } else if (error instanceof JsonWebTokenError) {
+      next(new UnauthorizedError('Invalid token'));
     } else {
       next(error);
     }
   }
 };
 
-export const requireRoles = (...roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return next(createError("Not authenticated", 401, "NOT_AUTHENTICATED"));
-    }
-
-    const hasRole = roles.some((role) => req.user!.roles.includes(role));
-
-    if (!hasRole) {
-      return next(createError("Insufficient permissions", 403, "FORBIDDEN"));
-    }
-
-    next();
-  };
-};
-
-export const optionalAuth = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+export const optionalAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return next();
     }
 
-    const token = authHeader.split(" ")[1];
-    const secret = process.env.JWT_SECRET || "kuberna-secret-key";
-
-    const decoded = jwt.verify(token, secret) as {
-      id: string;
-      email: string;
-      roles: string[];
-    };
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -111,4 +85,36 @@ export const optionalAuth = async (
   }
 
   next();
+};
+
+export const requireRoles = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return next(new UnauthorizedError('Not authenticated'));
+    }
+
+    const hasRole = roles.some((role) => req.user!.roles.includes(role));
+
+    if (!hasRole) {
+      return next(new ForbiddenError('Insufficient permissions'));
+    }
+
+    next();
+  };
+};
+
+export const generateToken = (payload: UserPayload): string => {
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: '7d',
+  } as SignOptions);
+};
+
+export const generateRefreshToken = (payload: UserPayload): string => {
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || `${JWT_SECRET}-refresh`, {
+    expiresIn: '30d',
+  } as SignOptions);
+};
+
+export const verifyToken = (token: string): UserPayload => {
+  return jwt.verify(token, JWT_SECRET) as UserPayload;
 };
