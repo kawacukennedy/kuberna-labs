@@ -1,8 +1,7 @@
 import { KubernaSDK } from '../src/index';
 import axios from 'axios';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = jest.mocked(axios);
 
 describe('KubernaSDK', () => {
   const config = {
@@ -23,10 +22,12 @@ describe('KubernaSDK', () => {
 
     const result = await sdk.request('GET', '/test');
     expect(result).toEqual(mockData);
-    expect(mockedAxios).toHaveBeenCalledWith(expect.objectContaining({
-      method: 'GET',
-      url: `${config.baseUrl}/test`,
-      headers: { 'X-API-KEY': config.apiKey },
-    }));
+    expect(mockedAxios).toHaveBeenCalledWith(
+      expect.objectContaining({
+        method: 'GET',
+        url: `${config.baseUrl}/test`,
+        headers: { 'X-API-KEY': config.apiKey },
+      })
+    );
   });
 });
