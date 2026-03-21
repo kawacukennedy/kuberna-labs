@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 import { errorHandler } from './middleware/errorHandler.js';
+import { defaultTimeout } from './middleware/timeout.js';
 import { connectDatabase } from './utils/prisma.js';
 import logger from './utils/logger.js';
 
@@ -56,6 +57,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
+app.use(defaultTimeout);
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
