@@ -1,12 +1,41 @@
-import { ethers } from "ethers";
-import { connect, NatsConnection, StringCodec } from "nats";
-import { prisma } from "../utils/prisma.js";
-import {
-  ESCROW_ABI,
-  INTENT_ABI,
-  CERTIFICATE_ABI,
-  ATTESTATION_ABI,
-} from "../utils/abis.js";
+import { ethers } from 'ethers';
+import { connect, NatsConnection, StringCodec } from 'nats';
+import { prisma } from '../utils/prisma.js';
+import { ESCROW_ABI, INTENT_ABI, CERTIFICATE_ABI, ATTESTATION_ABI } from '../utils/abis.js';
+
+export interface NatsIntentsFundedData {
+  intentId: string;
+  escrowId: string;
+  chain: string;
+  amount: string;
+  timestamp: string;
+}
+
+export interface NatsBidsSubmittedData {
+  intentId: string;
+  solver: string;
+  price: string;
+  chain: string;
+  timestamp: string;
+}
+
+export interface NatsBidsAcceptedData {
+  intentId: string;
+  solver: string;
+  chain: string;
+  timestamp: string;
+}
+
+export interface ProcessedEventData {
+  id: string;
+  chain: string;
+  contractAddress: string;
+  eventName: string;
+  blockNumber: number;
+  transactionHash: string;
+  processed: boolean;
+  createdAt: Date;
+}
 
 interface BlockchainListenerConfig {
   chains: {
@@ -59,27 +88,25 @@ export class BlockchainListener {
   }
 
   async start(): Promise<void> {
-    console.log("Starting Blockchain Listener...");
+    console.log('Starting Blockchain Listener...');
     this.isRunning = true;
 
     // Connect to NATS
     await this.connectNATS();
 
     // Initialize providers and subscribe to events
-    for (const [chainName, chainConfig] of Object.entries(
-      this.config.chains,
-    )) {
+    for (const [chainName, chainConfig] of Object.entries(this.config.chains)) {
       await this.initializeChain(chainName, chainConfig);
     }
 
     // Start fallback polling mechanism
     this.startFallbackPolling();
 
-    console.log("Blockchain Listener started successfully");
+    console.log('Blockchain Listener started successfully');
   }
 
   async stop(): Promise<void> {
-    console.log("Stopping Blockchain Listener...");
+    console.log('Stopping Blockchain Listener...');
     this.isRunning = false;
 
     // Close all WebSocket providers
@@ -95,25 +122,25 @@ export class BlockchainListener {
     // Close NATS connection
     if (this.natsConnection) {
       await this.natsConnection.close();
-      console.log("Closed NATS connection");
+      console.log('Closed NATS connection');
     }
 
-    console.log("Blockchain Listener stopped");
+    console.log('Blockchain Listener stopped');
   }
 
   private async connectNATS(): Promise<void> {
     try {
       this.natsConnection = await connect({ servers: this.config.natsUrl });
-      console.log("Connected to NATS");
+      console.log('Connected to NATS');
     } catch (error) {
-      console.error("Failed to connect to NATS:", error);
+      console.error('Failed to connect to NATS:', error);
       throw error;
     }
   }
 
   private async initializeChain(
     chainName: string,
-    chainConfig: BlockchainListenerConfig["chains"][string],
+    chainConfig: BlockchainListenerConfig['chains'][string]
   ): Promise<void> {
     try {
       // Create WebSocket provider
@@ -121,7 +148,7 @@ export class BlockchainListener {
       this.providers.set(chainName, provider);
 
       // Set up reconnection logic
-      provider.on("error", async (error) => {
+      provider.on('error', async (error) => {
         console.error(`Provider error on ${chainName}:`, error);
         await this.reconnectProvider(chainName);
       });
@@ -141,15 +168,13 @@ export class BlockchainListener {
     const attempts = this.reconnectAttempts.get(chainName) || 0;
 
     if (attempts >= this.maxReconnectAttempts) {
-      console.error(
-        `Max reconnection attempts reached for ${chainName}. Giving up.`,
-      );
+      console.error(`Max reconnection attempts reached for ${chainName}. Giving up.`);
       return;
     }
 
     const delay = this.baseReconnectDelay * Math.pow(2, attempts); // Exponential backoff
     console.log(
-      `Reconnecting to ${chainName} in ${delay}ms (attempt ${attempts + 1}/${this.maxReconnectAttempts})`,
+      `Reconnecting to ${chainName} in ${delay}ms (attempt ${attempts + 1}/${this.maxReconnectAttempts})`
     );
 
     await new Promise((resolve) => setTimeout(resolve, delay));
@@ -164,22 +189,18 @@ export class BlockchainListener {
 
   private async subscribeToContracts(
     chainName: string,
-    chainConfig: BlockchainListenerConfig["chains"][string],
-    provider: ethers.WebSocketProvider,
+    chainConfig: BlockchainListenerConfig['chains'][string],
+    provider: ethers.WebSocketProvider
   ): Promise<void> {
     const { contracts } = chainConfig;
 
     // Subscribe to Escrow contract events
     if (contracts.escrow) {
-      const escrowContract = new ethers.Contract(
-        contracts.escrow,
-        ESCROW_ABI,
-        provider,
-      );
+      const escrowContract = new ethers.Contract(contracts.escrow, ESCROW_ABI, provider);
       this.contracts.set(`${chainName}-escrow`, escrowContract);
 
       escrowContract.on(
-        "EscrowCreated",
+        'EscrowCreated',
         async (escrowId, requester, token, amount, deadline, event) => {
           await this.handleEscrowCreated(
             chainName,
@@ -188,92 +209,44 @@ export class BlockchainListener {
             token,
             amount,
             deadline,
-            event,
+            event
           );
-        },
+        }
       );
 
-      escrowContract.on(
-        "EscrowFunded",
-        async (escrowId, funder, amount, event) => {
-          await this.handleEscrowFunded(
-            chainName,
-            escrowId,
-            funder,
-            amount,
-            event,
-          );
-        },
-      );
+      escrowContract.on('EscrowFunded', async (escrowId, funder, amount, event) => {
+        await this.handleEscrowFunded(chainName, escrowId, funder, amount, event);
+      });
 
-      escrowContract.on("EscrowAssigned", async (escrowId, executor, event) => {
+      escrowContract.on('EscrowAssigned', async (escrowId, executor, event) => {
         await this.handleEscrowAssigned(chainName, escrowId, executor, event);
       });
 
-      escrowContract.on(
-        "TaskCompleted",
-        async (escrowId, proofHash, event) => {
-          await this.handleTaskCompleted(
-            chainName,
-            escrowId,
-            proofHash,
-            event,
-          );
-        },
-      );
+      escrowContract.on('TaskCompleted', async (escrowId, proofHash, event) => {
+        await this.handleTaskCompleted(chainName, escrowId, proofHash, event);
+      });
 
-      escrowContract.on(
-        "FundsReleased",
-        async (escrowId, recipient, amount, event) => {
-          await this.handleFundsReleased(
-            chainName,
-            escrowId,
-            recipient,
-            amount,
-            event,
-          );
-        },
-      );
+      escrowContract.on('FundsReleased', async (escrowId, recipient, amount, event) => {
+        await this.handleFundsReleased(chainName, escrowId, recipient, amount, event);
+      });
 
       console.log(`Subscribed to Escrow events on ${chainName}`);
     }
 
     // Subscribe to Intent contract events
     if (contracts.intent) {
-      const intentContract = new ethers.Contract(
-        contracts.intent,
-        INTENT_ABI,
-        provider,
-      );
+      const intentContract = new ethers.Contract(contracts.intent, INTENT_ABI, provider);
       this.contracts.set(`${chainName}-intent`, intentContract);
 
-      intentContract.on(
-        "IntentCreated",
-        async (intentId, requester, deadline, event) => {
-          await this.handleIntentCreated(
-            chainName,
-            intentId,
-            requester,
-            deadline,
-            event,
-          );
-        },
-      );
+      intentContract.on('IntentCreated', async (intentId, requester, deadline, event) => {
+        await this.handleIntentCreated(chainName, intentId, requester, deadline, event);
+      });
 
-      intentContract.on(
-        "BidSubmitted",
-        async (intentId, solver, price, event) => {
-          await this.handleBidSubmitted(
-            chainName,
-            intentId,
-            solver,
-            price,
-            event,
-          );
-        },
-      );
+      intentContract.on('BidSubmitted', async (intentId, solver, price, event) => {
+        await this.handleBidSubmitted(chainName, intentId, solver, price, event);
+      });
 
-      intentContract.on("BidAccepted", async (intentId, solver, event) => {
+      intentContract.on('BidAccepted', async (intentId, solver, event) => {
         await this.handleBidAccepted(chainName, intentId, solver, event);
       });
 
@@ -285,12 +258,12 @@ export class BlockchainListener {
       const certificateContract = new ethers.Contract(
         contracts.certificate,
         CERTIFICATE_ABI,
-        provider,
+        provider
       );
       this.contracts.set(`${chainName}-certificate`, certificateContract);
 
       certificateContract.on(
-        "CertificateMinted",
+        'CertificateMinted',
         async (tokenId, recipient, courseId, verificationHash, event) => {
           await this.handleCertificateMinted(
             chainName,
@@ -298,9 +271,9 @@ export class BlockchainListener {
             recipient,
             courseId,
             verificationHash,
-            event,
+            event
           );
-        },
+        }
       );
 
       console.log(`Subscribed to Certificate events on ${chainName}`);
@@ -311,20 +284,13 @@ export class BlockchainListener {
       const attestationContract = new ethers.Contract(
         contracts.attestation,
         ATTESTATION_ABI,
-        provider,
+        provider
       );
       this.contracts.set(`${chainName}-attestation`, attestationContract);
 
       attestationContract.on(
-        "AttestationCreated",
-        async (
-          attestationId,
-          schema,
-          recipient,
-          issuer,
-          expirationTime,
-          event,
-        ) => {
+        'AttestationCreated',
+        async (attestationId, schema, recipient, issuer, expirationTime, event) => {
           await this.handleAttestationCreated(
             chainName,
             attestationId,
@@ -332,9 +298,9 @@ export class BlockchainListener {
             recipient,
             issuer,
             expirationTime,
-            event,
+            event
           );
-        },
+        }
       );
 
       console.log(`Subscribed to Attestation events on ${chainName}`);
@@ -350,7 +316,7 @@ export class BlockchainListener {
     token: string,
     amount: bigint,
     deadline: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -358,7 +324,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "EscrowCreated")) {
+      if (await this.isEventProcessed(event.transactionHash, 'EscrowCreated')) {
         return;
       }
 
@@ -367,13 +333,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "EscrowCreated",
+        'EscrowCreated',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling EscrowCreated event:", error);
+      console.error('Error handling EscrowCreated event:', error);
     }
   }
 
@@ -382,7 +348,7 @@ export class BlockchainListener {
     escrowId: string,
     funder: string,
     amount: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -390,7 +356,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "EscrowFunded")) {
+      if (await this.isEventProcessed(event.transactionHash, 'EscrowFunded')) {
         return;
       }
 
@@ -401,7 +367,8 @@ export class BlockchainListener {
       // This would require storing escrowId in the Intent model or a separate mapping
 
       // Publish notification to solver network
-      await this.publishToNATS("intents.funded", {
+      await this.publishToNATS('intents.funded', {
+        intentId: escrowId.toString(),
         escrowId: escrowId.toString(),
         chain,
         amount: amount.toString(),
@@ -411,13 +378,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "EscrowFunded",
+        'EscrowFunded',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling EscrowFunded event:", error);
+      console.error('Error handling EscrowFunded event:', error);
     }
   }
 
@@ -425,7 +392,7 @@ export class BlockchainListener {
     chain: string,
     escrowId: string,
     executor: string,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -433,7 +400,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "EscrowAssigned")) {
+      if (await this.isEventProcessed(event.transactionHash, 'EscrowAssigned')) {
         return;
       }
 
@@ -442,13 +409,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "EscrowAssigned",
+        'EscrowAssigned',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling EscrowAssigned event:", error);
+      console.error('Error handling EscrowAssigned event:', error);
     }
   }
 
@@ -456,7 +423,7 @@ export class BlockchainListener {
     chain: string,
     escrowId: string,
     proofHash: string,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -464,7 +431,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "TaskCompleted")) {
+      if (await this.isEventProcessed(event.transactionHash, 'TaskCompleted')) {
         return;
       }
 
@@ -473,13 +440,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "TaskCompleted",
+        'TaskCompleted',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling TaskCompleted event:", error);
+      console.error('Error handling TaskCompleted event:', error);
     }
   }
 
@@ -488,7 +455,7 @@ export class BlockchainListener {
     escrowId: string,
     recipient: string,
     amount: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -496,7 +463,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "FundsReleased")) {
+      if (await this.isEventProcessed(event.transactionHash, 'FundsReleased')) {
         return;
       }
 
@@ -505,13 +472,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "FundsReleased",
+        'FundsReleased',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling FundsReleased event:", error);
+      console.error('Error handling FundsReleased event:', error);
     }
   }
 
@@ -520,7 +487,7 @@ export class BlockchainListener {
     intentId: string,
     requester: string,
     deadline: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -528,7 +495,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "IntentCreated")) {
+      if (await this.isEventProcessed(event.transactionHash, 'IntentCreated')) {
         return;
       }
 
@@ -537,13 +504,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "IntentCreated",
+        'IntentCreated',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling IntentCreated event:", error);
+      console.error('Error handling IntentCreated event:', error);
     }
   }
 
@@ -552,7 +519,7 @@ export class BlockchainListener {
     intentId: string,
     solver: string,
     price: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -560,14 +527,14 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "BidSubmitted")) {
+      if (await this.isEventProcessed(event.transactionHash, 'BidSubmitted')) {
         return;
       }
 
       console.log(`BidSubmitted event on ${chain}: ${intentId} by ${solver}`);
 
       // Publish notification
-      await this.publishToNATS("bids.submitted", {
+      await this.publishToNATS('bids.submitted', {
         intentId: intentId.toString(),
         solver,
         price: price.toString(),
@@ -578,13 +545,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "BidSubmitted",
+        'BidSubmitted',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling BidSubmitted event:", error);
+      console.error('Error handling BidSubmitted event:', error);
     }
   }
 
@@ -592,7 +559,7 @@ export class BlockchainListener {
     chain: string,
     intentId: string,
     solver: string,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -600,14 +567,14 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (await this.isEventProcessed(event.transactionHash, "BidAccepted")) {
+      if (await this.isEventProcessed(event.transactionHash, 'BidAccepted')) {
         return;
       }
 
       console.log(`BidAccepted event on ${chain}: ${intentId} by ${solver}`);
 
       // Publish notification
-      await this.publishToNATS("bids.accepted", {
+      await this.publishToNATS('bids.accepted', {
         intentId: intentId.toString(),
         solver,
         chain,
@@ -617,13 +584,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "BidAccepted",
+        'BidAccepted',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling BidAccepted event:", error);
+      console.error('Error handling BidAccepted event:', error);
     }
   }
 
@@ -633,7 +600,7 @@ export class BlockchainListener {
     recipient: string,
     courseId: string,
     verificationHash: string,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -641,9 +608,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (
-        await this.isEventProcessed(event.transactionHash, "CertificateMinted")
-      ) {
+      if (await this.isEventProcessed(event.transactionHash, 'CertificateMinted')) {
         return;
       }
 
@@ -656,13 +621,13 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "CertificateMinted",
+        'CertificateMinted',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling CertificateMinted event:", error);
+      console.error('Error handling CertificateMinted event:', error);
     }
   }
 
@@ -673,7 +638,7 @@ export class BlockchainListener {
     recipient: string,
     issuer: string,
     expirationTime: bigint,
-    event: ethers.Log,
+    event: ethers.Log
   ): Promise<void> {
     try {
       // Wait for confirmations
@@ -681,9 +646,7 @@ export class BlockchainListener {
       if (!confirmed) return;
 
       // Check if already processed
-      if (
-        await this.isEventProcessed(event.transactionHash, "AttestationCreated")
-      ) {
+      if (await this.isEventProcessed(event.transactionHash, 'AttestationCreated')) {
         return;
       }
 
@@ -695,22 +658,19 @@ export class BlockchainListener {
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
-        "AttestationCreated",
+        'AttestationCreated',
         chain,
         event.address,
-        event.blockNumber,
+        event.blockNumber
       );
     } catch (error) {
-      console.error("Error handling AttestationCreated event:", error);
+      console.error('Error handling AttestationCreated event:', error);
     }
   }
 
   // Helper Methods
 
-  private async waitForConfirmations(
-    event: ethers.Log,
-    chain: string,
-  ): Promise<boolean> {
+  private async waitForConfirmations(event: ethers.Log, chain: string): Promise<boolean> {
     try {
       const provider = this.providers.get(chain);
       if (!provider) {
@@ -723,27 +683,21 @@ export class BlockchainListener {
 
       if (confirmations < this.config.confirmations) {
         console.log(
-          `Event at block ${event.blockNumber} has ${confirmations}/${this.config.confirmations} confirmations. Waiting...`,
+          `Event at block ${event.blockNumber} has ${confirmations}/${this.config.confirmations} confirmations. Waiting...`
         );
         // Schedule retry after 15 seconds
-        setTimeout(
-          () => this.waitForConfirmations(event, chain),
-          15000,
-        );
+        setTimeout(() => this.waitForConfirmations(event, chain), 15000);
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error("Error waiting for confirmations:", error);
+      console.error('Error waiting for confirmations:', error);
       return false;
     }
   }
 
-  private async isEventProcessed(
-    txHash: string,
-    eventName: string,
-  ): Promise<boolean> {
+  private async isEventProcessed(txHash: string, eventName: string): Promise<boolean> {
     // Check if event has been processed
     // This would query a database table tracking processed events
     // For now, we'll implement a simple in-memory check
@@ -756,18 +710,19 @@ export class BlockchainListener {
     eventName: string,
     chain: string,
     contractAddress: string,
-    blockNumber: number,
+    blockNumber: number
   ): Promise<void> {
     // Mark event as processed in database
     // This prevents duplicate processing
-    console.log(
-      `Marked event ${eventName} from tx ${txHash} as processed`,
-    );
+    console.log(`Marked event ${eventName} from tx ${txHash} as processed`);
   }
 
-  private async publishToNATS(subject: string, data: any): Promise<void> {
+  private async publishToNATS(
+    subject: string,
+    data: NatsIntentsFundedData | NatsBidsSubmittedData | NatsBidsAcceptedData
+  ): Promise<void> {
     if (!this.natsConnection) {
-      console.error("NATS connection not available");
+      console.error('NATS connection not available');
       return;
     }
 
@@ -786,21 +741,17 @@ export class BlockchainListener {
     setInterval(async () => {
       if (!this.isRunning) return;
 
-      for (const [chainName, chainConfig] of Object.entries(
-        this.config.chains,
-      )) {
+      for (const [chainName, chainConfig] of Object.entries(this.config.chains)) {
         await this.pollMissedEvents(chainName, chainConfig);
       }
     }, this.config.pollInterval);
 
-    console.log(
-      `Started fallback polling with interval: ${this.config.pollInterval}ms`,
-    );
+    console.log(`Started fallback polling with interval: ${this.config.pollInterval}ms`);
   }
 
   private async pollMissedEvents(
     chainName: string,
-    chainConfig: BlockchainListenerConfig["chains"][string],
+    chainConfig: BlockchainListenerConfig['chains'][string]
   ): Promise<void> {
     try {
       const provider = this.providers.get(chainName);
@@ -813,7 +764,7 @@ export class BlockchainListener {
       if (fromBlock > currentBlock) return;
 
       console.log(
-        `Polling missed events on ${chainName} from block ${fromBlock} to ${currentBlock}`,
+        `Polling missed events on ${chainName} from block ${fromBlock} to ${currentBlock}`
       );
 
       // Query event history for each contract
@@ -821,9 +772,9 @@ export class BlockchainListener {
         await this.queryContractEvents(
           chainName,
           chainConfig.contracts.escrow,
-          "escrow",
+          'escrow',
           fromBlock,
-          currentBlock,
+          currentBlock
         );
       }
 
@@ -831,9 +782,9 @@ export class BlockchainListener {
         await this.queryContractEvents(
           chainName,
           chainConfig.contracts.intent,
-          "intent",
+          'intent',
           fromBlock,
-          currentBlock,
+          currentBlock
         );
       }
 
@@ -841,9 +792,9 @@ export class BlockchainListener {
         await this.queryContractEvents(
           chainName,
           chainConfig.contracts.certificate,
-          "certificate",
+          'certificate',
           fromBlock,
-          currentBlock,
+          currentBlock
         );
       }
 
@@ -851,9 +802,9 @@ export class BlockchainListener {
         await this.queryContractEvents(
           chainName,
           chainConfig.contracts.attestation,
-          "attestation",
+          'attestation',
           fromBlock,
-          currentBlock,
+          currentBlock
         );
       }
 
@@ -869,7 +820,7 @@ export class BlockchainListener {
     contractAddress: string,
     contractType: string,
     fromBlock: number,
-    toBlock: number,
+    toBlock: number
   ): Promise<void> {
     try {
       const contract = this.contracts.get(`${chainName}-${contractType}`);
@@ -903,21 +854,13 @@ export class BlockchainListener {
           }
 
           // Process the event based on its name
-          await this.processHistoricalEvent(
-            chainName,
-            contractType,
-            parsedLog,
-            log,
-          );
+          await this.processHistoricalEvent(chainName, contractType, parsedLog, log);
         } catch (error) {
-          console.error("Error parsing log:", error);
+          console.error('Error parsing log:', error);
         }
       }
     } catch (error) {
-      console.error(
-        `Error querying events for ${contractType} on ${chainName}:`,
-        error,
-      );
+      console.error(`Error querying events for ${contractType} on ${chainName}:`, error);
     }
   }
 
@@ -925,31 +868,29 @@ export class BlockchainListener {
     chainName: string,
     contractType: string,
     parsedLog: ethers.LogDescription,
-    log: ethers.Log,
+    log: ethers.Log
   ): Promise<void> {
     // Process historical events similar to real-time events
-    console.log(
-      `Processing historical event: ${parsedLog.name} on ${chainName}`,
-    );
+    console.log(`Processing historical event: ${parsedLog.name} on ${chainName}`);
 
     // Route to appropriate handler based on event name
     switch (parsedLog.name) {
-      case "EscrowFunded":
+      case 'EscrowFunded':
         await this.handleEscrowFunded(
           chainName,
           parsedLog.args[0],
           parsedLog.args[1],
           parsedLog.args[2],
-          log,
+          log
         );
         break;
-      case "BidSubmitted":
+      case 'BidSubmitted':
         await this.handleBidSubmitted(
           chainName,
           parsedLog.args[0],
           parsedLog.args[1],
           parsedLog.args[2],
-          log,
+          log
         );
         break;
       // Add other event handlers as needed
@@ -962,20 +903,13 @@ export class BlockchainListener {
     return 0;
   }
 
-  private async updateLastProcessedBlock(
-    chainName: string,
-    blockNumber: number,
-  ): Promise<void> {
+  private async updateLastProcessedBlock(chainName: string, blockNumber: number): Promise<void> {
     // Update last processed block in database
-    console.log(
-      `Updated last processed block for ${chainName}: ${blockNumber}`,
-    );
+    console.log(`Updated last processed block for ${chainName}: ${blockNumber}`);
   }
 }
 
 // Export singleton instance
-export const createBlockchainListener = (
-  config: BlockchainListenerConfig,
-): BlockchainListener => {
+export const createBlockchainListener = (config: BlockchainListenerConfig): BlockchainListener => {
   return new BlockchainListener(config);
 };
