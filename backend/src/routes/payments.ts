@@ -187,6 +187,18 @@ router.post(
 
 router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    const signature = req.headers['stripe-signature'] as string;
+    const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!stripeWebhookSecret) {
+      console.error('STRIPE_WEBHOOK_SECRET not configured');
+      return res.status(500).json({ error: 'Webhook configuration error' });
+    }
+
+    if (!signature) {
+      return res.status(400).json({ error: 'Missing Stripe signature' });
+    }
+
     const { type, data } = req.body;
 
     if (type === 'payment_intent.succeeded') {
