@@ -10,7 +10,9 @@ const router = Router();
 
 router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page = 1, limit = 20, status, sourceChain, destChain } = req.query;
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const { status, sourceChain, destChain } = req.query;
 
     const where: Record<string, unknown> = {};
 
@@ -21,8 +23,8 @@ router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: Next
     const [intents, total] = await Promise.all([
       prisma.intent.findMany({
         where,
-        skip: (Number(page) - 1) * Number(limit),
-        take: Number(limit),
+        skip: (page - 1) * limit,
+        take: limit,
         include: {
           requester: {
             select: {
@@ -43,10 +45,10 @@ router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: Next
     res.json({
       intents,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page,
+        limit,
         total,
-        pages: Math.ceil(total / Number(limit)),
+        pages: Math.ceil(total / limit),
       },
     });
   } catch (error) {
