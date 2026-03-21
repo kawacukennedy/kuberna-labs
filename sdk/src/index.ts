@@ -1,15 +1,34 @@
-import { ethers } from "ethers";
-import { z } from "zod";
-import axios from "axios";
-import { AgentManager } from "./agent.js";
-import { IntentManager } from "./intent.js";
-import { BlockchainManager } from "./blockchain.js";
+import { ethers } from 'ethers';
+import { z } from 'zod';
+import axios, { AxiosRequestConfig } from 'axios';
+import { AgentManager } from './agent.js';
+import { IntentManager } from './intent.js';
+import { BlockchainManager } from './blockchain.js';
 
 export interface KubernaConfig {
   apiKey?: string;
   privateKey?: string;
   rpcUrl?: string;
   baseUrl?: string;
+  timeout?: number;
+}
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: {
+    message: string;
+    code: string;
+  };
+}
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+export interface RequestParams {
+  method: HttpMethod;
+  path: string;
+  data?: Record<string, unknown>;
+  headers?: Record<string, string>;
 }
 
 export class KubernaSDK {
@@ -22,8 +41,9 @@ export class KubernaSDK {
 
   constructor(config: KubernaConfig = {}) {
     this.config = {
-      baseUrl: config.baseUrl || "https://api.kuberna.africa/api",
-      rpcUrl: config.rpcUrl || "https://rpc.ankr.com/eth",
+      baseUrl: config.baseUrl || 'https://api.kuberna.africa/api',
+      rpcUrl: config.rpcUrl || 'https://rpc.ankr.com/eth',
+      timeout: config.timeout || 30000,
       ...config,
     };
 
@@ -60,19 +80,41 @@ export class KubernaSDK {
     return this.config.apiKey;
   }
 
-  async request(method: string, path: string, data?: any) {
-    const headers: Record<string, string> = {};
+  async request<T = unknown>(params: RequestParams): Promise<ApiResponse<T>> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...params.headers,
+    };
+
     if (this.config.apiKey) {
-      headers["X-API-KEY"] = this.config.apiKey;
+      headers['X-API-KEY'] = this.config.apiKey;
     }
 
-    const response = await axios({
-      method,
-      url: `${this.config.baseUrl}${path}`,
-      data,
+    const requestConfig: AxiosRequestConfig = {
+      method: params.method,
+      url: `${this.config.baseUrl}${params.path}`,
+      data: params.data,
       headers,
-    });
+      timeout: this.config.timeout,
+    };
 
-    return response.data;
+    try {
+      const response = await axios(requestConfig);
+      return {
+        success: true,
+        data: response.data as T,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          error: {
+            message: error.response?.data?.message || error.message,
+            code: error.response?.data?.code || 'REQUEST_ERROR',
+          },
+        };
+      }
+      throw error;
+    }
   }
 }
