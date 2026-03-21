@@ -299,6 +299,10 @@ model Intent {
 
   @@index([status])
   @@index([requesterId])
+  @@index([escrowId])
+  @@index([selectedSolverId])
+  @@index([createdAt(sort: Desc)])
+  @@index([expiresAt])
 }
 
 model Bid {
@@ -335,6 +339,9 @@ model Task {
   intent         Intent     @relation(fields: [intentId], references: [id], onDelete: Cascade)
   executor       User       @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
   dispute        Dispute?
+
+  @@index([status])
+  @@index([assignedAgentId])
 }
 
 model Dispute {
@@ -447,6 +454,10 @@ model Payment {
   status        String   @default("PENDING")
   type          String
   createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
 }
 
 model ApiKey {
@@ -458,6 +469,8 @@ model ApiKey {
   expiresAt   DateTime?
   lastUsedAt  DateTime?
   createdAt   DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Notification {
@@ -469,4 +482,8 @@ model Notification {
   read      Boolean  @default(false)
   data      Json?
   createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, read])
+  @@index([createdAt(sort: Desc)])
 }
