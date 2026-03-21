@@ -1,5 +1,5 @@
-import { simulateContract, writeContract, readContract } from "viem/actions";
-import { getPublicClient, getWalletClient } from "../lib/wagmi";
+import { simulateContract, writeContract, readContract } from "@wagmi/core";
+import { config } from "../lib/wagmi";
 import { crossChainRouterABI } from "../lib/contracts";
 
 export interface CrossChainMessage {
@@ -51,23 +51,20 @@ export function useCrossChainRouter(
     amount: bigint,
     minReceived: bigint,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "initiateTransfer",
       args: [
         destinationChainId,
-        recipient,
+        recipient as `0x${string}`,
         token as `0x${string}`,
         amount,
         minReceived,
       ],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const executeTransfer = async (
@@ -77,75 +74,62 @@ export function useCrossChainRouter(
     amount: bigint,
     minReceived: bigint,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "executeTransfer",
       args: [
         messageId as `0x${string}`,
-        recipient,
+        recipient as `0x${string}`,
         token as `0x${string}`,
         amount,
         minReceived,
       ],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const setChainSupport = async (
     chainId: bigint,
     supported: boolean,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "setChainSupport",
       args: [chainId, supported],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const setBridgeFee = async (fee: bigint): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "setBridgeFee",
       args: [fee],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const setSlippageTolerance = async (
     tolerance: bigint,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "setSlippageTolerance",
       args: [tolerance],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const getMinReceived = async (amount: bigint): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "getMinReceived",
@@ -154,8 +138,7 @@ export function useCrossChainRouter(
   };
 
   const getMessage = async (messageId: string): Promise<CrossChainMessage> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: routerAddress,
       abi: crossChainRouterABI,
       functionName: "getMessage",

@@ -168,9 +168,13 @@ export class EthereumAdapter extends BaseChainAdapter {
       throw new Error('Wallet not connected');
     }
     
+    if (!this.walletClient?.account) {
+      throw new Error('Wallet account not found');
+    }
+    
     const signature = await this.walletClient.signMessage({
       message,
-      account: this.walletClient.account.address,
+      account: this.walletClient.account,
     });
     
     return signature;
@@ -196,12 +200,17 @@ export class EthereumAdapter extends BaseChainAdapter {
     }
     
     try {
+      if (!this.walletClient?.account) {
+        return { success: false, error: 'Wallet account not found' };
+      }
+      
       const hash = await this.walletClient.sendTransaction({
         to: getAddress(to),
         value: value || 0n,
         data: data || '0x',
-        account: this.walletClient.account.address,
-      });
+        account: this.walletClient.account,
+        chain: (this.walletClient as any).chain,
+      } as any);
       
       return { success: true, data: hash };
     } catch (error) {
@@ -233,8 +242,12 @@ export class EthereumAdapter extends BaseChainAdapter {
       throw new Error('Wallet not connected');
     }
     
+    if (!this.walletClient?.account) {
+      throw new Error('Wallet account not found');
+    }
+    
     return this.publicClient.estimateGas({
-      from: this.walletClient.account.address,
+      account: this.walletClient.account,
       to: request.to,
       value: request.value,
       data: request.data,

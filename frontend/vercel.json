@@ -1,0 +1,82 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "regions": ["iad1"],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://api.kuberna.africa/api/:1"
+    },
+    {
+      "src": "/graphql",
+      "dest": "https://api.kuberna.africa/graphql"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@next-public-api-url",
+    "NEXT_PUBLIC_GRAPHQL_URL": "@next-public-graphql-url",
+    "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID": "@next-public-walletconnect-project-id"
+  },
+  "regions": ["iad1"],
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/courses/:slug*",
+      "destination": "/courses/:slug*"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/dashboard/:path*"
+    },
+    {
+      "source": "/marketplace/:path*",
+      "destination": "/marketplace/:path*"
+    },
+    {
+      "source": "/learn/:courseId/:moduleId*",
+      "destination": "/learn/:courseId/:moduleId*"
+    }
+  ]
+}

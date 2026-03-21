@@ -1,5 +1,5 @@
-import { simulateContract, writeContract, readContract } from "viem/actions";
-import { getPublicClient, getWalletClient } from "../lib/wagmi";
+import { simulateContract, writeContract, readContract } from "@wagmi/core";
+import { config } from "../lib/wagmi";
 import { attestationABI } from "../lib/contracts";
 
 export interface AttestationService {
@@ -42,22 +42,19 @@ export function useAttestation(
     expirationTime: bigint,
     data: string,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "attest",
       args: [
         schema as `0x${string}`,
-        recipient,
+        recipient as `0x${string}`,
         expirationTime,
         data as `0x${string}`,
       ],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const attestBySignature = async (
@@ -67,42 +64,35 @@ export function useAttestation(
     data: string,
     signature: string,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "attestBySignature",
       args: [
         schema as `0x${string}`,
-        recipient,
+        recipient as `0x${string}`,
         expirationTime,
         data as `0x${string}`,
         signature as `0x${string}`,
       ],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const revoke = async (attestationId: string): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "revoke",
       args: [attestationId as `0x${string}`],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const verify = async (attestationId: string): Promise<boolean> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "verify",
@@ -113,8 +103,7 @@ export function useAttestation(
   const getAttestation = async (
     attestationId: string,
   ): Promise<AttestationData> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "getAttestation",
@@ -123,24 +112,22 @@ export function useAttestation(
   };
 
   const getIssuerAttestations = async (issuer: string): Promise<string[]> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "getIssuerAttestations",
-      args: [issuer],
+      args: [issuer as `0x${string}`],
     }) as Promise<string[]>;
   };
 
   const getRecipientAttestations = async (
     recipient: string,
   ): Promise<string[]> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: attestationAddress,
       abi: attestationABI,
       functionName: "getRecipientAttestations",
-      args: [recipient],
+      args: [recipient as `0x${string}`],
     }) as Promise<string[]>;
   };
 

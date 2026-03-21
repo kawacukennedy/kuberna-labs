@@ -1,5 +1,5 @@
-import { simulateContract, writeContract, readContract } from "viem/actions";
-import { getPublicClient, getWalletClient } from "../lib/wagmi";
+import { simulateContract, writeContract, readContract } from "@wagmi/core";
+import { config } from "../lib/wagmi";
 import { priceOracleABI } from "../lib/contracts";
 
 export interface PriceOracleService {
@@ -20,36 +20,29 @@ export function usePriceOracle(
     token: string,
     price: bigint,
   ): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "setPendingPrice",
       args: [token as `0x${string}`, price],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const confirmPrice = async (token: string): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "confirmPrice",
       args: [token as `0x${string}`],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const getPrice = async (token: string): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "getPrice",
@@ -61,8 +54,7 @@ export function usePriceOracle(
     token: string,
     fallback: bigint,
   ): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "getPriceOrFallback",
@@ -73,18 +65,21 @@ export function usePriceOracle(
   const getPriceData = async (
     token: string,
   ): Promise<{ price: bigint; timestamp: bigint }> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    const data = await readContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "getPriceData",
       args: [token as `0x${string}`],
-    }) as Promise<{ price: bigint; timestamp: bigint }>;
+    }) as any;
+    
+    return {
+      price: data[0],
+      timestamp: data[1],
+    };
   };
 
   const getPriceHistory = async (token: string): Promise<bigint[]> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: oracleAddress,
       abi: priceOracleABI,
       functionName: "getPriceHistory",

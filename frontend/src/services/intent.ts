@@ -1,12 +1,10 @@
 import { Address, Hash, keccak256, encodePacked } from "viem";
 import {
   usePublicClient,
-  useWalletClient,
   useWriteContract,
-  useReadContract,
 } from "wagmi";
 import { useCallback, useState } from "react";
-import { INTENT_ABI, getContractAddress } from "../lib/contracts";
+import { INTENT_ABI } from "../lib/contracts";
 import { useWallet } from "../hooks/useWallet";
 
 export type IntentStatus =
@@ -74,101 +72,6 @@ export interface CreateIntentParams {
   durationSeconds: number;
 }
 
-const INTENT_ABI = [
-  {
-    name: "createIntent",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "intentId", type: "bytes32" },
-      { name: "description", type: "string" },
-      { name: "structuredData", type: "bytes" },
-      { name: "sourceToken", type: "address" },
-      { name: "sourceAmount", type: "uint256" },
-      { name: "destToken", type: "address" },
-      { name: "minDestAmount", type: "uint256" },
-      { name: "budget", type: "uint256" },
-      { name: "durationSeconds", type: "uint256" },
-    ],
-    outputs: [{ name: "", type: "bytes32" }],
-  },
-  {
-    name: "submitBid",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "intentId", type: "bytes32" },
-      { name: "price", type: "uint256" },
-      { name: "estimatedTime", type: "uint256" },
-      { name: "routeDetails", type: "bytes" },
-    ],
-    outputs: [],
-  },
-  {
-    name: "acceptBid",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "intentId", type: "bytes32" },
-      { name: "solverIndex", type: "uint256" },
-    ],
-    outputs: [],
-  },
-  {
-    name: "rejectBid",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "intentId", type: "bytes32" },
-      { name: "solverIndex", type: "uint256" },
-    ],
-    outputs: [],
-  },
-  {
-    name: "setEscrow",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "intentId", type: "bytes32" },
-      { name: "escrowId", type: "bytes32" },
-    ],
-    outputs: [],
-  },
-  {
-    name: "completeIntent",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "intentId", type: "bytes32" }],
-    outputs: [],
-  },
-  {
-    name: "getIntent",
-    type: "function",
-    stateMutability: "view",
-    inputs: [{ name: "intentId", type: "bytes32" }],
-    outputs: [
-      {
-        components: [
-          { name: "requester", type: "address" },
-          { name: "description", type: "string" },
-          { name: "structuredData", type: "bytes" },
-          { name: "sourceToken", type: "address" },
-          { name: "sourceAmount", type: "uint256" },
-          { name: "destToken", type: "address" },
-          { name: "minDestAmount", type: "uint256" },
-          { name: "budget", type: "uint256" },
-          { name: "deadline", type: "uint256" },
-          { name: "status", type: "uint8" },
-          { name: "selectedSolver", type: "address" },
-          { name: "escrowId", type: "bytes32" },
-        ],
-        name: "",
-        type: "tuple",
-      },
-    ],
-  },
-] as const;
-
 export function useIntent(contractAddress?: Address): UseIntentReturn {
   const { chainId, address: userAddress } = useWallet();
   const { writeContractAsync } = useWriteContract();
@@ -179,6 +82,28 @@ export function useIntent(contractAddress?: Address): UseIntentReturn {
     if (!chainId || !contractAddress) throw new Error("Chain not connected");
     return contractAddress;
   }, [chainId, contractAddress]);
+
+  const mapIntentStatus = (statusNum: number): IntentStatus => {
+    const statusMap: Record<number, IntentStatus> = {
+      0: "Open",
+      1: "Bidding",
+      2: "Assigned",
+      3: "Executing",
+      4: "Completed",
+      5: "Expired",
+      6: "Disputed",
+    };
+    return statusMap[statusNum] || "Open";
+  };
+
+  const mapBidStatus = (statusNum: number): BidStatus => {
+    const statusMap: Record<number, BidStatus> = {
+      0: "Pending",
+      1: "Accepted",
+      2: "Rejected",
+    };
+    return statusMap[statusNum] || "Pending";
+  };
 
   const createIntent = useCallback(
     async (params: CreateIntentParams): Promise<Hash | null> => {
@@ -320,13 +245,16 @@ export function useIntent(contractAddress?: Address): UseIntentReturn {
     async (intentId: Hash): Promise<IntentData | null> => {
       if (!publicClient) return null;
       try {
-        const data = await publicClient.readContract({
+        const data = (await publicClient.readContract({
           address: getContract(),
           abi: INTENT_ABI,
           functionName: "getIntent",
           args: [intentId],
-        });
-        return data as unknown as IntentData;
+        })) as any;
+        return {
+          ...data,
+          status: mapIntentStatus(Number(data.status)),
+        };
       } catch {
         return null;
       }
@@ -356,13 +284,16 @@ export function useIntent(contractAddress?: Address): UseIntentReturn {
     async (intentId: Hash, index: number): Promise<BidData | null> => {
       if (!publicClient) return null;
       try {
-        const data = await publicClient.readContract({
+        const data = (await publicClient.readContract({
           address: getContract(),
           abi: INTENT_ABI,
           functionName: "getBid",
           args: [intentId, BigInt(index)],
-        });
-        return data as unknown as BidData;
+        })) as any;
+        return {
+          ...data,
+          status: mapBidStatus(Number(data.status)),
+        };
       } catch {
         return null;
       }

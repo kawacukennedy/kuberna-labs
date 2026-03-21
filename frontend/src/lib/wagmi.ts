@@ -4,14 +4,6 @@ import { injected, walletConnect } from 'wagmi/connectors';
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
-if (!projectId && process.env.NODE_ENV === 'production') {
-  throw new Error('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is required in production');
-}
-
-if (!projectId) {
-  console.warn('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID not set. WalletConnect will not work.');
-}
-
 export const config = createConfig({
   chains: [mainnet, sepolia, polygon, arbitrum],
   connectors: [injected(), ...(projectId ? [walletConnect({ projectId })] : [])],

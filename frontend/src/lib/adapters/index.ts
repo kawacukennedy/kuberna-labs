@@ -9,7 +9,7 @@ export type SupportedChainId =
   | typeof CHAIN_IDS.POLYGON
   | typeof CHAIN_IDS.ARBITRUM;
 
-const CHAIN_ADAPTERS: Record<number, new (privateKey?: `0x${string}`) => ChainAdapter> = {
+const CHAIN_ADAPTERS: Record<number, new (chainId: number, privateKey?: `0x${string}`) => ChainAdapter> = {
   [CHAIN_IDS.ETHEREUM_MAINNET]: EthereumAdapter,
   [CHAIN_IDS.ETHEREUM_SEPOLIA]: EthereumAdapter,
   [CHAIN_IDS.POLYGON]: EthereumAdapter,
@@ -35,7 +35,7 @@ export function createChainAdapter(
     );
   }
   
-  return new Adapter(privateKey);
+  return new Adapter(chainId, privateKey);
 }
 
 export function getChainAdapter(
@@ -162,5 +162,5 @@ export function parseTokenAmount(
   return BigInt(whole + paddedFraction);
 }
 
-export { ChainAdapter, TokenInfo, CallResult } from './base';
+export type { ChainAdapter, TokenInfo, CallResult } from './base';
 export { EthereumAdapter } from './ethereum';

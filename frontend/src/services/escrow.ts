@@ -50,7 +50,7 @@ interface RawEscrowData {
   amount: bigint;
   fee: bigint;
   deadline: bigint;
-  status: bigint;
+  status: number;
   intentId: string;
 }
 
@@ -143,7 +143,7 @@ export function useEscrow(): UseEscrowReturn {
           abi: ESCROW_ABI,
           functionName: 'getEscrow',
           args: [escrowId],
-        })) as RawEscrowData;
+        })) as unknown as RawEscrowData;
 
         const hash = await writeContractAsync({
           address: getContractAddressForChain() as Address,
@@ -273,7 +273,7 @@ export function useEscrow(): UseEscrowReturn {
           abi: ESCROW_ABI,
           functionName: 'getEscrow',
           args: [escrowId],
-        })) as RawEscrowData;
+        })) as unknown as RawEscrowData;
 
         return {
           requester: data.requester,
@@ -303,7 +303,7 @@ export function useEscrow(): UseEscrowReturn {
           abi: ESCROW_ABI,
           functionName: 'getEscrowStatus',
           args: [escrowId],
-        })) as bigint;
+        })) as unknown as bigint;
 
         return mapStatus(Number(statusNum));
       } catch (err) {

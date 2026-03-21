@@ -47,8 +47,9 @@ export function useBalance(): UseBalanceReturn {
   }, [address, publicClient]);
   
   const fetchTokenBalances = useCallback(async () => {
-    if (!address || !chainId || !walletClient) return;
+    if (!address || !chainId || !walletClient || !publicClient) return;
     
+    const client = publicClient;
     try {
       const supportedTokens = await getSupportedTokens(chainId);
       
@@ -59,7 +60,7 @@ export function useBalance(): UseBalanceReturn {
           }
           
           try {
-            const balance = await publicClient.readContract({
+            const balance = await client.readContract({
               address: token.address as Address,
               abi: [
                 {
@@ -136,16 +137,17 @@ export function useTokenBalance(tokenAddress: Address | null): {
   const fetchBalance = useCallback(async () => {
     if (!address || !publicClient) return;
     
+    const client = publicClient;
     setIsLoading(true);
     
     try {
       let newBalance: bigint;
       
       if (!tokenAddress) {
-        newBalance = await publicClient.getBalance({ address });
+        newBalance = await client.getBalance({ address });
         setFormatted(formatEther(newBalance));
       } else {
-        newBalance = await publicClient.readContract({
+        newBalance = await client.readContract({
           address: tokenAddress,
           abi: [
             {

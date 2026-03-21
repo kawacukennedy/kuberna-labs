@@ -1,5 +1,5 @@
-export { useWallet } from "./useWallet";
-export { useBalance, useTokenBalance } from "./useBalance";
+export { useWallet } from "../hooks/useWallet";
+export { useBalance, useTokenBalance } from "../hooks/useBalance";
 export { useEscrow } from "./escrow";
 export { useCertificate } from "./certificate";
 export { useIntent } from "./intent";

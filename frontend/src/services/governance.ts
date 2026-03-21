@@ -1,5 +1,5 @@
-import { readContract, writeContract, simulateContract } from "viem/actions";
-import { getPublicClient, getWalletClient } from "../lib/wagmi";
+import { readContract, writeContract, simulateContract } from "@wagmi/core";
+import { config } from "../lib/wagmi";
 import { governanceTokenABI } from "../lib/contracts";
 
 export interface GovernanceTokenService {
@@ -15,40 +15,33 @@ export function useGovernanceToken(
   tokenAddress: `0x${string}`,
 ): GovernanceTokenService {
   const mint = async (to: string, amount: bigint): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "mint",
-      args: [to, amount],
+      args: [to as `0x${string}`, amount],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const delegate = async (delegatee: string): Promise<`0x${string}`> => {
-    const walletClient = await getWalletClient();
-    if (!walletClient) throw new Error("Wallet not connected");
-
-    const { request } = await simulateContract(walletClient, {
+    const { request } = await simulateContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "delegate",
-      args: [delegatee],
+      args: [delegatee as `0x${string}`],
     });
 
-    return writeContract(walletClient, request);
+    return writeContract(config as any, request);
   };
 
   const getVotes = async (account: string): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "getVotes",
-      args: [account],
+      args: [account as `0x${string}`],
     }) as Promise<bigint>;
   };
 
@@ -56,28 +49,25 @@ export function useGovernanceToken(
     account: string,
     blockNumber: bigint,
   ): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "getPastVotes",
-      args: [account, blockNumber],
+      args: [account as `0x${string}`, blockNumber],
     }) as Promise<bigint>;
   };
 
   const balanceOf = async (account: string): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "balanceOf",
-      args: [account],
+      args: [account as `0x${string}`],
     }) as Promise<bigint>;
   };
 
   const totalSupply = async (): Promise<bigint> => {
-    const publicClient = await getPublicClient();
-    return publicClient.readContract({
+    return readContract(config as any, {
       address: tokenAddress,
       abi: governanceTokenABI,
       functionName: "totalSupply",

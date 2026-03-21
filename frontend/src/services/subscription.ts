@@ -159,7 +159,7 @@ export function useSubscription(
   const publicClient = usePublicClient();
   const [error, setError] = useState<Error | null>(null);
 
-  const getContract = () => contractAddress;
+  const getContract = useCallback(() => contractAddress, [contractAddress]);
 
   const createPlan = useCallback(
     async (

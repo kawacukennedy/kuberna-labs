@@ -1,4 +1,4 @@
-import { Address, Hash, PublicClient, WalletClient } from 'viem';
+import { Address, Hash, PublicClient, WalletClient, Abi } from 'viem';
 
 export interface ChainAdapter {
   readonly chainId: number;
@@ -105,7 +105,7 @@ export abstract class BaseChainAdapter implements ChainAdapter {
   
   protected async readContract<T>(
     address: Address,
-    abi: object,
+    abi: Abi,
     functionName: string,
     args?: unknown[]
   ): Promise<CallResult<T>> {
@@ -127,7 +127,7 @@ export abstract class BaseChainAdapter implements ChainAdapter {
   
   protected async writeContract(
     address: Address,
-    abi: object,
+    abi: Abi,
     functionName: string,
     args?: unknown[],
     account?: Address
@@ -141,9 +141,10 @@ export abstract class BaseChainAdapter implements ChainAdapter {
         address,
         abi,
         functionName,
-        args,
-        account: account || this.walletClient.account.address,
-      });
+        args: args as any,
+        chain: (this.walletClient as any).chain,
+        account: account || (this.walletClient.account as any),
+      } as any);
       return { success: true, data: hash };
     } catch (error) {
       return { 
