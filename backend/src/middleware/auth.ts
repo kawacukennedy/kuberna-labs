@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JsonWebTokenError, TokenExpiredError, SignOptions } from 'jsonwebtoken';
 import { UnauthorizedError, ForbiddenError } from './errorHandler.js';
 import { prisma } from '../utils/prisma.js';
+import { validateEnvironment } from './envValidation.js';
+
+validateEnvironment();
 
 export interface UserPayload {
   id: string;
@@ -17,7 +20,15 @@ declare global {
   }
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'kuberna-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+if (!JWT_REFRESH_SECRET) {
+  throw new Error('JWT_REFRESH_SECRET environment variable is required');
+}
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -110,7 +121,7 @@ export const generateToken = (payload: UserPayload): string => {
 };
 
 export const generateRefreshToken = (payload: UserPayload): string => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || `${JWT_SECRET}-refresh`, {
+  return jwt.sign(payload, JWT_REFRESH_SECRET, {
     expiresIn: '30d',
   } as SignOptions);
 };
