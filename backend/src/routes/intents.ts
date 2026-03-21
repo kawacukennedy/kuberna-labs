@@ -252,9 +252,7 @@ router.post(
         throw createError('Cannot bid on intent in current status', 400, 'INVALID_STATUS');
       }
 
-      const existingBid = intent.bids.find(
-        (bid: { agentId: string }) => bid.agentId === req.user!.id
-      );
+      const existingBid = intent.bids.find((bid) => bid.agentId === req.user!.id);
       if (existingBid) {
         throw createError('You have already placed a bid on this intent', 400, 'DUPLICATE_BID');
       }
@@ -317,7 +315,7 @@ router.post(
         throw createError('Only the requester can accept bids', 403, 'FORBIDDEN');
       }
 
-      const bid = intent.bids.find((b: { id: string }) => b.id === bidId);
+      const bid = intent.bids.find((b) => b.id === bidId);
       if (!bid) {
         throw createError('Bid not found', 404, 'BID_NOT_FOUND');
       }
