@@ -23,16 +23,40 @@ import { disputeRouter } from './routes/disputes.js';
 
 dotenv.config();
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+  'http://localhost:3000',
+  'http://localhost:3001',
+];
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (isProduction && !allowedOrigins.includes(origin)) {
+      const error = new Error('CORS policy violation: Origin not allowed');
+      return callback(error);
+    }
+
+    if (!isProduction) {
+      return callback(null, true);
+    }
+
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-KEY'],
+};
+
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || '*',
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
