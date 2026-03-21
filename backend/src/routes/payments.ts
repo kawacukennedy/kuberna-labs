@@ -6,6 +6,54 @@ import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, requireRoles } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validation.js';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Plan:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           enum: [sdk, accelerator, enterprise]
+ *         name:
+ *           type: string
+ *         price:
+ *           type: number
+ *         currency:
+ *           type: string
+ *           default: USD
+ *         interval:
+ *           type: string
+ *           nullable: true
+ *         features:
+ *           type: array
+ *           items:
+ *             type: string
+ *     Payment:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         userId:
+ *           type: string
+ *         amount:
+ *           type: number
+ *         currency:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [PENDING, COMPLETED, FAILED]
+ *     Withdrawal:
+ *       type: object
+ *       properties:
+ *         withdrawalId:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [processing, completed, failed]
+ */
+
 const router = Router();
 
 const checkoutSchema = z.object({
