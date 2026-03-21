@@ -1,21 +1,23 @@
-import { ethers } from "ethers";
-import { prisma } from "../utils/prisma";
-import { ESCROW_ABI, INTENT_ABI } from "../utils/abis";
-import { connect } from "nats";
+import { ethers } from 'ethers';
+import { randomBytes } from 'crypto';
+import { prisma } from '../utils/prisma';
+import { ESCROW_ABI, INTENT_ABI } from '../utils/abis';
+import { connect, NatsConnection } from 'nats';
+import logger from '../utils/logger';
 
 // Payment ABI
 const PAYMENT_ABI = [
-  "function processPayment(address token, uint256 amount) external payable",
-  "function withdraw(address token, uint256 amount) external",
-  "function getBalance(address user, address token) external view returns (uint256)",
-  "function getSupportedTokens() external view returns (address[])",
-  "function addToken(address token, uint256 minAmount, uint256 maxAmount) external",
+  'function processPayment(address token, uint256 amount) external payable',
+  'function withdraw(address token, uint256 amount) external',
+  'function getBalance(address user, address token) external view returns (uint256)',
+  'function getSupportedTokens() external view returns (address[])',
+  'function addToken(address token, uint256 minAmount, uint256 maxAmount) external',
 ];
 
 // Chainlink Price Feed ABI
 const PRICE_FEED_ABI = [
-  "function latestRoundData() external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)",
-  "function decimals() external view returns (uint8)",
+  'function latestRoundData() external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)',
+  'function decimals() external view returns (uint8)',
 ];
 
 export interface PaymentServiceConfig {
@@ -97,23 +99,51 @@ export interface TokenInfo {
   maxAmount: string;
 }
 
+export enum EscrowStatusValue {
+  None = 0,
+  Funded = 1,
+  Assigned = 2,
+  Completed = 3,
+  Disputed = 4,
+  Released = 5,
+  Refunded = 6,
+  Expired = 7,
+}
+
+export interface GasEstimateParams {
+  intentId?: string;
+  escrowId?: string;
+  token?: string;
+  amount?: string;
+  durationSeconds?: number;
+}
+
+export interface NatsPublishData {
+  intentId?: string;
+  escrowId?: string;
+  chain?: string;
+  timestamp?: string;
+  amount?: string;
+}
+
 export class PaymentService {
   private config: PaymentServiceConfig;
   private providers: Map<string, ethers.JsonRpcProvider>;
   private wallets: Map<string, ethers.Wallet>;
-  private natsConnection: any;
+  private natsConnection: NatsConnection | null;
 
   constructor(config: PaymentServiceConfig) {
     this.config = config;
     this.providers = new Map();
     this.wallets = new Map();
+    this.natsConnection = null;
     this.initializeProviders();
   }
 
   private initializeProviders(): void {
     // Initialize providers for all chains
     for (const [chain, rpcUrl] of Object.entries(this.config.rpcUrls)) {
-      if (rpcUrl && chain !== "near" && chain !== "solana") {
+      if (rpcUrl && chain !== 'near' && chain !== 'solana') {
         const provider = new ethers.JsonRpcProvider(rpcUrl);
         this.providers.set(chain, provider);
 
@@ -181,7 +211,7 @@ export class PaymentService {
   ): Promise<CreatePaymentIntentResponse> {
     // Validate request
     if (!request.amount || parseFloat(request.amount) <= 0) {
-      throw new Error("Amount must be greater than zero");
+      throw new Error('Amount must be greater than zero');
     }
 
     const supportedTokens = await this.getSupportedTokens(request.chain);
@@ -192,14 +222,15 @@ export class PaymentService {
       throw new Error(`Token ${request.token} not supported on ${request.chain}`);
     }
 
-    // Generate unique intent ID
+    // Generate unique intent ID using cryptographically secure random bytes
+    const randomBytesHex = randomBytes(16).toString('hex');
     const intentId = ethers.id(
-      `${request.userId}-${request.chain}-${Date.now()}-${Math.random()}`
+      `${request.userId}-${request.chain}-${Date.now()}-${randomBytesHex}`
     );
 
     // Prepare structured data
     const structuredData = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["string", "string", "string", "string", "string"],
+      ['string', 'string', 'string', 'string', 'string'],
       [
         request.metadata?.sourceChain || request.chain,
         request.metadata?.destChain || request.chain,
@@ -215,7 +246,7 @@ export class PaymentService {
     const intentContract = this.getIntentContract(request.chain);
     const intentTx = await intentContract.createIntent(
       intentId,
-      request.metadata?.description || "Payment intent",
+      request.metadata?.description || 'Payment intent',
       structuredData,
       request.token,
       ethers.parseUnits(request.amount, 18),
@@ -243,7 +274,7 @@ export class PaymentService {
           topics: log.topics as string[],
           data: log.data,
         });
-        return parsed?.name === "EscrowCreated";
+        return parsed?.name === 'EscrowCreated';
       } catch {
         return false;
       }
@@ -260,7 +291,7 @@ export class PaymentService {
       // Fallback: generate escrow ID
       escrowId = ethers.keccak256(
         ethers.AbiCoder.defaultAbiCoder().encode(
-          ["string", "address", "uint256"],
+          ['string', 'address', 'uint256'],
           [intentId, await this.getWallet(request.chain).getAddress(), Date.now()]
         )
       );
@@ -273,7 +304,7 @@ export class PaymentService {
       data: {
         id: intentId,
         requesterId: request.userId,
-        description: request.metadata?.description || "Payment intent",
+        description: request.metadata?.description || 'Payment intent',
         structuredData: request.metadata || {},
         sourceChain: request.metadata?.sourceChain || request.chain,
         sourceToken: request.token,
@@ -283,7 +314,7 @@ export class PaymentService {
         minDestAmount: request.metadata?.minDestAmount || request.amount,
         deadline: expiresAt,
         budget: request.amount,
-        status: "OPEN",
+        status: 'OPEN',
         expiresAt,
       },
     });
@@ -294,7 +325,7 @@ export class PaymentService {
     return {
       intentId,
       escrowId,
-      status: "created",
+      status: 'created',
       requiredApproval: {
         token: request.token,
         spender: this.config.contractAddresses.escrow[request.chain],
@@ -313,11 +344,11 @@ export class PaymentService {
     const receipt = await provider.getTransactionReceipt(txHash);
 
     if (!receipt) {
-      throw new Error("Transaction not found");
+      throw new Error('Transaction not found');
     }
 
     if (receipt.status !== 1) {
-      throw new Error("Transaction failed");
+      throw new Error('Transaction failed');
     }
 
     // Wait for confirmations (at least 3)
@@ -338,14 +369,14 @@ export class PaymentService {
           topics: log.topics as string[],
           data: log.data,
         });
-        return parsed?.name === "EscrowFunded" && parsed.args[0] === escrowId;
+        return parsed?.name === 'EscrowFunded' && parsed.args[0] === escrowId;
       } catch {
         return false;
       }
     });
 
     if (!fundedEvent) {
-      throw new Error("No EscrowFunded event found for this escrow");
+      throw new Error('No EscrowFunded event found for this escrow');
     }
 
     // Get escrow data to find associated intent
@@ -356,23 +387,23 @@ export class PaymentService {
     await prisma.intent.update({
       where: { id: intentId },
       data: {
-        status: "BIDDING",
+        status: 'BIDDING',
         escrowId,
       },
     });
 
     // Publish notification to solver network via NATS
     await this.connectNATS();
-    const js = this.natsConnection.jetstream();
-    await js.publish(
-      "intents.funded",
-      JSON.stringify({
+    if (this.natsConnection) {
+      const js = this.natsConnection.jetstream();
+      const publishData: NatsPublishData = {
         intentId,
         escrowId,
         chain,
         timestamp: new Date().toISOString(),
-      })
-    );
+      };
+      await js.publish('intents.funded', JSON.stringify(publishData));
+    }
   }
 
   /**
@@ -380,13 +411,11 @@ export class PaymentService {
    * Requirements: 14.1-14.5
    */
   async releasePayment(escrowId: string, chain: string): Promise<string> {
-    // Verify escrow status
     const escrowContract = this.getEscrowContract(chain);
     const escrowData = await escrowContract.getEscrow(escrowId);
 
-    if (escrowData.status !== 3) {
-      // 3 = Completed
-      throw new Error("Escrow is not in completed status");
+    if (escrowData.status !== BigInt(EscrowStatusValue.Completed)) {
+      throw new Error('Escrow is not in completed status');
     }
 
     // Call releaseFunds
@@ -398,7 +427,7 @@ export class PaymentService {
     await prisma.intent.update({
       where: { id: intentId },
       data: {
-        status: "COMPLETED",
+        status: 'COMPLETED',
         completedAt: new Date(),
       },
     });
@@ -420,7 +449,7 @@ export class PaymentService {
     await prisma.intent.update({
       where: { id: intentId },
       data: {
-        status: "DISPUTED",
+        status: 'DISPUTED',
       },
     });
 
@@ -464,7 +493,7 @@ export class PaymentService {
     });
 
     if (!user?.web3Address) {
-      throw new Error("User does not have a web3 address");
+      throw new Error('User does not have a web3 address');
     }
 
     return user.web3Address;
@@ -477,45 +506,42 @@ export class PaymentService {
   async estimateGas(
     chain: string,
     operation: string,
-    params: any
+    params: GasEstimateParams
   ): Promise<GasEstimate> {
     const provider = this.getProvider(chain);
-    const wallet = this.getWallet(chain);
 
     let gasLimit: bigint;
-    let tx: any;
 
-    // Estimate gas based on operation
     switch (operation) {
-      case "createEscrow":
+      case 'createEscrow':
         const escrowContract = this.getEscrowContract(chain);
         gasLimit = await escrowContract.createEscrow.estimateGas(
           params.intentId,
           params.token,
-          ethers.parseUnits(params.amount, 18),
+          ethers.parseUnits(params.amount || '0', 18),
           params.durationSeconds
         );
         break;
 
-      case "fundEscrow":
+      case 'fundEscrow':
         const escrowContractFund = this.getEscrowContract(chain);
         const isNative = params.token === ethers.ZeroAddress;
         gasLimit = await escrowContractFund.fundEscrow.estimateGas(
           params.escrowId,
-          isNative ? { value: ethers.parseUnits(params.amount, 18) } : {}
+          isNative ? { value: ethers.parseUnits(params.amount || '0', 18) } : {}
         );
         break;
 
-      case "releaseFunds":
+      case 'releaseFunds':
         const escrowContractRelease = this.getEscrowContract(chain);
         gasLimit = await escrowContractRelease.releaseFunds.estimateGas(params.escrowId);
         break;
 
-      case "withdraw":
+      case 'withdraw':
         const paymentContract = this.getPaymentContract(chain);
         gasLimit = await paymentContract.withdraw.estimateGas(
           params.token,
-          ethers.parseUnits(params.amount, 18)
+          ethers.parseUnits(params.amount || '0', 18)
         );
         break;
 
@@ -562,10 +588,11 @@ export class PaymentService {
   private async convertToUSD(chain: string, ethAmount: string): Promise<string> {
     try {
       // Get price feed address for the chain
-      const chainFeeds = this.config.priceFeedAddresses[chain as keyof typeof this.config.priceFeedAddresses];
-      const priceFeedAddress = chainFeeds?.["ETH/USD"];
+      const chainFeeds =
+        this.config.priceFeedAddresses[chain as keyof typeof this.config.priceFeedAddresses];
+      const priceFeedAddress = chainFeeds?.['ETH/USD'];
       if (!priceFeedAddress) {
-        return "0.00";
+        return '0.00';
       }
 
       const provider = this.getProvider(chain);
@@ -581,8 +608,8 @@ export class PaymentService {
 
       return usdValue.toFixed(2);
     } catch (error) {
-      console.error("Error converting to USD:", error);
-      return "0.00";
+      logger.error('Error converting to USD:', { error: String(error) });
+      return '0.00';
     }
   }
 
@@ -601,7 +628,7 @@ export class PaymentService {
             symbol: this.getNativeTokenSymbol(chain),
             name: this.getNativeTokenName(chain),
             decimals: 18,
-            minAmount: "0",
+            minAmount: '0',
             maxAmount: ethers.MaxUint256.toString(),
           });
         } else {
@@ -609,9 +636,9 @@ export class PaymentService {
           const tokenContract = new ethers.Contract(
             address,
             [
-              "function symbol() view returns (string)",
-              "function name() view returns (string)",
-              "function decimals() view returns (uint8)",
+              'function symbol() view returns (string)',
+              'function name() view returns (string)',
+              'function decimals() view returns (uint8)',
             ],
             this.getProvider(chain)
           );
@@ -627,7 +654,7 @@ export class PaymentService {
             symbol,
             name,
             decimals,
-            minAmount: "0",
+            minAmount: '0',
             maxAmount: ethers.MaxUint256.toString(),
           });
         }
@@ -635,27 +662,27 @@ export class PaymentService {
 
       return tokens;
     } catch (error) {
-      console.error("Error getting supported tokens:", error);
+      logger.error('Error getting supported tokens:', { error: String(error) });
       return [];
     }
   }
 
   private getNativeTokenSymbol(chain: string): string {
     const symbols: Record<string, string> = {
-      ethereum: "ETH",
-      polygon: "MATIC",
-      arbitrum: "ETH",
+      ethereum: 'ETH',
+      polygon: 'MATIC',
+      arbitrum: 'ETH',
     };
-    return symbols[chain] || "ETH";
+    return symbols[chain] || 'ETH';
   }
 
   private getNativeTokenName(chain: string): string {
     const names: Record<string, string> = {
-      ethereum: "Ethereum",
-      polygon: "Polygon",
-      arbitrum: "Arbitrum",
+      ethereum: 'Ethereum',
+      polygon: 'Polygon',
+      arbitrum: 'Arbitrum',
     };
-    return names[chain] || "Ethereum";
+    return names[chain] || 'Ethereum';
   }
 
   async getPaymentStatus(intentId: string): Promise<PaymentStatus> {
@@ -671,17 +698,17 @@ export class PaymentService {
     });
 
     if (!intent) {
-      throw new Error("Intent not found");
+      throw new Error('Intent not found');
     }
 
     return {
       intentId: intent.id,
-      escrowId: intent.escrowId || "",
+      escrowId: intent.escrowId || '',
       status: intent.status.toLowerCase(),
       amount: intent.sourceAmount,
       token: intent.sourceToken,
       chain: intent.sourceChain,
-      requester: intent.requester.web3Address || "",
+      requester: intent.requester.web3Address || '',
       executor: intent.selectedSolverId || undefined,
       createdAt: intent.createdAt,
       updatedAt: intent.expiresAt,
