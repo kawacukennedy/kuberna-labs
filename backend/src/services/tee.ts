@@ -1,14 +1,14 @@
-import { ethers } from "ethers";
-import { prisma } from "../utils/prisma";
-import { zkTLSService } from "./ztls";
+import { ethers } from 'ethers';
+import { prisma } from '../utils/prisma';
+import { zkTLSService } from './ztls';
 
-export type TEEProvider = "phala" | "marlin";
+export type TEEProvider = 'phala' | 'marlin';
 
 // Attestation ABI
 const ATTESTATION_ABI = [
-  "function attest(bytes32 schema, address recipient, uint64 expirationTime, bytes memory data) external returns (bytes32)",
-  "function verify(bytes32 attestationId) external view returns (bool)",
-  "function getAttestation(bytes32 attestationId) external view returns (tuple(bytes32 schema, address recipient, address issuer, uint64 expirationTime, uint64 issuedAt, bytes data, bool revoked))",
+  'function attest(bytes32 schema, address recipient, uint64 expirationTime, bytes memory data) external returns (bytes32)',
+  'function verify(bytes32 attestationId) external view returns (bool)',
+  'function getAttestation(bytes32 attestationId) external view returns (tuple(bytes32 schema, address recipient, address issuer, uint64 expirationTime, uint64 issuedAt, bytes data, bool revoked))',
 ];
 
 export interface TEEServiceConfig {
@@ -32,7 +32,7 @@ export interface TEEDeploymentRequest {
   agentId: string;
   ownerId: string;
   code: string;
-  config: Record<string, any>;
+  config: TEEDeploymentConfig;
   provider: TEEProvider;
   resources: {
     cpu: number;
@@ -41,19 +41,27 @@ export interface TEEDeploymentRequest {
   };
 }
 
+export interface TEEDeploymentConfig {
+  version?: string;
+  entryPoint?: string;
+  env?: Record<string, string>;
+  ports?: number[];
+  volumes?: string[];
+}
+
 export interface TEEDeploymentResponse {
   deploymentId: string;
   enclaveId: string;
   endpoint: string;
   attestation: AttestationReport;
-  status: "provisioning" | "running";
+  status: 'provisioning' | 'running';
 }
 
 export interface TEEDeploymentStatus {
   deploymentId: string;
   agentId: string;
   provider: TEEProvider;
-  status: "provisioning" | "running" | "stopped" | "failed" | "terminated";
+  status: 'provisioning' | 'running' | 'stopped' | 'failed' | 'terminated';
   endpoint?: string;
   attestation?: AttestationReport;
   createdAt: Date;
@@ -103,9 +111,9 @@ export interface TEEMetrics {
 
 export interface ZKTLSProofRequest {
   agentId: string;
-  provider: "reclaim" | "zkpass";
+  provider: 'reclaim' | 'zkpass';
   dataSource: string;
-  claimType: "bank_balance" | "kyc_status" | "credit_score" | "twitter_verified" | "email_verified";
+  claimType: 'bank_balance' | 'kyc_status' | 'credit_score' | 'twitter_verified' | 'email_verified';
   parameters: Record<string, any>;
 }
 
@@ -143,11 +151,11 @@ export class TEEService {
     });
 
     if (!agent) {
-      throw new Error("Agent not found");
+      throw new Error('Agent not found');
     }
 
-    if (agent.status === "RUNNING") {
-      throw new Error("Agent already deployed");
+    if (agent.status === 'RUNNING') {
+      throw new Error('Agent already deployed');
     }
 
     // Step 2: Package agent code with configuration
@@ -155,7 +163,7 @@ export class TEEService {
 
     // Step 3: Call TEE provider API to deploy to enclave
     const deployment =
-      request.provider === "phala"
+      request.provider === 'phala'
         ? await this.deployToPhala(request, packagedCode)
         : await this.deployToMarlin(request, packagedCode);
 
@@ -176,7 +184,7 @@ export class TEEService {
     if (!attestation || !attestation.isValid) {
       // Terminate enclave if attestation fails
       await this.terminateEnclave(deployment.enclaveId, request.provider);
-      throw new Error("Failed to obtain valid attestation after maximum attempts");
+      throw new Error('Failed to obtain valid attestation after maximum attempts');
     }
 
     // Step 5: Submit attestation to on-chain Attestation contract
@@ -194,8 +202,8 @@ export class TEEService {
     await prisma.agent.update({
       where: { id: request.agentId },
       data: {
-        status: "RUNNING",
-        deploymentType: "TEE",
+        status: 'RUNNING',
+        deploymentType: 'TEE',
         deploymentUrl: deployment.endpoint,
         teeAttestation: {
           deploymentId,
@@ -216,17 +224,14 @@ export class TEEService {
       enclaveId: deployment.enclaveId,
       endpoint: deployment.endpoint,
       attestation,
-      status: "running",
+      status: 'running',
     };
   }
 
   /**
    * Package agent code with configuration
    */
-  private async packageAgentCode(
-    code: string,
-    config: Record<string, any>
-  ): Promise<string> {
+  private async packageAgentCode(code: string, config: Record<string, any>): Promise<string> {
     // In production, this would create a container image or bundle
     // For now, we'll encode the code and config as JSON
     const packageData = {
@@ -234,7 +239,7 @@ export class TEEService {
       config,
       timestamp: Date.now(),
     };
-    return Buffer.from(JSON.stringify(packageData)).toString("base64");
+    return Buffer.from(JSON.stringify(packageData)).toString('base64');
   }
 
   /**
@@ -248,9 +253,9 @@ export class TEEService {
 
     try {
       const response = await fetch(`${endpoint}/deploy`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.config.phala.apiKey}`,
         },
         body: JSON.stringify({
@@ -287,7 +292,7 @@ export class TEEService {
         endpoint: deploymentEndpoint,
       };
     } catch (error) {
-      console.error("Phala deployment error:", error);
+      console.error('Phala deployment error:', error);
       throw new Error(`Phala deployment failed: ${error}`);
     }
   }
@@ -303,9 +308,9 @@ export class TEEService {
 
     try {
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.config.marlin.apiKey}`,
         },
         body: JSON.stringify({
@@ -342,7 +347,7 @@ export class TEEService {
         endpoint: deploymentEndpoint,
       };
     } catch (error) {
-      console.error("Marlin deployment error:", error);
+      console.error('Marlin deployment error:', error);
       throw new Error(`Marlin deployment failed: ${error}`);
     }
   }
@@ -381,7 +386,7 @@ export class TEEService {
       // Step 4: Return verification result
       return true;
     } catch (error) {
-      console.error("Attestation verification error:", error);
+      console.error('Attestation verification error:', error);
       return false;
     }
   }
@@ -395,7 +400,7 @@ export class TEEService {
       // For now, we'll do a basic validation
       return quote.length > 0 && signature.length > 0;
     } catch (error) {
-      console.error("Quote signature verification error:", error);
+      console.error('Quote signature verification error:', error);
       return false;
     }
   }
@@ -435,11 +440,11 @@ export class TEEService {
     );
 
     // Create schema for TEE deployment
-    const schema = ethers.id("TEEDeployment");
+    const schema = ethers.id('TEEDeployment');
 
     // Encode attestation data
     const attestationData = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["string", "string", "string", "uint256", "string"],
+      ['string', 'string', 'string', 'uint256', 'string'],
       [
         attestation.quote,
         attestation.mrenclave,
@@ -453,12 +458,7 @@ export class TEEService {
     const expirationTime = Math.floor(Date.now() / 1000) + 31536000;
 
     // Submit attestation
-    const tx = await attestationContract.attest(
-      schema,
-      recipient,
-      expirationTime,
-      attestationData
-    );
+    const tx = await attestationContract.attest(schema, recipient, expirationTime, attestationData);
 
     const receipt = await tx.wait();
 
@@ -469,7 +469,7 @@ export class TEEService {
           topics: log.topics as string[],
           data: log.data,
         });
-        return parsed?.name === "AttestationCreated";
+        return parsed?.name === 'AttestationCreated';
       } catch {
         return false;
       }
@@ -486,7 +486,7 @@ export class TEEService {
     // Fallback: generate attestation ID
     return ethers.keccak256(
       ethers.AbiCoder.defaultAbiCoder().encode(
-        ["bytes32", "address", "uint256"],
+        ['bytes32', 'address', 'uint256'],
         [schema, recipient, Date.now()]
       )
     );
@@ -503,7 +503,7 @@ export class TEEService {
     });
 
     if (!agent) {
-      throw new Error("Agent not found");
+      throw new Error('Agent not found');
     }
 
     // Step 2: Initiate session with zkTLS provider (Reclaim or zkPass)
@@ -584,7 +584,7 @@ export class TEEService {
 
     // Encode proof data
     const proofData = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["string", "string", "uint256"],
+      ['string', 'string', 'uint256'],
       [proof.proofData, JSON.stringify(proof.claim), Date.now()]
     );
 
@@ -603,7 +603,7 @@ export class TEEService {
           topics: log.topics as string[],
           data: log.data,
         });
-        return parsed?.name === "AttestationCreated";
+        return parsed?.name === 'AttestationCreated';
       } catch {
         return false;
       }
@@ -620,7 +620,7 @@ export class TEEService {
     // Fallback
     return ethers.keccak256(
       ethers.AbiCoder.defaultAbiCoder().encode(
-        ["bytes32", "address", "uint256"],
+        ['bytes32', 'address', 'uint256'],
         [schema, recipient, Date.now()]
       )
     );
@@ -635,14 +635,14 @@ export class TEEService {
     const agent = await prisma.agent.findFirst({
       where: {
         teeAttestation: {
-          path: ["deploymentId"],
+          path: ['deploymentId'],
           equals: deploymentId,
         },
       },
     });
 
     if (!agent || !agent.teeAttestation) {
-      throw new Error("Deployment not found");
+      throw new Error('Deployment not found');
     }
 
     const deployment = agent.teeAttestation as any;
@@ -654,7 +654,7 @@ export class TEEService {
       deploymentId: deployment.deploymentId,
       agentId: agent.id,
       provider: deployment.provider,
-      status: agent.status === "RUNNING" ? "running" : "stopped",
+      status: agent.status === 'RUNNING' ? 'running' : 'stopped',
       endpoint: agent.deploymentUrl || undefined,
       attestation: deployment.attestation,
       createdAt: new Date(deployment.createdAt),
@@ -672,14 +672,14 @@ export class TEEService {
     const agent = await prisma.agent.findFirst({
       where: {
         teeAttestation: {
-          path: ["deploymentId"],
+          path: ['deploymentId'],
           equals: deploymentId,
         },
       },
     });
 
     if (!agent || !agent.teeAttestation) {
-      throw new Error("Deployment not found");
+      throw new Error('Deployment not found');
     }
 
     const deployment = agent.teeAttestation as any;
@@ -691,7 +691,7 @@ export class TEEService {
     await prisma.agent.update({
       where: { id: agent.id },
       data: {
-        status: "STOPPED",
+        status: 'STOPPED',
       },
     });
   }
@@ -719,7 +719,7 @@ export class TEEService {
    */
   async verifyZKTLSProof(proofId: string): Promise<boolean> {
     // Verify proof using zkTLS service
-    return await zkTLSService.verifyProof(proofId, "");
+    return await zkTLSService.verifyProof(proofId, '');
   }
 
   /**
@@ -731,9 +731,8 @@ export class TEEService {
   ): Promise<AttestationReport | null> {
     try {
       const endpoint =
-        provider === "phala" ? this.config.phala.endpoint : this.config.marlin.endpoint;
-      const apiKey =
-        provider === "phala" ? this.config.phala.apiKey : this.config.marlin.apiKey;
+        provider === 'phala' ? this.config.phala.endpoint : this.config.marlin.endpoint;
+      const apiKey = provider === 'phala' ? this.config.phala.apiKey : this.config.marlin.apiKey;
 
       const response = await fetch(`${endpoint}/enclaves/${enclaveId}/attestation`, {
         headers: {
@@ -755,15 +754,15 @@ export class TEEService {
       };
 
       return {
-        quote: data.quote || "",
-        mrenclave: data.mrenclave || "",
-        mrsigner: data.mrsigner || "",
+        quote: data.quote || '',
+        mrenclave: data.mrenclave || '',
+        mrsigner: data.mrsigner || '',
         timestamp: data.timestamp || Math.floor(Date.now() / 1000),
-        signature: data.signature || "",
+        signature: data.signature || '',
         isValid: data.is_valid || false,
       };
     } catch (error) {
-      console.error("Attestation retrieval error:", error);
+      console.error('Attestation retrieval error:', error);
       return null;
     }
   }
@@ -774,18 +773,17 @@ export class TEEService {
   private async terminateEnclave(enclaveId: string, provider: TEEProvider): Promise<void> {
     try {
       const endpoint =
-        provider === "phala" ? this.config.phala.endpoint : this.config.marlin.endpoint;
-      const apiKey =
-        provider === "phala" ? this.config.phala.apiKey : this.config.marlin.apiKey;
+        provider === 'phala' ? this.config.phala.endpoint : this.config.marlin.endpoint;
+      const apiKey = provider === 'phala' ? this.config.phala.apiKey : this.config.marlin.apiKey;
 
       await fetch(`${endpoint}/enclaves/${enclaveId}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
       });
     } catch (error) {
-      console.error("Enclave termination error:", error);
+      console.error('Enclave termination error:', error);
     }
   }
 
