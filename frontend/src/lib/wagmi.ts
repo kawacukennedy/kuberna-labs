@@ -1,25 +1,27 @@
-import { getDefaultConfig } from '@wagmi/core';
+import { createConfig, http } from 'wagmi';
+import { mainnet, sepolia, polygon, arbitrum } from 'wagmi/chains';
 import { injected, walletConnect } from 'wagmi/connectors';
-import { SUPPORTED_CHAINS } from './chains';
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '';
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
-export const config = getDefaultConfig({
-  chains: SUPPORTED_CHAINS,
-  connectors: [
-    injected(),
-    walletConnect({
-      projectId,
-      showQrModal: true,
-    }),
-  ],
+if (!projectId && process.env.NODE_ENV === 'production') {
+  throw new Error('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is required in production');
+}
+
+if (!projectId) {
+  console.warn('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID not set. WalletConnect will not work.');
+}
+
+export const config = createConfig({
+  chains: [mainnet, sepolia, polygon, arbitrum],
+  connectors: [injected(), ...(projectId ? [walletConnect({ projectId })] : [])],
   transports: {
-    [SUPPORTED_CHAINS[0].id]: 'https://eth-mainnet.g.alchemy.com/v2/demo',
-    [SUPPORTED_CHAINS[1].id]: 'https://eth-sepolia.g.alchemy.com/v2/demo',
-    [SUPPORTED_CHAINS[2].id]: 'https://polygon-mainnet.g.alchemy.com/v2/demo',
-    [SUPPORTED_CHAINS[3].id]: 'https://arb1.arbitrum.io/rpc',
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+    [polygon.id]: http(),
+    [arbitrum.id]: http(),
   },
-  ssr: false,
+  ssr: true,
 });
 
 export const WALLET_CONNECT_PROJECT_ID = projectId;
