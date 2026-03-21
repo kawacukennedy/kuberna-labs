@@ -55,9 +55,8 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_API_URL": "@next-public-api-url",
-    "NEXT_PUBLIC_GRAPHQL_URL": "@next-public-graphql-url",
-    "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID": "@next-public-walletconnect-project-id"
+    "NEXT_PUBLIC_API_URL": "https://api.kuberna.africa",
+    "NEXT_PUBLIC_GRAPHQL_URL": "https://api.kuberna.africa/graphql"
   },
   "regions": ["iad1"],
   "trailingSlash": false,
