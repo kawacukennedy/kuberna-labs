@@ -15,6 +15,13 @@
     "sourceMap": true,
     "moduleResolution": "node"
   },
-  "include": ["contracts/**/*", "scripts/**/*", "test/**/*", "frontend/**/*", "backend/**/*"],
+  "include": [
+    "contracts/**/*",
+    "scripts/**/*",
+    "test/**/*",
+    "frontend/**/*",
+    "backend/**/*",
+    "typechain-types/**/*"
+  ],
   "exclude": ["node_modules", "dist"]
 }
