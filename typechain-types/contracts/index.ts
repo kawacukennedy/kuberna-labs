@@ -27,6 +27,8 @@ import type * as vestingSol from "./Vesting.sol";
 export type { vestingSol };
 import type * as workshopSol from "./Workshop.sol";
 export type { workshopSol };
+import type * as mocks from "./mocks";
+export type { mocks };
 export type { Attestation } from "./Attestation";
 export type { CrossChainRouter } from "./CrossChainRouter";
 export type { GovernanceToken } from "./GovernanceToken";

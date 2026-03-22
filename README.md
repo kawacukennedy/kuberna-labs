@@ -6,8 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-10B981.svg)](/LICENSE)
 [![CI](https://img.shields.io/badge/CI-passing-success.svg)](https://github.com/kawacukennedy/kuberna-labs/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA.svg)](https://discord.gg/kuberna)
-[![Twitter](https://img.shields.io/badge/Twitter-@Arnaud__Kennedy-1DA1F2.svg)](https://twitter.com/Arnaud_Kennedy)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA.svg)](https://discord.gg/74jRFM7u)
+[![Twitter](https://img.shields.io/badge/Twitter-@Arnaud__Kennedy-1DA1F2.svg)](https://x.com/Arnaud_Kennedy)
 
 </div>
 
@@ -198,5 +198,5 @@ We're building the future of the agentic economy. See [CONTRIBUTING.md](./CONTRI
 ---
 
 <div align="center">
-  Built with ❤️ in <b>Kigali, Rwanda</b> by the Kuberna Labs Team.
+  Built in <b>Kigali, Rwanda</b> by the Kuberna Labs Team.
 </div>

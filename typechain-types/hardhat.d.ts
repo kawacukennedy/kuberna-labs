@@ -166,6 +166,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.KubernaIntent__factory>;
     getContractFactory(
+      name: "MockERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockERC20__factory>;
+    getContractFactory(
       name: "KubernaMultisig",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.KubernaMultisig__factory>;
@@ -389,6 +393,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.KubernaIntent>;
     getContractAt(
+      name: "MockERC20",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockERC20>;
+    getContractAt(
       name: "KubernaMultisig",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -582,6 +591,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.KubernaIntent>;
     deployContract(
+      name: "MockERC20",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockERC20>;
+    deployContract(
       name: "KubernaMultisig",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.KubernaMultisig>;
@@ -804,6 +817,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.KubernaIntent>;
+    deployContract(
+      name: "MockERC20",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockERC20>;
     deployContract(
       name: "KubernaMultisig",
       args: any[],

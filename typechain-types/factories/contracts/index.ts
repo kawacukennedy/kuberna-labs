@@ -14,6 +14,7 @@ export * as subscriptionSol from "./Subscription.sol";
 export * as treasurySol from "./Treasury.sol";
 export * as vestingSol from "./Vesting.sol";
 export * as workshopSol from "./Workshop.sol";
+export * as mocks from "./mocks";
 export { Attestation__factory } from "./Attestation__factory";
 export { CrossChainRouter__factory } from "./CrossChainRouter__factory";
 export { GovernanceToken__factory } from "./GovernanceToken__factory";

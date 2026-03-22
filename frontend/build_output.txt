@@ -1,0 +1,47 @@
+
+> kuberna-frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 14.1.0
+
+   Linting and checking validity of types ...
+
+./src/components/shared/CourseCard.tsx
+17:9  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/pages/auth/login.tsx
+111:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/pages/courses/[slug].tsx
+108:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/pages/index.tsx
+105:14  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/pages/learn/[courseId]/[moduleId].tsx
+44:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/services/subscription.ts
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 193) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 211) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 229) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 247) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 265) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 283) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 300) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 317) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+162:9  Warning: The 'getContract' function makes the dependencies of useCallback Hook (at line 334) change on every render. To fix this, wrap the definition of 'getContract' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+Failed to compile.
+
+./src/services/attestation.ts:51:9
+Type error: Type 'string' is not assignable to type '`0x${string}`'.
+
+[0m [90m 49 |[39m       args[33m:[39m [[0m
+[0m [90m 50 |[39m         schema [36mas[39m [32m`0x${string}`[39m[33m,[39m[0m
+[0m[31m[1m>[22m[39m[90m 51 |[39m         recipient[33m,[39m[0m
+[0m [90m    |[39m         [31m[1m^[22m[39m[0m
+[0m [90m 52 |[39m         expirationTime[33m,[39m[0m
+[0m [90m 53 |[39m         data [36mas[39m [32m`0x${string}`[39m[33m,[39m[0m
+[0m [90m 54 |[39m       ][33m,[39m[0m

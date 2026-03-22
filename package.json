@@ -25,7 +25,9 @@
     "node": "hardhat node",
     "clean": "hardhat clean",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"**/*.{ts,sol,json,md}\""
+    "format": "prettier --write \"**/*.{ts,sol,json,md}\"",
+    "dev": "cd frontend && npm run dev",
+    "install:frontend": "cd frontend && npm install"
   },
   "keywords": [
     "web3",

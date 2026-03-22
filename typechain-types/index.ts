@@ -84,6 +84,8 @@ export type { GovernanceToken } from "./contracts/GovernanceToken";
 export { GovernanceToken__factory } from "./factories/contracts/GovernanceToken__factory";
 export type { KubernaIntent } from "./contracts/Intent.sol/KubernaIntent";
 export { KubernaIntent__factory } from "./factories/contracts/Intent.sol/KubernaIntent__factory";
+export type { MockERC20 } from "./contracts/mocks/MockERC20";
+export { MockERC20__factory } from "./factories/contracts/mocks/MockERC20__factory";
 export type { KubernaMultisig } from "./contracts/Multisig.sol/KubernaMultisig";
 export { KubernaMultisig__factory } from "./factories/contracts/Multisig.sol/KubernaMultisig__factory";
 export type { KubernaPayment } from "./contracts/Payment.sol/KubernaPayment";
