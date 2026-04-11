@@ -25,28 +25,28 @@ export default function CourseDetailPage() {
 
             <div className="flex flex-wrap gap-8 mb-12 py-6 border-y border-glass-border">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-xl"><User size={20} /></div>
+                <div className="p-2 bg-primary/10 text-primary rounded-xl"><User size={20} /></div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">Instructor</p>
                   <p className="text-sm font-bold">Dr. Alice Smith</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl"><Clock size={20} /></div>
+                <div className="p-2 bg-secondary/10 text-secondary rounded-xl"><Clock size={20} /></div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">Duration</p>
                   <p className="text-sm font-bold">12h 30m Total</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-amber-100 text-amber-600 rounded-xl"><Globe size={20} /></div>
+                <div className="p-2 bg-accent/10 text-accent rounded-xl"><Globe size={20} /></div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">Language</p>
                   <p className="text-sm font-bold">English</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 text-purple-600 rounded-xl"><ShieldCheck size={20} /></div>
+                <div className="p-2 bg-primary-dark/10 text-primary-dark rounded-xl"><ShieldCheck size={20} /></div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">Certification</p>
                   <p className="text-sm font-bold">NFT Certificate</p>
@@ -66,7 +66,7 @@ export default function CourseDetailPage() {
                   'Deploy and monitor intents across production networks'
                 ].map((obj, i) => (
                   <div key={i} className="flex gap-3 text-sm">
-                    <CheckCircle2 size={18} className="text-emerald-500 mt-0.5" />
+                    <CheckCircle2 size={18} className="text-secondary mt-0.5" />
                     <p>{obj}</p>
                   </div>
                 ))}
