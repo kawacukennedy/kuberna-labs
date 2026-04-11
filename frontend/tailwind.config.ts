@@ -25,6 +25,7 @@ const config: Config = {
         secondary: {
           DEFAULT: "var(--secondary)",
           dark: "var(--secondary-dark)",
+          light: "var(--secondary-light)",
           foreground: "var(--secondary-foreground)",
         },
         muted: {
@@ -33,6 +34,8 @@ const config: Config = {
         },
         accent: {
           DEFAULT: "var(--accent)",
+          dark: "var(--accent-dark)",
+          light: "var(--accent-light)",
           foreground: "var(--accent-foreground)",
         },
         card: {
