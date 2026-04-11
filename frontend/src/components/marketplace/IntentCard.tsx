@@ -15,30 +15,30 @@ const getStatusStyles = (status: string) => {
   switch (status.toUpperCase()) {
     case 'OPEN':
       return {
-        bg: 'bg-emerald-500/10',
-        text: 'text-emerald-600',
-        dot: 'bg-emerald-500',
+        bg: 'bg-secondary/10',
+        text: 'text-secondary',
+        dot: 'bg-secondary',
         icon: Activity
       };
     case 'EXECUTING':
       return {
-        bg: 'bg-amber-500/10',
-        text: 'text-amber-600',
-        dot: 'bg-amber-500',
+        bg: 'bg-accent/10',
+        text: 'text-accent-dark',
+        dot: 'bg-accent',
         icon: ShieldCheck
       };
     case 'COMPLETED':
       return {
-        bg: 'bg-indigo-500/10',
-        text: 'text-indigo-600',
-        dot: 'bg-indigo-500',
+        bg: 'bg-primary/10',
+        text: 'text-primary',
+        dot: 'bg-primary',
         icon: CheckCircle2
       };
     default:
       return {
-        bg: 'bg-slate-500/10',
-        text: 'text-slate-600',
-        dot: 'bg-slate-500',
+        bg: 'bg-muted',
+        text: 'text-muted-foreground',
+        dot: 'bg-muted-foreground',
         icon: Activity
       };
   }
