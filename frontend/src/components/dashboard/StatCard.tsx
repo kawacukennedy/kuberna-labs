@@ -16,7 +16,7 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, icon, trend, t
           {icon}
         </div>
         {trend && (
-          <span className={`text-xs font-bold px-2 py-1 rounded-full ${trendPositive ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+          <span className={`text-xs font-bold px-2 py-1 rounded-full ${trendPositive ? 'bg-secondary/10 text-secondary' : 'bg-red-500/10 text-red-500'}`}>
             {trend}
           </span>
         )}
