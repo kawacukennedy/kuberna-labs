@@ -40,7 +40,7 @@ export default function AgentsPage() {
             <div key={id} className="glass glass-card flex flex-col gap-6">
               <div className="flex justify-between items-start">
                  <div className="flex items-center gap-3">
-                   <div className={`p-3 rounded-2xl ${id % 2 === 0 ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                   <div className={`p-3 rounded-2xl ${id % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
                      <Cpu size={24} />
                    </div>
                    <div>
@@ -48,7 +48,7 @@ export default function AgentsPage() {
                      <span className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">{id % 2 === 0 ? 'ElizaOS' : 'LangChain'} Framework</span>
                    </div>
                  </div>
-                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${id === 4 ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${id === 4 ? 'bg-red-500/10 text-red-500' : 'bg-secondary/10 text-secondary'}`}>
                    {id === 4 ? 'Stopped' : 'Running'}
                  </div>
               </div>
@@ -65,7 +65,7 @@ export default function AgentsPage() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-text-secondary flex items-center gap-1"><Activity size={14} /> Health</span>
                   <div className="w-24 h-1.5 bg-surface rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500" style={{ width: '92%' }}></div>
+                    <div className="h-full bg-secondary" style={{ width: '92%' }}></div>
                   </div>
                 </div>
               </div>
@@ -79,7 +79,7 @@ export default function AgentsPage() {
                 </button>
               </div>
 
-              <button className={`btn w-full py-3 text-sm flex items-center justify-center gap-2 ${id === 4 ? 'btn-primary' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
+              <button className={`btn w-full py-3 text-sm flex items-center justify-center gap-2 ${id === 4 ? 'btn-primary' : 'btn-outline-danger'}`}>
                 {id === 4 ? <><Play size={16} /> Start Agent</> : <><StopCircle size={16} /> Stop Service</>}
               </button>
             </div>

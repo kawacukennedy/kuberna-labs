@@ -44,26 +44,26 @@ export default function DashboardPage() {
           <StatCard 
             label="Active Agents" 
             value={stats?.agentsCount || 0} 
-            icon={<Cpu className="text-blue-600" size={24} />} 
+            icon={<Cpu className="text-primary" size={24} />} 
             trend="+2"
             trendPositive={true}
           />
           <StatCard 
             label="Courses Enrolled" 
             value={stats?.coursesEnrolled || 0} 
-            icon={<BookMarked className="text-emerald-600" size={24} />} 
+            icon={<BookMarked className="text-secondary" size={24} />} 
           />
           <StatCard 
             label="Intents Posted" 
             value={stats?.intentsPosted || 0} 
-            icon={<MessageSquare className="text-amber-600" size={24} />} 
+            icon={<MessageSquare className="text-accent" size={24} />} 
             trend="-1"
             trendPositive={false}
           />
           <StatCard 
             label="Reputation Score" 
             value="1,250" 
-            icon={<Activity className="text-purple-600" size={24} />} 
+            icon={<Activity className="text-primary-dark" size={24} />} 
             trend="+120"
             trendPositive={true}
           />
@@ -110,13 +110,13 @@ export default function DashboardPage() {
                 {[1, 2].map((i) => (
                   <div key={i} className="glass p-4 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors border border-transparent hover:border-glass-border">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                         <Cpu size={24} />
                       </div>
                       <div>
                         <h4 className="font-bold">Alpha-Arbitrage-v{i}</h4>
                         <div className="flex items-center gap-2 text-xs text-text-secondary">
-                          <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Running</span>
+                          <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-secondary rounded-full"></div> Running</span>
                           <span>&bull;</span>
                           <span>Last active: 2m ago</span>
                         </div>
@@ -138,9 +138,9 @@ export default function DashboardPage() {
               <h3 className="text-xl font-bold mb-6">Recent Activity</h3>
               <div className="space-y-6">
                 {[
-                  { type: 'intent', text: 'Intent "Cross-chain swap" completed', time: '1h ago', icon: <Zap size={14} />, color: 'text-amber-600 bg-amber-100' },
-                  { type: 'course', text: 'Enrolled in "TEE Security Deep Dive"', time: '3h ago', icon: <BookMarked size={14} />, color: 'text-emerald-600 bg-emerald-100' },
-                  { type: 'agent', text: 'Agent "Alpha" deployed to Arbitrum', time: '5h ago', icon: <Cpu size={14} />, color: 'text-blue-600 bg-blue-100' },
+                  { type: 'intent', text: 'Intent "Cross-chain swap" completed', time: '1h ago', icon: <Zap size={14} />, color: 'text-accent bg-accent/10' },
+                  { type: 'course', text: 'Enrolled in "TEE Security Deep Dive"', time: '3h ago', icon: <BookMarked size={14} />, color: 'text-secondary bg-secondary/10' },
+                  { type: 'agent', text: 'Agent "Alpha" deployed to Arbitrum', time: '5h ago', icon: <Cpu size={14} />, color: 'text-primary bg-primary/10' },
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-4">
                     <div className={`mt-1 p-2 rounded-lg h-fit ${item.color}`}>
