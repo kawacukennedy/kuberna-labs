@@ -36,12 +36,12 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
 
 /* ── Data ── */
 const features = [
-  { icon: BookOpen, title: 'Learn by Building', description: 'Hands‑on courses with live workshops, coding labs, and a world‑class SDK.', color: 'from-indigo-500 to-indigo-600' },
-  { icon: Bot, title: 'Autonomous Agents', description: 'Create agents that reason, act, and earn revenue across decentralized networks.', color: 'from-emerald-500 to-emerald-600' },
-  { icon: Link2, title: 'Cross‑Chain Intents', description: 'Execute complex multi‑chain swaps and DeFi operations via intent protocols.', color: 'from-sky-500 to-sky-600' },
-  { icon: Shield, title: 'Trusted Execution', description: 'Deploy in Intel TDX / AMD SEV enclaves with on‑chain remote attestation.', color: 'from-amber-500 to-amber-600' },
-  { icon: Lock, title: 'Zero‑Knowledge Privacy', description: 'Access private Web2 data with Reclaim Protocol and zkPass — no exposure.', color: 'from-rose-500 to-rose-600' },
-  { icon: Server, title: 'Decentralized Compute', description: 'Run on Akash, Phala, and Hyperbolic for up to 50% lower cost.', color: 'from-purple-500 to-purple-600' },
+  { icon: BookOpen, title: 'Learn by Building', description: 'Hands‑on courses with live workshops, coding labs, and a world‑class SDK.', color: 'from-primary to-primary-dark' },
+  { icon: Bot, title: 'Autonomous Agents', description: 'Create agents that reason, act, and earn revenue across decentralized networks.', color: 'from-secondary to-secondary-dark' },
+  { icon: Link2, title: 'Cross‑Chain Intents', description: 'Execute complex multi‑chain swaps and DeFi operations via intent protocols.', color: 'from-primary-light to-primary' },
+  { icon: Shield, title: 'Trusted Execution', description: 'Deploy in Intel TDX / AMD SEV enclaves with on‑chain remote attestation.', color: 'from-accent to-accent-dark' },
+  { icon: Lock, title: 'Zero‑Knowledge Privacy', description: 'Access private Web2 data with Reclaim Protocol and zkPass — no exposure.', color: 'from-primary-dark to-primary' },
+  { icon: Server, title: 'Decentralized Compute', description: 'Run on Akash, Phala, and Hyperbolic for up to 50% lower cost.', color: 'from-secondary-dark to-secondary' },
 ];
 
 const steps = [
@@ -250,7 +250,7 @@ export default function LandingPage() {
               className="absolute -bottom-6 -right-6 glass p-5 rounded-2xl shadow-xl z-20"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-br from-secondary to-secondary-dark text-white rounded-2xl flex items-center justify-center shadow-lg">
                   <CheckCircle2 size={22} />
                 </div>
                 <div>
@@ -370,7 +370,7 @@ export default function LandingPage() {
           className="max-w-5xl mx-auto rounded-[40px] overflow-hidden relative"
         >
           {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-primary to-purple-700" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-dark via-primary to-primary-light" />
           <div className="absolute inset-0 opacity-10"
             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 1px)', backgroundSize: '24px 24px' }}
           />
