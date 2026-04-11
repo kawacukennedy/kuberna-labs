@@ -5779,8 +5779,7 @@
         "description": "Authenticated regular user",
         "permissions": [
           "view:dashboard",
-          "manage "view:dashboard","manage:own_profile","enroll:course","create:agent:own_profile","enroll:course",
-          "create:agent",
+          "manage "view:dashboard","manage:own_profile","enroll:course","create:agent:own_profile","enroll:course","create:agent",
           "manage:own_agents",
           "post:intent",
           "bid:intent",
@@ -5833,9 +5832,7 @@
       {
         "name": "instructor",
         "description": "Can create and create and edit courses, but not delete",
-        edit courses, but not delete","permissions": ["create:course","edit:course","view:enrollments",
-        "grade "permissions": ["create:course","edit:course","view:enrollments","grade:assignments",
-        "moderate:forum"
+        edit courses, but not delete","permissions": ["create:course","edit:course","view:enrollments","grade "permissions": ["create:course","edit:course","view:enrollments","grade:assignments","moderate:forum"
       ]
     },
     :assignments","moderate:forum"
@@ -5846,8 +5843,7 @@
   "description": "Enterprise tier users with TEE and compliance features",
   "permissions": [
     "deploy:tee",
-    "view:att {"name": "enterprise","description": "Enterprise tier users with TEE and compliance features","permissions": ["deploy:tee",
-    "view:attestations",
+    "view:att {"name": "enterprise","description": "Enterprise tier users with TEE and compliance features","permissions": ["deploy:tee","view:attestations",
     "accessestations",
     "access:zk:zk_tls_tls",
     "view",
@@ -5937,8 +5933,7 @@ Full system access","permissions        "": [
 },
 "] },{"name": "quiz_      {
 "name": "quiz_attempted",
-"properties":attempted","properties": ["module_id",
-"score",
+"properties":attempted","properties": ["module_id","score",
 "passed"
 ]
 },
@@ -6181,8 +6176,7 @@ resolution"] },{"name": "{
 ")",
 "Mixpanel (backMixpanelup)"
 ],
-    (backup)"],"dashboards": [{"name": "Growth","dashboards": [
-{
+    (backup)"],"dashboards": [{"name": "Growth","dashboards": [{
 "name": "Growth",
 "metrics": [
 "DAU",
@@ -6193,8 +6187,7 @@ resolution"] },{"name": "{
 ]
 },
 {
-"name "churn"] },{"": "Education","metrics": ["course_completion_rate",
-"avgname": "Education",
+"name "churn"] },{"": "Education","metrics": ["course_completion_rate","avgname": "Education",
 "metrics": [
 "course_completion_rate",
 "avg_time_sp_time_spent",
@@ -6220,8 +6213,8 @@ hop_attendance"] },{{"name "name": ": ""Marketplace",
 ]
 },
      _completion_time"] },{"name": "Agents","metrics {
-"name": "Agents",": ["active_agents",
-"success_rate",
+"name": "Agents",
+": ["active_agents","success_rate",
 "avg_response_time",
 " "metrics": ["active_agents", "success_rate", "avg_response_timetotal_earnings"] },",
 "total_earnings      {"name": ""
@@ -6238,8 +6231,7 @@ hop_attendance"] },{{"name "name": ": ""Marketplace",
 "error_rate"
 ]
 },
-", "api_latency", "error_rate"] },{"name": "Enterprise","metrics": ["enterprise_users",
-{
+", "api_latency", "error_rate"] },{"name": "Enterprise","metrics": ["enterprise_users",{
 "name": "Enterprise",
 "metrics": [
 "enterprise_users",
@@ -6261,8 +6253,7 @@ _tls_sessions"] },{{"name "name": "Support",
 },
 },
 "security": {
-"authentication "security": {"aut": "hentication": "JWT with refresh tokens; Web3JWT with refresh tokens; Web3 auth (SIWE auth (SIWE) for crypto wallets. Access) for crypto wallets. Access token short token short‑lived (15 min‑lived (15 min), refresh token 7 days stored in httpOnly cookie.","encryption": "AES), refresh token 7 days stored in httpOnly cookie.","encryption": "AES‑256‑256‑GCM for‑GCM for sensitive data sensitive data at rest; TLS at rest; TLS 1 1.3 in transit.3 in transit. Database. Database encryption at rest (RDS encryption at rest (RDS encryption). encryption).","api_security",
-"api_security": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access;": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access; scoped permissions. CORS restricted to scoped permissions. CORS allowed domains.",
+"authentication "security": {"aut": "hentication": "JWT with refresh tokens; Web3JWT with refresh tokens; Web3 auth (SIWE auth (SIWE) for crypto wallets. Access) for crypto wallets. Access token short token short‑lived (15 min‑lived (15 min), refresh token 7 days stored in httpOnly cookie.","encryption": "AES), refresh token 7 days stored in httpOnly cookie.","encryption": "AES‑256‑256‑GCM for‑GCM for sensitive data sensitive data at rest; TLS at rest; TLS 1 1.3 in transit.3 in transit. Database. Database encryption at rest (RDS encryption at rest (RDS encryption). encryption).","api_security","api_security": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access;": "Rate limiting per IP/user (100 requests/min for public, 1000 for authenticated). API keys for agent access; scoped permissions. CORS restricted to scoped permissions. CORS allowed domains.",
     restricted to allowed domains.","smart_contracts": "smart_contracts": "All contracts audited by "All contracts audited by third‑party (e.g third‑party (e., Hack.g., Hacken, CertiK);en, CertiK); bug bounty program. Upgradable via bug bounty program. Upgradable via UUPS proxy.",
 "infrastructure": "Kuber UUPS proxy.",
 "infrastructure": "Kubernetes network policies; secrets innetes network Hashi policies; secrets in HashiCorp Vault; regularCorp Vault; regular security scans (Trivy security scans (Trivy, S, Snyk); intrusion detection (nyk); intrusionFal detection (Falco).",
@@ -6333,8 +6324,7 @@ critical paths)","sc      "scenarios":enarios": ["User [
 "Complete task and release payment",
 "TEE deployment and attestation"
 ],
-"headless": true registration and login","Course enrollment and module completion","Agent creation and deployment","Post intent and accept bid","Complete task and release payment",
-"TEE deployment and attestation"
+"headless": true registration and login","Course enrollment and module completion","Agent creation and deployment","Post intent and accept bid","Complete task and release payment","TEE deployment and attestation"
 ],
 "headless": true,
 "parallel": true
@@ -6369,11 +6359,9 @@ critical paths)","sc      "scenarios":enarios": ["User [
 "pipelines": [
 {
 "name": "frontend",
-"trigger": "push to "name": "frontend","trigger": "push to apps/web","steps apps/web","steps": [": ["install dependencies          "install dependencies",
-","lint","test","build","docker build",
-"push to registry (GHCR)",
-"de "lint","test","build","docker build","push to registry (GHCR)",
-"deploy to staging (ploy to staging (via Helm)"
+"trigger": "push to "name": "frontend","trigger": "push to apps/web","steps apps/web","steps": [": [
+"install dependencies          "install dependencies",","lint","test","build","docker build","push to registry (GHCR)",
+"de "lint","test","build","docker build","push to registry (GHCR)","deploy to staging (ploy to staging (via Helm)"
        via Helm)"
 ],
 ],
@@ -6385,12 +6373,10 @@ critical paths)","sc      "scenarios":enarios": ["User [
 },
 {
 "name": "backend "name": "backend-service-service",",
-"trigger": "push to "trigger": "push to any service any service folder (e.g folder (e.g., apps/user-service)","steps": ["install deps",
-"lint",
+"trigger": "push to "trigger": "push to any service any service folder (e.g folder (e.g., apps/user-service)","steps": ["install deps","lint",
 "test",
 "docker build",
-         ., apps/user-service)","steps": ["install deps","lint","test",
-"docker build",
+         ., apps/user-service)","steps": ["install deps","lint","test","docker build",
 "push "push to registry","deploy to staging (rolling update)"
 ]
 },
@@ -6399,8 +6385,9 @@ critical paths)","sc      "scenarios":enarios": ["User [
 },
 {
 "name {"name": "contracts",": "contracts",
-"trigger": ""trigger": "push to contracts/push to contracts/","steps": [","steps": [""install",
-"test",
+"trigger": ""trigger": "push to contracts/push to contracts/","steps": [",
+"steps": [
+""install","test",
 "compile",
 install","test",""deploycompile",
 "deploy to testnet (if main branch)"
@@ -6415,8 +6402,7 @@ install","test",""deploycompile",
 " "trigger": "release tagname": "deploy-production","trigger": " (v*)","steps":release tag (v*)",
 "steps": [
 [
-"run migrations ( "run migrations (via jobvia job)","de)","deploy servicesploy services to production to production (can (canary 10%, then full)","ary 10%, then full)","smoke tests",
-"notify #deployments channel"
+"run migrations ( "run migrations (via jobvia job)","de)","deploy servicesploy services to production to production (can (canary 10%, then full)","ary 10%, then full)","smoke tests","notify #deployments channel"
 ]
 }
 ],
@@ -6497,8 +6483,7 @@ install","test",""deploycompile",
 "user_service": {
 ": {"SMTP_HOST": "smt      "SMTP_HOST": "sp.resend.com",
 "mtp.resend.com",
-SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587","SMTP_USER": "…","SMTP_PASS": "…",
-"      "SMTP_PASS": "…","FROM_EMAIL": "nFROM_EMAIL": "noreply@kubernaoreply@kuberna.africa"
+SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587","SMTP_USER": "…","SMTP_PASS": "…","      "SMTP_PASS": "…","FROM_EMAIL": "nFROM_EMAIL": "noreply@kubernaoreply@kuberna.africa"
 },
 .africa"
 },
@@ -6543,7 +6528,9 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587","SMTP_USER": "…","SMTP
 "overviewoverview": "README.md": ", projectREADME.md, project vision, architecture diagram vision, architecture diagram (C4 model)",
     (C4 model)","user_docs": {"user_docs": "getting_started": {"getting_start "How to sign up,ed": "How to sign connect wallet up, connect wallet, navigate, navigate dashboard",
 " dashboard",
-"courses":courses": "How to enroll, learn, earn certificates",""How to enroll, learn, earn certificates","agents":agents": "How to create "How to create, configure, deploy agents","marketplace": "How to post tasks, configure, deploy agents",
+"courses":courses": "How to enroll, learn, earn certificates",""How to enroll, learn, earn certificates",
+"agents":agents": "How to create "How to create, configure, deploy agents",
+"marketplace": "How to post tasks, configure, deploy agents",
 "marketplace": "How to post tasks, bid, complete tasks",
 , bid, complete tasks","enterprise": ""enterprise": "TEE, zkTLS, compliance features"
 },
@@ -6575,8 +6562,7 @@ SMTP_PORT": "587","SMTP_USER": "…","SMTP_PORT": "587","SMTP_USER": "…","SMTP
 },
   instructions, audit reports"
 },
-"technology "technology_stack": {"front_stack": {"frontend": {"framework": "Next.js 14 (React 18)","styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS end": {
-"framework": "Next.js 14 (React 18)",
+"technology "technology_stack": {"front_stack": {"frontend": {"framework": "Next.js 14 (React 18)","styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS end": {"framework": "Next.js 14 (React 18)",
 "styling": "Tailwind CSS 3 + shadcn/ui (customized for iOS 26)",
 "state": "Zustand 426)",
 "state": "Zustand + React Query 4",
@@ -6600,8 +6586,7 @@ forms": "React Hook Form      "forms": "React 7 + Zod 3",
 "database": "PostgreSQL 15PostgreSQL 15, Redis, Redis 7, Click 7, ClickHouse House 23",
 "orm": "Pr23",
 "orm": "Prisma 5",
-isma 5","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9",
-"      "blockchain": "ethers.js vblockchain": "ethers6, web3.js.js v6, web3.js  4, near-api-js 24, near-api-js 2, solana/web3.js 1, solana/web3.js 1"
+isma 5","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9","queue": "BullMQ 4 + Redis","message_bus": "NATS 2.9","      "blockchain": "ethers.js vblockchain": "ethers6, web3.js.js v6, web3.js  4, near-api-js 24, near-api-js 2, solana/web3.js 1, solana/web3.js 1"
 },
 "infrastructure": {
 "container": ""
@@ -6630,8 +6615,7 @@ ers","vector_db": ""vector_db": "Qdrant 1.Qdrant 1.7 (self‑hosted7 (self‑hos
    customized), LangChain 0.1, AutoGen"
 },
 "security": {
-" },"security": {"vault": "HashiCorp Vaultvault": "HashiCorp Vault","tee": "Phala","tee": "Phala Network (Intel TDX), Mar Network (Intel TDX),lin Oyster (AMD SEV)",
-"zk_tls Marlin Oyster (AMD SEV)",
+" },"security": {"vault": "HashiCorp Vaultvault": "HashiCorp Vault","tee": "Phala","tee": "Phala Network (Intel TDX), Mar Network (Intel TDX),lin Oyster (AMD SEV)","zk_tls Marlin Oyster (AMD SEV)",
 "zk_tls": "": "Reclaim Protocol,Reclaim Protocol, zk zkPass"
 Pass"
 }
@@ -6641,8 +6625,7 @@ Pass"
 "  "codebase_organizationcodebase_organization": {"root":": {
 "root": {
 {
-"apps "apps": ["": ["web","api-gateway","user-service",
-"course-service",
+"apps "apps": ["": ["web","api-gateway","user-service","course-service",
 "agentweb",
 "api-gateway",
 "user-service",
@@ -6652,8 +6635,7 @@ Pass"
 "execution-service",
 "marketplace-service",
 "execution-service",
--service","payment-service","payment-service","tee-service","blockchain-listener",
-"worker",
+-service","payment-service","payment-service","tee-service","blockchain-listener","worker",
 "analytics-service",
 "dispute-service",
 "report "tee-service","blockchain-listener","worker","analytics-service","dispute-service",
@@ -6668,7 +6650,8 @@ shared-types        "",
 "databaseshared-types",
 "database",
 "ui",
-","ui","agent-framework","agent-framework","block "blockchain-utils","config"
+","ui","agent-framework","agent-framework","block "blockchain-utils",
+"config"
 ],
 "chain-utils",
 "contracts": [
