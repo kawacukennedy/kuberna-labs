@@ -30,7 +30,9 @@ async function main() {
   console.log('='.repeat(60));
   console.log(`Network: ${network.name} (Chain ID: ${network.chainId})`);
   console.log(`Deployer: ${deployer.address}`);
-  console.log(`Balance: ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} ETH`);
+  console.log(
+    `Balance: ${ethers.formatEther(await ethers.provider.getBalance(deployer.address))} ETH`
+  );
   console.log('='.repeat(60));
 
   const deploymentAddresses: DeploymentAddresses = {
@@ -49,7 +51,7 @@ async function main() {
 
   // Deploy Escrow Contract
   console.log('\n📝 Deploying Escrow Contract...');
-  const Escrow = await ethers.getContractFactory('Escrow');
+  const Escrow = await ethers.getContractFactory('KubernaEscrow');
   const escrow = await Escrow.deploy();
   await escrow.waitForDeployment();
   deploymentAddresses.escrow = await escrow.getAddress();
@@ -57,7 +59,7 @@ async function main() {
 
   // Deploy Intent Contract
   console.log('\n📝 Deploying Intent Contract...');
-  const Intent = await ethers.getContractFactory('Intent');
+  const Intent = await ethers.getContractFactory('KubernaIntent');
   const intent = await Intent.deploy();
   await intent.waitForDeployment();
   deploymentAddresses.intent = await intent.getAddress();
@@ -65,7 +67,7 @@ async function main() {
 
   // Deploy Certificate NFT Contract
   console.log('\n📝 Deploying Certificate NFT Contract...');
-  const CertificateNFT = await ethers.getContractFactory('CertificateNFT');
+  const CertificateNFT = await ethers.getContractFactory('KubernaCertificateNFT');
   const certificateNFT = await CertificateNFT.deploy();
   await certificateNFT.waitForDeployment();
   deploymentAddresses.certificateNFT = await certificateNFT.getAddress();
@@ -73,7 +75,7 @@ async function main() {
 
   // Deploy Payment Contract
   console.log('\n📝 Deploying Payment Contract...');
-  const Payment = await ethers.getContractFactory('Payment');
+  const Payment = await ethers.getContractFactory('KubernaPayment');
   const payment = await Payment.deploy();
   await payment.waitForDeployment();
   deploymentAddresses.payment = await payment.getAddress();
@@ -105,7 +107,7 @@ async function main() {
 
   // Deploy Subscription Contract
   console.log('\n📝 Deploying Subscription Contract...');
-  const Subscription = await ethers.getContractFactory('Subscription');
+  const Subscription = await ethers.getContractFactory('KubernaSubscription');
   const subscription = await Subscription.deploy();
   await subscription.waitForDeployment();
   deploymentAddresses.subscription = await subscription.getAddress();
@@ -118,10 +120,7 @@ async function main() {
     fs.mkdirSync(deploymentsDir, { recursive: true });
   }
 
-  const deploymentFile = path.join(
-    deploymentsDir,
-    `${network.name}-${Date.now()}.json`
-  );
+  const deploymentFile = path.join(deploymentsDir, `${network.name}-${Date.now()}.json`);
   fs.writeFileSync(deploymentFile, JSON.stringify(deploymentAddresses, null, 2));
   console.log(`✅ Deployment addresses saved to: ${deploymentFile}`);
 
