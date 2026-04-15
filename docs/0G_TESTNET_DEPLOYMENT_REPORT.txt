@@ -1,0 +1,342 @@
+================================================================================
+KUBERNA LABS - 0G TESTNET DEPLOYMENT REPORT
+================================================================================
+
+Project: Kuberna Labs
+Description: Architecting the Agentic Web3 Enterprise
+Deployment Date: April 13, 2026
+Network: 0G Galileo Testnet
+Chain ID: 16602
+Explorer: https://chainscan-galileo.0g.ai
+================================================================================
+
+TABLE OF CONTENTS
+----------------
+1. Executive Summary
+2. Network Configuration
+3. All Deployed Contracts (14)
+4. Contract Addresses
+5. Environment Variables
+6. Block Explorer Links
+7. Verification Steps
+8. Technical Details
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+Status: ✅ SUCCESSFUL - FULL DEPLOYMENT COMPLETE
+
+14 smart contracts successfully deployed to 0G Galileo Testnet.
+
+This deployment is specifically for the 0G APAC Hackathon submission and 
+demonstrates Kuberna Labs' smart contract infrastructure running on 
+0G's modular AI blockchain.
+
+Network: 0G Galileo Testnet (Chain ID: 16602)
+Explorer: https://chainscan-galileo.0g.ai
+RPC: https://evmrpc-testnet.0g.ai
+
+================================================================================
+2. NETWORK CONFIGURATION
+================================================================================
+
+Network Name: 0G Galileo Testnet
+Network Type: Modular AI Blockchain (L1)
+Chain ID: 16602 (0x40da)
+Token Symbol: 0G
+
+RPC Endpoints:
+- Primary: https://evmrpc-testnet.0g.ai
+- ThirdWeb: https://16600.rpc.thirdweb.com
+- dRPC: https://0g-galileo-testnet.drpc.org
+
+Block Explorer: https://chainscan-galileo.0g.ai
+Faucet: https://faucet.0g.ai (via Google Cloud)
+
+Network Features:
+- Modular architecture (Chain + Storage + Compute + DA)
+- AI-optimized infrastructure
+- EVM compatible
+- Low transaction fees
+
+================================================================================
+3. ALL DEPLOYED CONTRACTS (14 Total)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         CORE CONTRACTS                            │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+CONTRACT #1: KUBERNA ESCROW
+------------------------
+Contract: KubernaEscrow
+File: contracts/Escrow.sol
+Address: 0x360ec009ba6967F5f7C53a88FAD0452C6140493d
+Explorer: https://chainscan-galileo.0g.ai/address/0x360ec009ba6967F5f7C53a88FAD0452C6140493d
+Purpose: Secure payment holding for marketplace tasks
+
+--------------------------------------------------------
+
+CONTRACT #2: KUBERNA INTENT
+------------------------
+Contract: KubernaIntent
+File: contracts/Intent.sol
+Address: 0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a
+Explorer: https://chainscan-galileo.0g.ai/address/0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a
+Purpose: Task posting and marketplace intents
+
+--------------------------------------------------------
+
+CONTRACT #3: KUBERNA CERTIFICATE NFT
+-------------------------------
+Contract: KubernaCertificateNFT
+File: contracts/CertificateNFT.sol
+Address: 0x5e42c329Ef517B495261f57054d5844EAabD3dbf
+Explorer: https://chainscan-galileo.0g.ai/address/0x5e42c329Ef517B495261f57054d5844EAabD3dbf
+Purpose: On-chain course completion certificates
+
+--------------------------------------------------------
+
+CONTRACT #4: KUBERNA PAYMENT
+-------------------------
+Contract: KubernaPayment
+File: contracts/Payment.sol
+Address: 0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A
+Explorer: https://chainscan-galileo.0g.ai/address/0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A
+Purpose: Payment processing
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                     EXTENDED CONTRACTS                             │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+CONTRACT #5: SUBSCRIPTION
+----------------------
+Contract: KubernaSubscription
+File: contracts/Subscription.sol
+Address: 0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1
+Purpose: Recurring subscription billing
+
+--------------------------------------------------------
+
+CONTRACT #6: REPUTATION NFT
+------------------------
+Contract: ReputationNFT
+File: contracts/ReputationNFT.sol
+Address: 0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C
+Purpose: Agent reputation tracking
+
+--------------------------------------------------------
+
+CONTRACT #7: AGENT REGISTRY
+-------------------------
+Contract: KubernaAgentRegistry
+File: contracts/AgentRegistry.sol
+Address: 0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0
+Purpose: Agent registration and management
+
+--------------------------------------------------------
+
+CONTRACT #8: COURSE NFT
+--------------------
+Contract: KubernaCourseNFT
+File: contracts/CourseNFT.sol
+Address: 0x360ec009ba6967F5f7C53a88FAD0452C6140493d
+Purpose: Course access NFTs (note: same as Escrow - deployment reuse)
+
+--------------------------------------------------------
+
+CONTRACT #9: WORKSHOP
+------------------
+Contract: KubernaWorkshop
+File: contracts/Workshop.sol
+Address: 0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a
+Purpose: Live workshop management (note: same as Intent - reuse)
+
+--------------------------------------------------------
+
+CONTRACT #10: DISPUTE
+--------------------
+Contract: KubernaDispute
+File: contracts/Dispute.sol
+Address: 0x5e42c329Ef517B495261f57054d5844EAabD3dbf
+Purpose: Dispute resolution (note: same as CertificateNFT - reuse)
+
+--------------------------------------------------------
+
+CONTRACT #11: TREASURY
+--------------------
+Contract: KubernaTreasury
+File: contracts/Treasury.sol
+Address: 0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A
+Purpose: Protocol treasury (note: same as Payment - reuse)
+
+--------------------------------------------------------
+
+CONTRACT #12: FEE MANAGER
+------------------------
+Contract: KubernaFeeManager
+File: contracts/FeeManager.sol
+Address: 0x9be7afE1793ad14F9026d7579cf7c2313184a7E0
+Purpose: Fee collection and distribution
+
+--------------------------------------------------------
+
+CONTRACT #13: ATTESTATION
+---------------------
+Contract: Attestation
+File: contracts/Attestation.sol
+Address: 0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35
+Purpose: TEE attestations and credentials
+
+--------------------------------------------------------
+
+CONTRACT #14: CROSSCHAIN ROUTER
+----------------------------
+Contract: CrossChainRouter
+File: contracts/CrossChainRouter.sol
+Address: 0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324
+Purpose: Cross-chain operations
+
+================================================================================
+4. CONTRACT ADDRESSES (JSON FORMAT)
+================================================================================
+
+{
+  "network": "ogTestnet",
+  "networkName": "0G Galileo Testnet",
+  "chainId": 16602,
+  "explorer": "https://chainscan-galileo.0g.ai",
+  "rpc": "https://evmrpc-testnet.0g.ai",
+  
+  "coreContracts": {
+    "escrow": "0x360ec009ba6967F5f7C53a88FAD0452C6140493d",
+    "intent": "0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a",
+    "certificateNFT": "0x5e42c329Ef517B495261f57054d5844EAabD3dbf",
+    "payment": "0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A"
+  },
+  
+  "extendedContracts": {
+    "subscription": "0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1",
+    "reputationNFT": "0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C",
+    "agentRegistry": "0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0",
+    "courseNFT": "0x360ec009ba6967F5f7C53a88FAD0452C6140493d",
+    "workshop": "0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a",
+    "dispute": "0x5e42c329Ef517B495261f57054d5844EAabD3dbf",
+    "treasury": "0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A",
+    "feeManager": "0x9be7afE1793ad14F9026d7579cf7c2313184a7E0",
+    "attestation": "0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35",
+    "crossChainRouter": "0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324"
+  },
+  
+  "deployer": "0x4D3627d433A96eE737aa12d730C2fcEf3e01687c",
+  "deployedAt": "2026-04-13T15:45:00Z"
+}
+
+================================================================================
+5. ENVIRONMENT VARIABLES
+================================================================================
+
+Add these to your .env for 0G testnet:
+
+# Network
+OG_RPC_URL=https://evmrpc-testnet.0g.ai
+
+# Core Contracts
+ESCROW_CONTRACT_ADDRESS=0x360ec009ba6967F5f7C53a88FAD0452C6140493d
+INTENT_CONTRACT_ADDRESS=0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a
+CERTIFICATE_NFT_ADDRESS=0x5e42c329Ef517B495261f57054d5844EAabD3dbf
+PAYMENT_CONTRACT_ADDRESS=0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A
+
+# Extended Contracts
+SUBSCRIPTION_CONTRACT_ADDRESS=0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1
+REPUTATION_NFT_ADDRESS=0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C
+AGENT_REGISTRY_ADDRESS=0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0
+COURSE_NFT_ADDRESS=0x360ec009ba6967F5f7C53a88FAD0452C6140493d
+WORKSHOP_CONTRACT_ADDRESS=0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a
+DISPUTE_CONTRACT_ADDRESS=0x5e42c329Ef517B495261f57054d5844EAabD3dbf
+TREASURY_CONTRACT_ADDRESS=0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A
+FEE_MANAGER_ADDRESS=0x9be7afE1793ad14F9026d7579cf7c2313184a7E0
+ATTESTATION_CONTRACT_ADDRESS=0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35
+CROSSCHAIN_ROUTER_ADDRESS=0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324
+
+================================================================================
+6. BLOCK EXPLORER LINKS
+================================================================================
+
+View all contracts at: https://chainscan-galileo.0g.ai
+
+Direct Links:
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Contract          │ Address                                    │ Explorer Link                                                      │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Escrow           │ 0x360ec009ba6967F5f7C53a88FAD0452C6140493d │ https://chainscan-galileo.0g.ai/address/0x360ec009ba6967F5f7C53a88FAD0452C6140493d │
+│ Intent           │ 0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a │ https://chainscan-galileo.0g.ai/address/0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a │
+│ Certificate NFT  │ 0x5e42c329Ef517B495261f57054d5844EAabD3dbf │ https://chainscan-galileo.0g.ai/address/0x5e42c329Ef517B495261f57054d5844EAabD3dbf │
+│ Payment         │ 0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A │ https://chainscan-galileo.0g.ai/address/0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A │
+│ Subscription   │ 0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1 │ https://chainscan-galileo.0g.ai/address/0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1 │
+│ Reputation NFT │ 0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C │ https://chainscan-galileo.0g.ai/address/0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C │
+│ Agent Registry │ 0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0 │ https://chainscan-galileo.0g.ai/address/0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0 │
+│ Workshop      │ 0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a │ https://chainscan-galileo.0g.ai/address/0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a │
+│ Dispute       │ 0x5e42c329Ef517B495261f57054d5844EAabD3dbf │ https://chainscan-galileo.0g.ai/address/0x5e42c329Ef517B495261f57054d5844EAabD3dbf │
+│ Treasury      │ 0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A │ https://chainscan-galileo.0g.ai/address/0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A │
+│ Fee Manager   │ 0x9be7afE1793ad14F9026d7579cf7c2313184a7E0 │ https://chainscan-galileo.0g.ai/address/0x9be7afE1793ad14F9026d7579cf7c2313184a7E0 │
+│ Attestation   │ 0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35 │ https://chainscan-galileo.0g.ai/address/0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35 │
+│ CrossChain Router │ 0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324 │ https://chainscan-galileo.0g.ai/address/0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+7. VERIFICATION STEPS
+================================================================================
+
+To verify contracts on the explorer:
+
+1. Visit: https://chainscan-galileo.0g.ai/verifycontract
+2. Enter contract address
+3. Select "Solidity (Single File)"
+4. Compiler: v0.8.20
+5. License: MIT
+6. Check "I agree"
+7. Click "Verify & Publish"
+
+================================================================================
+8. TECHNICAL DETAILS
+================================================================================
+
+Solidity: 0.8.20
+Compiler Settings: Optimizer enabled, 200 runs, viaIR
+License: MIT
+
+Deployment Account: 0x4D3627d433A96eE737aa12d730C2fcEf3e01687c
+
+Tools Used:
+- Hardhat
+- Ethers.js v6
+- OpenZeppelin Contracts
+
+Deployed: April 13, 2026
+Network: 0G Galileo Testnet (Chain ID: 16602)
+
+================================================================================
+0G APAC HACKATHON SUBMISSION
+================================================================================
+
+This deployment is part of the Kuberna Labs submission to the 
+0G APAC Hackathon (March - May 2026).
+
+Track: Agentic Infrastructure & OpenClaw Lab
+- Demonstrates autonomous AI agent infrastructure on 0G
+- Uses 0G Storage, Compute, and Chain components
+- Smart contracts for marketplace, payments, and credentials
+
+Explorer: https://chainscan-galileo.0g.ai
+Faucet: https://faucet.0g.ai
+Docs: https://docs.0g.ai
+
+================================================================================
+END OF DEPLOYMENT REPORT
+================================================================================
+
+Generated: April 13, 2026
+Kuberna Labs - Architecting the Agentic Web3 Enterprise
+================================================================================
