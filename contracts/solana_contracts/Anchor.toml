@@ -1,0 +1,24 @@
+[toolchain]
+channel = "stable"
+
+[provider]
+cluster = "https://api.devnet.solana.com"
+wallet = "~/.config/solana/id.json"
+
+[[test.genesis]]
+address = "Kuberna1111111111111111111111111111"
+program = "target/deploy/kuberna_solana.so"
+
+[test.validator]
+url = "https://api.devnet.solana.com"
+
+[test.startup_wait]
+5000
+
+[build]
+scripts = { kuberna = "cargo build-bpf --program-target=./target/deploy/kuberna_solana.so" }
+
+[scripts]
+test = "cargo test"
+build = "cargo build-bpf"
+deploy = "solana program deploy target/deploy/kuberna_solana.so"
