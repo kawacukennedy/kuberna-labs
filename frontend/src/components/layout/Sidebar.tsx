@@ -58,7 +58,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ type = 'user' }) => {
-  const userMenu = [
+  const userMenu: SidebarItemProps[] = [
     { href: '/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
     { href: '/courses', icon: <BookOpen size={18} />, label: 'My Courses' },
     { href: '/agents', icon: <Bot size={18} />, label: 'My Agents', badge: 2 },
@@ -67,7 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ type = 'user' }) => {
     { href: '/settings', icon: <Settings size={18} />, label: 'Account Settings' },
   ];
 
-  const adminMenu = [
+  const adminMenu: SidebarItemProps[] = [
     { href: '/admin', icon: <LayoutDashboard size={18} />, label: 'Admin Dashboard' },
     { href: '/admin/users', icon: <Users size={18} />, label: 'User Management' },
     { href: '/admin/courses', icon: <BookOpen size={18} />, label: 'Course Management' },

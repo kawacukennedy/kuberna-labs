@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
-import { Mail, ArrowForward, Loader2 } from 'lucide-react';
+import { Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ForgotPasswordPage() {
@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
                 >
                   {isLoading ? <Loader2 className="animate-spin" size={20} /> : (
                     <>
-                      Send Reset Link <ArrowForward size={20} />
+                      Send Reset Link <ArrowRight size={20} />
                     </>
                   )}
                 </button>

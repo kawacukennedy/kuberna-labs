@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { ArrowForward, Globe, Users, Rocket } from 'lucide-react';
+import { ArrowRight, Globe, Users, Rocket } from 'lucide-react';
 
 const team = [
   { name: 'Arnaud Kennedy', title: 'CEO & Founder', bio: 'Former Google, building the agentic economy' },
@@ -36,7 +36,7 @@ export default function AboutPage() {
               </p>
               <p className="text-lg text-on-surface-variant mb-8 leading-relaxed">
                 Kuberna Labs provides that foundation: TEE-based secure execution, cross-chain intents, 
-                and a marketplace for agentic services. We're building the operating system for the agentic economy.
+                and a marketplace for agentic services. We are building the operating system for the agentic economy.
               </p>
               <div className="grid grid-cols-3 gap-6">
                 <div>
@@ -99,7 +99,7 @@ export default function AboutPage() {
             Building the agentic economy requires great minds. Come work with us.
           </p>
           <Link href="/careers" className="btn btn-primary px-12 py-4 text-lg inline-flex items-center gap-2">
-            View Open Positions <ArrowForward size={20} />
+            View Open Positions <ArrowRight size={20} />
           </Link>
         </div>
       </section>

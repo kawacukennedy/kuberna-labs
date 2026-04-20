@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { ArrowForward, Globe, Zap, Code, Briefcase, MapPin } from 'lucide-react';
+import { ArrowRight, Globe, Zap, Code, Briefcase, MapPin } from 'lucide-react';
 
 const jobs = [
   { title: 'Senior Protocol Engineer', type: 'Engineering', location: 'Remote', tags: ['Rust', 'Solidity'] },
@@ -67,7 +67,7 @@ export default function CareersPage() {
                   </div>
                 </div>
                 <button className="btn btn-glass px-6 py-3">
-                  Apply <ArrowForward size={16} />
+                  Apply <ArrowRight size={16} />
                 </button>
               </div>
             ))}

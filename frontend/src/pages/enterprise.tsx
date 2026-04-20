@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { ArrowForward, Shield, Zap, Globe, Code, CheckCircle, Building2, ChevronRight } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Globe, Code, CheckCircle, Building2, ChevronRight } from 'lucide-react';
 
 const features = [
   { icon: Shield, title: 'Enterprise-Grade TEE', description: 'Deploy agents in Intel TDX / AMD SEV enclaves with on-chain remote attestation.' },
@@ -33,7 +33,7 @@ export default function EnterprisePage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/contact" className="btn btn-primary px-10 py-4 text-lg w-full sm:w-auto flex items-center gap-2">
-              Contact Sales <ArrowForward size={20} />
+              Contact Sales <ArrowRight size={20} />
             </Link>
           </div>
         </div>
