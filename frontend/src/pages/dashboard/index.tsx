@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { CourseCard } from '@/components/shared/CourseCard';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
-import { Cpu, BookMarked, MessageSquare, Zap, Play, ChevronRight, Activity } from 'lucide-react';
+import { Cpu, BookOpen, DollarSign, Zap, Play, ChevronRight, Activity, Plus, User } from 'lucide-react';
+import Link from 'next/link';
 import axios from 'axios';
 
 export default function DashboardPage() {
@@ -27,15 +29,15 @@ export default function DashboardPage() {
   }, [token]);
 
   return (
-    <Layout>
+    <Layout variant="dashboard">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-end mb-12">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Welcome, {user?.fullName.split(' ')[0]}!</h1>
-            <p className="text-text-secondary">Here&apos;s what&apos;s happening with your projects today.</p>
+            <h1 className="text-4xl font-bold mb-2">Welcome, {user?.fullName?.split(' ')[0]}!</h1>
+            <p className="text-on-surface-variant">Here&apos;s what&apos;s happening with your projects today.</p>
           </div>
           <button className="btn btn-primary flex items-center gap-2">
-            <Zap size={18} /> New Agent
+            <Plus size={18} /> New Agent
           </button>
         </div>
 
@@ -43,7 +45,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <StatCard 
             label="Active Agents" 
-            value={stats?.agentsCount || 0} 
+            value={stats?.agentsCount || 2} 
             icon={<Cpu className="text-primary" size={24} />} 
             trend="+2"
             trendPositive={true}
@@ -51,26 +53,26 @@ export default function DashboardPage() {
           <StatCard 
             label="Courses Enrolled" 
             value={stats?.coursesEnrolled || 0} 
-            icon={<BookMarked className="text-secondary" size={24} />} 
+            icon={<BookOpen className="text-secondary" size={24} />} 
           />
           <StatCard 
             label="Intents Posted" 
             value={stats?.intentsPosted || 0} 
-            icon={<MessageSquare className="text-accent" size={24} />} 
+            icon={<DollarSign className="text-secondary" size={24} />} 
             trend="-1"
             trendPositive={false}
           />
           <StatCard 
             label="Reputation Score" 
             value="1,250" 
-            icon={<Activity className="text-primary-dark" size={24} />} 
+            icon={<Activity className="text-primary" size={24} />} 
             trend="+120"
             trendPositive={true}
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content Area: Enrolled Courses */}
+          {/* Main Content Area */}
           <div className="lg:col-span-2 space-y-12">
             <section>
               <div className="flex justify-between items-center mb-6">
@@ -108,23 +110,29 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-4">
                 {[1, 2].map((i) => (
-                  <div key={i} className="glass p-4 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-surface transition-colors border border-transparent hover:border-glass-border">
+                  <div key={i} className="bg-surface-container-low p-4 rounded-xl flex items-center justify-between hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline/10">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                        <Cpu size={24} />
+                      <div className="w-12 h-12 bg-primary-container rounded-lg flex items-center justify-center">
+                        <Cpu size={24} className="text-on-primary" />
                       </div>
                       <div>
                         <h4 className="font-bold">Alpha-Arbitrage-v{i}</h4>
-                        <div className="flex items-center gap-2 text-xs text-text-secondary">
-                          <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-secondary rounded-full"></div> Running</span>
+                        <div className="flex items-center gap-2 text-xs text-on-surface-variant">
+                          <span className="flex items-center gap-1">
+                            <div className="w-1.5 h-1.5 bg-secondary rounded-full"></div> Running
+                          </span>
                           <span>&bull;</span>
                           <span>Last active: 2m ago</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                       <button className="p-2 hover:bg-white rounded-lg transition-colors"><Activity size={18} className="text-text-secondary" /></button>
-                       <button className="p-2 hover:bg-white rounded-lg transition-colors"><Play size={18} className="text-primary" /></button>
+                       <button className="p-2 hover:bg-surface rounded-lg transition-colors">
+                         <Activity size={18} className="text-on-surface-variant" />
+                       </button>
+                       <button className="p-2 hover:bg-surface rounded-lg transition-colors">
+                         <Play size={18} className="text-primary" />
+                       </button>
                     </div>
                   </div>
                 ))}
@@ -134,13 +142,13 @@ export default function DashboardPage() {
 
           {/* Sidebar: Activity/Marketplace */}
           <div className="space-y-8">
-            <section className="glass p-6 rounded-[32px]">
+            <section className="bg-surface-container-low p-6 rounded-xl">
               <h3 className="text-xl font-bold mb-6">Recent Activity</h3>
               <div className="space-y-6">
                 {[
-                  { type: 'intent', text: 'Intent "Cross-chain swap" completed', time: '1h ago', icon: <Zap size={14} />, color: 'text-accent bg-accent/10' },
-                  { type: 'course', text: 'Enrolled in "TEE Security Deep Dive"', time: '3h ago', icon: <BookMarked size={14} />, color: 'text-secondary bg-secondary/10' },
-                  { type: 'agent', text: 'Agent "Alpha" deployed to Arbitrum', time: '5h ago', icon: <Cpu size={14} />, color: 'text-primary bg-primary/10' },
+                  { type: 'intent', text: 'Intent "Cross-chain swap" completed', time: '1h ago', icon: <Zap size={14} />, color: 'text-secondary bg-secondary-container' },
+                  { type: 'course', text: 'Enrolled in "TEE Security Deep Dive"', time: '3h ago', icon: <BookOpen size={14} />, color: 'text-secondary bg-secondary-container' },
+                  { type: 'agent', text: 'Agent "Alpha" deployed to Arbitrum', time: '5h ago', icon: <Cpu size={14} />, color: 'text-primary bg-primary-container' },
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-4">
                     <div className={`mt-1 p-2 rounded-lg h-fit ${item.color}`}>
@@ -148,14 +156,14 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium">{item.text}</p>
-                      <span className="text-xs text-text-secondary">{item.time}</span>
+                      <span className="text-xs text-on-surface-variant">{item.time}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </section>
             
-            <section className="glass p-6 rounded-[32px] bg-primary text-white">
+            <section className="bg-primary text-white p-6 rounded-xl">
               <h3 className="text-xl font-bold mb-4">Intent Marketplace</h3>
               <p className="text-sm opacity-80 mb-6">There are 12 new high-value intents matching your agents skills.</p>
               <Link href="/marketplace" className="btn bg-white text-primary w-full text-xs font-bold uppercase tracking-wider py-3">
@@ -168,6 +176,3 @@ export default function DashboardPage() {
     </Layout>
   );
 }
-
-// Add Link to types if not imported
-import Link from 'next/link';
