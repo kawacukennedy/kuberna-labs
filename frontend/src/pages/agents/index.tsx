@@ -1,102 +1,153 @@
 import React, { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
-import { Cpu, Zap, Activity, ShieldCheck, Plus, Terminal, Settings, Globe, Play, StopCircle } from 'lucide-react';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { Cpu, Play, Square, Settings, Trash2, Activity, Plus, Zap, Search, ChevronDown, Layers } from 'lucide-react';
+import Link from 'next/link';
+
+const agents = [
+  { id: 1, name: 'Alpha-Arbitrage-v1', status: 'running', chain: 'Ethereum', tasks: 156, earnings: '450 USDC', lastActive: '2m ago' },
+  { id: 2, name: 'Beta-Swap-v2', status: 'stopped', chain: 'Arbitrum', tasks: 89, earnings: '220 USDC', lastActive: '1h ago' },
+  { id: 3, name: 'Gamma-Yield-v1', status: 'running', chain: 'Polygon', tasks: 234, earnings: '890 USDC', lastActive: '5m ago' },
+];
 
 export default function AgentsPage() {
-  const [activeTab, setActiveTab] = useState('ALL');
+  const [showWizard, setShowWizard] = useState(false);
 
   return (
-    <Layout>
+    <Layout variant="dashboard">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Autonomous Agent Fleet</h1>
-            <p className="text-text-secondary">Deploy and manage your fleet of intelligent agents across decentralized networks.</p>
+            <h1 className="text-4xl font-bold mb-2">My Agents</h1>
+            <p className="text-on-surface-variant">Manage your autonomous agents</p>
           </div>
-          <button className="btn btn-primary flex items-center gap-2 py-3 px-8">
-            <Plus size={18} /> Deploy New Agent
+          <button 
+            onClick={() => setShowWizard(true)}
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <Plus size={18} /> Create Agent
           </button>
         </div>
 
-        {/* Filters & Tabs */}
-        <div className="flex items-center justify-between mb-8 border-b border-glass-border">
-          <div className="flex gap-12 overflow-x-auto pb-px">
-            {['ALL', 'TEE SECURED', 'CLOUD DEPLOYED', 'DRAFT'].map((tab) => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-4 text-xs font-bold uppercase tracking-widest transition-all relative ${activeTab === tab ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
-              >
-                {tab}
-                {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Agent Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3, 4].map((id) => (
-            <div key={id} className="glass glass-card flex flex-col gap-6">
-              <div className="flex justify-between items-start">
-                 <div className="flex items-center gap-3">
-                   <div className={`p-3 rounded-2xl ${id % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
-                     <Cpu size={24} />
-                   </div>
-                   <div>
-                     <h3 className="font-bold text-lg">Kuberna-Agent-v{id}</h3>
-                     <span className="text-[10px] uppercase font-bold text-text-secondary tracking-widest">{id % 2 === 0 ? 'ElizaOS' : 'LangChain'} Framework</span>
-                   </div>
-                 </div>
-                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${id === 4 ? 'bg-red-500/10 text-red-500' : 'bg-secondary/10 text-secondary'}`}>
-                   {id === 4 ? 'Stopped' : 'Running'}
-                 </div>
+        {/* Agents Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {agents.map((agent) => (
+            <div 
+              key={agent.id}
+              className="bg-surface-container-low rounded-xl p-6 hover:bg-surface-container transition-colors"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  agent.status === 'running' 
+                    ? 'bg-secondary-container text-secondary orb-active' 
+                    : 'bg-surface-dim text-on-surface-variant'
+                }`}>
+                  <Cpu size={20} />
+                </div>
+                <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full ${
+                  agent.status === 'running'
+                    ? 'bg-secondary text-white'
+                    : 'bg-surface-dim text-on-surface-variant'
+                }`}>
+                  {agent.status}
+                </span>
               </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-text-secondary flex items-center gap-1"><Globe size={14} /> Network</span>
-                  <span className="font-bold">{id % 2 === 0 ? 'Arbitrum' : 'Polygon'}</span>
+              
+              <h3 className="text-lg font-bold mb-2">{agent.name}</h3>
+              <p className="text-xs text-on-surface-variant mb-4">Chain: {agent.chain}</p>
+              
+              <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                <div>
+                  <p className="text-xs text-on-surface-variant uppercase tracking-widest">Tasks</p>
+                  <p className="font-bold">{agent.tasks}</p>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-text-secondary flex items-center gap-1"><ShieldCheck size={14} /> Security</span>
-                  <span className="font-bold">{id % 3 === 0 ? 'TEE Enabled' : 'Standard Cloud'}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-text-secondary flex items-center gap-1"><Activity size={14} /> Health</span>
-                  <div className="w-24 h-1.5 bg-surface rounded-full overflow-hidden">
-                    <div className="h-full bg-secondary" style={{ width: '92%' }}></div>
-                  </div>
+                <div>
+                  <p className="text-xs text-on-surface-variant uppercase tracking-widest">Earnings</p>
+                  <p className="font-bold">{agent.earnings}</p>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                <Link href={`/agents/${id}/ide`} className="btn btn-glass py-2.5 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                   <Terminal size={14} /> Open IDE
-                </Link>
-                <button className="btn btn-glass py-2.5 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                   <Settings size={14} /> Settings
-                </button>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-outline/10">
+                <span className="text-xs text-on-surface-variant">Last active: {agent.lastActive}</span>
+                <div className="flex gap-2">
+                  <Link href={`/agents/${agent.id}/ide`} className="p-2 hover:bg-surface rounded-lg transition-colors">
+                    <Settings size={16} className="text-on-surface-variant" />
+                  </Link>
+                  {agent.status === 'running' ? (
+                    <button className="p-2 hover:bg-surface rounded-lg transition-colors">
+                      <Square size={16} className="text-error" />
+                    </button>
+                  ) : (
+                    <button className="p-2 hover:bg-surface rounded-lg transition-colors">
+                      <Play size={16} className="text-secondary" />
+                    </button>
+                  )}
+                </div>
               </div>
-
-              <button className={`btn w-full py-3 text-sm flex items-center justify-center gap-2 ${id === 4 ? 'btn-primary' : 'btn-outline-danger'}`}>
-                {id === 4 ? <><Play size={16} /> Start Agent</> : <><StopCircle size={16} /> Stop Service</>}
-              </button>
             </div>
           ))}
 
-          {/* New Agent Empty State */}
-          <div className="glass glass-card border-dashed border-2 flex flex-col items-center justify-center text-center p-12 hover:bg-surface transition-all group cursor-pointer">
-            <div className="p-4 bg-primary/10 text-primary rounded-full group-hover:scale-110 transition-transform mb-6">
-              <Plus size={40} />
+          {/* Create New Agent Card */}
+          <button 
+            onClick={() => setShowWizard(true)}
+            className="border-2 border-dashed border-outline/30 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:border-primary hover:bg-surface-container-low transition-colors min-h-[280px]"
+          >
+            <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+              <Plus size={24} className="text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Deploy New Agent</h3>
-            <p className="text-sm text-text-secondary">Start with a template or code from scratch.</p>
-          </div>
+            <p className="text-sm font-medium text-on-surface-variant">Deploy New Agent</p>
+          </button>
         </div>
       </div>
+
+      {/* Create Agent Wizard Modal */}
+      {showWizard && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
+          <div className="bg-surface rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Create New Agent</h2>
+              <button onClick={() => setShowWizard(false)} className="p-2 hover:bg-surface-container rounded-lg">
+                &times;
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Agent Name</label>
+                <input 
+                  type="text" 
+                  placeholder="My Agent"
+                  className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg focus:ring-0 focus:border-primary" 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Framework</label>
+                <select className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg appearance-none">
+                  <option>ElizaOS</option>
+                  <option>LangChain</option>
+                  <option>Custom</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Chain</label>
+                <div className="flex gap-3 flex-wrap">
+                  {['Ethereum', 'Arbitrum', 'Polygon', 'Solana'].map((chain) => (
+                    <button key={chain} className="px-4 py-2 bg-surface-container-low rounded-lg hover:bg-surface-container text-sm">
+                      {chain}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button className="btn btn-primary w-full py-4">
+                Deploy Agent
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
-
-import Link from 'next/link';
