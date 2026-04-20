@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import { Clock, BookOpen, Star, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { Clock, BookOpen, ArrowRight } from 'lucide-react';
 
 interface CourseCardProps {
   title: string;
@@ -10,29 +10,29 @@ interface CourseCardProps {
   progress?: number;
   level: string;
   duration: string;
+  price?: number;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ title, instructor, thumbnail, progress, level, duration }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ title, instructor, thumbnail, progress, level, duration, price }) => {
   return (
-    <div className="glass glass-card group flex flex-col h-full">
-      <div className="relative h-48 mb-5 overflow-hidden rounded-2xl">
+    <div className="bg-surface-container-low rounded-xl p-4 flex flex-col h-full hover:bg-surface-container transition-colors duration-300 group">
+      <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
         <Image 
           src={thumbnail} 
           alt={title} 
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute top-3 right-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[10px] font-bold uppercase tracking-wider text-text-primary shadow-sm">
+        <div className="absolute top-3 right-3 px-3 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[10px] font-bold uppercase tracking-wider text-on-surface shadow-sm">
           {level}
         </div>
       </div>
       
       <div className="flex-grow flex flex-col">
-        <h4 className="font-bold text-lg mb-1 font-heading group-hover:text-primary transition-colors line-clamp-1">{title}</h4>
-        <p className="text-xs text-text-secondary mb-4 font-medium italic">by {instructor}</p>
+        <h4 className="font-medium text-lg mb-1 group-hover:text-primary transition-colors line-clamp-2">{title}</h4>
+        <p className="text-xs text-on-surface-variant mb-4">by {instructor}</p>
         
-        <div className="flex items-center gap-4 text-xs text-text-secondary mb-6 mt-auto">
+        <div className="flex items-center gap-4 text-xs text-on-surface-variant mb-4 mt-auto">
           <div className="flex items-center gap-1.5">
             <Clock size={14} className="text-primary" />
             <span className="font-semibold">{duration}</span>
@@ -44,22 +44,30 @@ export const CourseCard: React.FC<CourseCardProps> = ({ title, instructor, thumb
         </div>
 
         {progress !== undefined ? (
-          <div className="space-y-2.5">
-            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-text-secondary">
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-on-surface-variant">
               <span>Course Progress</span>
               <span className="text-primary">{progress}%</span>
             </div>
-            <div className="h-2 w-full bg-surface rounded-full overflow-hidden border border-glass-border">
+            <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-primary to-primary-light transition-all duration-1000 ease-out rounded-full" 
+                className="h-full bg-gradient-to-r from-primary to-primary-container transition-all rounded-full" 
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
           </div>
         ) : (
-          <button className="btn btn-glass w-full text-xs font-bold py-2.5 flex items-center justify-center gap-2 group/btn">
-            View Details <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-          </button>
+          <div className="flex items-center justify-between mt-auto">
+            {price !== undefined && price > 0 && (
+              <span className="text-xl font-bold text-on-surface">${price}</span>
+            )}
+            {price === 0 && (
+              <span className="text-lg font-bold text-secondary">Free</span>
+            )}
+            <Link href={`/courses/${title.toLowerCase().replace(/\s+/g, '-')}`} className="flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+              View Details <ArrowRight size={14} />
+            </Link>
+          </div>
         )}
       </div>
     </div>
