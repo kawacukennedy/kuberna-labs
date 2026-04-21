@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .spring-300-20 { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+        }
+        .ghost-border { border: 1px solid rgba(199, 196, 215, 0.2); }
+        .shadow-ambient { box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body antialiased selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl no-border shadow-sm shadow-[0_20px_40px_rgba(18,28,42,0.06)] font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<a class="text-xl font-bold tracking-tighter text-slate-900 spring-300-20 active:scale-95" href="/">Kuberna Labs</a>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-3 py-2 rounded-lg" href="/courses">Courses</a>
+<a class="text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-3 py-2 rounded-lg" href="/marketplace">Marketplace</a>
+<a class="text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-3 py-2 rounded-lg" href="/enterprise">Enterprise</a>
+<a class="text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-3 py-2 rounded-lg" href="/docs">Docs</a>
+<a class="text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-3 py-2 rounded-lg" href="/blog">Blog</a>
+<!-- Assuming Contact isn't explicitly in the nav but is the active context, leaving others inactive -->
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block text-slate-600 hover:text-indigo-500 hover:bg-slate-50/50 transition-all duration-300 px-4 py-2 rounded-lg font-medium spring-300-20 active:scale-95">Log In</button>
+<button class="primary-gradient text-on-primary px-6 py-2 rounded-full font-medium shadow-ambient spring-300-20 active:scale-95 hover:opacity-90 transition-opacity">Sign Up</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-24 px-4 sm:px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-12 relative z-10">
+<!-- Left: Context / Info -->
+<div class="w-full md:w-5/12 flex flex-col justify-center space-y-8">
+<div class="space-y-4">
+<h1 class="font-headline text-[3.5rem] leading-none font-semibold tracking-[-0.02em] text-on-surface">
+                    Connect with the Ether.
+                </h1>
+<p class="font-body text-lg text-on-surface-variant max-w-md">
+                    Whether you're exploring decentralized compute, inquiring about our enterprise solutions, or simply want to connect with our team in Kigali, we're here to bridge the gap.
+                </p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-8 space-y-8 relative overflow-hidden ghost-border">
+<div class="absolute inset-0 z-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=80')] bg-cover bg-center" data-alt="Subtle abstract map-like topographic pattern in cool indigo tones" data-location="Kigali Innovation City" style=""></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-br from-surface-container-low/90 to-surface-container/50 backdrop-blur-[2px]"></div>
+<div class="relative z-10 space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">mail</span>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-on-surface-variant mb-1">Email</p>
+<a class="font-headline text-title-md font-medium text-on-surface hover:text-primary transition-colors" href="mailto:hello@kuberna.africa">hello@kuberna.africa</a>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-on-surface-variant mb-1">Headquarters</p>
+<p class="font-headline text-title-md font-medium text-on-surface leading-tight">
+                                Kigali Innovation City<br/>
+                                Kigali, Rwanda
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Form -->
+<div class="w-full md:w-7/12 relative">
+<!-- Decorative background elements -->
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-container rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+<div class="absolute -bottom-20 -left-20 w-72 h-72 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+<div class="glass-panel rounded-xl shadow-ambient ghost-border p-8 md:p-12 relative z-10">
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface uppercase tracking-widest" for="name">Name</label>
+<input class="w-full bg-surface-container-low text-on-surface rounded-lg px-4 py-3 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.3)] transition-all duration-200" id="name" name="name" placeholder="Your name" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface uppercase tracking-widest" for="email">Email</label>
+<input class="w-full bg-surface-container-low text-on-surface rounded-lg px-4 py-3 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.3)] transition-all duration-200" id="email" name="email" placeholder="you@company.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface uppercase tracking-widest" for="subject">Subject</label>
+<input class="w-full bg-surface-container-low text-on-surface rounded-lg px-4 py-3 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.3)] transition-all duration-200" id="subject" name="subject" placeholder="How can we help?" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-bold text-on-surface uppercase tracking-widest" for="message">Message</label>
+<textarea class="w-full bg-surface-container-low text-on-surface rounded-lg px-4 py-3 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.3)] transition-all duration-200 resize-none" id="message" name="message" placeholder="Tell us more about your inquiry..." rows="5"></textarea>
+</div>
+<button class="w-full primary-gradient text-on-primary font-headline font-semibold py-4 px-8 rounded-full shadow-ambient spring-300-20 active:scale-95 hover:opacity-95 transition-all flex justify-center items-center gap-2 mt-4" type="button">
+<span>Send Message</span>
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</form>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 mt-auto bg-slate-50 no-border bg-slate-100 flat font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20 text-indigo-600">
+<div class="flex flex-col gap-2">
+<span class="text-lg font-black text-slate-900">Kuberna Labs</span>
+<p class="text-slate-400 normal-case tracking-normal">© 2024 Kuberna Labs. Secure Decentralized Compute.</p>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end">
+<a class="text-slate-400 hover:text-indigo-500 transition-colors ease-out duration-200" href="/privacy">Privacy Policy</a>
+<a class="text-slate-400 hover:text-indigo-500 transition-colors ease-out duration-200" href="/terms">Terms of Service</a>
+<a class="text-slate-400 hover:text-indigo-500 transition-colors ease-out duration-200" href="/security">Security Audit</a>
+<a class="text-slate-400 hover:text-indigo-500 transition-colors ease-out duration-200" href="/status">Network Status</a>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005236",
+                      "surface-tint": "#494bd6",
+                      "surface-container": "#e6eeff",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#fffbff",
+                      "secondary-container": "#6cf8bb",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-error": "#ffffff",
+                      "tertiary": "#825100",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#07006c",
+                      "primary": "#4648d4",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "primary-fixed": "#e1e0ff",
+                      "secondary-fixed-dim": "#4edea3",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "secondary-fixed": "#6ffbbe",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface": "#f8f9ff",
+                      "on-surface": "#121c2a",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "outline-variant": "#c7c4d7",
+                      "surface-container-high": "#dee9fc",
+                      "on-secondary-fixed": "#002113",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#d0dbed",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#00714d",
+                      "primary-container": "#6063ee",
+                      "tertiary-container": "#a36700",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-surface-variant": "#464554",
+                      "inverse-primary": "#c0c1ff",
+                      "outline": "#767586",
+                      "on-secondary": "#ffffff",
+                      "surface-container-highest": "#d9e3f6",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary": "#006c49",
+                      "surface-variant": "#d9e3f6",
+                      "inverse-surface": "#27313f",
+                      "on-background": "#121c2a",
+                      "on-tertiary-fixed-variant": "#653e00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Inter"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .ambient-shadow {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .ghost-border {
+            border: 1px solid rgba(199, 196, 215, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl fixed top-0 w-full z-50 shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-12">
+<a class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white font-headline" href="#">Kuberna Labs</a>
+<div class="hidden md:flex items-center gap-6 font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Enterprise</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Blog</a>
+</div>
+</div>
+<div class="flex items-center gap-4 font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<button class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-4 py-2 rounded-lg">Log In</button>
+<button class="text-indigo-600 dark:text-indigo-400 font-semibold px-4 py-2 rounded-lg hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300">Sign Up</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-32 pb-24 px-8 max-w-7xl mx-auto w-full flex flex-col gap-32">
+<!-- Hero Section: Mission & Foundation -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Left: Mission -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low w-fit ghost-border">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">public</span>
+<span class="font-label text-label-md text-primary uppercase tracking-[0.02em]">Our Mission</span>
+</div>
+<h1 class="font-headline text-[3.5rem] leading-tight tracking-[-0.02em] font-semibold text-on-surface">
+                    Equip the next generation of founders with tools to build <span class="gradient-text">revenue‑generating agents</span>.
+                </h1>
+</div>
+<!-- Right: Foundation Bento -->
+<div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
+<!-- Ambient Glow Behind Cards -->
+<div class="absolute inset-0 bg-primary/5 blur-[100px] rounded-full z-0"></div>
+<!-- Headquarters Card -->
+<div class="glass-panel rounded-xl p-8 ambient-shadow ghost-border relative z-10 flex flex-col gap-4 overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
+<span class="material-symbols-outlined text-secondary text-3xl mb-2">location_on</span>
+<div>
+<p class="font-label text-label-md text-on-surface-variant uppercase tracking-[0.02em]">Headquarters</p>
+<p class="font-headline text-title-md font-medium text-on-surface mt-1">Kigali, Rwanda</p>
+</div>
+</div>
+<!-- Founded Card -->
+<div class="glass-panel rounded-xl p-8 ambient-shadow ghost-border relative z-10 flex flex-col gap-4 overflow-hidden group">
+<div class="absolute bottom-0 left-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -ml-16 -mb-16 transition-transform group-hover:scale-150 duration-700"></div>
+<span class="material-symbols-outlined text-primary text-3xl mb-2">calendar_month</span>
+<div>
+<p class="font-label text-label-md text-on-surface-variant uppercase tracking-[0.02em]">Founded</p>
+<p class="font-headline text-display-lg font-semibold text-on-surface mt-1 tracking-[-0.02em]">2026</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Team Grid Section -->
+<section class="flex flex-col gap-12">
+<div class="flex flex-col gap-2">
+<h2 class="font-headline text-headline-md font-semibold text-on-surface tracking-[-0.02em]">The Architects</h2>
+<p class="font-body text-body-lg text-on-surface-variant max-w-2xl">Building the foundational layer for decentralized, agentic computation.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Team Member 1 -->
+<div class="glass-panel rounded-xl p-6 ambient-shadow ghost-border flex flex-col items-center text-center gap-6 group hover:-translate-y-2 transition-transform duration-300">
+<div class="w-32 h-32 rounded-full overflow-hidden ghost-border relative">
+<img alt="CEO Avatar" class="w-full h-full object-cover" data-alt="portrait of a confident male executive in a modern bright office with subtle blue lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeRzhoynPAYUyeNJcD60IKRwn1gjJVt15ltvAccUwZir6g5tnth2F2J1W5AZgx9McbaHwRusIu7bsxU5oVWHuULySKgTc4lL6EUj9ZJ62dvT6E1B93s3gSO64dnkRljmUdRc6_IeE-DoM_IGUZR5Ypez_CO3T0HiBjORIinp70t3ZAyrjG9CqmW68HIH4Z1W0Eq68gTjViFWQkK_qGF9xoamD2cxAo6VtqRFirnCo8TVI9GazvMQm3XmrW2797SAmqADbzlsgODNM"/>
+<div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<h3 class="font-headline text-title-md font-medium text-on-surface">Marcus Vance</h3>
+<p class="font-label text-label-md text-primary mt-1 uppercase tracking-[0.02em]">CEO</p>
+</div>
+<div class="flex gap-4 mt-auto">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">link</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">mail</span></a>
+</div>
+</div>
+<!-- Team Member 2 -->
+<div class="glass-panel rounded-xl p-6 ambient-shadow ghost-border flex flex-col items-center text-center gap-6 group hover:-translate-y-2 transition-transform duration-300">
+<div class="w-32 h-32 rounded-full overflow-hidden ghost-border relative">
+<img alt="CTO Avatar" class="w-full h-full object-cover" data-alt="portrait of a thoughtful female technologist in a sleek futuristic environment with soft emerald hues" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZy9nEPeQ68nxHxZhlpDRsTregtVjU0PmyeF7jEH2i_gMfS9zWcDCDdZnoN7etlDRJi_id-t7_Wveilfy2XIBbW9VIJ23HBxWsxqFLGLw_1B6nL4WISYKRJO2rQ_T91m4bdWZav9O6V9G3RuqBwLJZuiIk2TxZqmmcUTa59mUjaeepPylc1o7YrygSYgrTINIG4LIhZep5rhQtNNlBj2qhnQzYsaXVp8jF4TJkxKMIVWGa95i5TdqEsuW8YW0g0jQFX19RiSz3EHU"/>
+<div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<h3 class="font-headline text-title-md font-medium text-on-surface">Elena Rostova</h3>
+<p class="font-label text-label-md text-primary mt-1 uppercase tracking-[0.02em]">CTO</p>
+</div>
+<div class="flex gap-4 mt-auto">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">link</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">mail</span></a>
+</div>
+</div>
+<!-- Team Member 3 -->
+<div class="glass-panel rounded-xl p-6 ambient-shadow ghost-border flex flex-col items-center text-center gap-6 group hover:-translate-y-2 transition-transform duration-300">
+<div class="w-32 h-32 rounded-full overflow-hidden ghost-border relative">
+<img alt="Head of Product Avatar" class="w-full h-full object-cover" data-alt="portrait of a creative male designer wearing glasses in a minimalist workspace with natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGygXtSyFjkmQDLhe4OQkj5P0E2vvGYO_bZZgFmQZZ6Cy2Im-IaHpajDo3SpatYC9hiZOH7H4Qa6YVu2h2_YC7QJDpAC0nRXJMdHq401Iz0cxQLcVS37O7mNHtcTLhr6M0UvVj422Aq95e6nq70_hWGfyXzS3vjg0-MVCJb8YKVVF_0m_XFIU94we2UwppXutzSSLXXQ9qHo7RTrpNO541U26OlsqsW6kd-ZVb84AQgwbqX3exx1Zswps7UgmibKFwjSFrZs4IfeQ"/>
+<div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<h3 class="font-headline text-title-md font-medium text-on-surface">Julian Hayes</h3>
+<p class="font-label text-label-md text-primary mt-1 uppercase tracking-[0.02em]">Head of Product</p>
+</div>
+<div class="flex gap-4 mt-auto">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">link</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">mail</span></a>
+</div>
+</div>
+<!-- Team Member 4 -->
+<div class="glass-panel rounded-xl p-6 ambient-shadow ghost-border flex flex-col items-center text-center gap-6 group hover:-translate-y-2 transition-transform duration-300">
+<div class="w-32 h-32 rounded-full overflow-hidden ghost-border relative">
+<img alt="Lead Engineer Avatar" class="w-full h-full object-cover" data-alt="portrait of an engaged female engineer looking directly at camera with a clean abstract geometric background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8MnuYqAfftXoeFoYhEx2vLbK2tPfeoHgaw3Edw_peXM_YPXIMA8-ghJSy8L0J4BUeaSQ0vgNKnz10MD_CuTUnzo_UoNPcmBZdKSqL9trUg2RBhcF54bXFQRSrohmJD1D353undLGLmF59pebaOjemKkyFxxyXHDCjD8EB_8kk7upwNPhHqQetEV2OxxMx-ZRJGGwp2Uka-SPoZf73_QjpiWEG4-4DNxPwMae_zNDD-_vuB5Y0cKJzi-R7sESMsoo481-jU8b02C0"/>
+<div class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<h3 class="font-headline text-title-md font-medium text-on-surface">Sarah Lin</h3>
+<p class="font-label text-label-md text-primary mt-1 uppercase tracking-[0.02em]">Lead Engineer</p>
+</div>
+<div class="flex gap-4 mt-auto">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">link</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">mail</span></a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 px-8 mt-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20 shadow-none">
+<div class="flex flex-col gap-2">
+<span class="text-lg font-black text-slate-900 dark:text-white font-headline">Kuberna Labs</span>
+<p class="font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">© 2024 Kuberna Labs. Secure Decentralized Compute.</p>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

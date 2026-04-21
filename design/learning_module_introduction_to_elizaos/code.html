@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Module 1.1: Introduction to ElizaOS - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .code-glass {
+            background-color: rgba(39, 49, 63, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.1);
+            color: #eaf1ff;
+        }
+        .ghost-border {
+            border: 1px solid rgba(199, 196, 215, 0.2);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_20px_40px_rgba(18,28,42,0.06)]">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-8">
+<a class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white" href="#">
+                    Kuberna Labs
+                </a>
+<div class="hidden md:flex gap-6 font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 py-6" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300" href="#">Enterprise</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-6 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300" href="#">Blog</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 font-['SF_Pro',_Inter] tracking-tight text-sm font-medium px-4 py-2 rounded-full hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300">Log In</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2 rounded-full font-['SF_Pro',_Inter] tracking-tight text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95">Sign Up</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-28 pb-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
+<!-- Breadcrumb & Navigation -->
+<div class="mb-8 flex items-center justify-between">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+<a class="hover:text-primary transition-colors" href="#">Courses</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Decentralized AI Agents</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface font-semibold">Module 1.1</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-sm font-semibold text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span> Previous
+                </button>
+<button class="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-container transition-colors">
+                    Next <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Video Player Container -->
+<div class="mb-12 rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(18,28,42,0.06)] bg-inverse-surface aspect-video relative group cursor-pointer">
+<div class="absolute inset-0 bg-cover bg-center opacity-50 mix-blend-overlay" data-alt="Abstract dark blue and purple digital network visualization with glowing nodes and connecting lines representing decentralized AI compute" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8lKOqNMAap2VKoljS7-eWmjZ-FAVwryio1ZRa4O9cP-JArxMKksyrPcPErN1qmZFBs7_YQlZG4jdAbbNdFaWDjleNLu7w1ZPu6HdqlSJ0llhQh0F_xpNFC_MZ375GewJwIvA356pnq58xpaXdQG7WHcut0cSNKxCaumJ5kz3mb_KvKuCeyu90B6TOoGtFH_4flZpxwMiseOfHqJDrMTR0p9A9gahWK5rjt7UTPXSsiSv6Ga6-AMhDttG_gDFsbpj7juP5Cb5bLWo');"></div>
+<!-- Play Button Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-20 h-20 rounded-full glass-panel flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300 ease-out">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<!-- Video Controls Mockup -->
+<div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="h-1 bg-white/30 rounded-full w-full relative">
+<div class="absolute top-0 left-0 h-full w-1/3 bg-primary rounded-full"></div>
+</div>
+<div class="flex justify-between items-center text-white text-xs font-medium">
+<span>05:24 / 18:45</span>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-xl">volume_up</span>
+<span class="material-symbols-outlined text-xl">subtitles</span>
+<span class="material-symbols-outlined text-xl">fullscreen</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Title & Action Bar -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h1 class="text-3xl md:text-4xl font-semibold tracking-tight text-on-surface mb-2">Module 1.1: Introduction to ElizaOS</h1>
+<p class="text-on-surface-variant font-medium">Learn the foundational principles of building autonomous agents within secure execution environments.</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-on-surface bg-surface-container-low hover:bg-surface-container transition-colors ghost-border">
+<span class="material-symbols-outlined text-[20px]">bookmark</span> Save
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-on-surface bg-surface-container-low hover:bg-surface-container transition-colors ghost-border">
+<span class="material-symbols-outlined text-[20px]">share</span> Share
+                </button>
+</div>
+</div>
+<!-- Layout Grid: Content + Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Main Content Area -->
+<div class="lg:col-span-2 flex flex-col gap-8">
+<!-- Tabs -->
+<div class="flex gap-8 border-b border-outline-variant/30 px-2">
+<button class="pb-4 text-sm font-bold tracking-wide text-primary border-b-2 border-primary">Notes</button>
+<button class="pb-4 text-sm font-bold tracking-wide text-on-surface-variant hover:text-primary transition-colors">Transcript</button>
+<button class="pb-4 text-sm font-bold tracking-wide text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
+                        Discussion <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded-full">12</span>
+</button>
+</div>
+<!-- Markdown Content Container -->
+<article class="prose prose-slate max-w-none text-on-surface prose-headings:text-on-surface prose-headings:font-semibold prose-a:text-primary">
+<p class="text-lg leading-relaxed text-on-surface-variant mb-6">
+                        ElizaOS is a lightweight, high-performance operating system designed specifically for managing autonomous AI agents in decentralized networks. It provides the necessary primitives for secure execution, memory management, and inter-agent communication.
+                    </p>
+<h3 class="text-xl font-semibold mb-4 mt-8">Core Primitives</h3>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">verified_user</span>
+<span><strong>Trusted Execution:</strong> Every agent runs in isolated sandboxes.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">memory</span>
+<span><strong>State Persistence:</strong> Cryptographically signed memory states.</span>
+</li>
+</ul>
+<!-- Inline Code Example -->
+<div class="bg-surface-container-low p-6 rounded-xl ghost-border mb-8">
+<h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">code</span>
+                            Basic Configuration
+                        </h4>
+<div class="code-glass p-4 rounded-lg font-mono text-sm overflow-x-auto">
+<pre><code>import { AgentConfig } from '@elizaos/core';
+
+const config: AgentConfig = {
+  id: 'agent-0x12',
+  runtime: 'tee-v2',
+  permissions: ['network.read', 'compute.basic']
+};</code></pre>
+</div>
+</div>
+</article>
+</div>
+<!-- Sidebar (CodeLab / Resources) -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<!-- CodeLab Container -->
+<div class="bg-surface-container-low rounded-xl p-1 shadow-sm ghost-border flex flex-col h-[500px]">
+<!-- Editor Header -->
+<div class="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">terminal</span>
+<span class="text-sm font-bold text-on-surface">CodeLab</span>
+</div>
+<span class="text-xs font-mono text-on-surface-variant bg-surface px-2 py-1 rounded-md">main.ts</span>
+</div>
+<!-- Editor Body (Monaco Mockup) -->
+<div class="flex-grow code-glass p-4 rounded-b-lg font-mono text-xs md:text-sm overflow-auto leading-relaxed relative">
+<!-- Line Numbers -->
+<div class="absolute left-0 top-0 bottom-0 w-10 border-r border-white/10 flex flex-col items-center py-4 text-white/30 select-none">
+<span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+</div>
+<!-- Code Area -->
+<div class="pl-8 pt-0">
+<span class="text-pink-400">import</span> { createAgent } <span class="text-pink-400">from</span> <span class="text-green-300">'@elizaos/sdk'</span>;
+
+<span class="text-pink-400">const</span> agent = <span class="text-blue-300">createAgent</span>({
+  <span class="text-blue-200">name:</span> <span class="text-green-300">'HelloWorldAgent'</span>,
+  <span class="text-blue-200">task:</span> <span class="text-green-300">'Initialize sequence'</span>
+});
+
+agent.<span class="text-blue-300">start</span>();
+                        </div>
+</div>
+<!-- Editor Action -->
+<div class="p-3 bg-surface-container-low rounded-b-xl flex justify-end">
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">play_circle</span> Run Script
+                        </button>
+</div>
+</div>
+<!-- Next Module Card -->
+<div class="glass-panel p-6 rounded-xl ghost-border flex items-start gap-4 hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">account_tree</span>
+</div>
+<div>
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1 block">Up Next</span>
+<h4 class="text-sm font-semibold text-on-surface mb-2">Module 1.2: State Management</h4>
+<p class="text-xs text-on-surface-variant line-clamp-2">Learn how agents persist memory securely across execution cycles.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 mt-auto bg-slate-50 dark:bg-slate-950 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20">
+<div>
+<div class="text-lg font-black text-slate-900 dark:text-white mb-2">Kuberna Labs</div>
+<p class="font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">
+                © 2024 Kuberna Labs. Secure Decentralized Compute.
+            </p>
+</div>
+<div class="flex gap-6 md:justify-end font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

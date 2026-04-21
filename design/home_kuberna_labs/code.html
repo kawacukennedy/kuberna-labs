@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kuberna Labs - Architect the Agentic Web3 Enterprise</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005236",
+                      "surface-tint": "#494bd6",
+                      "surface-container": "#e6eeff",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#fffbff",
+                      "secondary-container": "#6cf8bb",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-error": "#ffffff",
+                      "tertiary": "#825100",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#07006c",
+                      "primary": "#4648d4",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "primary-fixed": "#e1e0ff",
+                      "secondary-fixed-dim": "#4edea3",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "secondary-fixed": "#6ffbbe",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface": "#f8f9ff",
+                      "on-surface": "#121c2a",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "outline-variant": "#c7c4d7",
+                      "surface-container-high": "#dee9fc",
+                      "on-secondary-fixed": "#002113",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#d0dbed",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#00714d",
+                      "primary-container": "#6063ee",
+                      "tertiary-container": "#a36700",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-surface-variant": "#464554",
+                      "inverse-primary": "#c0c1ff",
+                      "outline": "#767586",
+                      "on-secondary": "#ffffff",
+                      "surface-container-highest": "#d9e3f6",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary": "#006c49",
+                      "surface-variant": "#d9e3f6",
+                      "inverse-surface": "#27313f",
+                      "on-background": "#121c2a",
+                      "on-tertiary-fixed-variant": "#653e00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Inter"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #121c2a;
+        }
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(230, 238, 255, 0.8) 0%, rgba(222, 233, 252, 0.4) 100%);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #4648d4 0%, #6063ee 100%);
+        }
+        .shadow-ambient {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .spring-hover:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .spring-active:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased flex flex-col min-h-screen">
+<!-- TopNavBar (Generated from JSON) -->
+<nav aria-label="Main Navigation" class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl no-border shadow-sm shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-2">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-3xl" data-icon="token">token</span>
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white font-['SF_Pro',_Inter]">Kuberna Labs</span>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors" href="#">Courses</a>
+<a class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors" href="#">Marketplace</a>
+<a class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors" href="#">Enterprise</a>
+<a class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors" href="#">Docs</a>
+<a class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors" href="#">Blog</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors spring-hover spring-active">Log In</button>
+<button class="font-['SF_Pro',_Inter] tracking-tight text-sm font-medium px-5 py-2.5 rounded-full primary-gradient text-on-primary hover:opacity-90 spring-hover spring-active shadow-ambient">Sign Up</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex items-center justify-center overflow-hidden bg-surface-container-low px-6">
+<!-- Decorative Background Elements -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden">
+<div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary-fixed-dim/30 blur-[100px]"></div>
+<div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-secondary-fixed-dim/20 blur-[100px]"></div>
+</div>
+<div class="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
+<span class="px-4 py-1.5 rounded-full bg-surface-container-highest text-primary font-bold text-xs uppercase tracking-widest mb-8 border border-outline-variant/20 inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                    Agentic Computing Environment
+                </span>
+<h1 class="text-5xl md:text-7xl font-bold tracking-[-0.02em] text-on-surface mb-6 leading-[1.1] font-headline">
+                    Architect the Agentic <br/><span class="text-primary">Web3 Enterprise</span>
+</h1>
+<p class="text-lg md:text-xl text-on-surface-variant max-w-2xl mb-12 font-body">
+                    Build, deploy, and monetize autonomous AI agents on decentralized infrastructure. Secure, scalable, and fully sovereign.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
+<button class="w-full sm:w-auto px-8 py-4 rounded-full primary-gradient text-on-primary font-semibold text-lg spring-hover spring-active shadow-ambient flex items-center justify-center gap-2">
+                        Start Building
+                        <span aria-hidden="true" class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto px-8 py-4 rounded-full glass-panel text-on-surface font-semibold text-lg border border-outline-variant/20 spring-hover spring-active shadow-ambient flex items-center justify-center gap-2">
+                        Watch Demo
+                        <span aria-hidden="true" class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+</button>
+</div>
+</div>
+<!-- Hero Graphic (Floating Interface) -->
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/3 w-full max-w-4xl opacity-50 hidden md:block">
+<img alt="Decentralized Network Illustration" class="w-full h-auto rounded-t-xl border border-outline-variant/20 shadow-ambient filter grayscale contrast-125" data-alt="Abstract glowing circuit board representing decentralized compute and AI agent networks in a dark cybernetic environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4m_3jfOGI75O8DcOjoNNU-2Oe5Qte4G4HsmJ3BiWpxjDHK1kZX29twbM7TK5-UVNA1XA8TQBEn0ww-JpQUk16hwzL-E1UKmX9skAlZRdSf9ORXaPkPbOaIDQt7dZP5fY-sF8TWfeEXe6IOKTe5r3hfZkWBk3KCb1RpnHiKoURsHDoaBle_MVFnTIIdZ9S21hYaufDqoFPriSATqe92rCRo2lw6wBWV9VzmJqXUWYTY8eLkzwNIDLCXAyXIxuhGfb636e7ogl1AMM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-24 px-6 md:px-12 bg-surface relative z-20">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-semibold tracking-[-0.02em] text-on-surface mb-4 font-headline">Core Capabilities</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">The foundational primitives for the next generation of decentralized automation.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Feature 1 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="school">school</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Learn by Building</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Hands‑on courses designed to take you from concept to deployed agent.</p>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Autonomous Agents</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Create sophisticated agents that reason, plan, and execute complex workflows.</p>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="lan">lan</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Cross‑Chain Intents</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Execute multi‑chain strategies seamlessly without dealing with bridge friction.</p>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="security">security</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Trusted Execution</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Deploy securely within Trusted Execution Environments (TEEs) for guaranteed privacy.</p>
+</div>
+<!-- Feature 5 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Zero‑Knowledge</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Access and compute on private off-chain data securely using ZK proofs.</p>
+</div>
+<!-- Feature 6 -->
+<div class="bg-surface-container-low rounded-xl p-8 flex flex-col items-start hover:bg-surface-container transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center mb-6 shadow-ambient">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="dns">dns</span>
+</div>
+<h3 class="text-xl font-medium text-on-surface mb-3">Decentralized Compute</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Run workloads on decentralized networks like Akash and Phala for unstoppable uptime.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="py-24 px-6 md:px-12 bg-surface-container-low">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row items-center gap-16">
+<div class="w-full md:w-1/2">
+<h2 class="text-3xl md:text-4xl font-semibold tracking-[-0.02em] text-on-surface mb-6 font-headline">The Agent Deployment Lifecycle</h2>
+<p class="text-on-surface-variant mb-10 text-lg">A streamlined pipeline from conceptualization to revenue generation in the decentralized ecosystem.</p>
+<div class="space-y-8">
+<div class="flex gap-4 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">1</div>
+<div>
+<h4 class="text-lg font-medium text-on-surface mb-1">Learn</h4>
+<p class="text-sm text-on-surface-variant">Master the primitives of AI and Web3 integration through structured modules.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">2</div>
+<div>
+<h4 class="text-lg font-medium text-on-surface mb-1">Build</h4>
+<p class="text-sm text-on-surface-variant">Construct your agent logic using our comprehensive SDK and templates.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">3</div>
+<div>
+<h4 class="text-lg font-medium text-on-surface mb-1">Deploy</h4>
+<p class="text-sm text-on-surface-variant">Launch securely onto decentralized compute nodes with one command.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-sm">4</div>
+<div>
+<h4 class="text-lg font-medium text-on-surface mb-1">Earn</h4>
+<p class="text-sm text-on-surface-variant">Monetize your agent's actions across protocols and intent networks.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="rounded-xl overflow-hidden shadow-ambient border border-outline-variant/20 relative aspect-square">
+<img alt="Platform Dashboard Preview" class="w-full h-full object-cover" data-alt="Data visualization dashboard showing complex network nodes connecting and processing information in a clean light interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ-_TYzDMPAH3PTS_B8cs1TqZEI4uwqVSLmBK4uhEd3iuST2ZuIZlZawfAE6TsjVAt25I-gwgLj__vKFaOh_5lfhiHwMzIseN2AsSQ5Oez_3VHKeDxpnAz-ywfNA5chvDqS-JeMXmkb9gtOCIZCKxsPV7xjP_0Jg3qo3seqae2JQB0ExavH8dMQ0mPCPThORh_ThAfs70JI0hsDwF6vW6gUnF3ZwrEW7JOT1Z5RikD5nhYWEBfofNvK4voA2LjczSmVO5a3W00bG8"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-surface/80 to-transparent"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="py-24 px-6 md:px-12 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-semibold tracking-[-0.02em] text-on-surface mb-4 font-headline">Ecosystem Access</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Choose the tier that matches your deployment scale.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+<!-- SDK Tier -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col h-full">
+<h3 class="text-xl font-medium text-on-surface mb-2">SDK</h3>
+<div class="text-4xl font-bold text-on-surface mb-6">$397</div>
+<ul class="space-y-4 mb-8 flex-grow">
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Access to Agent SDK
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                5h video course
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                3 deployment templates
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Community support
+                            </li>
+</ul>
+<button class="w-full py-3 rounded-full bg-surface-container-highest text-primary font-medium hover:bg-surface-variant transition-colors">Get Access</button>
+</div>
+<!-- Accelerator Tier (Highlighted) -->
+<div class="bg-surface-container-highest rounded-xl p-8 border border-primary/30 shadow-ambient flex flex-col h-full relative transform md:-translate-y-4">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-on-primary text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">Most Popular</div>
+<h3 class="text-xl font-medium text-on-surface mb-2">Accelerator</h3>
+<div class="text-4xl font-bold text-primary mb-6">$25,000</div>
+<ul class="space-y-4 mb-8 flex-grow">
+<li class="flex items-center gap-3 text-sm text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                12‑week cohort program
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                1:1 technical mentorship
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Model fine‑tuning support
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Cross‑chain integration
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Elite peer network access
+                            </li>
+</ul>
+<button class="w-full py-3 rounded-full primary-gradient text-on-primary font-medium shadow-ambient spring-hover spring-active">Apply Now</button>
+</div>
+<!-- Enterprise Tier -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col h-full">
+<h3 class="text-xl font-medium text-on-surface mb-2">Enterprise</h3>
+<div class="text-4xl font-bold text-on-surface mb-6">$150k<span class="text-lg text-on-surface-variant font-normal">/yr</span></div>
+<ul class="space-y-4 mb-8 flex-grow">
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Full TEE deployment
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                zkTLS integration
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Dedicated 24/7 support
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                On‑site strategy retreat
+                            </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+                                Custom tokenomics design
+                            </li>
+</ul>
+<button class="w-full py-3 rounded-full bg-surface-container-highest text-primary font-medium hover:bg-surface-variant transition-colors">Contact Sales</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-24 px-6 md:px-12 bg-surface-container-low overflow-hidden">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-semibold tracking-[-0.02em] text-on-surface mb-4 font-headline">Protocol Partners</h2>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-8 snap-x hide-scrollbar">
+<!-- Testimonial 1 -->
+<div class="min-w-[300px] md:min-w-[400px] bg-surface rounded-xl p-8 shadow-ambient border border-outline-variant/20 snap-center">
+<div class="flex items-center gap-1 mb-6 text-tertiary-fixed-dim">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+</div>
+<p class="text-on-surface-variant mb-8 leading-relaxed">"Kuberna Labs accelerated our DeFi protocol's automation by months. The SDK is incredibly intuitive while providing the deep control our smart contracts require."</p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">A</div>
+<div>
+<div class="font-medium text-on-surface">Alice M.</div>
+<div class="text-xs text-on-surface-variant">Founder, Aavegon</div>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="min-w-[300px] md:min-w-[400px] bg-surface rounded-xl p-8 shadow-ambient border border-outline-variant/20 snap-center">
+<div class="flex items-center gap-1 mb-6 text-tertiary-fixed-dim">
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+<span aria-hidden="true" class="material-symbols-outlined" data-icon="star" data-weight="fill">star</span>
+</div>
+<p class="text-on-surface-variant mb-8 leading-relaxed">"The TEE deployment gave our institutional clients the security they demanded. We couldn't have launched our agentic trading desk without Kuberna's infrastructure."</p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">B</div>
+<div>
+<div class="font-medium text-on-surface">Bob K.</div>
+<div class="text-xs text-on-surface-variant">CTO, FinTec</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Generated from JSON) -->
+<footer class="bg-slate-50 dark:bg-slate-950 text-indigo-600 dark:text-indigo-400 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold text-lg font-black text-slate-900 dark:text-white w-full py-12 px-8 mt-auto no-border bg-slate-100 dark:bg-slate-900 flat grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20">
+<div class="flex flex-col gap-2">
+<span class="text-lg font-black text-slate-900 dark:text-white font-['SF_Pro',_Inter]">Kuberna Labs</span>
+<span class="text-slate-400 dark:text-slate-500 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-normal">© 2024 Kuberna Labs. Secure Decentralized Compute.</span>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

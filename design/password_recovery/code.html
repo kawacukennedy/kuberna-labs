@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Forgot Password - Kuberna OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-tint": "#494bd6",
+                    "surface-container": "#e6eeff",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#fffbff",
+                    "secondary-container": "#6cf8bb",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-error": "#ffffff",
+                    "tertiary": "#825100",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#4648d4",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface": "#f8f9ff",
+                    "on-surface": "#121c2a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9ff",
+                    "outline-variant": "#c7c4d7",
+                    "surface-container-high": "#dee9fc",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d0dbed",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary-container": "#00714d",
+                    "primary-container": "#6063ee",
+                    "tertiary-container": "#a36700",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-surface-variant": "#464554",
+                    "inverse-primary": "#c0c1ff",
+                    "outline": "#767586",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#d9e3f6",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#006c49",
+                    "surface-variant": "#d9e3f6",
+                    "inverse-surface": "#27313f",
+                    "on-background": "#121c2a",
+                    "on-tertiary-fixed-variant": "#653e00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom Spring Utility classes matching design system spec */
+        .spring-300-20 {
+            transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition-duration: 400ms;
+        }
+        .bg-glass {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .shadow-ambient {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, var(--tw-colors-primary, #4648d4), var(--tw-colors-primary-container, #6063ee));
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center relative overflow-hidden">
+<!-- Decorative Ambient Background Elements to fit 'Sovereign Ether' North Star -->
+<div class="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary-fixed opacity-30 blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-secondary-fixed opacity-20 blur-[100px] pointer-events-none"></div>
+<!-- Centered Glass Card for Forgot Password -->
+<div class="relative z-10 w-full max-w-md p-8 md:p-12 bg-glass rounded-xl shadow-ambient ring-1 ring-outline-variant/20 mx-4">
+<div class="mb-8 text-center">
+<h1 class="text-[1.75rem] font-semibold text-on-surface tracking-[-0.02em] leading-tight mb-2">Kuberna Labs</h1>
+<h2 class="text-[1.125rem] font-medium text-on-surface-variant">Recover Access</h2>
+</div>
+<p class="text-[1rem] text-on-surface-variant mb-8 text-center">
+            Enter the email address associated with your Sovereign Ether instance to receive a reset link.
+        </p>
+<form class="space-y-6">
+<!-- Email Input -->
+<div>
+<label class="block text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface mb-2 pl-2" for="email">Email Address</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors duration-200" data-icon="mail">mail</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low text-on-surface rounded-md border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.3)] transition-all duration-300" id="email" name="email" placeholder="agent@kuberna.os" required="" type="email"/>
+</div>
+</div>
+<!-- Submit Action -->
+<button class="w-full py-4 px-6 rounded-md btn-primary-gradient text-on-primary font-medium tracking-wide spring-300-20 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-primary/20" type="submit">
+<span>Send Reset Link</span>
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 text-center">
+<a class="text-[0.875rem] font-medium text-primary hover:text-primary-container transition-colors duration-200" href="#">Return to Node Authentication</a>
+</div>
+</div>
+</body></html>

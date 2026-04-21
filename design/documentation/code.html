@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kuberna Labs - Documentation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            font-feature-settings: 'liga';
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Spring animation utilities simulating the required stiffness/damping */
+        .spring-300-20 {
+            transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_20px_40px_rgba(18,28,42,0.06)] no-border">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">
+                Kuberna Labs
+            </div>
+<div class="hidden md:flex gap-8 items-center font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-4 py-2 rounded-lg" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-4 py-2 rounded-lg" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-4 py-2 rounded-lg" href="#">Enterprise</a>
+<!-- Active Item -->
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 px-4 py-2 h-full flex items-center" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-4 py-2 rounded-lg" href="#">Blog</a>
+</div>
+<div class="hidden md:flex gap-4 items-center font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<button class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors px-4 py-2 spring-300-20 active:scale-95">Log In</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2 rounded-full shadow-[0_20px_40px_rgba(18,28,42,0.06)] hover:shadow-lg transition-all duration-300 spring-300-20 active:scale-95">Sign Up</button>
+</div>
+<button class="md:hidden text-on-surface p-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Layout Grid -->
+<div class="flex-1 flex w-full max-w-[1440px] mx-auto pt-24 px-4 sm:px-8 gap-12 relative">
+<!-- Docs Sidebar -->
+<aside class="hidden lg:flex flex-col w-64 shrink-0 sticky top-32 h-[calc(100vh-8rem)] overflow-y-auto pb-12 pr-6">
+<div class="flex flex-col gap-8">
+<div>
+<h3 class="font-label text-[0.75rem] tracking-[0.02em] font-bold text-on-surface-variant uppercase mb-4 px-4">Overview</h3>
+<nav class="flex flex-col gap-1">
+<a class="px-4 py-2.5 rounded-xl bg-surface-container-highest text-primary font-medium text-sm transition-colors flex items-center justify-between" href="#">
+                            Getting Started
+                            <span class="material-symbols-outlined text-[18px]" data-icon="play_circle" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</a>
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors" href="#">Core Concepts</a>
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors" href="#">Architecture</a>
+</nav>
+</div>
+<div>
+<h3 class="font-label text-[0.75rem] tracking-[0.02em] font-bold text-on-surface-variant uppercase mb-4 px-4">Resources</h3>
+<nav class="flex flex-col gap-1">
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors" href="#">SDK</a>
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors" href="#">API Reference</a>
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors" href="#">Examples</a>
+<a class="px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-medium text-sm transition-colors flex items-center justify-between" href="#">
+                            Community
+                            <span class="material-symbols-outlined text-[18px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</nav>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 min-w-0 pb-24 max-w-4xl pt-8">
+<!-- Hero Header -->
+<header class="mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low text-primary text-xs font-semibold tracking-wide mb-6">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse shadow-[0_0_8px_rgba(111,251,190,0.6)]"></span>
+                    v2.4.0 Now Available
+                </div>
+<h1 class="text-[3.5rem] leading-[1.1] font-headline font-semibold text-on-surface tracking-[-0.02em] mb-6">
+                    Welcome to <br/>Kuberna Labs Documentation.
+                </h1>
+<p class="text-[1.125rem] font-body text-on-surface-variant max-w-2xl leading-relaxed">
+                    Learn how to build, deploy, and monetize autonomous agents. The Sovereign Ether provides the cryptographic primitives required for trusted execution at scale.
+                </p>
+</header>
+<!-- Terminal Installation Block -->
+<section class="mb-20">
+<div class="bg-inverse-surface rounded-lg shadow-[0_20px_40px_rgba(18,28,42,0.12)] overflow-hidden relative">
+<!-- Mac-style top bar -->
+<div class="flex items-center px-4 py-3 bg-white/5 border-b border-white/5">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-error-container/80"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim/80"></div>
+<div class="w-3 h-3 rounded-full bg-secondary-fixed/80"></div>
+</div>
+<div class="mx-auto text-xs font-mono text-outline">Terminal - bash</div>
+</div>
+<!-- Code area -->
+<div class="p-6 overflow-x-auto">
+<pre class="font-mono text-[0.875rem] leading-relaxed text-inverse-on-surface"><code class="language-bash"><span class="text-secondary-fixed"># Install the Kuberna SDK globally</span>
+$ npm install -g @kuberna/sdk
+
+<span class="text-secondary-fixed"># Initialize your first agent workspace</span>
+$ kuberna init my-sovereign-agent
+<span class="text-outline">Initializing environment...</span>
+<span class="text-secondary-fixed">Success! Workspace created.</span></code></pre>
+</div>
+<!-- Copy button -->
+<button aria-label="Copy code" class="absolute top-14 right-4 p-2 rounded-md bg-white/5 text-outline hover:text-white hover:bg-white/10 transition-colors spring-300-20 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</section>
+<!-- Quick Start Bento Grid -->
+<section>
+<h2 class="text-[1.75rem] font-headline font-semibold text-on-surface tracking-[-0.02em] mb-8">Quick Start Guide</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<a class="group block p-8 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors duration-300 relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-4 group-hover:translate-x-0">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface mb-6 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<h3 class="text-[1.125rem] font-body font-medium text-on-surface mb-3">Deploy an Agent</h3>
+<p class="text-[1rem] font-body text-on-surface-variant leading-relaxed">
+                            Step-by-step guide to compiling your logic and deploying it securely to the compute network.
+                        </p>
+</a>
+<!-- Card 2 -->
+<a class="group block p-8 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors duration-300 relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-4 group-hover:translate-x-0">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface mb-6 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<h3 class="text-[1.125rem] font-body font-medium text-on-surface mb-3">Monetization Setup</h3>
+<p class="text-[1rem] font-body text-on-surface-variant leading-relaxed">
+                            Configure your wallet, set execution parameters, and start earning from agent invocations.
+                        </p>
+</a>
+<!-- Card 3 (Full Width) -->
+<a class="group block md:col-span-2 p-8 rounded-lg bg-gradient-to-br from-surface-container-low to-surface-container-highest hover:shadow-[0_20px_40px_rgba(18,28,42,0.06)] transition-all duration-300 relative overflow-hidden" href="#">
+<div class="absolute inset-0 bg-white/40 backdrop-blur-[12px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+<div>
+<div class="inline-flex items-center gap-2 text-primary font-label text-[0.75rem] font-bold tracking-[0.02em] uppercase mb-3">
+<span class="material-symbols-outlined text-[16px]" data-icon="menu_book">menu_book</span>
+                                    Deep Dive
+                                </div>
+<h3 class="text-[1.125rem] font-body font-medium text-on-surface mb-2">Explore the API Reference</h3>
+<p class="text-[1rem] font-body text-on-surface-variant leading-relaxed max-w-xl">
+                                    Comprehensive documentation of all REST endpoints, WebSocket streams, and core cryptographic functions available in the OS.
+                                </p>
+</div>
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300 spring-300-20">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_outward">arrow_outward</span>
+</div>
+</div>
+</a>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-12 px-8 mt-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20 no-border">
+<div class="flex flex-col gap-4">
+<div class="text-lg font-black text-slate-900 dark:text-white">
+                Kuberna Labs
+            </div>
+<div class="font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">
+                © 2024 Kuberna Labs. Secure Decentralized Compute.
+            </div>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

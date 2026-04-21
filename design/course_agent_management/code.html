@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Course Management - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .spring-300-20 {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition-duration: 300ms;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="h-screen w-72 rounded-r-[3rem] sticky top-0 bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl shadow-xl flex flex-col p-6 gap-2 z-40">
+<!-- Header -->
+<div class="mb-8 px-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold shadow-[0_20px_40px_rgba(18,28,42,0.06)]">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<div>
+<h1 class="text-lg font-semibold text-slate-900 dark:text-white font-['SF_Pro',_Inter] tracking-normal leading-tight">Kuberna OS</h1>
+<p class="text-xs text-on-surface-variant opacity-80">Enterprise Ether</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-2 font-['SF_Pro',_Inter] text-sm tracking-normal">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20 hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+                Courses
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+                Agents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+                Compute
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                Logs
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+                Network
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+<!-- CTA -->
+<div class="mt-auto pt-4 border-t-0">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 px-6 rounded-[1.5rem] font-medium text-sm spring-300-20 hover:scale-[1.02] active:scale-[0.98] shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                Deploy Agent
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-h-screen max-h-screen overflow-y-auto relative">
+<!-- Header -->
+<header class="sticky top-0 z-30 px-10 pt-10 pb-6 bg-surface/80 backdrop-blur-md">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-[1.75rem] font-semibold text-on-surface tracking-[-0.02em] leading-tight">Course Management</h2>
+<p class="text-base text-on-surface-variant mt-1">Manage curriculum, monitor engagement, and publish content.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary py-3 px-8 rounded-[1.5rem] font-medium text-sm spring-300-20 hover:scale-[1.02] active:scale-[0.98] shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add_circle">add_circle</span>
+                    Create New Course
+                </button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="px-10 pb-20 flex-1 space-y-8">
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-[1.5rem] relative overflow-hidden group hover:shadow-[0_20px_40px_rgba(18,28,42,0.06)] transition-all duration-300 spring-300-20 bg-surface-container-low/50">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all duration-500"></div>
+<div class="flex items-center justify-between relative z-10">
+<p class="text-sm font-bold tracking-[0.02em] text-on-surface-variant uppercase">Total Courses</p>
+<span class="material-symbols-outlined text-primary/70" data-icon="library_books">library_books</span>
+</div>
+<p class="text-[2rem] font-semibold text-on-surface mt-2 tracking-tight">42</p>
+<p class="text-xs text-secondary font-medium mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> +3 this month
+                    </p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-[1.5rem] relative overflow-hidden group hover:shadow-[0_20px_40px_rgba(18,28,42,0.06)] transition-all duration-300 spring-300-20 bg-surface-container-low/50">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all duration-500"></div>
+<div class="flex items-center justify-between relative z-10">
+<p class="text-sm font-bold tracking-[0.02em] text-on-surface-variant uppercase">Published</p>
+<span class="material-symbols-outlined text-secondary/70" data-icon="check_circle">check_circle</span>
+</div>
+<p class="text-[2rem] font-semibold text-on-surface mt-2 tracking-tight">38</p>
+<p class="text-xs text-on-surface-variant font-medium mt-1 flex items-center gap-1">
+                        90% completion rate
+                    </p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-[1.5rem] relative overflow-hidden group hover:shadow-[0_20px_40px_rgba(18,28,42,0.06)] transition-all duration-300 spring-300-20 bg-surface-container-low/50">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all duration-500"></div>
+<div class="flex items-center justify-between relative z-10">
+<p class="text-sm font-bold tracking-[0.02em] text-on-surface-variant uppercase">Drafts</p>
+<span class="material-symbols-outlined text-tertiary/70" data-icon="edit_document">edit_document</span>
+</div>
+<p class="text-[2rem] font-semibold text-on-surface mt-2 tracking-tight">4</p>
+<p class="text-xs text-tertiary font-medium mt-1 flex items-center gap-1">
+                        Requires review
+                    </p>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-container-low rounded-[2rem] overflow-hidden">
+<!-- Search/Filter Bar -->
+<div class="p-6 flex justify-between items-center">
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest text-sm text-on-surface placeholder:text-on-surface-variant/50 rounded-full py-3 pl-11 pr-4 focus:outline-none focus:ring-0 focus:bg-surface-container-lowest shadow-sm transition-all duration-300 border-none" placeholder="Search courses..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-lowest text-on-surface-variant py-2 px-4 rounded-full text-sm font-medium hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                            Filter
+                        </button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto px-6 pb-6">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr>
+<th class="pb-4 font-bold text-[0.75rem] tracking-[0.02em] text-on-surface-variant uppercase pl-4">Course Name</th>
+<th class="pb-4 font-bold text-[0.75rem] tracking-[0.02em] text-on-surface-variant uppercase">Category</th>
+<th class="pb-4 font-bold text-[0.75rem] tracking-[0.02em] text-on-surface-variant uppercase">Status</th>
+<th class="pb-4 font-bold text-[0.75rem] tracking-[0.02em] text-on-surface-variant uppercase text-right pr-4">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container transition-colors duration-200">
+<td class="py-4 pl-4 rounded-l-[1rem]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[0.75rem] bg-primary-fixed flex items-center justify-center text-primary font-bold">
+                                            DL
+                                        </div>
+<div>
+<p class="font-medium text-on-surface">Deep Learning Fundamentals</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Updated 2 days ago</p>
+</div>
+</div>
+</td>
+<td class="py-4 text-on-surface-variant">AI / ML</td>
+<td class="py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-secondary text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                        Published
+                                    </span>
+</td>
+<td class="py-4 pr-4 rounded-r-[1rem] text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="View">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Spacer for rows -->
+<tr><td class="h-2" colspan="4"></td></tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container transition-colors duration-200">
+<td class="py-4 pl-4 rounded-l-[1rem]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[0.75rem] bg-tertiary-fixed flex items-center justify-center text-tertiary font-bold">
+                                            TC
+                                        </div>
+<div>
+<p class="font-medium text-on-surface">TEE Cryptography</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Updated 5 days ago</p>
+</div>
+</div>
+</td>
+<td class="py-4 text-on-surface-variant">Security</td>
+<td class="py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed-dim/30 text-tertiary text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                                        Draft
+                                    </span>
+</td>
+<td class="py-4 pr-4 rounded-r-[1rem] text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="View">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Spacer for rows -->
+<tr><td class="h-2" colspan="4"></td></tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container transition-colors duration-200">
+<td class="py-4 pl-4 rounded-l-[1rem]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-[0.75rem] bg-primary-fixed flex items-center justify-center text-primary font-bold">
+                                            AA
+                                        </div>
+<div>
+<p class="font-medium text-on-surface">Agentic Architectures</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Updated 1 week ago</p>
+</div>
+</div>
+</td>
+<td class="py-4 text-on-surface-variant">Architecture</td>
+<td class="py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-secondary text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                        Published
+                                    </span>
+</td>
+<td class="py-4 pr-4 rounded-r-[1rem] text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="View">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Optional/Visual) -->
+<div class="p-4 border-t border-outline-variant/20 flex justify-between items-center text-sm text-on-surface-variant">
+<span>Showing 1 to 3 of 42 courses</span>
+<div class="flex gap-1">
+<button class="p-2 rounded-full hover:bg-surface-container disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

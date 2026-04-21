@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .btn-spring {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-spring:active {
+            transform: scale(0.95);
+        }
+        .ghost-border {
+            border: 1px solid rgba(199, 196, 215, 0.2); /* outline-variant at 20% */
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+<!-- Decorative Background Orbs -->
+<div class="absolute top-[-10%] left-[-5%] w-96 h-96 bg-primary-fixed-dim rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+<main class="w-full max-w-md relative z-10">
+<!-- Logo Header -->
+<div class="text-center mb-8">
+<h1 class="text-3xl font-bold tracking-tighter text-on-surface font-headline mb-2">Kuberna Labs</h1>
+<p class="text-on-surface-variant text-sm font-medium tracking-wide">SECURE DECENTRALIZED COMPUTE</p>
+</div>
+<!-- Glass Card Container -->
+<div class="glass-panel rounded-xl p-8 ghost-border relative overflow-hidden">
+<!-- Subtle internal glow -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/50 to-transparent pointer-events-none"></div>
+<div class="relative z-10">
+<h2 class="text-title-md font-medium text-on-surface mb-6">Log In</h2>
+<form class="space-y-5">
+<!-- Email Field -->
+<div class="space-y-1">
+<label class="text-label-md font-bold uppercase tracking-widest text-on-surface-variant block" for="email">Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full bg-surface-container-low border-0 rounded-DEFAULT py-4 pl-12 pr-4 text-body-lg text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_8px_rgba(70,72,212,0.2)] transition-all" id="email" placeholder="name@domain.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1">
+<div class="flex justify-between items-center">
+<label class="text-label-md font-bold uppercase tracking-widest text-on-surface-variant block" for="password">Password</label>
+<a class="text-xs text-primary hover:text-primary-container font-medium" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full bg-surface-container-low border-0 rounded-DEFAULT py-4 pl-12 pr-4 text-body-lg text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_8px_rgba(70,72,212,0.2)] transition-all" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Login Button -->
+<button class="w-full gradient-bg text-on-primary font-medium py-4 px-6 rounded-DEFAULT btn-spring mt-2 shadow-[0_8px_16px_rgba(70,72,212,0.2)]" type="submit">
+                        Log In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-4 my-8">
+<div class="h-px bg-surface-container-high flex-1"></div>
+<span class="text-xs font-medium text-outline uppercase tracking-wider">Or</span>
+<div class="h-px bg-surface-container-high flex-1"></div>
+</div>
+<!-- Web3 Connect -->
+<button class="w-full bg-surface-container-low text-on-surface font-medium py-4 px-6 rounded-DEFAULT btn-spring mb-4 hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-secondary">wallet</span>
+                    Connect Wallet
+                </button>
+<!-- OAuth Options -->
+<div class="grid grid-cols-3 gap-4">
+<button class="bg-surface-container-low py-3 rounded-DEFAULT hover:bg-surface-container-highest transition-colors flex justify-center btn-spring" type="button">
+<img alt="Google Logo Placeholder" class="w-6 h-6 object-contain mix-blend-darken grayscale opacity-70" data-alt="Minimalist abstract graphic representing a digital 'G' in subtle brand colors against a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRGhNLP-zyFIBRfufMg7aabkre6yBdr4tCFuJ1b3WFpPOKRtfKAJZDKOBfJX2k7nPU7DhUPdWB1zJrw3cQm9tCHvreec90boEappX8Tj6qqiG6c7obw0-h9TpNoJC3Lzj_NNa2oQQGE5NMRRfPk6MjmTzB52egwc-_a_EKEajx6haWLN3qDNqQNBbFyIiRsQSZjrhwN7e7xJrwCDtgh3Fy3-RSL1I9bT80GH2geHCRhS5lArXUVTzZocz27b3SLewKO0Cr_ql3lo4"/>
+</button>
+<button class="bg-surface-container-low py-3 rounded-DEFAULT hover:bg-surface-container-highest transition-colors flex justify-center btn-spring" type="button">
+<img alt="GitHub Logo Placeholder" class="w-6 h-6 object-contain mix-blend-darken grayscale opacity-70" data-alt="Minimalist abstract graphic representing an octocat shape in subtle dark grey against a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDESdDfaOhumbq5BrOrVWjZ3iLrnhCGtzEzZwAD3Po_BVKoW-yDTnGWjV2o4PNYkUWLrFcBNMiA4JtWZYtMEsA0HnoTWDDdnGvT6bFuOVM9lJVc0nfZjCqM3GEoSlDbD9rRHDmU5MMF4r5kdlvxi1YjvGrY6ywp87ypQQo0ib-cpOnK-VY1igBsqMGXRJzO-nYy8xCyBlU_QCp8eprM8uuVvhuf3cwa1vCPqskj6R4eceJ3sR55JcS4RcHYgBCXHozPWmL7eej0KSs"/>
+</button>
+<button class="bg-surface-container-low py-3 rounded-DEFAULT hover:bg-surface-container-highest transition-colors flex justify-center btn-spring" type="button">
+<img alt="Discord Logo Placeholder" class="w-6 h-6 object-contain mix-blend-darken grayscale opacity-70" data-alt="Minimalist abstract graphic representing a game controller shape in subtle blurple against a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyyThgvIb1-_OGVomyLkLk6-YixRHnwJpV9qMKcUtCsIvoPDefjNwUDTHoAiqhBs7S61rcsJN1-DeHQXHtNvw4xQXrxXQIyZtGRPacjS1Iw41ScHVHK432jFWnL5NZ6dnZphpOFKxvN1ZyHWX3TpbbsWLl8rezrLvEC3WTtbsl8Zjs6EdfPitV2FgysekwuSCuLXB7I8R0fHSkQmajFX9YM8P62I4Ovyljm1fuTQdBUxn6uFt6fxHPl5NCBWXHB9hVnG8exQtslA4"/>
+</button>
+</div>
+<p class="text-center mt-8 text-sm text-on-surface-variant">
+                    Don't have an account? <a class="text-primary font-medium hover:underline" href="/auth/register">Sign Up</a>
+</p>
+</div>
+</div>
+<!-- Footer -->
+<div class="text-center mt-8">
+<p class="text-xs text-outline tracking-wider uppercase font-bold">© 2024 Kuberna Labs</p>
+</div>
+</main>
+</body></html>

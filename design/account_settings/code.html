@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .spring-300-20 { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex selection:bg-primary selection:text-on-primary">
+<!-- SideNavBar -->
+<nav class="hidden md:flex h-screen w-72 rounded-r-[3rem] sticky top-0 left-0 bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl flex-col p-6 gap-2 no-border bg-slate-100/50 dark:bg-slate-900/50 shadow-xl z-50">
+<div class="mb-8 flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xl">K</div>
+<div>
+<h1 class="text-lg font-semibold text-slate-900 dark:text-white tracking-tight">Kuberna OS</h1>
+<p class="text-xs text-slate-500 font-['SF_Pro',_Inter]">Enterprise Ether</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-grow font-['SF_Pro',_Inter] text-sm tracking-normal">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span>Agents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined">memory</span>
+<span>Compute</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span>Logs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span>Network</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20 hover:translate-x-1 transition-transform duration-200 spring-300-20" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</div>
+<button class="mt-auto flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-medium tracking-wide shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-primary/30 transition-all duration-300 spring-300-20">
+<span class="material-symbols-outlined">add</span>
+            Deploy Agent
+        </button>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-h-screen relative overflow-hidden bg-surface">
+<!-- Ambient Background Gradients -->
+<div class="absolute top-0 left-0 w-full h-[409px] bg-gradient-to-b from-surface-container-low to-transparent pointer-events-none z-0"></div>
+<div class="absolute top-20 right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
+<!-- TopAppBar (Mobile Only) -->
+<header class="md:hidden flex items-center justify-between px-6 py-4 glass-panel sticky top-0 z-40 shadow-[0_20px_40px_rgba(18,28,42,0.06)]">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container font-bold">K</div>
+<h1 class="text-lg font-bold tracking-tight text-on-surface">Settings</h1>
+</div>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<div class="flex-1 px-4 sm:px-8 md:px-12 py-8 max-w-7xl mx-auto w-full z-10">
+<header class="mb-12">
+<h1 class="text-[2.5rem] md:text-[3.5rem] font-semibold tracking-[-0.02em] text-on-surface leading-tight mb-2">Settings</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl">Manage your Kuberna OS configuration, security preferences, and API access.</p>
+</header>
+<!-- Settings Layout: Sidebar Tabs + Content Area -->
+<div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+<!-- Settings Navigation -->
+<nav class="w-full lg:w-64 flex-shrink-0 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-colors whitespace-nowrap lg:whitespace-normal" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-medium text-sm">Account</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-surface-container-highest text-primary rounded-xl shadow-[0_4px_12px_rgba(18,28,42,0.03)] transition-all whitespace-nowrap lg:whitespace-normal" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-medium text-sm">Security</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-colors whitespace-nowrap lg:whitespace-normal" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-medium text-sm">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-colors whitespace-nowrap lg:whitespace-normal" href="#">
+<span class="material-symbols-outlined">key</span>
+<span class="font-medium text-sm">API Keys</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-xl transition-colors whitespace-nowrap lg:whitespace-normal" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="font-medium text-sm">Billing</span>
+</a>
+</nav>
+<!-- Content Area: Security Settings -->
+<div class="flex-1 w-full flex flex-col gap-8">
+<!-- MFA Setup Section -->
+<section class="bg-surface-container-low rounded-[2rem] p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-surface-container-highest rounded-bl-full opacity-50 pointer-events-none blur-2xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
+<div class="max-w-xl">
+<h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] text-on-surface mb-2">Two-Factor Authentication</h2>
+<p class="text-on-surface-variant text-sm md:text-base leading-relaxed">Enhance your account security by requiring a second verification step. We recommend using an authenticator app like Google Authenticator or Authy.</p>
+</div>
+<!-- Toggle Switch -->
+<div class="flex items-center gap-3 bg-surface-container py-2 px-4 rounded-full self-start shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+<span class="text-sm font-medium text-on-surface">Status</span>
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface">
+<span class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></span>
+</button>
+</div>
+</div>
+<!-- MFA Configuration Content -->
+<div class="bg-surface-container rounded-[1.5rem] p-6 mt-2 relative z-10">
+<div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+<!-- QR Placeholder -->
+<div class="w-48 h-48 bg-surface-container-lowest rounded-xl flex items-center justify-center p-4 shadow-sm border border-outline-variant/20 flex-shrink-0">
+<img alt="Abstract geometric pattern resembling a high-tech QR code in indigo and monochrome tones" class="w-full h-full object-cover rounded-lg opacity-80 mix-blend-luminosity" data-alt="Abstract geometric pattern resembling a high-tech QR code in indigo and monochrome tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrenu5oFaQA-_YcUyitf1fkbwyRQuQNks1gtYbZfU8Nu3ugaPaQpgGv3_rebjlJphtMl3kbYavStolxcf0YUg6yRyTvW09PKZQRNirp0c-DqGtRSEAg2GXqTA9e7C5qCN1sTpPihiu-j8ZvmvjPKhsqt2LzWX-x-AcK9BkPYNNXp6RDCeibY1LgRT8tufvlXtBdi4Pof1I-3XGRHLrR_6odaoou0jnIuX9NuMETDXpkb806DWS2US0RtYjrCG4o6F-pIAv25gtV9o"/>
+</div>
+<div class="flex-1 flex flex-col gap-4 w-full">
+<div>
+<h3 class="text-base font-semibold text-on-surface mb-1">1. Scan QR Code</h3>
+<p class="text-sm text-on-surface-variant">Open your authenticator app and scan this QR code, or manually enter the setup key below.</p>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-xl flex items-center justify-between group">
+<code class="text-sm font-mono text-primary font-medium">JBSWY3DPEHPK3PXP</code>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+</div>
+<div class="mt-2">
+<h3 class="text-base font-semibold text-on-surface mb-2">2. Verify Code</h3>
+<div class="flex gap-3">
+<input class="flex-1 bg-surface-container-low border-none rounded-xl px-4 py-3 text-center tracking-[0.5em] font-mono text-lg text-on-surface placeholder-on-surface-variant/40 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" maxlength="6" placeholder="000 000" type="text"/>
+<button class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-medium shadow-[0_8px_16px_rgba(70,72,212,0.2)] hover:shadow-[0_12px_24px_rgba(70,72,212,0.3)] hover:-translate-y-0.5 transition-all duration-300 spring-300-20">Verify</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- API Keys Section -->
+<section class="bg-surface-container-low rounded-[2rem] p-6 md:p-8 flex flex-col gap-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] text-on-surface mb-1">API Keys</h2>
+<p class="text-on-surface-variant text-sm">Manage access tokens for programmatic interactions with Kuberna OS.</p>
+</div>
+<button class="flex items-center justify-center gap-2 px-5 py-2.5 bg-surface-container-highest text-primary font-medium rounded-xl hover:bg-primary/10 transition-colors self-start sm:self-auto shadow-sm">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                                Create New Key
+                            </button>
+</div>
+<!-- Keys List -->
+<div class="flex flex-col gap-4 mt-2">
+<!-- Key Item 1 -->
+<div class="bg-surface-container p-5 rounded-[1.5rem] flex flex-col md:flex-row md:items-center justify-between gap-4 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center text-on-secondary-container mt-1">
+<span class="material-symbols-outlined text-[20px]">vpn_key</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="font-medium text-on-surface">Production Analytics</h3>
+<span class="px-2 py-0.5 rounded-md bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant">
+<code class="font-mono">kub_prod_...8f9a</code>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Created Oct 12, 2023</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end md:self-auto">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error rounded-lg hover:bg-error-container/50 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Key Item 2 -->
+<div class="bg-surface-container p-5 rounded-[1.5rem] flex flex-col md:flex-row md:items-center justify-between gap-4 group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[20px]">vpn_key</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="font-medium text-on-surface">Staging Environment</h3>
+<span class="px-2 py-0.5 rounded-md bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Inactive</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-on-surface-variant">
+<code class="font-mono">kub_stg_...2b4c</code>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Created Sep 05, 2023</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end md:self-auto">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error rounded-lg hover:bg-error-container/50 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Footer Component Context (simplified for spatial framing) -->
+<footer class="mt-auto py-8 px-8 border-t border-outline-variant/10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-on-surface-variant font-medium">
+<p>© 2024 Kuberna Labs. Secure Decentralized Compute.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</main>
+</body></html>

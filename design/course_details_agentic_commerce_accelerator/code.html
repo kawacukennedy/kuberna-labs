@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agentic Commerce Accelerator | Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-tint": "#494bd6",
+                    "surface-container": "#e6eeff",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#fffbff",
+                    "secondary-container": "#6cf8bb",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-error": "#ffffff",
+                    "tertiary": "#825100",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#4648d4",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface": "#f8f9ff",
+                    "on-surface": "#121c2a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9ff",
+                    "outline-variant": "#c7c4d7",
+                    "surface-container-high": "#dee9fc",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d0dbed",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary-container": "#00714d",
+                    "primary-container": "#6063ee",
+                    "tertiary-container": "#a36700",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-surface-variant": "#464554",
+                    "inverse-primary": "#c0c1ff",
+                    "outline": "#767586",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#d9e3f6",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#006c49",
+                    "surface-variant": "#d9e3f6",
+                    "inverse-surface": "#27313f",
+                    "on-background": "#121c2a",
+                    "on-tertiary-fixed-variant": "#653e00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Inter", "sans-serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "label": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Base typography tokens based on design system */
+        .text-display-lg { font-size: 3.5rem; letter-spacing: -0.02em; line-height: 1.1; }
+        .text-headline-md { font-size: 1.75rem; letter-spacing: -0.02em; line-height: 1.2; }
+        .text-title-md { font-size: 1.125rem; letter-spacing: normal; line-height: 1.5; }
+        .text-body-lg { font-size: 1rem; letter-spacing: normal; line-height: 1.5; }
+        .text-label-md { font-size: 0.75rem; letter-spacing: 0.02em; text-transform: uppercase; }
+        
+        /* Glass effect utility */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        /* Ambient shadow utility */
+        .ambient-shadow {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        
+        /* Ghost border utility */
+        .ghost-border {
+            box-shadow: inset 0 0 0 1px rgba(199, 196, 215, 0.2); /* using outline-variant hex #c7c4d7 at 20% */
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col selection:bg-primary-container/30">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl no-border shadow-sm shadow-[0_20px_40px_rgba(18,28,42,0.06)] font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400" style="font-variation-settings: 'FILL' 1;">hexagon</span>
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">Kuberna Labs</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<!-- Active Item: Courses -->
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95" href="#">Enterprise</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95" href="#">Blog</a>
+</div>
+<div class="flex items-center gap-4 hidden md:flex">
+<button class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 font-medium px-4 py-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95">Log In</button>
+<button class="bg-indigo-600 text-white px-6 py-2 rounded-full font-medium hover:bg-indigo-700 transition-colors spring-300-20 active:scale-95">Sign Up</button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-24 px-6 md:px-12 max-w-[1440px] mx-auto w-full flex flex-col gap-12">
+<!-- Back Navigation -->
+<div class="flex items-center gap-2">
+<a class="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors text-label-md font-bold" href="/courses">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                Back to Catalog
+            </a>
+</div>
+<!-- Hero Section -->
+<header class="bg-surface-container-low rounded-xl p-8 md:p-16 flex flex-col lg:flex-row gap-12 relative overflow-hidden ghost-border">
+<!-- Left Info Content -->
+<div class="flex-1 flex flex-col gap-8 justify-center z-10">
+<div class="flex flex-wrap items-center gap-3">
+<span class="bg-surface-container-highest text-on-surface text-label-md font-bold px-4 py-2 rounded-full inline-flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                        Advanced
+                    </span>
+<span class="bg-surface-container-highest text-on-surface text-label-md font-bold px-4 py-2 rounded-full inline-flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                        12 Weeks
+                    </span>
+<!-- Agent Status Orb Decorative -->
+<div class="flex items-center gap-2 ml-2">
+<div class="w-3 h-3 rounded-full bg-secondary shadow-[0_0_12px_var(--tw-colors-secondary)] animate-pulse"></div>
+<span class="text-label-md text-on-surface-variant font-bold">Enrolling Now</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h1 class="text-display-lg font-headline font-semibold text-on-surface">Agentic Commerce Accelerator</h1>
+<p class="text-title-md font-body text-on-surface-variant max-w-2xl">
+                        Master the integration of autonomous AI agents within decentralized e-commerce ecosystems. Build, fine-tune, and deploy intelligent trading bots across multiple blockchain networks.
+                    </p>
+</div>
+<div class="flex items-center gap-4 mt-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden relative">
+<img alt="Instructor Jane Doe" class="w-full h-full object-cover" data-alt="professional portrait of a female tech instructor in a modern well-lit studio environment, wearing a dark minimal blazer, soft focused background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc5Rm5W3_QqntXUnhxKBIlu9dIl7NRz7s9XjqoBauMTXNBTyeKy6EVc7AaCCKrhI64vlH-H-yEKoxPFtO0pCln6UeKwBxl3Q-aYgyM_eyix6Mdfyae9Swd9LLSUV6Op3sAmPkPPiI55C3qv-Dynl7hb5KtBZarOLz9HUZrUbEvgw5XEMlNbwBk_Pc8ZLnVXWQI-AyRZYze2Ugb-sJqKaS5zjHiB2ZPwBQXqddui4h4tALyx3fH0wlr6ssYlcJb2pi8mEsJg69_w2k"/>
+</div>
+<div class="flex flex-col">
+<span class="text-label-md text-on-surface-variant">Lead Instructor</span>
+<span class="text-body-lg font-medium text-on-surface">Jane Doe</span>
+</div>
+</div>
+</div>
+<!-- Right Video Trailer Placeholder -->
+<div class="flex-1 relative min-h-[300px] lg:min-h-full rounded-lg overflow-hidden group cursor-pointer ambient-shadow">
+<img alt="Course Trailer Background" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="abstract digital landscape with glowing emerald and indigo nodes connecting in a decentralized network structure, sleek glassmorphic floating elements, cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBf4wc_gdOVsSFTuxdS4T2lza1BJWnmLy-MjHjggefQlyHdURL7YlQAc0H04LNMzPOSv8KMlHgkgXK4Yg8ahrmMlvQKNyXA7PTBRL2u_Uw4fswCKhudUeYVXFxOH9eFXOE1ZujMesPfQtHLupDWqexNLq4Do4wJW7TnM8vQ5cNyOp42UsUpRHgJGtWYpmQ46BJKulAa3jTXy-qiy5GTz2bZHo6NwP9uNmAD-6usWz7IPHVQvgtnjl4OBtGi1-2EfqGFLnv39G231Q"/>
+<div class="absolute inset-0 bg-on-surface/20 group-hover:bg-on-surface/10 transition-colors duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="glass-panel w-20 h-20 rounded-full flex items-center justify-center text-on-surface transition-transform duration-300 group-hover:scale-110">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Left Column: Content Canvas -->
+<div class="lg:col-span-8 flex flex-col gap-16">
+<!-- Curriculum Section -->
+<section class="flex flex-col gap-8">
+<h2 class="text-headline-md font-headline font-semibold text-on-surface">Curriculum</h2>
+<div class="flex flex-col gap-4">
+<!-- Module 1 -->
+<div class="bg-surface-container rounded-lg p-6 flex flex-col gap-4 transition-colors hover:bg-surface-container-high cursor-pointer group">
+<div class="flex justify-between items-center w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary font-bold text-label-md ghost-border">
+                                        M1
+                                    </div>
+<h3 class="text-title-md font-medium text-on-surface">Foundations</h3>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="text-label-md">3 Lessons</span>
+<span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-y-1">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Module 2 -->
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col gap-4 transition-colors hover:bg-surface-container cursor-pointer group">
+<div class="flex justify-between items-center w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary font-bold text-label-md ghost-border">
+                                        M2
+                                    </div>
+<h3 class="text-title-md font-medium text-on-surface">Fine-Tuning</h3>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="text-label-md">4 Lessons</span>
+<span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-y-1">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Module 3 -->
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col gap-4 transition-colors hover:bg-surface-container cursor-pointer group">
+<div class="flex justify-between items-center w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary font-bold text-label-md ghost-border">
+                                        M3
+                                    </div>
+<h3 class="text-title-md font-medium text-on-surface">Cross-Chain Deployment</h3>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="text-label-md">5 Lessons</span>
+<span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-y-1">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- System Requirements / Tech Stack (Adding depth) -->
+<section class="bg-surface-container-low rounded-xl p-8 ghost-border">
+<h2 class="text-title-md font-headline font-semibold text-on-surface mb-6">Execution Environment Required</h2>
+<div class="flex flex-wrap gap-4">
+<span class="bg-surface-container px-4 py-2 rounded-md text-sm text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-sm">memory</span> 32GB RAM Minimum</span>
+<span class="bg-surface-container px-4 py-2 rounded-md text-sm text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-sm">terminal</span> Rust Toolchain</span>
+<span class="bg-surface-container px-4 py-2 rounded-md text-sm text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-sm">account_tree</span> Node.js 18+</span>
+</div>
+</section>
+</div>
+<!-- Right Column: Sticky Enrollment Card -->
+<div class="lg:col-span-4 relative">
+<div class="sticky top-32 glass-panel p-8 rounded-lg ambient-shadow flex flex-col gap-8 ghost-border">
+<div class="flex flex-col gap-2">
+<span class="text-label-md text-on-surface-variant font-bold">Enrollment Fee</span>
+<div class="text-display-lg font-headline font-semibold text-on-surface tracking-tight">
+                            $25,000 <span class="text-title-md text-on-surface-variant align-baseline">USD</span>
+</div>
+<div class="flex items-center gap-3 text-body-lg text-on-surface-variant mt-2 bg-surface-container-low p-3 rounded-md">
+<span class="material-symbols-outlined text-primary text-sm">currency_exchange</span>
+<span>or 7500 NEAR / 9.5 ETH</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Primary Button with Signature Gradient -->
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 px-8 rounded-lg font-label-md font-bold tracking-[0.02em] uppercase text-center shadow-[0_8px_16px_rgba(70,72,212,0.2)] hover:shadow-[0_12px_24px_rgba(70,72,212,0.3)] transition-all duration-300 transform active:scale-95">
+                            Enroll Now
+                        </button>
+<p class="text-xs text-center text-on-surface-variant px-4">
+                            Includes lifetime access to course materials, private discord, and all future framework updates.
+                        </p>
+</div>
+<!-- Trust Indicators -->
+<div class="pt-6 mt-2 border-t border-outline-variant/20 flex flex-col gap-4">
+<div class="flex items-center gap-3 text-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                            Secure TEE Verification
+                        </div>
+<div class="flex items-center gap-3 text-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">all_inclusive</span>
+                            Cross-Chain Certified
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 mt-auto bg-slate-50 dark:bg-slate-950 no-border bg-slate-100 dark:bg-slate-900 flat grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20">
+<div>
+<span class="text-lg font-black text-slate-900 dark:text-white block mb-2">Kuberna Labs</span>
+<p class="font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500">
+                © 2024 Kuberna Labs. Secure Decentralized Compute.
+            </p>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

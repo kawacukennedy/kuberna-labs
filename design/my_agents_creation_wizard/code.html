@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kuberna Labs - My Agents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-effect {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+        }
+        .ambient-shadow {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .ghost-border {
+            border: 1px solid rgba(199, 196, 215, 0.2);
+        }
+        .spring-hover:hover {
+            transform: translateY(-2px);
+            transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .agent-orb-running {
+            box-shadow: 0 0 12px #6cf8bb;
+            animation: pulse-orb 2s infinite ease-in-out;
+        }
+        @keyframes pulse-orb {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col md:flex-row">
+<!-- TopNavBar (Mobile Only) -->
+<nav class="md:hidden glass-effect font-['SF_Pro',_Inter] tracking-tight text-sm font-medium fixed top-0 w-full z-50 shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex justify-between items-center px-8 h-20">
+<div class="text-xl font-bold tracking-tighter text-slate-900">Kuberna Labs</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:text-indigo-500">menu</span>
+</div>
+</nav>
+<!-- SideNavBar (Desktop Only) -->
+<aside class="hidden md:flex bg-slate-50/70 glass-effect text-indigo-600 font-['SF_Pro',_Inter] text-sm tracking-normal h-screen w-72 rounded-r-[3rem] sticky left-0 shadow-xl flex-col p-6 gap-2">
+<div class="mb-8 pl-4">
+<h1 class="text-lg font-semibold text-slate-900">Kuberna OS</h1>
+<p class="text-xs text-slate-500">Enterprise Ether</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 p-3 text-slate-500 hover:bg-slate-200/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+                Agents
+            </a>
+<a class="flex items-center gap-3 p-3 text-slate-500 hover:bg-slate-200/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">memory</span>
+                Compute
+            </a>
+<a class="flex items-center gap-3 p-3 text-slate-500 hover:bg-slate-200/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                Logs
+            </a>
+<a class="flex items-center gap-3 p-3 text-slate-500 hover:bg-slate-200/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">hub</span>
+                Network
+            </a>
+<a class="flex items-center gap-3 p-3 text-slate-500 hover:bg-slate-200/50 rounded-2xl mt-auto hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<button class="mt-4 w-full primary-gradient text-on-primary rounded-xl py-3 font-semibold spring-hover ambient-shadow">
+            Deploy Agent
+        </button>
+</aside>
+<!-- Main Content -->
+<main class="flex-grow p-6 md:p-12 mt-20 md:mt-0 flex flex-col gap-12 max-w-7xl mx-auto w-full relative">
+<!-- View 1: My Agents (Grid View) -->
+<section class="flex flex-col gap-8" id="my-agents-view">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-[3.5rem] font-semibold tracking-[-0.02em] leading-tight text-on-surface">My Agents</h2>
+<p class="text-[1rem] text-on-surface-variant mt-2">Manage and monitor your decentralized autonomous entities.</p>
+</div>
+</div>
+<!-- Bento Grid of Agents -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Agent Card: Trading Bot (Running) -->
+<div class="bg-surface-container rounded-xl p-6 ghost-border relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-6">
+<div class="w-3 h-3 bg-secondary rounded-full agent-orb-running"></div>
+</div>
+<div class="flex flex-col h-full justify-between gap-6 relative z-10">
+<div>
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-2xl">trending_up</span>
+</div>
+<h3 class="text-[1.125rem] font-medium text-on-surface">Trading Bot</h3>
+<p class="text-[0.875rem] text-on-surface-variant mt-1">ElizaOS Framework</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex justify-between items-center">
+<div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Uptime</span>
+<div class="text-[1rem] font-medium text-on-surface mt-1">14d 6h</div>
+</div>
+<div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Executions</span>
+<div class="text-[1rem] font-medium text-on-surface mt-1">1,204</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Agent Card: Governance Monitor (Stopped) -->
+<div class="bg-surface-container rounded-xl p-6 ghost-border relative overflow-hidden opacity-75 grayscale-[20%] transition-all hover:grayscale-0 hover:opacity-100">
+<div class="absolute top-0 right-0 p-6">
+<div class="w-3 h-3 bg-outline rounded-full"></div>
+</div>
+<div class="flex flex-col h-full justify-between gap-6 relative z-10">
+<div>
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-outline text-2xl">gavel</span>
+</div>
+<h3 class="text-[1.125rem] font-medium text-on-surface">Governance Monitor</h3>
+<p class="text-[0.875rem] text-on-surface-variant mt-1">LangChain Framework</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex justify-between items-center">
+<div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Status</span>
+<div class="text-[1rem] font-medium text-outline mt-1">Stopped</div>
+</div>
+<button class="text-primary text-sm font-medium hover:text-primary-container transition-colors">Start Agent</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 w-16 h-16 primary-gradient text-on-primary rounded-full flex items-center justify-center ambient-shadow spring-hover z-50 md:hidden" title="Create New Agent">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</section>
+<!-- View 2: Create Agent Wizard (Placeholder to show styling, normally hidden or on separate route) -->
+<section class="flex flex-col gap-8 bg-surface-container-low rounded-[3rem] p-8 md:p-12 relative overflow-hidden" id="create-agent-view">
+<!-- Abstract decorative element -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-4 mb-8">
+<button class="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] text-on-surface">Create New Agent</h2>
+</div>
+<!-- Wizard Progress -->
+<div class="flex items-center justify-between mb-12 relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-surface-container z-0 rounded-full"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1/4 h-1 primary-gradient z-0 rounded-full"></div>
+<div class="flex flex-col items-center gap-2 relative z-10">
+<div class="w-8 h-8 primary-gradient text-on-primary rounded-full flex items-center justify-center font-bold text-sm shadow-md">1</div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-primary">Basic Info</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 opacity-50">
+<div class="w-8 h-8 bg-surface-container text-on-surface rounded-full flex items-center justify-center font-bold text-sm">2</div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Tools</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 opacity-50">
+<div class="w-8 h-8 bg-surface-container text-on-surface rounded-full flex items-center justify-center font-bold text-sm">3</div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Config</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 opacity-50">
+<div class="w-8 h-8 bg-surface-container text-on-surface rounded-full flex items-center justify-center font-bold text-sm">4</div>
+<span class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Review</span>
+</div>
+</div>
+<!-- Step 1 Content -->
+<div class="bg-surface-container rounded-xl p-8 max-w-2xl mx-auto ghost-border">
+<h3 class="text-[1.125rem] font-medium text-on-surface mb-6">Step 1: Basic Information</h3>
+<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Agent Name</label>
+<input class="bg-surface-container-low text-on-surface rounded-lg p-4 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.2)] transition-all outline-none" placeholder="Enter agent name" type="text" value="My New Agent"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[0.75rem] font-bold uppercase tracking-[0.02em] text-on-surface-variant">Framework</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low text-on-surface rounded-lg p-4 border-none focus:ring-0 focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_rgba(70,72,212,0.2)] transition-all outline-none appearance-none cursor-pointer">
+<option>ElizaOS</option>
+<option>LangChain</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-end">
+<button class="primary-gradient text-on-primary rounded-xl px-8 py-3 font-semibold spring-hover ambient-shadow">
+                            Next Step
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

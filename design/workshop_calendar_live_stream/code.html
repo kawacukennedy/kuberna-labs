@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kuberna Labs - Workshops</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; color: #121c2a; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4648d4, #6063ee);
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(70, 72, 212, 0.2);
+        }
+        .ambient-shadow {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+        .ghost-border {
+            border: 1px solid rgba(199, 196, 215, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl no-border shadow-sm shadow-[0_20px_40px_rgba(18,28,42,0.06)]">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">
+                Kuberna Labs
+            </div>
+<div class="hidden md:flex space-x-8 font-['SF_Pro',_Inter] tracking-tight text-sm font-medium">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-3 py-2 rounded-lg" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-3 py-2 rounded-lg" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-3 py-2 rounded-lg" href="#">Enterprise</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-3 py-2 rounded-lg" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 spring-300-20 active:scale-95 px-3 py-2 rounded-lg" href="#">Blog</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-500 transition-colors">Log In</button>
+<button class="btn-primary text-sm font-semibold px-6 py-2.5 rounded-full">Sign Up</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-28 pb-24 px-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-12">
+<!-- Left Column: Workshops List & Calendar -->
+<div class="flex-1 space-y-12">
+<header>
+<h1 class="text-[3.5rem] leading-tight font-semibold tracking-[-0.02em] text-on-surface mb-4">Workshops</h1>
+<p class="text-base text-on-surface-variant max-w-2xl">Join expert-led sessions to master decentralized compute, AI agents, and advanced cryptographic protocols.</p>
+</header>
+<!-- Upcoming Workshops (Bento Style) -->
+<section class="space-y-6">
+<h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] text-on-surface">Upcoming Live</h2>
+<div class="grid grid-cols-1 gap-6">
+<!-- Featured Workshop Card -->
+<div class="bg-surface-container rounded-xl p-8 relative overflow-hidden group ghost-border transition-all duration-300 hover:bg-surface-container-highest">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:bg-primary/10 transition-all duration-500"></div>
+<div class="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+<div class="space-y-4 max-w-xl">
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold uppercase tracking-wider">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                                        Live Coding
+                                    </span>
+<span class="text-sm font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-base">calendar_today</span>
+                                        April 25, 2026 • 3:00 PM UTC
+                                    </span>
+</div>
+<h3 class="text-[1.125rem] font-medium text-on-surface">Build a Trading Bot in the Ether</h3>
+<p class="text-sm text-on-surface-variant line-clamp-2">Learn to deploy an autonomous trading agent using secure TEEs and real-time market data streams.</p>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex -space-x-2">
+<img alt="Instructor" class="w-8 h-8 rounded-full border-2 border-surface-container" data-alt="Portrait of a young professional woman with dark hair in a tech office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDm0C4zKHO7_oz6AERxmBo5ozxr3J-X1lAHpK13OnUhStZk6BBmJI49OcO_l38LMNERSJXUINxnvVvfcOjSiLEPKQNEjVs4t11hwSxNG63kzlsmPzOhFct5MwVHoOJV3enmzvgsZOFOB3HgJJo-T6uCkxsLUHT6-ZHSqpRkDIbbqcNnTV6g0IwXP1irbRIvhO_bZ6hhGl0eoO94naRT-3LyjAs6q95IBHMnJ3lKwcvuRgox36HdaqHKOYw9g24gFE41AjZkS8Yh8D8"/>
+<img alt="Guest Speaker" class="w-8 h-8 rounded-full border-2 border-surface-container" data-alt="Portrait of a young man with a beard looking thoughtfully off-camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjNtSO4uyQH7wL78j7S2k38alhvr4Zw2Xjpp3CTg1IFzhIJHqmZG8RujxKzM1FtSE6q7d4ngJqsftOT-SnHt3XfQ6mn3ZVSHjL0Sr4aYtBjY1Ub8rmphI88rtIqRY0XSXzahMvIRnti0YgEtb-t4yVas-u3OC6TXGi0R1_izVgUk3XEud27CLw_GO8Vj5h3d59XmJcp7NzmwoleaZw1V2IQlAnbKjVHxtbvKCxG67c6s28s5bl3EvIY2WxNZn6UnGjfImtEbAjdVE"/>
+</div>
+<span class="text-xs font-medium text-on-surface-variant">+ 124 registered</span>
+</div>
+</div>
+<button class="btn-primary whitespace-nowrap px-8 py-3 rounded-full font-semibold shadow-lg shadow-primary/20 w-full md:w-auto">
+                                Register
+                            </button>
+</div>
+</div>
+<!-- Standard Workshop Card -->
+<div class="bg-surface-container-low rounded-xl p-6 ghost-border flex flex-col md:flex-row gap-6 items-start md:items-center justify-between hover:bg-surface-container transition-colors duration-300">
+<div class="space-y-2">
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Architecture</span>
+<h4 class="text-base font-medium text-on-surface">Zero-Knowledge Proofs in Practice</h4>
+<span class="text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                May 2, 2026 • 5:00 PM UTC
+                            </span>
+</div>
+<button class="text-primary font-medium hover:text-primary-container transition-colors text-sm px-4 py-2 rounded-full border border-primary/20 hover:bg-primary/5">
+                            Details
+                        </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Calendar Widget -->
+<aside class="w-full md:w-80 flex-shrink-0 space-y-6">
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow ghost-border sticky top-32">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-on-surface">April 2026</h3>
+<div class="flex gap-2 text-on-surface-variant">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">chevron_left</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-xl">chevron_right</span></button>
+</div>
+</div>
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-y-4 gap-x-1 text-center mb-2">
+<div class="text-xs font-medium text-on-surface-variant/60">Su</div>
+<div class="text-xs font-medium text-on-surface-variant/60">Mo</div>
+<div class="text-xs font-medium text-on-surface-variant/60">Tu</div>
+<div class="text-xs font-medium text-on-surface-variant/60">We</div>
+<div class="text-xs font-medium text-on-surface-variant/60">Th</div>
+<div class="text-xs font-medium text-on-surface-variant/60">Fr</div>
+<div class="text-xs font-medium text-on-surface-variant/60">Sa</div>
+<!-- Days (Simplified for visual) -->
+<div class="text-sm text-on-surface-variant/40 py-1">29</div>
+<div class="text-sm text-on-surface-variant/40 py-1">30</div>
+<div class="text-sm text-on-surface-variant/40 py-1">31</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">1</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">2</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">3</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">4</div>
+<!-- Middle week with highlighted date -->
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">19</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">20</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">21</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">22</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">23</div>
+<div class="text-sm text-on-surface py-1 hover:bg-surface-container rounded-full cursor-pointer transition-colors">24</div>
+<div class="relative text-sm text-white font-medium py-1 cursor-pointer">
+<div class="absolute inset-0 bg-primary rounded-full shadow-md shadow-primary/30"></div>
+<span class="relative z-10">25</span>
+<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-secondary rounded-full"></div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-surface-container-low">
+<p class="text-xs text-on-surface-variant text-center">Sync to Calendar <span class="material-symbols-outlined text-[14px] align-middle ml-1">sync</span></p>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 mt-auto bg-slate-50 dark:bg-slate-950 no-border bg-slate-100 dark:bg-slate-900 flat grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20">
+<div class="text-lg font-black text-slate-900 dark:text-white">
+            Kuberna Labs
+        </div>
+<div class="flex flex-wrap gap-6 justify-end font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+<div class="col-span-1 md:col-span-2 text-xs text-slate-500 text-center mt-4 font-['SF_Pro',_Inter]">
+            © 2024 Kuberna Labs. Secure Decentralized Compute.
+        </div>
+</footer>
+</body></html>

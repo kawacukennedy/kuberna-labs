@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Kuberna OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-tint": "#494bd6",
+                    "surface-container": "#e6eeff",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#fffbff",
+                    "secondary-container": "#6cf8bb",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-error": "#ffffff",
+                    "tertiary": "#825100",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#4648d4",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface": "#f8f9ff",
+                    "on-surface": "#121c2a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9ff",
+                    "outline-variant": "#c7c4d7",
+                    "surface-container-high": "#dee9fc",
+                    "on-secondary-fixed": "#002113",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d0dbed",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary-container": "#00714d",
+                    "primary-container": "#6063ee",
+                    "tertiary-container": "#a36700",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-surface-variant": "#464554",
+                    "inverse-primary": "#c0c1ff",
+                    "outline": "#767586",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#d9e3f6",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#006c49",
+                    "surface-variant": "#d9e3f6",
+                    "inverse-surface": "#27313f",
+                    "on-background": "#121c2a",
+                    "on-tertiary-fixed-variant": "#653e00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9ff; color: #121c2a; }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .ambient-shadow { box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06); }
+        .ghost-border { border: 1px solid rgba(199, 196, 215, 0.2); }
+        .gradient-primary { background: linear-gradient(135deg, #4648d4 0%, #6063ee 100%); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex font-body antialiased overflow-x-hidden">
+<!-- SideNavBar -->
+<nav class="bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl text-indigo-600 dark:text-indigo-400 font-['SF_Pro',_Inter] text-sm tracking-normal h-screen w-72 rounded-r-[3rem] sticky left-0 no-border bg-slate-100/50 dark:bg-slate-900/50 shadow-xl flex flex-col p-6 gap-2 z-40 hidden md:flex">
+<div class="flex items-center gap-4 mb-8 px-2">
+<div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="token">token</span>
+</div>
+<div>
+<h1 class="text-lg font-semibold text-slate-900 dark:text-white leading-tight">Kuberna OS</h1>
+<p class="text-xs text-slate-500 font-medium">Enterprise Ether</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20 font-medium transition-all" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="smart_toy">smart_toy</span>
+                Agents
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="memory">memory</span>
+                Compute
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+                Logs
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="hub">hub</span>
+                Network
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl font-medium hover:translate-x-1 transition-transform duration-200 mt-auto" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+<button class="mt-6 w-full py-4 rounded-xl gradient-primary text-on-primary font-medium tracking-wide shadow-lg shadow-primary/20 hover:scale-[0.98] transition-transform duration-300">
+            Deploy Agent
+        </button>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-h-screen relative w-full">
+<!-- Mobile Top Nav (Visible only on mobile) -->
+<header class="md:hidden flex justify-between items-center px-6 h-20 w-full bg-white/70 backdrop-blur-xl sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-sm" data-icon="token">token</span>
+</div>
+<span class="text-lg font-bold tracking-tighter text-slate-900">Kuberna OS</span>
+</div>
+<button class="text-slate-600">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+<div class="flex-1 p-6 md:p-12 max-w-[1600px] mx-auto w-full flex flex-col gap-12">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
+<div>
+<h2 class="text-[3.5rem] leading-tight font-semibold tracking-[-0.02em] text-on-surface font-headline">My Courses</h2>
+<p class="text-lg text-on-surface-variant mt-2 max-w-2xl">Manage your active decentralized computing certifications and agent deployment training.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 rounded-xl bg-surface-container-low text-primary font-medium hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                        Filter
+                    </button>
+<button class="px-6 py-3 rounded-xl gradient-primary text-on-primary font-medium shadow-lg shadow-primary/20 hover:scale-[0.98] transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="explore">explore</span>
+                        Explore Catalog
+                    </button>
+</div>
+</div>
+<!-- Bento Grid: Enrolled Courses -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Course Card 1: High Progress -->
+<article class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden group ghost-border ambient-shadow">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[6rem] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="neurology">neurology</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold tracking-widest uppercase">Active</span>
+</div>
+<div>
+<h3 class="text-xl font-medium tracking-normal text-on-surface mb-2 font-headline line-clamp-2">Neural Network Architecture &amp; Edge Compute</h3>
+<p class="text-sm text-on-surface-variant line-clamp-2">Advanced deployment of lightweight LLMs on distributed edge nodes.</p>
+</div>
+<div class="mt-auto pt-4 flex flex-col gap-3">
+<div class="flex justify-between text-sm font-medium">
+<span class="text-on-surface-variant">Module 8 of 10</span>
+<span class="text-primary">80%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[80%]"></div>
+</div>
+<button class="w-full mt-2 py-3 rounded-xl bg-surface-container-low text-primary font-medium hover:bg-surface-container transition-colors text-sm">
+                            Continue Learning
+                        </button>
+</div>
+</article>
+<!-- Course Card 2: Medium Progress -->
+<article class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden group ghost-border ambient-shadow">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-[6rem] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary-container/20 text-primary font-bold tracking-widest uppercase text-xs">Active</span>
+</div>
+<div>
+<h3 class="text-xl font-medium tracking-normal text-on-surface mb-2 font-headline line-clamp-2">Cryptographic Enclaves &amp; TEEs</h3>
+<p class="text-sm text-on-surface-variant line-clamp-2">Securing agent memory and execution environments against host manipulation.</p>
+</div>
+<div class="mt-auto pt-4 flex flex-col gap-3">
+<div class="flex justify-between text-sm font-medium">
+<span class="text-on-surface-variant">Module 3 of 12</span>
+<span class="text-secondary">25%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[25%]"></div>
+</div>
+<button class="w-full mt-2 py-3 rounded-xl bg-surface-container-low text-primary font-medium hover:bg-surface-container transition-colors text-sm">
+                            Continue Learning
+                        </button>
+</div>
+</article>
+<!-- Course Card 3: Just Started -->
+<article class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden group ghost-border ambient-shadow">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-bl-[6rem] -z-10 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-bold tracking-widest uppercase text-xs">Started</span>
+</div>
+<div>
+<h3 class="text-xl font-medium tracking-normal text-on-surface mb-2 font-headline line-clamp-2">Decentralized Storage Protocols</h3>
+<p class="text-sm text-on-surface-variant line-clamp-2">Integrating IPFS and Arweave into autonomous agent workflows.</p>
+</div>
+<div class="mt-auto pt-4 flex flex-col gap-3">
+<div class="flex justify-between text-sm font-medium">
+<span class="text-on-surface-variant">Module 1 of 6</span>
+<span class="text-tertiary">5%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full w-[5%]"></div>
+</div>
+<button class="w-full mt-2 py-3 rounded-xl bg-surface-container-low text-primary font-medium hover:bg-surface-container transition-colors text-sm">
+                            Start Module
+                        </button>
+</div>
+</article>
+</div>
+</div>
+</main>
+</body></html>

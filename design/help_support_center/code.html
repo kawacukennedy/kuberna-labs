@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Support - Kuberna Labs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .spring-300-20 {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition-duration: 300ms;
+        }
+        .glass-effect {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-effect {
+            background-color: rgba(15, 23, 42, 0.7);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, var(--tw-colors-primary) 0%, var(--tw-colors-primary-container) 100%);
+        }
+        .ambient-shadow {
+            box-shadow: 0 20px 40px rgba(18, 28, 42, 0.06);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005236",
+                      "surface-tint": "#494bd6",
+                      "surface-container": "#e6eeff",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#fffbff",
+                      "secondary-container": "#6cf8bb",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-error": "#ffffff",
+                      "tertiary": "#825100",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#07006c",
+                      "primary": "#4648d4",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "primary-fixed": "#e1e0ff",
+                      "secondary-fixed-dim": "#4edea3",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "secondary-fixed": "#6ffbbe",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface": "#f8f9ff",
+                      "on-surface": "#121c2a",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-primary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "outline-variant": "#c7c4d7",
+                      "surface-container-high": "#dee9fc",
+                      "on-secondary-fixed": "#002113",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#d0dbed",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#00714d",
+                      "primary-container": "#6063ee",
+                      "tertiary-container": "#a36700",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-surface-variant": "#464554",
+                      "inverse-primary": "#c0c1ff",
+                      "outline": "#767586",
+                      "on-secondary": "#ffffff",
+                      "surface-container-highest": "#d9e3f6",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary": "#006c49",
+                      "surface-variant": "#d9e3f6",
+                      "inverse-surface": "#27313f",
+                      "on-background": "#121c2a",
+                      "on-tertiary-fixed-variant": "#653e00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Inter"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl font-['SF_Pro',_Inter] tracking-tight text-sm font-medium fixed top-0 w-full z-50 shadow-[0_20px_40px_rgba(18,28,42,0.06)] flex justify-between items-center px-8 h-20 w-full no-border shadow-sm">
+<div class="flex items-center gap-8">
+<a class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white" href="#">Kuberna Labs</a>
+<div class="hidden md:flex gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Courses</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Marketplace</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Enterprise</a>
+<a class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2" href="#">Docs</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-3 py-2 rounded-lg" href="#">Blog</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<a class="text-slate-600 dark:text-slate-400 hover:text-indigo-500 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all duration-300 px-4 py-2 font-semibold" href="#">Log In</a>
+<a class="bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-300 px-5 py-2 rounded-full font-semibold spring-300-20 active:scale-95 shadow-md shadow-indigo-500/20" href="#">Sign Up</a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-grow pt-32 pb-24 px-8 md:px-16 lg:px-24 max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-12">
+<!-- Left Column: Knowledge Base & FAQs -->
+<div class="flex-1 flex flex-col gap-8">
+<header class="mb-4">
+<h1 class="text-display-lg font-headline font-semibold tracking-[-0.02em] text-on-surface mb-2">Support Center</h1>
+<p class="text-body-lg text-on-surface-variant">Find answers or reach out to our Sovereign Ether engineering team.</p>
+</header>
+<!-- Search -->
+<div class="bg-surface-container-low rounded-xl p-2 flex items-center gap-3">
+<span class="material-symbols-outlined text-outline ml-3">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-lg text-on-surface placeholder-outline font-body focus:bg-surface-container-lowest rounded-lg transition-colors duration-200 py-3 px-2 focus:shadow-[0_0_10px_rgba(70,72,212,0.1)]" placeholder="Search documentation, tutorials, and FAQs..." type="text"/>
+</div>
+<!-- FAQs -->
+<section class="flex flex-col gap-4 mt-4">
+<h2 class="text-title-md font-headline font-medium text-on-surface">Frequently Asked Questions</h2>
+<!-- Accordion Item 1 -->
+<div class="bg-surface-container rounded-xl p-6 hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer spring-300-20">
+<div class="flex justify-between items-center">
+<h3 class="text-body-lg font-semibold text-on-surface">How do I deploy an agent?</h3>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</div>
+</div>
+<!-- Accordion Item 2 -->
+<div class="bg-surface-container rounded-xl p-6 hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer spring-300-20">
+<div class="flex justify-between items-center">
+<h3 class="text-body-lg font-semibold text-on-surface">What chains are supported?</h3>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</div>
+</div>
+<!-- Accordion Item 3 -->
+<div class="bg-surface-container rounded-xl p-6 hover:bg-surface-container-highest transition-colors duration-200 cursor-pointer spring-300-20">
+<div class="flex justify-between items-center">
+<h3 class="text-body-lg font-semibold text-on-surface">How does escrow work?</h3>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Ticket Form (Glassmorphism) -->
+<div class="flex-1 w-full md:max-w-md">
+<div class="glass-effect rounded-[2rem] p-8 ambient-shadow border border-outline-variant/20 relative overflow-hidden">
+<!-- Decorative subtle glow -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+<h2 class="text-headline-md font-headline font-semibold tracking-[-0.02em] text-on-surface mb-6">Open a Ticket</h2>
+<form class="flex flex-col gap-5 relative z-10">
+<!-- Subject -->
+<div class="flex flex-col gap-1">
+<label class="text-label-md font-label font-bold uppercase tracking-[0.02em] text-on-surface-variant" for="subject">Subject</label>
+<input class="bg-surface-container-low border-none rounded-xl px-4 py-3 text-body-lg text-on-surface focus:ring-0 focus:bg-surface-container-lowest transition-colors duration-200 focus:shadow-[0_0_10px_rgba(70,72,212,0.1)]" id="subject" placeholder="E.g., Compute node failure" type="text"/>
+</div>
+<!-- Description -->
+<div class="flex flex-col gap-1">
+<label class="text-label-md font-label font-bold uppercase tracking-[0.02em] text-on-surface-variant" for="description">Description</label>
+<textarea class="bg-surface-container-low border-none rounded-xl px-4 py-3 text-body-lg text-on-surface focus:ring-0 focus:bg-surface-container-lowest transition-colors duration-200 focus:shadow-[0_0_10px_rgba(70,72,212,0.1)] resize-none" id="description" placeholder="Provide details about your issue..." rows="5"></textarea>
+</div>
+<!-- Attachments -->
+<div class="flex flex-col gap-1">
+<label class="text-label-md font-label font-bold uppercase tracking-[0.02em] text-on-surface-variant">Attachments</label>
+<div class="bg-surface-container-low border border-dashed border-outline-variant/50 rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container transition-colors duration-200">
+<span class="material-symbols-outlined text-outline text-3xl">cloud_upload</span>
+<span class="text-body-lg text-on-surface-variant text-center">Drag &amp; drop files or <span class="text-primary font-medium">browse</span></span>
+</div>
+</div>
+<!-- Submit -->
+<button class="mt-4 primary-gradient text-on-primary rounded-full px-6 py-4 font-semibold text-body-lg spring-300-20 active:scale-95 shadow-lg shadow-primary/20 w-full flex justify-center items-center gap-2" type="submit">
+<span>Submit Ticket</span>
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</form>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 font-['SF_Pro',_Inter] text-xs uppercase tracking-widest font-bold w-full py-12 px-8 mt-auto no-border bg-slate-100 dark:bg-slate-900 flat grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-t border-slate-200/20">
+<div>
+<div class="text-lg font-black text-slate-900 dark:text-white mb-2">Kuberna Labs</div>
+<p class="text-slate-400 dark:text-slate-500 capitalize tracking-normal text-sm font-normal">© 2024 Kuberna Labs. Secure Decentralized Compute.</p>
+</div>
+<div class="flex flex-wrap gap-6 md:justify-end">
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Privacy Policy</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Terms of Service</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Security Audit</a>
+<a class="text-slate-400 dark:text-slate-500 hover:text-indigo-500 transition-colors ease-out duration-200" href="#">Network Status</a>
+</div>
+</footer>
+</body></html>

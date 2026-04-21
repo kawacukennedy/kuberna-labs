@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kuberna OS - Agent Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-tint": "#494bd6",
+                        "surface-container": "#e6eeff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#6cf8bb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "tertiary": "#825100",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#07006c",
+                        "primary": "#4648d4",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#121c2a",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface-container-high": "#dee9fc",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d0dbed",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#00714d",
+                        "primary-container": "#6063ee",
+                        "tertiary-container": "#a36700",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-surface-variant": "#464554",
+                        "inverse-primary": "#c0c1ff",
+                        "outline": "#767586",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#d9e3f6",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#006c49",
+                        "surface-variant": "#d9e3f6",
+                        "inverse-surface": "#27313f",
+                        "on-background": "#121c2a",
+                        "on-tertiary-fixed-variant": "#653e00"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'ambient': '0 20px 40px rgba(18, 28, 42, 0.06)',
+                        'orb-glow': '0 0 12px rgba(0, 108, 73, 0.6)'
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Ghost border utility */
+        .ghost-border {
+            box-shadow: inset 0 0 0 1px rgba(199, 196, 215, 0.2); /* outline-variant at 20% */
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<aside class="hidden md:flex h-screen w-72 rounded-r-[3rem] sticky left-0 bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl shadow-xl flex-col p-6 gap-2 z-50 ghost-border">
+<!-- Header -->
+<div class="flex items-center gap-4 mb-8 px-2">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center shadow-ambient">
+<span class="material-symbols-outlined text-on-primary icon-fill" data-icon="memory">memory</span>
+</div>
+<div>
+<h1 class="text-lg font-semibold text-slate-900 dark:text-white tracking-tight font-headline">Kuberna OS</h1>
+<p class="text-xs text-on-surface-variant font-label tracking-wide uppercase">Enterprise Ether</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 flex flex-col gap-2 font-['SF_Pro',_Inter] text-sm tracking-normal">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20" href="#">
+<span class="material-symbols-outlined text-[20px] icon-fill" data-icon="smart_toy">smart_toy</span>
+<span class="font-medium">Agents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="memory">memory</span>
+<span class="font-medium">Compute</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+<span class="font-medium">Logs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="hub">hub</span>
+<span class="font-medium">Network</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-2xl hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<!-- CTA -->
+<div class="mt-auto pt-4">
+<button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-2xl font-medium text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300 shadow-ambient flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                Deploy Agent
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto bg-surface relative z-0">
+<!-- Header Section -->
+<header class="px-10 pt-12 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-[2rem] bg-surface-container-highest flex items-center justify-center shadow-ambient shrink-0 ghost-border">
+<span class="material-symbols-outlined text-[32px] text-primary" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-[1.75rem] leading-tight tracking-[-0.02em] font-semibold text-on-surface font-headline">Agent-Omega-Nine</h2>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full ghost-border">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary shadow-orb-glow"></div>
+<span class="text-xs font-bold uppercase tracking-[0.02em] text-on-surface-variant font-label">Running</span>
+</div>
+</div>
+<p class="text-base text-on-surface-variant font-body">ID: k-8829-f1a \ Region: us-east-1</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-3 rounded-2xl text-on-surface font-medium hover:bg-surface-variant transition-colors duration-300 font-label tracking-wide flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="stop_circle">stop_circle</span>
+                    Stop
+                </button>
+<button class="px-6 py-3 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-medium shadow-ambient hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300 font-label tracking-wide flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="update">update</span>
+                    Redeploy
+                </button>
+</div>
+</header>
+<!-- Dashboard Grid -->
+<div class="px-10 pb-12 flex-1 flex flex-col gap-6">
+<!-- Top Metrics Row (Bento) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Response Time Chart Card -->
+<div class="lg:col-span-2 bg-surface-container-low rounded-[2rem] p-6 flex flex-col ghost-border relative overflow-hidden">
+<!-- Glass overlay for premium feel -->
+<div class="absolute inset-0 bg-white/40 backdrop-blur-sm z-0 pointer-events-none"></div>
+<div class="relative z-10 flex justify-between items-start mb-8">
+<div>
+<h3 class="text-[1.125rem] font-medium text-on-surface font-headline">Response Latency</h3>
+<p class="text-sm text-on-surface-variant mt-1">Global edge routing</p>
+</div>
+<div class="text-right">
+<span class="text-[2rem] font-semibold tracking-[-0.02em] text-on-surface leading-none block">24<span class="text-lg text-on-surface-variant ml-1">ms</span></span>
+<span class="text-xs text-secondary font-medium flex items-center justify-end gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_down">trending_down</span>
+                                12% vs last hour
+                            </span>
+</div>
+</div>
+<!-- CSS Chart Representation -->
+<div class="relative z-10 h-32 mt-auto flex items-end gap-2 pt-4">
+<div class="flex-1 bg-primary/20 rounded-t-md h-[40%] hover:bg-primary/40 transition-colors"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[50%] hover:bg-primary/40 transition-colors"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[30%] hover:bg-primary/40 transition-colors"></div>
+<div class="flex-1 bg-primary/30 rounded-t-md h-[60%] hover:bg-primary/50 transition-colors"></div>
+<div class="flex-1 bg-primary/40 rounded-t-md h-[80%] hover:bg-primary/60 transition-colors"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[45%] hover:bg-primary/40 transition-colors"></div>
+<div class="flex-1 bg-primary/50 rounded-t-md h-[90%] hover:bg-primary/70 transition-colors"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[35%] hover:bg-primary/40 transition-colors"></div>
+<div class="flex-1 bg-primary rounded-t-md h-[25%] shadow-[0_0_15px_rgba(70,72,212,0.4)] relative">
+<!-- Current indicator -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary ring-2 ring-white"></div>
+</div>
+</div>
+</div>
+<!-- Success Rate Gauge -->
+<div class="bg-surface-container-highest rounded-[2rem] p-6 flex flex-col justify-center items-center text-center ghost-border shadow-ambient">
+<h3 class="text-sm font-bold uppercase tracking-[0.02em] text-on-surface-variant font-label mb-6">Success Rate</h3>
+<div class="relative w-36 h-36 flex items-center justify-center">
+<!-- Abstract Ring -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-low" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-secondary" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="14" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-[2.5rem] font-semibold tracking-[-0.02em] text-on-surface font-headline leading-none">99.9</span>
+<span class="text-sm text-on-surface-variant font-medium mt-1">%</span>
+</div>
+</div>
+<div class="mt-6 flex items-center gap-4 text-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span>Success</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span>Failed</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Terminal Log Viewer -->
+<div class="flex-1 bg-inverse-surface rounded-[2rem] p-6 flex flex-col min-h-[300px] ghost-border shadow-xl">
+<div class="flex justify-between items-center mb-4 border-b border-inverse-on-surface/10 pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-inverse-on-surface/70" data-icon="terminal">terminal</span>
+<h3 class="text-sm font-bold uppercase tracking-[0.02em] text-inverse-on-surface font-label">Live Output Stream</h3>
+</div>
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-inverse-on-surface/20"></div>
+<div class="w-3 h-3 rounded-full bg-inverse-on-surface/20"></div>
+<div class="w-3 h-3 rounded-full bg-secondary/80"></div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto font-mono text-[13px] leading-relaxed text-inverse-on-surface/80 space-y-2 pr-4">
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:42:01</span><span class="text-secondary">[INFO]</span><span>Agent process initialized. Allocating TEE...</span></div>
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:42:03</span><span class="text-secondary">[INFO]</span><span>Cryptographic handshakes completed successfully.</span></div>
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:42:05</span><span class="text-secondary">[INFO]</span><span>Connected to Sovereign Ether routing mesh.</span></div>
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:42:06</span><span class="text-primary-fixed-dim">[SYS]</span><span>Listening for incoming intents on port 8443...</span></div>
+<div class="flex gap-4 opacity-50"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:45:12</span><span class="text-surface-variant">[DEBUG]</span><span>Heartbeat ping ack'd. Latency 12ms.</span></div>
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:48:22</span><span class="text-secondary">[INFO]</span><span>Intent received: EXEC_QUERY_0x7F2A.</span></div>
+<div class="flex gap-4"><span class="text-inverse-on-surface/40 select-none w-16 text-right">10:48:23</span><span class="text-secondary">[INFO]</span><span>Query resolved. Payload returned securely.</span></div>
+<div class="flex gap-4 mt-4 items-center">
+<span class="text-inverse-on-surface/40 select-none w-16 text-right">now</span>
+<div class="w-2 h-4 bg-primary-fixed animate-pulse ml-4"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
