@@ -8,7 +8,7 @@ import { authenticate, requireRoles } from '../middleware/auth.js';
 const router = Router();
 
 const resolveDisputeSchema = z.object({
-  resolution: z.enum(['requester_refund', 'agent_paid']),
+  resolution: z.enum(['REQUESTER_REFUND', 'AGENT_PAID']),
 });
 
 router.get(
@@ -200,8 +200,8 @@ router.post(
         throw createError('Dispute already resolved', 400, 'ALREADY_RESOLVED');
       }
 
-      const newStatus = data.resolution === 'requester_refund' ? 'FAILED' : 'COMPLETED';
-      const intentStatus = data.resolution === 'requester_refund' ? 'DISPUTED' : 'COMPLETED';
+      const newStatus = data.resolution === 'REQUESTER_REFUND' ? 'FAILED' : 'COMPLETED';
+      const intentStatus = data.resolution === 'REQUESTER_REFUND' ? 'DISPUTED' : 'COMPLETED';
 
       await prisma.$transaction([
         prisma.dispute.update({
@@ -222,20 +222,20 @@ router.post(
           where: { id: dispute.task.intentId },
           data: {
             status: intentStatus,
-            completedAt: data.resolution === 'agent_paid' ? new Date() : undefined,
+            completedAt: data.resolution === 'AGENT_PAID' ? new Date() : undefined,
           },
         }),
       ]);
 
       const resolutionMessage =
-        data.resolution === 'requester_refund'
+        data.resolution === 'REQUESTER_REFUND'
           ? 'Funds will be refunded to the requester'
           : 'Funds will be released to the agent';
 
       await prisma.notification.create({
         data: {
           userId: dispute.task.intent.requesterId,
-          type: 'info',
+          type: 'INFO',
           title: 'Dispute Resolved',
           message: resolutionMessage,
         },
@@ -244,7 +244,7 @@ router.post(
       await prisma.notification.create({
         data: {
           userId: dispute.task.assignedAgentId,
-          type: 'info',
+          type: 'INFO',
           title: 'Dispute Resolved',
           message: resolutionMessage,
         },
@@ -308,7 +308,7 @@ router.post(
       await prisma.notification.create({
         data: {
           userId: req.user!.id,
-          type: 'info',
+          type: 'INFO',
           title: 'Appeal Submitted',
           message: `Your appeal has been submitted for dispute ${id}`,
         },

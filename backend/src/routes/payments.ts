@@ -133,7 +133,7 @@ router.post(
           userId: req.user!.id,
           amount: planPrices[planId] || 0,
           currency: 'USD',
-          type: 'subscription',
+          type: 'SUBSCRIPTION',
           status: 'PENDING',
         },
       });
@@ -218,7 +218,7 @@ router.post(
           amount,
           currency: 'USDC',
           token: chain,
-          type: 'withdrawal',
+          type: 'WITHDRAWAL',
           status: 'PENDING',
         },
       });

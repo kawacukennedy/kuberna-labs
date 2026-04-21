@@ -73,7 +73,7 @@ router.get(
       const dailyRevenue: Record<string, number> = {};
       for (const payment of payments) {
         const date = payment.createdAt.toISOString().split("T")[0];
-        dailyRevenue[date] = (dailyRevenue[date] || 0) + payment.amount;
+        dailyRevenue[date] = (dailyRevenue[date] || 0) + Number(payment.amount);
       }
 
       res.json(

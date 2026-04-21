@@ -10,7 +10,11 @@
     "dev:listener": "ts-node src/scripts/startBlockchainListener.ts",
     "start:listener": "node dist/scripts/startBlockchainListener.js",
     "lint": "eslint src --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.8.0",

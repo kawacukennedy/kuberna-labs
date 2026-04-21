@@ -21,6 +21,8 @@ import { notificationRouter } from './routes/notifications.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { apiKeyRouter } from './routes/apiKeys.js';
 import { disputeRouter } from './routes/disputes.js';
+import { complianceRouter } from './routes/compliance.js';
+import { featureFlagRouter } from './routes/featureFlags.js';
 
 dotenv.config();
 
@@ -83,6 +85,8 @@ app.use('/api/notifications', notificationRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/api-keys', apiKeyRouter);
 app.use('/api/disputes', disputeRouter);
+app.use('/api/compliance', complianceRouter);
+app.use('/api/feature-flags', featureFlagRouter);
 
 app.use((req, res) => {
   res.status(404).json({

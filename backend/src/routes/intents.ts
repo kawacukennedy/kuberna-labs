@@ -144,7 +144,7 @@ router.post(
       await prisma.notification.create({
         data: {
           userId: req.user!.id,
-          type: 'info',
+          type: 'INFO',
           title: 'Intent Created',
           message: `Your intent has been posted and is now visible to solvers.`,
         },
@@ -356,7 +356,7 @@ router.post(
       await prisma.notification.create({
         data: {
           userId: req.user!.id,
-          type: 'success',
+          type: 'SUCCESS',
           title: 'Bid Accepted',
           message: 'You have accepted a bid for your intent.',
         },
