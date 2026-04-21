@@ -13,6 +13,7 @@ enum Role {
   LEARNER
   REQUESTER
   SOLVER
+  ENTERPRISE
 }
 
 enum AuthMethod {
@@ -48,10 +49,23 @@ enum AgentStatus {
   ERROR
 }
 
+enum AgentFramework {
+  ELIZAOS
+  LANGCHAIN
+  AUTOGEN
+  RIG
+}
+
 enum DeploymentType {
   CLOUD
   TEE
   LOCAL
+}
+
+enum PricingModel {
+  FIXED
+  HOURLY
+  SUCCESS
 }
 
 enum IntentStatus {
@@ -78,6 +92,30 @@ enum TaskStatus {
   DISPUTED
 }
 
+enum EscrowStatus {
+  FUNDED
+  LOCKED
+  RELEASED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  COURSE_ENROLLMENT
+  TASK_PAYMENT
+  SUBSCRIPTION
+  WITHDRAWAL
+  ESCROW_FUND
+  ESCROW_RELEASE
+}
+
 enum TicketStatus {
   OPEN
   IN_PROGRESS
@@ -85,73 +123,123 @@ enum TicketStatus {
   CLOSED
 }
 
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
 enum DisputeStatus {
   OPEN
-  VOTING
+  UNDER_REVIEW
   RESOLVED
   APPEALED
   CLOSED
 }
 
-model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  passwordHash  String?
-  fullName      String
-  avatarUrl     String?
-  web3Address   String?   @unique
-  authMethod    AuthMethod @default(EMAIL)
-  roles        Role[]    @default([LEARNER])
-  mfaEnabled    Boolean   @default(false)
-  mfaSecret     String?
-  mfaMethod     String?
-  phone         String?
-  emailVerified Boolean   @default(false)
-  emailVerificationToken String?
-  emailVerificationSentAt DateTime?
-  resetPasswordToken String?
-  resetPasswordExpires DateTime?
-  lastLogin     DateTime?
-  loginCount    Int       @default(0)
-  settings      Json      @default("{}")
-  web3Nonce     String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+enum DisputeResolution {
+  REQUESTER_REFUND
+  AGENT_PAID
+}
 
-  profile          Profile?
-  coursesCreated   Course[]        @relation("CourseInstructor")
-  enrollments     Enrollment[]
-  agents          Agent[]
-  intents         Intent[]         @relation("IntentRequester")
-  tasksAssigned   Task[]          @relation("TaskExecutor")
-  submittedBids   Bid[]           @relation("BidSolver")
-  tickets         Ticket[]
-  forumPosts      ForumPost[]
-  certificates    Certificate[]
-  workshopRegistrations WorkshopRegistration[]
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum TEEDeploymentStatus {
+  PROVISIONING
+  RUNNING
+  STOPPED
+  FAILED
+}
+
+enum SubscriptionTier {
+  SDK
+  ACCELERATOR
+  ENTERPRISE
+  ENTERPRISE_PLUS
+}
+
+model User {
+  id                     String     @id @default(uuid())
+  email                  String     @unique
+  passwordHash           String?
+  fullName               String
+  avatarUrl              String?
+  web3Address            String?    @unique
+  authMethod             AuthMethod @default(EMAIL)
+  roles                  Role[]     @default([LEARNER])
+  mfaEnabled             Boolean    @default(false)
+  mfaSecret              String?
+  mfaMethod              String?
+  phone                  String?
+  emailVerified          Boolean    @default(false)
+  emailVerificationToken  String?
+  emailVerificationSentAt DateTime?
+  resetPasswordToken     String?
+  resetPasswordExpires    DateTime?
+  lastLogin              DateTime?
+  loginCount             Int        @default(0)
+  settings               Json       @default("{}")
+  web3Nonce              String?
+  failedLoginAttempts    Int        @default(0)
+  lockoutUntil           DateTime?
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+  deletedAt              DateTime?
+
+  profile               Profile?
+  coursesCreated        Course[]         @relation("CourseInstructor")
+  coInstructors         Course[]         @relation("CourseCoInstructor")
+  enrollments          Enrollment[]
+  agents                Agent[]
+  intents               Intent[]         @relation("IntentRequester")
+  tasksAssigned         Task[]           @relation("TaskExecutor")
+  submittedBids          Bid[]            @relation("BidSolver")
+  tickets               Ticket[]
+  forumPosts            ForumPost[]
+  certificates          Certificate[]
+  workshopRegistrations  WorkshopRegistration[]
+  notifications         Notification[]
+  apiKeys               ApiKey[]
+  auditLogs             AuditLog[]
+  forumTopics           ForumTopic[]
+  supportTickets        SupportTicket[]     @relation("SupportTicketUser")
+  assignedSupportTickets SupportTicket[]   @relation("SupportTicketAssignedTo")
+  subscriptions         Subscription[]
+  whitelistedIps       IpWhitelist[]
+  webhookConfigs        WebhookConfig[]
 
   @@index([web3Address])
+  @@index([email])
+  @@index([deletedAt])
+  @@index([createdAt(sort: Desc)])
 }
 
 model Profile {
-  id            String   @id @default(uuid())
-  userId        String   @unique
-  bio           String?
-  website       String?
-  github        String?
-  twitter       String?
-  discord       String?
-  telegram      String?
-  linkedin      String?
-  skills        String[]
-  reputation    Int      @default(0)
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  bio            String?
+  website         String?
+  github         String?
+  twitter        String?
+  discord        String?
+  telegram       String?
+  linkedin       String?
+  skills         String[]
+  reputation     Int      @default(0)
+  totalTasksCompleted Int  @default(0)
+  totalEarned    Float    @default(0)
   
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Course {
-  id                 String        @id @default(uuid())
+  id                  String        @id @default(uuid())
   title              String
   slug               String        @unique
   description        String
@@ -161,21 +249,29 @@ model Course {
   currency           String        @default("USD")
   cryptoPrice        Json?
   thumbnailUrl       String?
-  previewVideoUrl    String?
+  previewVideoUrl   String?
   learningObjectives String[]
-  prerequisites      String[]
+  prerequisites       String[]
   published          Boolean       @default(false)
   publishedAt        DateTime?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   
   instructorId       String
-  instructor        User          @relation("CourseInstructor", fields: [instructorId], references: [id])
+  instructor         User          @relation("CourseInstructor", fields: [instructorId], references: [id])
+  coInstructorIds    String[]     @default([])
   
+  coInstructors      User[]     @relation("CourseCoInstructor")
   modules            Module[]
   enrollments        Enrollment[]
   workshops          Workshop[]
   forumTopics        ForumTopic[]
+  certificates       Certificate[]
+
+  @@index([slug])
+  @@index([instructorId])
+  @@index([published])
+  @@index([createdAt(sort: Desc)])
 }
 
 model Module {
@@ -190,86 +286,137 @@ model Module {
   labConfig      Json?
   quizQuestions  Json?
   estimatedMinutes Int
+  isFree         Boolean    @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   
   course         Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
   progress       ModuleProgress[]
+
+  @@index([courseId, order])
 }
 
 model Enrollment {
-  id              String          @id @default(uuid())
-  userId          String
-  courseId        String
-  status          EnrollmentStatus @default(ACTIVE)
-  progressPercent Int             @default(0)
+  id               String          @id @default(uuid())
+  userId           String
+  courseId         String
+  status           EnrollmentStatus @default(ACTIVE)
+  progressPercent  Int              @default(0)
   completedModules String[]
-  certificateId   String?
+  certificateId    String?
   certificateIpfsHash String?
-  enrolledAt      DateTime        @default(now())
-  completedAt    DateTime?
-  paymentTxHash  String?
+  enrolledAt       DateTime        @default(now())
+  completedAt     DateTime?
+  paymentTxHash   String?
+  paymentStatus  String          @default("PENDING")
   
-  user           User   @relation(fields: [userId], references: [id])
-  course         Course @relation(fields: [courseId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+  course          Course   @relation(fields: [courseId], references: [id])
   moduleProgress ModuleProgress[]
 
   @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
 }
 
 model ModuleProgress {
-  id          String   @id @default(uuid())
-  moduleId    String
+  id           String    @id @default(uuid())
+  moduleId     String
   enrollmentId String
-  completed   Boolean  @default(false)
-  watchTime   Int      @default(0)
-  quizScore   Int?
+  completed    Boolean   @default(false)
+  watchTime    Int       @default(0)
+  quizScore    Int?
+  completedAt DateTime?
   
-  module      Module   @relation(fields: [moduleId], references: [id])
+  module      Module     @relation(fields: [moduleId], references: [id])
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
 
   @@unique([moduleId, enrollmentId])
 }
 
 model Agent {
-  id              String          @id @default(uuid())
-  ownerId         String
-  name            String
+  id               String          @id @default(uuid())
+  ownerId          String
+  name             String
   description     String
-  framework       String
+  framework       AgentFramework
   model           String
   codeRepo        String?
   config          Json
   tools           String[]
-  status          AgentStatus     @default(DRAFT)
-  deploymentType  DeploymentType  @default(CLOUD)
+  status          AgentStatus       @default(DRAFT)
+  deploymentType  DeploymentType   @default(CLOUD)
   deploymentUrl   String?
   teeAttestation  Json?
-  version         Int             @default(1)
+  version         Int              @default(1)
   lastActive      DateTime?
   lastPing        DateTime?
-  pricingModel    String          @default("fixed")
-  price           Float?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  pricingModel   PricingModel     @default(FIXED)
+  price          Float?
+  ipWhitelist    String[]          @default([])
+  supportedChains String[]         @default(["ethereum"])
+  createdAt      DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
   
-  owner           User           @relation(fields: [ownerId], references: [id])
-  bids            Bid[]
-  reputation      Reputation?
+  owner          User            @relation(fields: [ownerId], references: [id])
+  bids          Bid[]
+  reputation    Reputation?
+  teeDeployment TEEDeployment?
 
   @@unique([ownerId, name])
+  @@index([ownerId])
+  @@index([status])
+  @@index([framework])
 }
 
 model Reputation {
-  id              String   @id @default(uuid())
-  agentId         String   @unique
-  totalTasks      Int      @default(0)
+  id             String   @id @default(uuid())
+  agentId        String   @unique
+  totalTasks     Int      @default(0)
   successfulTasks Int      @default(0)
-  avgRating       Float    @default(0)
-  ratingCount     Int      @default(0)
-  score           Int      @default(0)
-  badges          Json     @default("[]")
-  updatedAt       DateTime  @updatedAt
+  failedTasks    Int      @default(0)
+  avgRating     Float    @default(0)
+  ratingCount    Int      @default(0)
+  totalEarnings Float    @default(0)
+  score          Int     @default(0)
+  percentileRank Int     @default(0)
+  badges         Json    @default("[]")
+  responseTimeAvg Int    @default(0)
+  lastCalculatedAt DateTime @default(now())
   
-  agent           Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agent          Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model TEEDeployment {
+  id            String             @id @default(uuid())
+  agentId       String            @unique
+  provider      String
+  enclaveId     String
+  endpoint     String?
+  status       TEEDeploymentStatus @default(PROVISIONING)
+  attestation  Json?
+  cpu           Int               @default(2)
+  memory       Int               @default(4096)
+  storage      Int               @default(10240)
+  createdAt    DateTime          @default(now())
+  startedAt   DateTime?
+  stoppedAt   DateTime?
+  expiresAt   DateTime?
+  
+  agent        Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  attestations Attestation[]
+}
+
+model Attestation {
+  id              String   @id @default(uuid())
+  teeDeploymentId String
+  quote           String
+  mrenclave       String
+  isValid         Boolean
+  verifiedAt      DateTime @default(now())
+  
+  teeDeployment  TEEDeployment @relation(fields: [teeDeploymentId], references: [id], onDelete: Cascade)
 }
 
 model Intent {
@@ -283,19 +430,21 @@ model Intent {
   destChain       String
   destToken       String
   minDestAmount   String
-  deadline        DateTime
-  budget          String
-  status          IntentStatus @default(OPEN)
+  deadline       DateTime
+  budget         Decimal     @db.Decimal(20, 8)
+  currency       String      @default("NEAR")
+  status         IntentStatus @default(OPEN)
   selectedSolverId String?
-  escrowId        String?
+  escrowId       String?
   autoAcceptRules Json?
-  createdAt       DateTime    @default(now())
-  expiresAt       DateTime
-  completedAt     DateTime?
+  createdAt      DateTime    @default(now())
+  expiresAt      DateTime
+  completedAt    DateTime?
   
   requester       User        @relation("IntentRequester", fields: [requesterId], references: [id])
   bids            Bid[]
   task            Task?
+  escrow         Escrow?
 
   @@index([status])
   @@index([requesterId])
@@ -303,87 +452,129 @@ model Intent {
   @@index([selectedSolverId])
   @@index([createdAt(sort: Desc)])
   @@index([expiresAt])
+  @@index([sourceChain])
+  @@index([destChain])
 }
 
 model Bid {
   id             String    @id @default(uuid())
   intentId       String
   agentId        String
-  solverId        String?
-  price          String
+  solverId       String?
+  price          Decimal   @db.Decimal(20, 8)
   estimatedTime  Int
   routeDetails   Json?
   status         BidStatus @default(PENDING)
   createdAt      DateTime  @default(now())
   
   intent         Intent    @relation(fields: [intentId], references: [id], onDelete: Cascade)
-  agent          Agent    @relation(fields: [agentId], references: [id])
-  solver         User?    @relation("BidSolver", fields: [solverId], references: [id])
+  agent          Agent     @relation(fields: [agentId], references: [id])
+  solver         User?     @relation("BidSolver", fields: [solverId], references: [id])
 
   @@unique([intentId, agentId])
+  @@index([intentId])
+  @@index([agentId])
+  @@index([status])
 }
 
 model Task {
-  id             String      @id @default(uuid())
+  id              String      @id @default(uuid())
   intentId       String      @unique
   assignedAgentId String
-  status         TaskStatus  @default(ASSIGNED)
-  result         Json?
-  proof          Json?
-  startedAt      DateTime?
+  status          TaskStatus  @default(ASSIGNED)
+  result          Json?
+  proof           Json?
+  startedAt       DateTime?
   completedAt    DateTime?
   txHash         String?
   disputeReason  String?
+  errorMessage   String?
   createdAt      DateTime    @default(now())
   
-  intent         Intent     @relation(fields: [intentId], references: [id], onDelete: Cascade)
-  executor       User       @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
-  dispute        Dispute?
+  intent          Intent     @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  executor        User        @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
+  dispute         Dispute?
 
   @@index([status])
   @@index([assignedAgentId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Escrow {
+  id                String       @id @default(uuid())
+  intentId          String       @unique
+  contractAddress   String
+  chain             String
+  token             String
+  amount            Decimal      @db.Decimal(20, 8)
+  status            EscrowStatus @default(FUNDED)
+  fundingTx         String?
+  releaseTx         String?
+  refundTx          String?
+  createdAt         DateTime     @default(now())
+  fundedAt         DateTime?
+  releasedAt       DateTime?
+  refundedAt       DateTime?
+  expiresAt        DateTime?
+  
+  intent            Intent       @relation(fields: [intentId], references: [id])
+
+  @@index([status])
+  @@index([chain])
+  @@index([createdAt(sort: Desc)])
 }
 
 model Dispute {
-  id             String        @id @default(uuid())
-  taskId         String        @unique
+  id             String            @id @default(uuid())
+  taskId         String            @unique
   raisedBy       String
   reason         String
-  evidence       String[]
-  status         DisputeStatus @default(OPEN)
-  resolution     String?
+  evidence       Json?
+  status         DisputeStatus   @default(OPEN)
+  resolution     DisputeResolution?
+  resolutionNotes String?
   resolvedAt     DateTime?
-  createdAt      DateTime      @default(now())
+  resolvedBy    String?
+  appealFeePaid  Boolean          @default(false)
+  createdAt     DateTime         @default(now())
   
-  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task           Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([raisedBy])
 }
 
 model Workshop {
-  id                String   @id @default(uuid())
-  courseId          String
-  title             String
-  description       String
-  instructorId      String
+  id                  String   @id @default(uuid())
+  courseId           String
+  title              String
+  description        String
+  instructorId       String
   scheduledAt        DateTime
   duration          Int
-  maxParticipants   Int
+  maxParticipants    Int
   currentParticipants Int @default(0)
-  recordingUrl      String?
+  recordingUrl       String?
+  streamUrl          String?
   status            String   @default("SCHEDULED")
-  createdAt         DateTime @default(now())
+  createdAt         DateTime  @default(now())
   
   course            Course   @relation(fields: [courseId], references: [id])
   registrations    WorkshopRegistration[]
+
+  @@index([courseId])
+  @@index([scheduledAt])
 }
 
 model WorkshopRegistration {
-  id          String   @id @default(uuid())
-  workshopId  String
-  userId      String
-  registeredAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  workshopId     String
+  userId         String
+  attended       Boolean  @default(false)
+  joinedAt       DateTime @default(now())
   
-  workshop    Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id])
+  workshop       Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id])
 
   @@unique([workshopId, userId])
 }
@@ -398,10 +589,15 @@ model ForumTopic {
   locked     Boolean  @default(false)
   views       Int      @default(0)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt  DateTime @updatedAt
   
-  course      Course?  @relation(fields: [courseId], references: [id])
+  course      Course?   @relation(fields: [courseId], references: [id])
   posts      ForumPost[]
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@index([courseId])
+  @@index([userId])
+  @@index([pinned])
 }
 
 model ForumPost {
@@ -409,55 +605,118 @@ model ForumPost {
   topicId   String
   userId    String
   content   String
-  upvotes   Int      @default(0)
+  upvotes  Int      @default(0)
   isCorrect Boolean  @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
   topic     ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
   user      User       @relation(fields: [userId], references: [id])
+
+  @@index([topicId])
+  @@index([userId])
 }
 
 model Ticket {
-  id          String        @id @default(uuid())
-  userId      String
-  subject     String
-  description String
-  status      TicketStatus  @default(OPEN)
-  priority    String        @default("MEDIUM")
-  category    String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  resolvedAt  DateTime?
+  id              String         @id @default(uuid())
+  userId          String
+  subject         String
+  description     String
+  status          TicketStatus   @default(OPEN)
+  priority        TicketPriority @default(MEDIUM)
+  category        String?
+  assignedTo     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  resolvedAt     DateTime?
   
-  user        User         @relation(fields: [userId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([assignedTo])
+  @@index([status])
+}
+
+model SupportTicket {
+  id            String       @id @default(uuid())
+  userId        String
+  subject       String
+  description   String
+  status        TicketStatus @default(OPEN)
+  priority      String       @default("MEDIUM")
+  category      String?
+  assignedToId  String?
+  attachments   Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  resolvedAt    DateTime?
+  
+  user         User         @relation("SupportTicketUser", fields: [userId], references: [id])
+  assignedTo   User?        @relation("SupportTicketAssignedTo", fields: [assignedToId], references: [id])
 }
 
 model Certificate {
-  id                String   @id @default(uuid())
-  userId            String
-  courseId          String
-  tokenId           BigInt
-  ipfsHash          String?
-  issuedAt          DateTime @default(now())
+  id               String   @id @default(uuid())
+  userId           String
+  courseId         String
+  tokenId          BigInt
+  ipfsHash         String?
+  verificationUrl String?
+  issuedAt         DateTime @default(now())
   
-  user              User     @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([tokenId])
+  @@index([userId])
+  @@index([courseId])
 }
 
 model Payment {
-  id            String   @id @default(uuid())
-  userId        String
-  amount        Float
-  currency      String
-  token         String?
-  txHash        String?
-  status        String   @default("PENDING")
-  type          String
-  createdAt     DateTime @default(now())
+  id          String       @id @default(uuid())
+  userId     String
+  agentId    String?
+  amount     Decimal      @db.Decimal(20, 8)
+  currency   String
+  token      String?
+  txHash     String?
+  status     PaymentStatus @default(PENDING)
+  type       PaymentType
+  createdAt  DateTime     @default(now())
+  completedAt DateTime?
+  failedAt   DateTime?
+  metadata   Json?
+
+  @@index([userId])
+  @@index([agentId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Subscription {
+  id              String            @id @default(uuid())
+  userId          String
+  tier            SubscriptionTier
+  status          String            @default("ACTIVE")
+  startDate       DateTime          @default(now())
+  endDate         DateTime?
+  autoRenew      Boolean           @default(true)
+  stripeCustomerId String?
+  stripeSubId    String?
+  amount          Float
+  currency        String            @default("USD")
+  interval        String            @default("monthly")
+  lastPaymentAt   DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  user            User              @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([status])
-  @@index([createdAt(sort: Desc)])
+  @@index([endDate])
 }
 
 model ApiKey {
@@ -469,21 +728,141 @@ model ApiKey {
   expiresAt   DateTime?
   lastUsedAt  DateTime?
   createdAt   DateTime @default(now())
+  revokedAt   DateTime?
+  revokedBy   String?
+  
+  user        User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
+model IpWhitelist {
+  id          String   @id @default(uuid())
+  userId      String
+  ipAddress   String
+  description String?
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime?
+  
+  user        User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, ipAddress])
+}
+
+model WebhookConfig {
+  id          String   @id @default(uuid())
+  userId      String
+  url         String
+  events      String[]
+  secret      String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  lastTriggeredAt DateTime?
+  
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([active])
+}
+
 model Notification {
-  id        String   @id @default(uuid())
-  userId    String
-  type      String
-  title     String
-  message   String
-  read      Boolean  @default(false)
-  data      Json?
-  createdAt DateTime @default(now())
+  id        String           @id @default(uuid())
+  userId   String
+  type     NotificationType @default(INFO)
+  title    String
+  message  String
+  read     Boolean          @default(false)
+  data     Json?
+  link     String?
+  createdAt DateTime       @default(now())
+  readAt   DateTime?
+  
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([userId, read])
   @@index([createdAt(sort: Desc)])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  resource    String
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+  userAgent  String?
+  createdAt   DateTime @default(now())
+  
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt(sort: Desc)])
+}
+
+model FeatureFlag {
+  id          String   @id @default(uuid())
+  name       String   @unique
+  enabled    Boolean  @default(false)
+  description String?
+  rules      Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  
+  @@index([enabled])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  refreshToken String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+  
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model Pricing {
+  id          String   @id @default(uuid())
+  tier        String   @unique
+  price       Float
+  currency    String   @default("USD")
+  interval    String   @default("one_time")
+  features    Json
+  cryptoPrices Json?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Webinar {
+  id              String   @id @default(uuid())
+  title          String
+  description    String
+  scheduledAt    DateTime
+  duration       Int
+  hostId         String
+  maxParticipants Int
+  link           String?
+  recordingUrl   String?
+  status         String   @default("SCHEDULED")
+  createdAt      DateTime @default(now())
+}
+
+model WebinarRegistration {
+  id         String   @id @default(uuid())
+  webinarId  String
+  userId    String
+  joinedAt  DateTime @default(now())
+  
+  @@unique([webinarId, userId])
 }
