@@ -5,15 +5,12 @@ edition = "2021"
 description = "Kuberna Labs - 18 Smart Contracts on Solana"
 
 [lib]
-path = "src/lib.rs"
+path = "programs/src/lib.rs"
 
 [dependencies]
-anchor-lang = "0.29"
-anchor-spl = "0.29"
-anchor-spl-associated-token = "0.29"
-
-[features]
-default = []
+solana-program = "1.18"
+solana-sdk = "1.18"
+borsh = "0.10"
 
 [profile.release]
 panic = "abort"

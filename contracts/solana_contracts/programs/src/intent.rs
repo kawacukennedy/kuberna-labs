@@ -1,79 +1,5 @@
 use anchor_lang::prelude::*;
 
-#[program]
-pub mod kuberna_intent {
-    use super::*;
-
-    pub fn create_intent(ctx: Context<CreateIntent>, intent_id: String, budget: u64) -> Result<()> {
-        let intent = &mut ctx.accounts.intent;
-        intent.requester = ctx.accounts.requester.key();
-        intent.budget = budget;
-        intent.budget_currency = "0G".to_string();
-        intent.status = IntentStatus::Open;
-        intent.intent_id = intent_id;
-        intent.bump = ctx.bumps.intent;
-        
-        emit!(IntentCreated {
-            intent: intent.key(),
-            requester: ctx.accounts.requester.key(),
-            budget,
-        });
-        Ok(())
-    }
-
-    pub fn submit_bid(ctx: Context<SubmitBid>, bid_id: String, price: u64, _estimated_time: i64) -> Result<()> {
-        let intent = &mut ctx.accounts.intent;
-        require!(intent.status == IntentStatus::Open, IntentError::NotOpen);
-        
-        let bid = &mut ctx.accounts.bid;
-        bid.agent = ctx.accounts.agent.key();
-        bid.intent = intent.key();
-        bid.price = price;
-        bid.status = BidStatus::Pending;
-        bid.bid_id = bid_id;
-        bid.bump = ctx.bumps.bid;
-        
-        emit!(BidSubmitted {
-            bid: bid.key(),
-            agent: ctx.accounts.agent.key(),
-            intent: intent.key(),
-            price,
-        });
-        Ok(())
-    }
-
-    pub fn accept_bid(ctx: Context<AcceptBid>) -> Result<()> {
-        let intent = &mut ctx.accounts.intent;
-        let bid = &mut ctx.accounts.bid;
-        
-        require!(intent.requester == ctx.accounts.requester.key(), IntentError::Unauthorized);
-        require!(intent.status == IntentStatus::Open, IntentError::NotOpen);
-        require!(bid.status == BidStatus::Pending, IntentError::InvalidBid);
-        
-        intent.status = IntentStatus::Assigned;
-        intent.selected_bid = Some(bid.key());
-        bid.status = BidStatus::Accepted;
-        
-        emit!(BidAccepted {
-            intent: intent.key(),
-            bid: bid.key(),
-        });
-        Ok(())
-    }
-
-    pub fn execute_intent(ctx: Context<ExecuteIntent>) -> Result<()> {
-        let intent = &mut ctx.accounts.intent;
-        require!(intent.status == IntentStatus::Executing, IntentError::InvalidState);
-        
-        intent.status = IntentStatus::Completed;
-        
-        emit!(IntentExecuted {
-            intent: intent.key(),
-        });
-        Ok(())
-    }
-}
-
 #[derive(Accounts)]
 pub struct CreateIntent<'info> {
     #[account(
@@ -120,12 +46,11 @@ pub struct ExecuteIntent<'info> {
     pub executor: Signer<'info>,
 }
 
-#[account]
+#[account(0, max_len(64))]
 #[derive(InitSpace)]
 pub struct KubernaIntent {
     pub requester: Pubkey,
     pub budget: u64,
-    pub budget_currency: String,
     pub status: IntentStatus,
     pub selected_bid: Option<Pubkey>,
     pub intent_id: String,
@@ -133,10 +58,10 @@ pub struct KubernaIntent {
 }
 
 impl KubernaIntent {
-    const INIT_SPACE: usize = 32 + 8 + (4 + 10) + 1 + 32 + (4 + 64) + 1;
+    const INIT_SPACE: usize = 32 + 8 + 1 + 32 + (4 + 64) + 1;
 }
 
-#[account]
+#[account(0, max_len(64))]
 #[derive(InitSpace)]
 pub struct Bid {
     pub agent: Pubkey,
@@ -151,7 +76,8 @@ impl Bid {
     const INIT_SPACE: usize = 32 + 32 + 8 + 1 + (4 + 64) + 1;
 }
 
-#[derive(Clone, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Clone, Debug, PartialEq, AnchorSerialize, AnchorDeserialize, Space)]
+#[repr(u8)]
 pub enum IntentStatus {
     Open,
     Bidding,
@@ -161,7 +87,8 @@ pub enum IntentStatus {
     Cancelled,
 }
 
-#[derive(Clone, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(Clone, Debug, PartialEq, AnchorSerialize, AnchorDeserialize, Space)]
+#[repr(u8)]
 pub enum BidStatus {
     Pending,
     Accepted,
@@ -204,4 +131,88 @@ pub enum IntentError {
     InvalidBid,
     #[msg("Invalid intent state")]
     InvalidState,
+}
+
+#[program]
+pub mod kuberna_intent {
+    use super::*;
+
+    pub fn create_intent(ctx: Context<CreateIntent>, intent_id: String, budget: u64) -> Result<()> {
+        let intent = &mut ctx.accounts.intent;
+        intent.requester = ctx.accounts.requester.key();
+        intent.budget = budget;
+        intent.status = IntentStatus::Open;
+        intent.intent_id = intent_id.clone();
+        intent.bump = ctx.bumps.get("intent").copied().unwrap_or(1);
+
+        emit!(IntentCreated {
+            intent: intent.key(),
+            requester: ctx.accounts.requester.key(),
+            budget,
+        });
+        Ok(())
+    }
+
+    pub fn submit_bid(
+        ctx: Context<SubmitBid>,
+        bid_id: String,
+        price: u64,
+        _estimated_time: i64,
+    ) -> Result<()> {
+        let intent = &mut ctx.accounts.intent;
+        require!(intent.status == IntentStatus::Open, IntentError::NotOpen);
+
+        let bid = &mut ctx.accounts.bid;
+        bid.agent = ctx.accounts.agent.key();
+        bid.intent = intent.key();
+        bid.price = price;
+        bid.status = BidStatus::Pending;
+        bid.bid_id = bid_id.clone();
+        bid.bump = ctx.bumps.get("bid").copied().unwrap_or(1);
+
+        emit!(BidSubmitted {
+            bid: bid.key(),
+            agent: ctx.accounts.agent.key(),
+            intent: intent.key(),
+            price,
+        });
+        Ok(())
+    }
+
+    pub fn accept_bid(ctx: Context<AcceptBid>) -> Result<()> {
+        let intent = &mut ctx.accounts.intent;
+        let bid = &mut ctx.accounts.bid;
+
+        require!(
+            intent.requester == ctx.accounts.requester.key(),
+            IntentError::Unauthorized
+        );
+        require!(intent.status == IntentStatus::Open, IntentError::NotOpen);
+        require!(bid.status == BidStatus::Pending, IntentError::InvalidBid);
+
+        intent.status = IntentStatus::Assigned;
+        intent.selected_bid = Some(bid.key());
+        bid.status = BidStatus::Accepted;
+
+        emit!(BidAccepted {
+            intent: intent.key(),
+            bid: bid.key(),
+        });
+        Ok(())
+    }
+
+    pub fn execute_intent(ctx: Context<ExecuteIntent>) -> Result<()> {
+        let intent = &mut ctx.accounts.intent;
+        require!(
+            intent.status == IntentStatus::Executing,
+            IntentError::InvalidState
+        );
+
+        intent.status = IntentStatus::Completed;
+
+        emit!(IntentExecuted {
+            intent: intent.key(),
+        });
+        Ok(())
+    }
 }
