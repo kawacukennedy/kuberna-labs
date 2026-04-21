@@ -63,7 +63,7 @@ describe("TEEService", () => {
         agentId: "agent-1",
         ownerId: "user-1",
         code: "console.log('Hello TEE')",
-        config: { env: "production" },
+        config: { env: "production" } as unknown as Record<string, string>,
         provider: "phala",
         resources: {
           cpu: 2,

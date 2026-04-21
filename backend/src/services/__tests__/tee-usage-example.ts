@@ -43,10 +43,7 @@ async function deployAgentExample() {
           return { result: "processed" };
         }
       `,
-      config: {
-        env: "production",
-        timeout: 30000,
-      },
+      config: { env: "production", timeout: "30000" } as unknown as Record<string, string>,
       provider: "phala", // or "marlin"
       resources: {
         cpu: 2,
