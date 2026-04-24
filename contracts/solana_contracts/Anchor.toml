@@ -18,6 +18,6 @@ url = "https://api.devnet.solana.com"
 ledger = ".anchor/test-ledger"
 
 [scripts]
-test = "cargo test"
-build = "cargo build-sbf"
+test = "cargo test --manifest-path ./programs/Cargo.toml"
+build = "cargo build --manifest-path ./programs/Cargo.toml --release"
 deploy = "solana program deploy target/deploy/kuberna_solana.so --url https://api.devnet.solana.com"
