@@ -1,0 +1,25 @@
+[package]
+name = "kuberna_solana"
+version = "0.1.0"
+edition = "2021"
+description = "Kuberna Labs - 18 Smart Contracts on Solana"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+anchor-lang = "0.30"
+anchor-spl = { version = "0.30", features = ["token"] }
+spl-token = "4.0"
+borsh = "0.10"
+solana-program = "1.18"
+
+[profile.release]
+overflow-checks = true
+panic = "abort"
+lto = true
+codegen-units = 1
