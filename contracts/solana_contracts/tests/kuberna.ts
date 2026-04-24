@@ -3,7 +3,7 @@ import { Program, BN, AnchorProvider } from "@coral-xyz/anchor";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { assert } from "chai";
 
-describe("Kuberna Labs 18 Contracts", () => {
+describe("Kuberna Labs 18 Contracts on Solana", () => {
   const provider = anchor.AnchorProvider.local();
   anchor.setProvider(provider);
   const program = anchor.workspace.KubernaSolana as Program;
@@ -18,7 +18,7 @@ describe("Kuberna Labs 18 Contracts", () => {
   const SUB_SEED = "sub";
   const DISPUTE_SEED = "dispute";
   const TREASURY_SEED = "treasury";
-  const FEE_SEED = "fee";
+  const FEE_SEED = "fee_manager";
   const WORKSHOP_SEED = "workshop";
   const COURSE_SEED = "course";
   const MULTISIG_SEED = "multisig";
@@ -29,6 +29,7 @@ describe("Kuberna Labs 18 Contracts", () => {
   const ROUTER_SEED = "router";
   const GOVERNANCE_SEED = "governance";
   const REPUTATION_SEED = "reputation";
+  const STAKE_SEED = "stake";
 
   describe("1. Escrow Contract", () => {
     it("Create Escrow", async () => {
@@ -50,6 +51,22 @@ describe("Kuberna Labs 18 Contracts", () => {
       const escrow = await program.account.escrow.fetch(escrowPubkey);
       assert.equal(escrow.requester.toString(), wallet.publicKey.toString());
       assert.equal(escrow.amount.toNumber(), 1000000);
+    });
+
+    it("Fund Escrow", async () => {
+      const intentId = "escrow-test-1";
+      const [escrowPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(ESCROW_SEED), Buffer.from(intentId)],
+        program.programId
+      );
+      const tx = await program.methods
+        .fundEscrow()
+        .accounts({
+          escrow: escrowPubkey,
+          requester: wallet.publicKey,
+        })
+        .rpc();
+      console.log("Escrow funded:", tx);
     });
 
     it("Assign Executor", async () => {
@@ -75,23 +92,31 @@ describe("Kuberna Labs 18 Contracts", () => {
         [Buffer.from(ESCROW_SEED), Buffer.from(intentId)],
         program.programId
       );
-      const proof = new Uint8Array(32).fill(1);
-      const executor = Keypair.generate().publicKey;
-      await program.methods
-        .assignExecutor(executor)
-        .accounts({ escrow: escrowPubkey, requester: wallet.publicKey })
-        .rpc();
-      const executorWallet = await provider.wallet;
-      const executorKeypair = Keypair.generate();
       const tx = await program.methods
-        .completeTask(proof)
+        .completeTask(new Uint8Array(32).fill(1))
         .accounts({
           escrow: escrowPubkey,
-          executor: executorKeypair.publicKey,
+          executor: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         })
-        .signers([executorKeypair])
         .rpc();
       console.log("Task completed:", tx);
+    });
+
+    it("Release Funds", async () => {
+      const intentId = "escrow-test-1";
+      const [escrowPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(ESCROW_SEED), Buffer.from(intentId)],
+        program.programId
+      );
+      const tx = await program.methods
+        .releaseFunds()
+        .accounts({
+          escrow: escrowPubkey,
+          requester: wallet.publicKey,
+        })
+        .rpc();
+      console.log("Funds released:", tx);
     });
   });
 
@@ -103,15 +128,25 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .createIntent(intentId, new BN(5000000), "Test intent description")
+        .createIntent(
+          intentId,
+          "Test intent description",
+          PublicKey.default(),
+          new BN(1000),
+          PublicKey.default(),
+          new BN(900),
+          new BN(5000000),
+          new BN(86400)
+        )
         .accounts({
           intent: intentPubkey,
           requester: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
       console.log("Intent created:", tx);
-      const intent = await program.account.intent.fetch(intentPubkey);
+      const intent = await program.account.kubernaIntent.fetch(intentPubkey);
       assert.equal(intent.requester.toString(), wallet.publicKey.toString());
     });
 
@@ -150,7 +185,14 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .mintCertificate(courseId, recipient, "https://metadata.json")
+        .mintCertificate(
+          courseId,
+          recipient,
+          "John Doe",
+          "Advanced Solidity",
+          "Instructor Smith",
+          "hash123"
+        )
         .accounts({
           certificate: certPubkey,
           authority: wallet.publicKey,
@@ -170,7 +212,7 @@ describe("Kuberna Labs 18 Contracts", () => {
       );
       const recipient = Keypair.generate().publicKey;
       const tx = await program.methods
-        .processPayment(recipient, new BN(100000), "USDC")
+        .processPayment(recipient, new BN(100000), PublicKey.default(), "SOL")
         .accounts({
           payment: paymentPubkey,
           sender: wallet.publicKey,
@@ -189,7 +231,14 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .registerAgent("Test Agent", "AI Agent for testing", "GPT-4")
+        .registerAgent(
+          "Test Agent",
+          "AI Agent for testing",
+          "GPT-4",
+          "gpt-4-turbo",
+          "{}",
+          ["tool1", "tool2"]
+        )
         .accounts({
           agent: agentPubkey,
           owner: wallet.publicKey,
@@ -200,16 +249,44 @@ describe("Kuberna Labs 18 Contracts", () => {
       console.log("Agent registered:", tx);
     });
 
-    it("Update Agent Status", async () => {
+    it("Update Agent", async () => {
       const [agentPubkey] = PublicKey.findProgramAddressSync(
         [Buffer.from(AGENT_SEED), wallet.publicKey.toBuffer()],
         program.programId
       );
-      const tx = await program.methods.updateAgentStatus(1).accounts({
+      const tx = await program.methods
+        .updateAgent("Updated description", "gpt-4o", "{}")
+        .accounts({
+          agent: agentPubkey,
+          owner: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        })
+        .rpc();
+      console.log("Agent updated:", tx);
+    });
+
+    it("Set Agent Status", async () => {
+      const [agentPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(AGENT_SEED), wallet.publicKey.toBuffer()],
+        program.programId
+      );
+      const tx = await program.methods.setAgentStatus(2).accounts({
         agent: agentPubkey,
         owner: wallet.publicKey,
       }).rpc();
       console.log("Agent status updated:", tx);
+    });
+
+    it("Add Tool", async () => {
+      const [agentPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(AGENT_SEED), wallet.publicKey.toBuffer()],
+        program.programId
+      );
+      const tx = await program.methods.addTool("new-tool").accounts({
+        agent: agentPubkey,
+        owner: wallet.publicKey,
+      }).rpc();
+      console.log("Tool added:", tx);
     });
   });
 
@@ -220,7 +297,7 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .createSubscription(1, new BN(9999))
+        .createSubscription()
         .accounts({
           subscription: subPubkey,
           subscriber: wallet.publicKey,
@@ -246,29 +323,18 @@ describe("Kuberna Labs 18 Contracts", () => {
 
   describe("7. Dispute Contract", () => {
     it("Raise Dispute", async () => {
+      const escrowId = new Uint8Array(32).fill(1);
+      const requester = Keypair.generate().publicKey;
+      const executor = Keypair.generate().publicKey;
       const intentId = "dispute-test-1";
-      const [intentPubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(INTENT_SEED), Buffer.from(intentId)],
-        program.programId
-      );
-      await program.methods
-        .createIntent(intentId, new BN(5000000), "Dispute test")
-        .accounts({
-          intent: intentPubkey,
-          requester: wallet.publicKey,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
-
       const [disputePubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(DISPUTE_SEED), intentPubkey.toBuffer()],
+        [Buffer.from(DISPUTE_SEED), Buffer.from(intentId)],
         program.programId
       );
       const tx = await program.methods
-        .raiseDispute("Payment not received")
+        .raiseDispute(escrowId, requester, executor, "Payment not received")
         .accounts({
           dispute: disputePubkey,
-          task: intentPubkey,
           raiser: wallet.publicKey,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           systemProgram: SystemProgram.programId,
@@ -322,7 +388,7 @@ describe("Kuberna Labs 18 Contracts", () => {
       const tx = await program.methods
         .setFee(0, new BN(250))
         .accounts({
-          fee: feePubkey,
+          feeManager: feePubkey,
           admin: wallet.publicKey,
           systemProgram: SystemProgram.programId,
         })
@@ -338,7 +404,7 @@ describe("Kuberna Labs 18 Contracts", () => {
       const tx = await program.methods
         .collectFee(new BN(1000000))
         .accounts({
-          fee: feePubkey,
+          feeManager: feePubkey,
         })
         .rpc();
       console.log("Fee collected:", tx);
@@ -352,7 +418,13 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .createWorkshop("Solidity 101", 50)
+        .createWorkshop(
+          "Solidity 101",
+          "Learn Solidity from scratch",
+          Math.floor(Date.now() / 1000) + 86400,
+          7200,
+          50
+        )
         .accounts({
           workshop: workshopPubkey,
           instructor: wallet.publicKey,
@@ -365,15 +437,23 @@ describe("Kuberna Labs 18 Contracts", () => {
   });
 
   describe("11. CourseNFT Contract", () => {
-    it("Mint Course Access", async () => {
-      const recipient = Keypair.generate().publicKey;
+    it("Create Course", async () => {
       const courseId = "advanced-solidity";
       const [coursePubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(COURSE_SEED), recipient.toBuffer(), Buffer.from(courseId)],
+        [Buffer.from(COURSE_SEED), Buffer.from(courseId)],
         program.programId
       );
       const tx = await program.methods
-        .mintCourseAccess(courseId, recipient)
+        .createCourse(
+          "Advanced Solidity",
+          "Master gas optimization",
+          "https://metadata.json",
+          new BN(50000),
+          PublicKey.default(),
+          100,
+          true,
+          2592000
+        )
         .accounts({
           course: coursePubkey,
           authority: wallet.publicKey,
@@ -381,7 +461,24 @@ describe("Kuberna Labs 18 Contracts", () => {
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      console.log("Course access minted:", tx);
+      console.log("Course created:", tx);
+    });
+
+    it("Enroll Student", async () => {
+      const courseId = "advanced-solidity";
+      const [coursePubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(COURSE_SEED), Buffer.from(courseId)],
+        program.programId
+      );
+      const student = Keypair.generate().publicKey;
+      const tx = await program.methods
+        .enrollStudent(student)
+        .accounts({
+          course: coursePubkey,
+          authority: wallet.publicKey,
+        })
+        .rpc();
+      console.log("Student enrolled:", tx);
     });
   });
 
@@ -391,17 +488,13 @@ describe("Kuberna Labs 18 Contracts", () => {
         [Buffer.from(MULTISIG_SEED)],
         program.programId
       );
-      const owners = [
-        wallet.publicKey,
-        Keypair.generate().publicKey,
-        Keypair.generate().publicKey,
-      ];
+      const owners = [wallet.publicKey, Keypair.generate().publicKey, Keypair.generate().publicKey];
       const tx = await program.methods
-        .createMultisig(2)
+        .createMultisig(owners, 2)
         .accounts({
           multisig: multisigPubkey,
-          owners: owners.map((o) => ({ isSigner: false, isWritable: false, key: o })),
           creator: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
@@ -417,7 +510,7 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .createVesting(beneficiary, new BN(100000000), new BN(365 * 86400))
+        .createVesting(beneficiary, new BN(100000000), Math.floor(Date.now() / 1000))
         .accounts({
           vesting: vestingPubkey,
           funder: wallet.publicKey,
@@ -460,6 +553,23 @@ describe("Kuberna Labs 18 Contracts", () => {
   });
 
   describe("15. PriceOracle Contract", () => {
+    it("Initialize Oracle", async () => {
+      const [oraclePubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(ORACLE_SEED)],
+        program.programId
+      );
+      const tx = await program.methods
+        .initOracle()
+        .accounts({
+          oracle: oraclePubkey,
+          updater: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+      console.log("Oracle initialized:", tx);
+    });
+
     it("Set Price", async () => {
       const [oraclePubkey] = PublicKey.findProgramAddressSync(
         [Buffer.from(ORACLE_SEED)],
@@ -471,7 +581,6 @@ describe("Kuberna Labs 18 Contracts", () => {
           oracle: oraclePubkey,
           updater: wallet.publicKey,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          systemProgram: SystemProgram.programId,
         })
         .rpc();
       console.log("Price set:", tx);
@@ -492,12 +601,13 @@ describe("Kuberna Labs 18 Contracts", () => {
 
   describe("16. Attestation Contract", () => {
     it("Create Attestation", async () => {
+      const recipient = Keypair.generate().publicKey;
       const [attestationPubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(ATTESTATION_SEED), wallet.publicKey.toBuffer()],
+        [Buffer.from(ATTESTATION_SEED), recipient.toBuffer()],
         program.programId
       );
       const tx = await program.methods
-        .createAttestation("KYC", '{"verified": true}')
+        .createAttestation(recipient, "KYC", new Uint8Array([1, 2, 3]), 365)
         .accounts({
           attestation: attestationPubkey,
           issuer: wallet.publicKey,
@@ -510,22 +620,51 @@ describe("Kuberna Labs 18 Contracts", () => {
   });
 
   describe("17. CrossChainRouter Contract", () => {
-    it("Set Remote Chain", async () => {
-      const chainId = 1;
+    it("Initialize Router", async () => {
       const [routerPubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(ROUTER_SEED), Buffer.from([0, 0, 0, 1])],
+        [Buffer.from(ROUTER_SEED)],
         program.programId
       );
-      const remoteRouter = Keypair.generate().publicKey;
       const tx = await program.methods
-        .setRemoteChain(chainId, remoteRouter)
+        .initializeRouter()
         .accounts({
           router: routerPubkey,
           admin: wallet.publicKey,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      console.log("Remote chain configured:", tx);
+      console.log("Router initialized:", tx);
+    });
+
+    it("Set Chain Support", async () => {
+      const [routerPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(ROUTER_SEED)],
+        program.programId
+      );
+      const tx = await program.methods
+        .setChainSupport(1, true)
+        .accounts({
+          router: routerPubkey,
+          admin: wallet.publicKey,
+        })
+        .rpc();
+      console.log("Chain support set:", tx);
+    });
+
+    it("Set Bridge Fee", async () => {
+      const [routerPubkey] = PublicKey.findProgramAddressSync(
+        [Buffer.from(ROUTER_SEED)],
+        program.programId
+      );
+      const tx = await program.methods
+        .setBridgeFee(new BN(5000))
+        .accounts({
+          router: routerPubkey,
+          admin: wallet.publicKey,
+        })
+        .rpc();
+      console.log("Bridge fee set:", tx);
     });
   });
 
@@ -553,7 +692,7 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const [stakePubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from("stake"), wallet.publicKey.toBuffer()],
+        [Buffer.from(STAKE_SEED), wallet.publicKey.toBuffer()],
         program.programId
       );
       const tx = await program.methods
@@ -577,7 +716,7 @@ describe("Kuberna Labs 18 Contracts", () => {
         program.programId
       );
       const tx = await program.methods
-        .registerAgentReputation(agent)
+        .registerAgentReputation()
         .accounts({
           reputation: repPubkey,
           admin: wallet.publicKey,
@@ -589,28 +728,28 @@ describe("Kuberna Labs 18 Contracts", () => {
     });
 
     it("Update Agent Reputation", async () => {
-      const agent = Keypair.generate().publicKey;
+      const agent = Keypair.generate();
       const [agentPubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(AGENT_SEED), agent.toBuffer()],
+        [Buffer.from(AGENT_SEED), agent.publicKey.toBuffer()],
         program.programId
       );
       await program.methods
-        .registerAgent("Reputation Agent", "Test agent", "GPT-4")
+        .registerAgent("Reputation Agent", "Test agent", "GPT-4", "gpt-4", "{}", [])
         .accounts({
           agent: agentPubkey,
-          owner: agent,
+          owner: agent.publicKey,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           systemProgram: SystemProgram.programId,
         })
-        .signers([agent as unknown as anchor.web3.Keypair])
+        .signers([agent])
         .rpc();
 
       const [repPubkey] = PublicKey.findProgramAddressSync(
-        [Buffer.from(REPUTATION_SEED), agent.toBuffer()],
+        [Buffer.from(REPUTATION_SEED), agent.publicKey.toBuffer()],
         program.programId
       );
       await program.methods
-        .registerAgentReputation(agent)
+        .registerAgentReputation()
         .accounts({
           reputation: repPubkey,
           admin: wallet.publicKey,
@@ -623,7 +762,6 @@ describe("Kuberna Labs 18 Contracts", () => {
         .updateAgentReputation(true, 120)
         .accounts({
           reputation: repPubkey,
-          agent: agentPubkey,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         })
         .rpc();
