@@ -35,6 +35,14 @@
   The operating system for agentic Web3 enterprises
 </p>
 
+<!-- Party Parrot - GitHub Sponsorship -->
+<div align="center" style="margin: 0 0 16px;">
+  <img src="https://cultofthepartyparrot.com/parrots/hd/githubparrot.gif" width="30" height="30" alt="parrot">
+  <img src="https://cultofthepartyparrot.com/parrots/hd/60fpsparrot.gif" width="30" height="30" alt="parrot">
+  <img src="https://cultofthepartyparrot.com/parrots/hd/jumpingparrot.gif" width="30" height="30" alt="parrot">
+  <img src="https://cultofthepartyparrot.com/parrots/hd/footballparrot.gif" width="30" height="30" alt="parrot">
+</div>
+
 <!-- CTA -->
 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
   <a href="#get-started" style="display: inline-flex; align-items: center; padding: 12px 24px; background: #0071e3; color: #fff; border-radius: 980px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease;">
@@ -43,6 +51,11 @@
   <a href="/docs" style="display: inline-flex; align-items: center; padding: 12px 24px; background: transparent; color: #0071e3; border-radius: 980px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease;">
     Documentation
   </a>
+</div>
+
+<!-- Animated Typing Cat -->
+<div align="center" style="margin: 24px 0 0;">
+  <img src="https://user-images.githubusercontent.com/74038190/212284145-bf2c01a8-c448-4f1a-b911-996024c84606.gif" width="120" alt="coding">
 </div>
 
 </div>
@@ -91,6 +104,11 @@ Kuberna provides secure, verifiable, and scalable infrastructure for deploying A
 
 ### Platform Features
 
+<!-- Developer Working -->
+<div align="center" style="margin: 24px 0;">
+  <img src="https://user-images.githubusercontent.com/74038190/212749695-a6817c5a-a794-462b-afca-1b5ce7dd5e63.gif" width="250" alt="lets do it">
+</div>
+
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 32px;">
 
 #### Trusted Execution
@@ -118,6 +136,14 @@ TypeScript, Python, Rust SDKs with full type coverage.
 
 > **Wallets:** MetaMask, WalletConnect, Phantom, NEAR
 
+</div>
+
+<!-- Fun Working Stickers -->
+<div align="center" style="margin: 32px 0;">
+  <img src="https://user-images.githubusercontent.com/74038190/216649417-9acc58df-9186-4132-ad43-819a57babb67.gif" width="80">
+  <img src="https://user-images.githubusercontent.com/74038190/216649421-9e9387cc-b2d3-4375-97e2-f4c43373d3ae.gif" width="80">
+  <img src="https://user-images.githubusercontent.com/74038190/216649426-0c2ee152-84d8-4707-85c4-27a378d2f78a.gif" width="80">
+  <img src="https://user-images.githubusercontent.com/74038190/216649430-0a912dae-e61b-45cf-8f65-895bd6444f3a.gif" width="80">
 </div>
 
 </section>
@@ -243,6 +269,11 @@ TypeScript, Python, Rust SDKs with full type coverage.
 
 Install the SDK and deploy your first TEE-shielded agent.
 
+<!-- Coding Animation -->
+<div align="center" style="margin: 0 0 24px;">
+  <img src="https://user-images.githubusercontent.com/74038190/212284119-fbfd994d-8c2a-4a07-a75f-84e513833c1c.gif" width="200" alt="coffee coding">
+</div>
+
 ```bash
 # Install
 npm install @kuberna/sdk
@@ -310,6 +341,11 @@ kuberna-labs/
 <!-- Resources / Footer -->
 <footer style="max-width: 680px; margin: 0 auto; padding: 48px 24px; border-top: 1px solid #d2d2d7;" class="dark:border-[#38383a]">
 
+<!-- Happy Coder Animation -->
+<div align="center" style="margin-bottom: 24px;">
+  <img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/3b4607a1-1cc6-41f1-926f-892ae880e7a5" width="120" alt="happy coder">
+</div>
+
 <div align="center" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;">
 
 <a href="https://docs.kuberna.africa" style="color: #0071e3; text-decoration: none; font-size: 0.875rem;">Documentation</a>
@@ -320,7 +356,7 @@ kuberna-labs/
 </div>
 
 <p style="font-size: 0.75rem; color: #86868b; text-align: center;" class="dark:text-[#86868b]">
-  © 2024 Kuberna Labs. Built in Kigali, Rwanda.
+  Made with <img src="https://user-images.githubusercontent.com/74038190/216122041-518ac897-8d92-4c6b-9b3f-ca01dcaf38ee.png" width="16" alt="fire"> in Kigali, Rwanda
 </p>
 
 </footer>
