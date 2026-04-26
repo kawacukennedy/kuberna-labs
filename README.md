@@ -12,17 +12,24 @@
 
 <!-- Logo Mark -->
 <div style="margin-top: -200px; position: relative; z-index: 10;">
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="64" height="64" rx="16" fill="url(#logoGrad)"/>
-    <defs>
-      <linearGradient id="logoGrad" x1="0" y1="0" x2="64" y2="64">
-        <stop offset="0%" stop-color="#0A84FF"/>
-        <stop offset="100%" stop-color="#5E5CE6"/>
-      </linearGradient>
-    </defs>
-    <path d="M20 32L28 24L32 28L44 16L48 20L32 36L24 44L20 40V32Z" fill="white" fill-opacity="0.95"/>
-    <path d="M32 32L36 28L44 36L40 40L32 32Z" fill="white" fill-opacity="0.7"/>
-  </svg>
+  <a href="#overview">
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="72" height="72" rx="18" fill="url(#logoGrad)"/>
+      <defs>
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="72" y2="72">
+          <stop offset="0%" stop-color="#0A84FF"/>
+          <stop offset="100%" stop-color="#5E5CE6"/>
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0A84FF" flood-opacity="0.4"/>
+        </filter>
+      </defs>
+      <g filter="url(#shadow)">
+        <path d="M22 36L32 26L36 30L50 16L56 20L36 40L26 50L22 46V36Z" fill="white" fill-opacity="0.95"/>
+        <path d="M36 36L42 30L50 38L44 44L36 36Z" fill="white" fill-opacity="0.7"/>
+      </g>
+    </svg>
+  </a>
 </div>
 
 <!-- Title -->
@@ -65,11 +72,11 @@
 <!-- Navigation Tabs -->
 <div align="center" style="padding: 16px 0; border-bottom: 1px solid #d2d2d7; margin-bottom: 48px;" class="dark:border-[#38383a]">
   <nav style="display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
-    <a href="#overview" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;" class="dark:text-[#d2d2d7]">Overview</a>
-    <a href="#features" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;" class="dark:text-[#d2d2d7]">Features</a>
-    <a href="#architecture" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;" class="dark:text-[#d2d2d7]">Architecture</a>
-    <a href="#quickstart" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;" class="dark:text-[#d2d2d7]">Quick Start</a>
-    <a href="https://docs.kuberna.africa" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;" class="dark:text-[#d2d2d7]">Docs ↗</a>
+    <a href="#overview" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Overview</a>
+    <a href="#features" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Features</a>
+    <a href="#architecture" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Architecture</a>
+    <a href="#quickstart" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Quick Start</a>
+    <a href="https://docs.kuberna.africa" target="_blank" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Docs ↗</a>
   </nav>
 </div>
 
@@ -346,12 +353,12 @@ kuberna-labs/
   <img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/3b4607a1-1cc6-41f1-926f-892ae880e7a5" width="120" alt="happy coder">
 </div>
 
-<div align="center" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;">
+<div align="center" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: rgba(0,113,227,0.05); border-radius: 12px;">
 
-<a href="https://docs.kuberna.africa" style="color: #0071e3; text-decoration: none; font-size: 0.875rem;">Documentation</a>
-<a href="https://discord.gg/kuberna" style="color: #0071e3; text-decoration: none; font-size: 0.875rem;">Discord</a>
-<a href="https://x.com/Arnaud_Kennedy" style="color: #0071e3; text-decoration: none; font-size: 0.875rem;">Twitter</a>
-<a href="https://github.com/kawacukennedy/kuberna-labs" style="color: #0071e3; text-decoration: none; font-size: 0.875rem;">GitHub</a>
+<a href="https://docs.kuberna.africa" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">📖 Documentation</a>
+<a href="https://discord.gg/kuberna" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">💬 Discord</a>
+<a href="https://x.com/Arnaud_Kennedy" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">𝕏 Twitter</a>
+<a href="https://github.com/kawacukennedy/kuberna-labs" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">⭐ GitHub</a>
 
 </div>
 
