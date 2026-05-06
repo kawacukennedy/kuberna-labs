@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import { TransferHelper } from "./libraries/TransferHelper.sol";
 
 error Escrow__AlreadyFunded();
 error Escrow__InsufficientFunds();
@@ -211,13 +212,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
     function getEscrowStatus(bytes32 escrowId) external view returns (EscrowStatus) { return escrows[escrowId].status; }
 
     function _transferFunds(address token, address to, uint256 amount) internal {
-        if (amount == 0) return;
-        if (token == address(0)) {
-            (bool success,) = payable(to).call{value: amount}("");
-            if (!success) revert();
-        } else {
-            IERC20(token).transfer(to, amount);
-        }
+        TransferHelper.safeTransfer(token, to, amount);
     }
 
     receive() external payable {}
