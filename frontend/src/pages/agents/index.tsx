@@ -11,6 +11,7 @@ const agents = [
 ];
 
 export default function AgentsPage() {
+  const [step, setStep] = useState(1);
   const [showWizard, setShowWizard] = useState(false);
 
   return (
@@ -101,25 +102,108 @@ export default function AgentsPage() {
       </div>
 
       {/* Create Agent Wizard Modal */}
+      <div className="mb-6">
+  <div className="flex justify-between text-xs text-neutral-400 mb-2">
+    <span>Agent Setup</span>
+    <span>Step {step} / 3</span>
+  </div>
+
+  <div className="w-full bg-neutral-800 rounded-full h-2">
+    <div
+      className={`h-2 rounded-full bg-blue-500 transition-all duration-300 ${
+        step === 1
+          ? "w-1/3"
+          : step === 2
+          ? "w-2/3"
+          : "w-full"
+      }`}
+    />
+  </div>
+</div>
+    
       {showWizard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
-          <div className="bg-surface rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+          <div className="bg-surface rounded-2xl p-8 max-w-2xl w-full border border-outline/10 shadow-2xl"
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Create New Agent</h2>
               <button onClick={() => setShowWizard(false)} className="p-2 hover:bg-surface-container rounded-lg">
                 &times;
               </button>
             </div>
+          
+          <div className="flex gap-2 mt-4 mb-6">
+  {[1,2,3].map((s) => (
+    <div
+      key={s}
+      className={`h-2 flex-1 rounded-full ${
+        step >= s ? 'bg-primary' : 'bg-surface-container'
+      }`}
+    />
+  ))}
+</div>
+          {step === 1 && (
+  <div className="space-y-4">
 
-            <div className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Agent Name</label>
-                <input 
-                  type="text" 
-                  placeholder="My Agent"
-                  className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg focus:ring-0 focus:border-primary" 
-                />
-              </div>
+    <input placeholder="Agent Name" />
+
+    <textarea placeholder="Agent Description" />
+
+  </div>
+)}
+          {step === 2 && (
+  <div className="space-y-4">
+
+    <input placeholder="Capabilities" />
+
+    <input placeholder="Network" />
+
+  </div>
+)}
+          {step === 3 && (
+  <div className="space-y-3">
+
+    <h3 className="font-semibold">
+      Review Configuration
+    </h3>
+
+    <div className="text-sm text-neutral-400">
+      Review agent settings before creation.
+    </div>
+
+  </div>
+)}
+          <div className="flex justify-between mt-6">
+
+  <button
+    onClick={() => setStep(step - 1)}
+    disabled={step === 1}
+    className="px-4 py-2 rounded bg-neutral-800"
+  >
+    Back
+  </button>
+
+  {step < 3 ? (
+    <button
+      onClick={() => setStep(step + 1)}
+      className="px-4 py-2 rounded bg-blue-500"
+    >
+      Next
+    </button>
+  ) : (
+    <button
+      className="px-4 py-2 rounded bg-green-500"
+    >
+      Create Agent
+    </button>
+  )}
+</div>
+          <div className="bg-surface-container-low rounded-xl p-4">
+  <p>Name: Alpha Agent</p>
+  <p>Framework: ElizaOS</p>
+  <p>Network: Arbitrum</p>
+</div>
+
+            
               
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Framework</label>
@@ -134,7 +218,7 @@ export default function AgentsPage() {
                 <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Chain</label>
                 <div className="flex gap-3 flex-wrap">
                   {['Ethereum', 'Arbitrum', 'Polygon', 'Solana'].map((chain) => (
-                    <button key={chain} className="px-4 py-2 bg-surface-container-low rounded-lg hover:bg-surface-container text-sm">
+                    <button key={chain} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-surface-container text-sm">
                       {chain}
                     </button>
                   ))}
