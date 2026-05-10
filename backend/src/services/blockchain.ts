@@ -212,14 +212,17 @@ export function initializeBlockchainService(config?: BlockchainConfig): Blockcha
     return blockchainServiceInstance;
   }
 
+  const privateKey = process.env.PRIVATE_KEY;
+  if (!privateKey) {
+    throw new Error('PRIVATE_KEY environment variable is required for BlockchainService');
+  }
+
   const defaultConfig: BlockchainConfig = {
     defaultChain: process.env.DEFAULT_CHAIN || 'ethereum',
     chains: {
       ethereum: {
         rpcUrl: process.env.ETHEREUM_RPC_URL || 'http://localhost:8545',
-        privateKey:
-          process.env.PRIVATE_KEY ||
-          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        privateKey,
         escrowAddress: process.env.ESCROW_ADDRESS || '',
         intentAddress: process.env.INTENT_ADDRESS || '',
         agentRegistryAddress: process.env.AGENT_REGISTRY_ADDRESS || '',

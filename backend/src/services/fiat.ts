@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import logger from '../utils/logger.js';
+
 export type FiatProvider = "moonpay" | "stripe" | "transak";
 
 export interface FiatQuote {
@@ -36,6 +39,22 @@ export interface CreateOnRampRequest {
   provider?: FiatProvider;
 }
 
+const FIAT_RATES: Record<string, number> = {
+  USD: 1,
+  EUR: 0.92,
+  GBP: 0.79,
+  KES: 153,
+  NGN: 1550,
+};
+
+const CRYPTO_RATES: Record<string, number> = {
+  ETH: 3500,
+  USDC: 1,
+  USDT: 1,
+  NEAR: 5,
+  SOL: 180,
+};
+
 export class FiatOnRampService {
   private moonpayApiKey: string;
   private stripeSecretKey: string;
@@ -62,24 +81,8 @@ export class FiatOnRampService {
   private async getMoonpayQuote(
     request: CreateOnRampRequest,
   ): Promise<FiatQuote> {
-    const rates: Record<string, number> = {
-      USD: 1,
-      EUR: 0.92,
-      GBP: 0.79,
-      KES: 153,
-      NGN: 1550,
-    };
-
-    const cryptoRates: Record<string, number> = {
-      ETH: 3500,
-      USDC: 1,
-      USDT: 1,
-      NEAR: 5,
-      SOL: 180,
-    };
-
-    const fromRate = rates[request.fromCurrency] || 1;
-    const toRate = cryptoRates[request.toCurrency] || 1;
+    const fromRate = FIAT_RATES[request.fromCurrency] || 1;
+    const toRate = CRYPTO_RATES[request.toCurrency] || 1;
     const amountInUsd = request.fromAmount / fromRate;
     const toAmount = amountInUsd * toRate;
     const fee = amountInUsd * 0.04;
@@ -144,7 +147,10 @@ export class FiatOnRampService {
   private async createMoonpayOrder(
     request: CreateOnRampRequest,
   ): Promise<FiatOrder> {
-    const orderId = `moonpay-${Date.now()}`;
+    const orderId = `moonpay-${crypto.randomUUID()}`;
+    if (!this.moonpayApiKey) {
+      logger.warn('MoonPay API key not configured');
+    }
     const redirectUrl = `https://buy.moonpay.com?apiKey=${this.moonpayApiKey}&walletAddress=${request.walletAddress}&currencyCode=${request.toCurrency}&baseCurrencyAmount=${request.fromAmount}&baseCurrencyCode=${request.fromCurrency}`;
 
     return {
@@ -165,7 +171,10 @@ export class FiatOnRampService {
   private async createTransakOrder(
     request: CreateOnRampRequest,
   ): Promise<FiatOrder> {
-    const orderId = `transak-${Date.now()}`;
+    const orderId = `transak-${crypto.randomUUID()}`;
+    if (!this.transakApiKey) {
+      logger.warn('Transak API key not configured');
+    }
 
     return {
       id: orderId,
@@ -185,7 +194,7 @@ export class FiatOnRampService {
   private async createStripeOrder(
     request: CreateOnRampRequest,
   ): Promise<FiatOrder> {
-    const orderId = `stripe-${Date.now()}`;
+    const orderId = `stripe-${crypto.randomUUID()}`;
 
     return {
       id: orderId,
@@ -222,7 +231,7 @@ export class FiatOnRampService {
   }
 
   getSupportedFiatCurrencies(): string[] {
-    return ["USD", "EUR", "GBP", "KES", "NGN"];
+    return Object.keys(FIAT_RATES);
   }
 
   getSupportedCryptoCurrencies(): Array<{
@@ -256,9 +265,9 @@ export class FiatOnRampService {
     const eventType = event.type as string;
 
     if (eventType === "moonpay.payment_completed") {
-      console.log("MoonPay payment completed");
+      logger.info('MoonPay payment completed');
     } else if (eventType === "transak.order.completed") {
-      console.log("Transak order completed");
+      logger.info('Transak order completed');
     }
   }
 }

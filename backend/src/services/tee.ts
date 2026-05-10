@@ -1,7 +1,10 @@
 import { ethers } from 'ethers';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../utils/prisma';
 import { zkTLSService } from './ztls';
 import logger from '../utils/logger';
+
+type PrismaInputJsonValue = Prisma.InputJsonValue;
 
 export type TEEProvider = 'phala' | 'marlin';
 
@@ -214,7 +217,7 @@ export class TEEService {
           provider: request.provider,
           resources: request.resources,
           createdAt: new Date().toISOString(),
-        } as any,
+        } as unknown as PrismaInputJsonValue,
         lastActive: new Date(),
       },
     });
@@ -646,19 +649,20 @@ export class TEEService {
       throw new Error('Deployment not found');
     }
 
-    const deployment = agent.teeAttestation as any;
+    const attestation = agent.teeAttestation as Record<string, unknown>;
+    const health = await this.getEnclaveHealth(attestation.enclaveId as string);
 
-    // Get health metrics
-    const health = await this.getEnclaveHealth(deployment.enclaveId);
+    const deploymentProvider = attestation.provider as TEEProvider | undefined;
+    const deploymentCreatedAt = attestation.createdAt as string | undefined;
 
     return {
-      deploymentId: deployment.deploymentId,
+      deploymentId: attestation.deploymentId as string,
       agentId: agent.id,
-      provider: deployment.provider,
+      provider: deploymentProvider || 'phala',
       status: agent.status === 'RUNNING' ? 'running' : 'stopped',
       endpoint: agent.deploymentUrl || undefined,
-      attestation: deployment.attestation,
-      createdAt: new Date(deployment.createdAt),
+      attestation: attestation.attestation as AttestationReport | undefined,
+      createdAt: deploymentCreatedAt ? new Date(deploymentCreatedAt) : new Date(),
       lastHealthCheck: new Date(),
       health,
     };
@@ -683,10 +687,12 @@ export class TEEService {
       throw new Error('Deployment not found');
     }
 
-    const deployment = agent.teeAttestation as any;
+    const deployment = agent.teeAttestation as Record<string, unknown>;
 
-    // Terminate enclave
-    await this.terminateEnclave(deployment.enclaveId, deployment.provider);
+    await this.terminateEnclave(
+      deployment.enclaveId as string,
+      deployment.provider as TEEProvider,
+    );
 
     // Update agent status
     await prisma.agent.update({

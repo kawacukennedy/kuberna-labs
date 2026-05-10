@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import logger from '../utils/logger.js';
+
 export type zkTLSProvider = "reclaim" | "zkpass";
 
 export interface ZKTLSSession {
@@ -59,7 +62,7 @@ export class ZKTLService {
   private async createReclaimSession(
     request: CreateSessionRequest,
   ): Promise<ZKTLSSession> {
-    const sessionId = `reclaim-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const sessionId = `reclaim-${crypto.randomUUID()}`;
 
     const session: ZKTLSSession = {
       id: sessionId,
@@ -77,7 +80,7 @@ export class ZKTLService {
   private async createZkpassSession(
     request: CreateSessionRequest,
   ): Promise<ZKTLSSession> {
-    const sessionId = `zkpass-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const sessionId = `zkpass-${crypto.randomUUID()}`;
 
     const session: ZKTLSSession = {
       id: sessionId,
@@ -93,6 +96,9 @@ export class ZKTLService {
   }
 
   async getSession(sessionId: string): Promise<ZKTLSSession | null> {
+    // In production, this should query an in-memory store or database
+    // The mock below MUST be replaced with real session storage
+    logger.warn('getSession called with mock implementation', { sessionId });
     return {
       id: sessionId,
       provider: "reclaim",
@@ -166,7 +172,7 @@ export class ZKTLService {
     const credentialType = this.getCredentialType(session.website);
 
     return {
-      id: `cred-${Date.now()}`,
+      id: `cred-${crypto.randomUUID()}`,
       userId,
       type: credentialType,
       provider: session.provider,

@@ -1,7 +1,9 @@
 import { ethers } from 'ethers';
+import crypto from 'crypto';
 import { connect, NatsConnection, StringCodec } from 'nats';
 import { prisma } from '../utils/prisma.js';
 import { ESCROW_ABI, INTENT_ABI, CERTIFICATE_ABI, ATTESTATION_ABI } from '../utils/abis.js';
+import logger from '../utils/logger.js';
 
 export interface NatsIntentsFundedData {
   intentId: string;
@@ -674,7 +676,7 @@ export class BlockchainListener {
     try {
       const provider = this.providers.get(chain);
       if (!provider) {
-        console.error(`Provider not found for chain: ${chain}`);
+        logger.error(`Provider not found for chain: ${chain}`);
         return false;
       }
 
@@ -682,27 +684,43 @@ export class BlockchainListener {
       const confirmations = currentBlock - event.blockNumber;
 
       if (confirmations < this.config.confirmations) {
-        console.log(
-          `Event at block ${event.blockNumber} has ${confirmations}/${this.config.confirmations} confirmations. Waiting...`
+        logger.info(
+          `Event at block ${event.blockNumber} has ${confirmations}/${this.config.confirmations} confirmations. Retrying in 15s...`
         );
-        // Schedule retry after 15 seconds
-        setTimeout(() => this.waitForConfirmations(event, chain), 15000);
-        return false;
+        await new Promise((resolve) => setTimeout(resolve, 15000));
+        return this.waitForConfirmations(event, chain);
       }
 
       return true;
-    } catch (error) {
-      console.error('Error waiting for confirmations:', error);
+    } catch (error: unknown) {
+      logger.error('Error waiting for confirmations:', { error: String(error) });
       return false;
     }
   }
 
+  private processedEvents: Set<string> = new Set();
+
   private async isEventProcessed(txHash: string, eventName: string): Promise<boolean> {
-    // Check if event has been processed
-    // This would query a database table tracking processed events
-    // For now, we'll implement a simple in-memory check
-    // In production, this should use the database
-    return false;
+    const key = `${txHash}:${eventName}`;
+    if (this.processedEvents.has(key)) return true;
+    try {
+      const existing = await prisma.processedEvent.findUnique({
+        where: {
+          transactionHash_eventName: {
+            transactionHash: txHash,
+            eventName,
+          },
+        },
+      });
+      if (existing) {
+        this.processedEvents.add(key);
+        return true;
+      }
+      return false;
+    } catch (error: unknown) {
+      logger.error('Error checking processed event', { txHash, eventName, error: String(error) });
+      return false;
+    }
   }
 
   private async markEventProcessed(
@@ -712,9 +730,29 @@ export class BlockchainListener {
     contractAddress: string,
     blockNumber: number
   ): Promise<void> {
-    // Mark event as processed in database
-    // This prevents duplicate processing
-    console.log(`Marked event ${eventName} from tx ${txHash} as processed`);
+    const key = `${txHash}:${eventName}`;
+    this.processedEvents.add(key);
+    try {
+      await prisma.processedEvent.upsert({
+        where: {
+          transactionHash_eventName: {
+            transactionHash: txHash,
+            eventName,
+          },
+        },
+        update: {},
+        create: {
+          transactionHash: txHash,
+          eventName,
+          chain,
+          contractAddress,
+          blockNumber,
+          processed: true,
+        },
+      });
+    } catch (error: unknown) {
+      logger.error('Error marking event as processed', { txHash, eventName, error: String(error) });
+    }
   }
 
   private async publishToNATS(
@@ -898,14 +936,21 @@ export class BlockchainListener {
   }
 
   private async getLastProcessedBlock(chainName: string): Promise<number> {
-    // Get last processed block from database
-    // For now, return 0 to start from beginning
-    return 0;
+    try {
+      const lastEvent = await prisma.processedEvent.findFirst({
+        where: { chain: chainName },
+        orderBy: { blockNumber: 'desc' },
+        select: { blockNumber: true },
+      });
+      return lastEvent?.blockNumber ?? 0;
+    } catch (error: unknown) {
+      logger.error('Error getting last processed block', { chain: chainName, error: String(error) });
+      return 0;
+    }
   }
 
   private async updateLastProcessedBlock(chainName: string, blockNumber: number): Promise<void> {
-    // Update last processed block in database
-    console.log(`Updated last processed block for ${chainName}: ${blockNumber}`);
+    logger.info(`Updated last processed block for ${chainName}: ${blockNumber}`);
   }
 }
 
