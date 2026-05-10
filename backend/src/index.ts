@@ -37,16 +37,20 @@ const isProduction = process.env.NODE_ENV === 'production';
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     if (!origin) {
+      if (isProduction) {
+        return callback(null, false);
+      }
       return callback(null, true);
     }
 
-    if (isProduction && !allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    if (isProduction) {
+      logger.warn('CORS blocked', { origin });
       const error = new Error('CORS policy violation: Origin not allowed');
       return callback(error);
-    }
-
-    if (!isProduction) {
-      return callback(null, true);
     }
 
     return callback(null, true);

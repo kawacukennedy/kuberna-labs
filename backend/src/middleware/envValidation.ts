@@ -6,8 +6,20 @@ interface EnvVar {
 
 const requiredEnvVars: EnvVar[] = [
   { name: 'DATABASE_URL', required: true },
-  { name: 'JWT_SECRET', required: true },
+  { name: 'JWT_SECRET', required: true, pattern: /^(?!.*(kuberna-secret-key|change-in-production|your-secret)).{16,}$/ },
+  { name: 'JWT_REFRESH_SECRET', required: true },
+  { name: 'REDIS_URL', required: false },
   { name: 'NATS_URL', required: false },
+  { name: 'PRIVATE_KEY', required: false },
+  { name: 'STRIPE_SECRET_KEY', required: false },
+  { name: 'STRIPE_WEBHOOK_SECRET', required: false },
+  { name: 'MOONPAY_API_KEY', required: false },
+  { name: 'TRANSAK_API_KEY', required: false },
+  { name: 'PHALA_API_KEY', required: false },
+  { name: 'MARLIN_API_KEY', required: false },
+  { name: 'RECLAIM_APP_ID', required: false },
+  { name: 'RECLAIM_APP_SECRET', required: false },
+  { name: 'ZKPASS_API_KEY', required: false },
 ];
 
 const insecureDefaultPatterns = [/kuberna-secret-key/, /change-in-production/, /your-secret/];

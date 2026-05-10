@@ -866,3 +866,18 @@ model WebinarRegistration {
   
   @@unique([webinarId, userId])
 }
+
+model ProcessedEvent {
+  id              String   @id @default(uuid())
+  transactionHash String
+  eventName       String
+  chain           String
+  contractAddress String
+  blockNumber     Int
+  processed       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  @@unique([transactionHash, eventName])
+  @@index([chain, blockNumber])
+  @@index([createdAt])
+}

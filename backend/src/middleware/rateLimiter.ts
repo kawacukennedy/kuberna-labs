@@ -1,8 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 import Redis from 'ioredis';
 import logger from '../utils/logger';
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+let redis: Redis | null = null;
+let redisAvailable = false;
+
+try {
+  redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+    maxRetriesPerRequest: 3,
+    retryStrategy(times) {
+      if (times > 3) return null;
+      return Math.min(times * 200, 2000);
+    },
+    lazyConnect: true,
+  });
+
+  redis.on('error', (err) => {
+    redisAvailable = false;
+    logger.error('Redis connection error', { error: err.message });
+  });
+
+  redis.on('ready', () => {
+    redisAvailable = true;
+    logger.info('Redis connected for rate limiting');
+  });
+} catch (error) {
+  logger.warn('Redis not available, rate limiting disabled', { error: String(error) });
+}
 
 interface RateLimitOptions {
   windowMs: number;
@@ -35,6 +60,10 @@ export const createRateLimiter = (options: RateLimitOptions) => {
   const getKey = keyGenerator || defaultKeyGenerator;
 
   return async (req: Request, res: Response, next: NextFunction) => {
+    if (!redis || !redisAvailable) {
+      return next();
+    }
+
     const key = `ratelimit:${getKey(req)}`;
     const now = Date.now();
     const windowStart = now - windowMs;
@@ -42,7 +71,7 @@ export const createRateLimiter = (options: RateLimitOptions) => {
     try {
       const pipeline = redis.pipeline();
       pipeline.zremrangebyscore(key, 0, windowStart);
-      pipeline.zadd(key, now.toString(), `${now}-${Math.random()}`);
+      pipeline.zadd(key, now.toString(), `${now}-${crypto.randomUUID()}`);
       pipeline.zcard(key);
       pipeline.pexpire(key, windowMs);
       const results = await pipeline.exec();
