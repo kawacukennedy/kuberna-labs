@@ -38,11 +38,11 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         uint256 endTime;
         bool executed;
         bool cancelled;
-        mapping(address => bool) hasVoted;
     }
     
     mapping(address => Checkpoint[]) public checkpoints;
     mapping(uint256 => Proposal) public proposals;
+    mapping(uint256 => mapping(address => bool)) public hasVoted;
     uint256 public proposalCount;
     uint256 public constant PROPOSAL_VOTING_PERIOD = 3 days;
     uint256 public constant PROPOSAL_QUORUM = 1_000_000 * 10**18; // 0.1% of max supply
@@ -157,12 +157,12 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         require(p.endTime > 0, "Proposal does not exist");
         require(block.timestamp < p.endTime, "Voting period ended");
         require(!p.executed && !p.cancelled, "Proposal finalized");
-        require(!p.hasVoted[msg.sender], "Already voted");
+        require(!hasVoted[proposalId][msg.sender], "Already voted");
         
         uint256 weight = getEffectiveVotingPower(msg.sender);
         require(weight > 0, "No voting power");
         
-        p.hasVoted[msg.sender] = true;
+        hasVoted[proposalId][msg.sender] = true;
         
         if (support) {
             p.votesFor += weight;

@@ -47,8 +47,11 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     mapping(bytes32 => DisputeData) public disputes;
     mapping(bytes32 => VoteRecord[]) public disputeVotes;
     mapping(bytes32 => mapping(address => bool)) public hasVoted;
+    mapping(bytes32 => mapping(address => uint256)) public pendingRewards;
     mapping(address => Juror) public jurors;
     address[] public jurorList;
+    
+    event RewardClaimed(address indexed juror, uint256 amount);
 
     event DisputeOpened(bytes32, bytes32, address, address);
     event VoteCast(bytes32, address, Vote);
@@ -127,7 +130,7 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit VoteCast(disputeId, msg.sender, support);
     }
 
-    function resolveDispute(bytes32 disputeId) external {
+    function resolveDispute(bytes32 disputeId) external nonReentrant {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
         require(d.status == DisputeStatus.Voting);
@@ -164,8 +167,16 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         
         for (uint256 i = 0; i < votes.length; i++) {
             uint256 reward = votes[i].vote == result ? JUROR_REWARD * 2 : JUROR_REWARD;
-            payable(votes[i].voter).transfer(reward);
+            pendingRewards[disputeId][votes[i].voter] += reward;
         }
+    }
+
+    function claimReward(bytes32 disputeId) external nonReentrant {
+        uint256 reward = pendingRewards[disputeId][msg.sender];
+        require(reward > 0, "No pending reward");
+        pendingRewards[disputeId][msg.sender] = 0;
+        payable(msg.sender).transfer(reward);
+        emit RewardClaimed(msg.sender, reward);
     }
 
     function getDispute(bytes32 disputeId) external view returns (DisputeData memory) { return disputes[disputeId]; }

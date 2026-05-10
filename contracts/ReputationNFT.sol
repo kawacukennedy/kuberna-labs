@@ -111,7 +111,27 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
      * @dev Legacy registration (maintains backward compatibility).
      */
     function registerAgent(address agentAddress) external returns (uint256) {
-        return registerAgent(agentAddress, "", "", "");
+        require(agentAddress != address(0), "Invalid address");
+        require(agentAddressToTokenId[agentAddress] == 0, "Already registered");
+
+        uint256 tokenId = _nextTokenId++;
+        _safeMint(agentAddress, tokenId);
+
+        agentIdentities[tokenId] = AgentIdentity({
+            agentAddress: agentAddress,
+            name: "",
+            framework: "",
+            registeredAt: block.timestamp,
+            lastActiveAt: block.timestamp,
+            totalEarnings: 0,
+            metadataURI: ""
+        });
+
+        agentReputations[tokenId] = AgentReputation(0, 0, 0, 0, 0, block.timestamp);
+        agentAddressToTokenId[agentAddress] = tokenId;
+
+        emit AgentRegistered(tokenId, agentAddress, "", "");
+        return tokenId;
     }
 
     /**

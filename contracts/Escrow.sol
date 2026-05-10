@@ -170,7 +170,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit DisputeRaised(escrowId, msg.sender, reason);
     }
 
-    function resolveDispute(bytes32 escrowId, bool refundToRequester) external onlyOwner {
+    function resolveDispute(bytes32 escrowId, bool refundToRequester) external onlyOwner nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.status == EscrowStatus.Disputed);
         
