@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { z } from 'zod';
 import axios, { AxiosRequestConfig } from 'axios';
 import { AgentManager } from './agent.js';
 import { IntentManager } from './intent.js';
@@ -49,6 +48,9 @@ export class KubernaSDK {
 
     this.provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
     if (this.config.privateKey) {
+      if (!/^0x[0-9a-fA-F]{64}$/.test(this.config.privateKey)) {
+        throw new Error('Invalid private key format: must be 0x-prefixed 64-char hex string');
+      }
       this.wallet = new ethers.Wallet(this.config.privateKey, this.provider);
     }
 
@@ -59,6 +61,9 @@ export class KubernaSDK {
 
   async initialize(params: { wallet?: string } = {}): Promise<this> {
     if (params.wallet) {
+      if (!/^0x[0-9a-fA-F]{64}$/.test(params.wallet)) {
+        throw new Error('Invalid private key format: must be 0x-prefixed 64-char hex string');
+      }
       this.wallet = new ethers.Wallet(params.wallet, this.provider);
     }
     return this;
