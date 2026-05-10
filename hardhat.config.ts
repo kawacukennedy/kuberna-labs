@@ -61,6 +61,17 @@ const config: HardhatUserConfig = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 16602, // 0G Galileon Testnet
     },
+    // Mantle Network (for Turing Test Hackathon 2026)
+    mantle: {
+      url: process.env.MANTLE_RPC_URL || 'https://rpc.mantle.xyz',
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: 5000,
+    },
+    mantleSepolia: {
+      url: process.env.MANTLE_SEPOLIA_RPC_URL || 'https://rpc.sepolia.mantle.xyz',
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: 5003,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS === 'true',

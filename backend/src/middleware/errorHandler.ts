@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger';
 
 export interface ApiError extends Error {
   statusCode?: number;
@@ -68,7 +69,7 @@ export function errorHandler(err: ApiError, req: Request, res: Response, next: N
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal server error';
 
-  console.error(`[ERROR] ${err.code || 'UNKNOWN'}: ${message}`, {
+  logger.error(`${err.code || 'UNKNOWN'}: ${message}`, {
     path: req.path,
     method: req.method,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),

@@ -13,7 +13,8 @@ export type ChainName =
   | "solana"
   | "near"
   | "avalanche"
-  | "optimism";
+  | "optimism"
+  | "mantle";
 
 export interface TokenInfo {
   symbol: string;
@@ -181,6 +182,18 @@ const CHAIN_CONFIG: Record<
     contracts: {
       uniswap: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
     },
+  },
+  mantle: {
+    rpcUrl: process.env.MANTLE_RPC || "https://rpc.mantle.xyz",
+    chainId: 5000,
+    nativeToken: {
+      symbol: "MNT",
+      address: "0x0000000000000000000000000000000000000000",
+      decimals: 18,
+      name: "Mantle",
+    },
+    explorer: "https://explorer.mantle.xyz",
+    contracts: {},
   },
 };
 
@@ -568,6 +581,7 @@ export class MultiChainService {
     this.adapters.set("arbitrum", new EthereumAdapter("arbitrum"));
     this.adapters.set("avalanche", new EthereumAdapter("avalanche"));
     this.adapters.set("optimism", new EthereumAdapter("optimism"));
+    this.adapters.set("mantle", new EthereumAdapter("mantle"));
     this.adapters.set("solana", new SolanaAdapter());
     this.adapters.set("near", new NEARAdapter());
   }

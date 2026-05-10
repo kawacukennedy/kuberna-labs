@@ -9,12 +9,31 @@ error ReputationNFT__InvalidToken();
 error ReputationNFT__OnlyMinter();
 error ReputationNFT__NotAuthorized();
 
+/**
+ * @title ReputationNFT
+ * @dev ERC-8004-aligned Agent Identity and Reputation contract.
+ *
+ * ERC-8004 Compliance:
+ * - Every agent is issued a unique identity NFT upon registration
+ * - On-chain record of agent achievements, reputation, and badges
+ * - Agent metadata URI for off-chain profile resolution
+ * - Verifiable agent activity history
+ *
+ * Features:
+ * - Agent registration with on-chain identity
+ * - Reputation scoring with success rate, response time, and ratings
+ * - Badge system for achievements
+ * - Reputation decay for inactive agents
+ * - Star rating (1-5) and percentile rank
+ */
 contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
     mapping(uint256 => AgentReputation) public agentReputations;
     mapping(uint256 => Badge[]) public agentBadges;
     mapping(uint256 => uint256[]) public agentRatingHistory;
     mapping(uint256 => mapping(bytes32 => bool)) public hasBadge;
+    mapping(uint256 => AgentIdentity) public agentIdentities;
+    mapping(address => uint256) public agentAddressToTokenId;
 
     uint256 public immutable MIN_TASKS_FOR_REP = 5;
     uint256 public constant DECAY_PERIOD = 30 days;
@@ -35,18 +54,84 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
         uint256 timestamp;
     }
 
+    struct AgentIdentity {
+        address agentAddress;
+        string name;
+        string framework;
+        uint256 registeredAt;
+        uint256 lastActiveAt;
+        uint256 totalEarnings;
+        string metadataURI;
+    }
+
     event ReputationUpdated(uint256, uint256, uint256, uint256);
     event BadgeEarned(uint256, string, string);
     event RatingSubmitted(uint256, uint256, string);
     event ReputationDecayed(uint256 indexed tokenId, uint256 periodsDecayed, uint256 newScore);
+    event AgentRegistered(uint256 indexed tokenId, address indexed agentAddress, string name, string framework);
+    event AgentMetadataUpdated(uint256 indexed tokenId, string metadataURI);
+    event AgentActivityUpdated(uint256 indexed tokenId, uint256 earnings);
 
     constructor() ERC721("Kuberna Agent Reputation", "KBR") Ownable(msg.sender) {}
 
-    function registerAgent(address agentAddress) external returns (uint256) {
+    /**
+     * @dev Register a new agent with ERC-8004 identity.
+     * Mints an identity NFT and initializes reputation tracking.
+     * @param agentAddress The agent's wallet address
+     * @param name The agent's display name
+     * @param framework The AI framework used (e.g., "ElizaOS", "LangChain")
+     * @param metadataURI URI pointing to agent metadata JSON
+     * @return tokenId The minted identity token ID
+     */
+    function registerAgent(address agentAddress, string calldata name, string calldata framework, string calldata metadataURI) external returns (uint256) {
+        require(agentAddress != address(0), "Invalid address");
+        require(agentAddressToTokenId[agentAddress] == 0, "Already registered");
+
         uint256 tokenId = _nextTokenId++;
         _safeMint(agentAddress, tokenId);
+
+        agentIdentities[tokenId] = AgentIdentity({
+            agentAddress: agentAddress,
+            name: name,
+            framework: framework,
+            registeredAt: block.timestamp,
+            lastActiveAt: block.timestamp,
+            totalEarnings: 0,
+            metadataURI: metadataURI
+        });
+
         agentReputations[tokenId] = AgentReputation(0, 0, 0, 0, 0, block.timestamp);
+        agentAddressToTokenId[agentAddress] = tokenId;
+
+        emit AgentRegistered(tokenId, agentAddress, name, framework);
         return tokenId;
+    }
+
+    /**
+     * @dev Legacy registration (maintains backward compatibility).
+     */
+    function registerAgent(address agentAddress) external returns (uint256) {
+        return registerAgent(agentAddress, "", "", "");
+    }
+
+    /**
+     * @dev Update agent activity.
+     */
+    function updateAgentActivity(uint256 tokenId, uint256 earnings) external onlyOwner {
+        require(_ownerOf(tokenId) != address(0), "Invalid token");
+        agentIdentities[tokenId].lastActiveAt = block.timestamp;
+        agentIdentities[tokenId].totalEarnings += earnings;
+        emit AgentActivityUpdated(tokenId, earnings);
+    }
+
+    /**
+     * @dev Update agent metadata URI.
+     */
+    function setAgentMetadataURI(uint256 tokenId, string calldata metadataURI) external onlyOwner {
+        require(_ownerOf(tokenId) != address(0), "Invalid token");
+        agentIdentities[tokenId].metadataURI = metadataURI;
+        _setTokenURI(tokenId, metadataURI);
+        emit AgentMetadataUpdated(tokenId, metadataURI);
     }
 
     function updateReputation(uint256 tokenId, bool success, uint256 responseTimeSeconds) external onlyOwner {

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { prisma } from '../utils/prisma';
 import { zkTLSService } from './ztls';
+import logger from '../utils/logger';
 
 export type TEEProvider = 'phala' | 'marlin';
 
@@ -292,7 +293,7 @@ export class TEEService {
         endpoint: deploymentEndpoint,
       };
     } catch (error) {
-      console.error('Phala deployment error:', error);
+      logger.error('Phala deployment error', { error: String(error) });
       throw new Error(`Phala deployment failed: ${error}`);
     }
   }
@@ -347,7 +348,7 @@ export class TEEService {
         endpoint: deploymentEndpoint,
       };
     } catch (error) {
-      console.error('Marlin deployment error:', error);
+      logger.error('Marlin deployment error', { error: String(error) });
       throw new Error(`Marlin deployment failed: ${error}`);
     }
   }
@@ -386,7 +387,7 @@ export class TEEService {
       // Step 4: Return verification result
       return true;
     } catch (error) {
-      console.error('Attestation verification error:', error);
+      logger.error('Attestation verification error', { error: String(error) });
       return false;
     }
   }
@@ -400,7 +401,7 @@ export class TEEService {
       // For now, we'll do a basic validation
       return quote.length > 0 && signature.length > 0;
     } catch (error) {
-      console.error('Quote signature verification error:', error);
+      logger.error('Quote signature verification error', { error: String(error) });
       return false;
     }
   }
@@ -762,7 +763,7 @@ export class TEEService {
         isValid: data.is_valid || false,
       };
     } catch (error) {
-      console.error('Attestation retrieval error:', error);
+      logger.error('Attestation retrieval error', { error: String(error) });
       return null;
     }
   }
@@ -783,7 +784,7 @@ export class TEEService {
         },
       });
     } catch (error) {
-      console.error('Enclave termination error:', error);
+      logger.error('Enclave termination error', { error: String(error) });
     }
   }
 

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Redis from 'ioredis';
+import logger from '../utils/logger';
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
@@ -77,7 +78,7 @@ export const createRateLimiter = (options: RateLimitOptions) => {
 
       next();
     } catch (error) {
-      console.error('Rate limiter error:', error);
+      logger.error('Rate limiter error', { error: String(error) });
       next();
     }
   };

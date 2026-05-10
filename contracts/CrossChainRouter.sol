@@ -34,7 +34,8 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         AVALANCHE,
         BSC,
         NEAR,
-        SOLANA
+        SOLANA,
+        MANTLE
     }
 
     struct CrossChainMessage {

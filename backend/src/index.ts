@@ -9,6 +9,7 @@ import { defaultTimeout } from './middleware/timeout.js';
 import { connectDatabase } from './utils/prisma.js';
 import logger from './utils/logger.js';
 
+import { correlationId } from './middleware/correlationId.js';
 import { authRouter } from './routes/auth.js';
 import { userRouter } from './routes/users.js';
 import { courseRouter } from './routes/courses.js';
@@ -59,6 +60,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
+app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
