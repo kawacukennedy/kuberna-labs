@@ -1,10 +1,22 @@
 import { Router, Response, NextFunction } from 'express';
 import { z } from 'zod';
+import Stripe from 'stripe';
 import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, requireRoles } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validation.js';
+
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+if (!stripeSecretKey) {
+  console.warn('STRIPE_SECRET_KEY not configured - Stripe features disabled');
+}
+
+const stripe = stripeSecretKey
+  ? new Stripe(stripeSecretKey, { apiVersion: '2023-10-16' })
+  : null;
 
 /**
  * @swagger
@@ -236,7 +248,10 @@ router.post(
 router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const signature = req.headers['stripe-signature'] as string;
-    const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!stripe) {
+      return res.status(500).json({ error: 'Stripe not configured' });
+    }
 
     if (!stripeWebhookSecret) {
       console.error('STRIPE_WEBHOOK_SECRET not configured');
@@ -247,10 +262,16 @@ router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: Nex
       return res.status(400).json({ error: 'Missing Stripe signature' });
     }
 
-    const { type, data } = req.body;
+    const event = stripe.webhooks.constructEvent(
+      req.body instanceof Buffer ? req.body : JSON.stringify(req.body),
+      signature,
+      stripeWebhookSecret
+    );
+
+    const { type, data } = event;
 
     if (type === 'payment_intent.succeeded') {
-      const paymentId = data.object.metadata?.paymentId;
+      const paymentId = data.object.metadata?.paymentId as string | undefined;
       if (paymentId) {
         await prisma.payment.update({
           where: { id: paymentId },
@@ -262,8 +283,21 @@ router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: Nex
       }
     }
 
+    if (type === 'payment_intent.payment_failed') {
+      const paymentId = data.object.metadata?.paymentId as string | undefined;
+      if (paymentId) {
+        await prisma.payment.update({
+          where: { id: paymentId },
+          data: { status: 'FAILED' },
+        });
+      }
+    }
+
     res.json({ received: true });
   } catch (error) {
+    if (error instanceof Stripe.errors.StripeSignatureVerificationError) {
+      return res.status(400).json({ error: 'Invalid signature' });
+    }
     next(error);
   }
 });

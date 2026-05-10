@@ -10,6 +10,14 @@ import {
 
 const router = Router();
 
+const ALLOWED_SORT_COLUMNS = new Set([
+  "createdAt",
+  "title",
+  "level",
+  "durationHours",
+  "price",
+]);
+
 router.get(
   "/",
   optionalAuth,
@@ -32,6 +40,10 @@ router.get(
           { description: { contains: search as string, mode: "insensitive" } },
         ];
       }
+
+      const sortColumn = ALLOWED_SORT_COLUMNS.has(sort as string)
+        ? (sort as string)
+        : "createdAt";
 
       const [courses, total] = await Promise.all([
         prisma.course.findMany({
@@ -63,7 +75,7 @@ router.get(
               select: { enrollments: true },
             },
           },
-          orderBy: { [sort as string]: "desc" },
+          orderBy: { [sortColumn]: "desc" },
         }),
         prisma.course.count({ where }),
       ]);

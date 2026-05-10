@@ -7,8 +7,13 @@ import { verifyMessage } from 'viem';
 import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, generateToken } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 const router = Router();
 
@@ -59,11 +64,7 @@ router.post('/register', async (req: AuthRequest, res: Response, next: NextFunct
       },
     });
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, roles: user.roles },
-      process.env.JWT_SECRET || 'kuberna-secret-key',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({ id: user.id, email: user.email, roles: user.roles as string[] });
 
     res.status(201).json({
       user: {
@@ -109,11 +110,7 @@ router.post('/login', authLimiter, async (req: AuthRequest, res: Response, next:
       },
     });
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, roles: user.roles },
-      process.env.JWT_SECRET || 'kuberna-secret-key',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({ id: user.id, email: user.email, roles: user.roles as string[] });
 
     res.json({
       user: {
@@ -198,9 +195,11 @@ router.post('/forgot-password', async (req: AuthRequest, res: Response, next: Ne
 
     const resetToken = jwt.sign(
       { id: user.id, type: 'password-reset' },
-      process.env.JWT_SECRET || 'kuberna-secret-key',
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
+
+    console.warn('Password reset emails should be sent via email service in production');
 
     await prisma.user.update({
       where: { id: user.id },
@@ -220,9 +219,7 @@ router.post('/reset-password', async (req: AuthRequest, res: Response, next: Nex
   try {
     const { token, password } = req.body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'kuberna-secret-key') as {
-      id: string;
-    };
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
 
     const user = await prisma.user.findFirst({
       where: {
@@ -330,11 +327,7 @@ router.post('/web3-login', async (req: AuthRequest, res: Response, next: NextFun
       },
     });
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, roles: user.roles },
-      process.env.JWT_SECRET || 'kuberna-secret-key',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({ id: user.id, email: user.email, roles: user.roles as string[] });
 
     res.json({
       user: {
@@ -391,11 +384,7 @@ router.post('/web3-register', async (req: AuthRequest, res: Response, next: Next
       },
     });
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, roles: user.roles },
-      process.env.JWT_SECRET || 'kuberna-secret-key',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({ id: user.id, email: user.email, roles: user.roles as string[] });
 
     res.status(201).json({
       user: {
