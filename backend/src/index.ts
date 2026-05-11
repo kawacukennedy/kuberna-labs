@@ -124,15 +124,14 @@ app.use(errorHandler);
 async function startServer() {
   try {
     await connectDatabase();
-
-    app.listen(PORT, () => {
-      logger.info(`Kuberna Labs API running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    });
   } catch (error) {
-    logger.error('Failed to start server', { error });
-    process.exit(1);
+    logger.warn('Database unavailable - starting without DB connection', { error });
   }
+
+  app.listen(PORT, () => {
+    logger.info(`Kuberna Labs API running on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
 }
 
 if (process.env.NODE_ENV !== 'test') {
