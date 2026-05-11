@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 import { Layout } from '@/components/layout/Layout';
+import { apiUrl } from '@/lib/api';
 import { Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -8,14 +10,20 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    setError('');
+    try {
+      await axios.post(apiUrl('/auth/forgot-password'), { email });
       setSubmitted(true);
-    }, 1500);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -39,6 +47,11 @@ export default function ForgotPasswordPage() {
               <p className="text-[1rem] text-on-surface-variant mb-8 text-center">
                 Enter the email address associated with your account to receive a reset link.
               </p>
+              {error && (
+                <div className="bg-error-container text-error p-3.5 rounded-lg mb-6 text-sm flex items-center gap-2">
+                  {error}
+                </div>
+              )}
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2 pl-2" htmlFor="email">Email Address</label>
