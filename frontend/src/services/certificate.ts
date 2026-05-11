@@ -3,6 +3,7 @@ import { usePublicClient, useWalletClient, useWriteContract, useReadContract } f
 import { useCallback, useState } from 'react';
 import { CERTIFICATE_ABI, getContractAddress } from '../lib/contracts';
 import { useWallet } from '../hooks/useWallet';
+import { apiUrl } from '@/lib/api';
 
 export interface CertificateData {
   recipientName: string;
@@ -161,6 +162,5 @@ export function useCertificate(): UseCertificateReturn {
 }
 
 export function generateCertificateVerificationUrl(chainId: number, tokenId: bigint): string {
-  const baseUrl = 'https://kuberna.africa/verify';
-  return `${baseUrl}/${chainId}/${tokenId}`;
+  return `${apiUrl('/certificates')}/${chainId}/${tokenId}`;
 }
