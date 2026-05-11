@@ -20,7 +20,7 @@ describe('KubernaSDK', () => {
     const mockData = { success: true };
     mockedAxios.mockResolvedValueOnce({ data: mockData });
 
-    const result = await sdk.request('GET', '/test');
+    const result = await sdk.request({ method: 'GET', path: '/test' });
     expect(result).toEqual(mockData);
     expect(mockedAxios).toHaveBeenCalledWith(
       expect.objectContaining({
