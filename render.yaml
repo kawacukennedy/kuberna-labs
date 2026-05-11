@@ -55,9 +55,7 @@ services:
         sync: false
       - key: ALLOWED_ORIGINS
         sync: false
-      - key: NEXT_PUBLIC_API_URL
+      - key: FRONTEND_DIST_PATH
         sync: false
       - key: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
-        sync: false
-      - key: NEXT_PUBLIC_APP_URL
         sync: false

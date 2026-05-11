@@ -71,8 +71,7 @@ Set these in your Render Dashboard under **Environment Variables**.
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db?sslmode=require` |
 | `JWT_SECRET` | JWT signing key (generate with `openssl rand -hex 32`) | `a1b2c3d4e5f6...` |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | From [WalletConnect Cloud](https://cloud.walletconnect.com) | `abc123...` |
-| `NEXT_PUBLIC_API_URL` | Your Render app URL + `/api` | `https://kuberna-labs.onrender.com/api` |
-| `NEXT_PUBLIC_APP_URL` | Your Render app URL | `https://kuberna-labs.onrender.com` |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | From [WalletConnect Cloud](https://cloud.walletconnect.com) | `abc123...` |
 
 #### Required for Web3 Features
 
@@ -95,6 +94,7 @@ Set these in your Render Dashboard under **Environment Variables**.
 | `OPENAI_API_KEY` | OpenAI API key | For AI agent features |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | SMTP credentials | For email notifications |
 | `FROM_EMAIL` | Sender email address | `noreply@yourdomain.com` |
+| `FRONTEND_DIST_PATH` | Frontend build output path | `../frontend/out` |
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins | `https://your-app.onrender.com` |
 
 ### Setting Up a Database

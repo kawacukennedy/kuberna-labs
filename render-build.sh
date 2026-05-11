@@ -33,10 +33,10 @@ npm ci --include=dev
 npm run build
 cd ..
 
-# Step 5: Prune dev dependencies (reduce disk footprint)
-echo "--- Pruning dev dependencies ---"
-npm prune --production || true
-cd backend && npm prune --production || true && cd ..
-cd frontend && npm prune --production || true && cd ..
+# Step 5: Generate Prisma client for production
+echo "--- Generating Prisma client ---"
+cd backend
+npx prisma generate
+cd ..
 
 echo "=== Build Complete ==="
