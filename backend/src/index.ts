@@ -38,9 +38,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     if (!origin) {
-      if (isProduction) {
-        return callback(null, false);
-      }
       return callback(null, true);
     }
 
@@ -95,10 +92,10 @@ app.use('/api/disputes', disputeRouter);
 app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 
-const frontendDistPath = path.join(__dirname, '../../frontend/out');
+const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
 app.use(express.static(frontendDistPath));
 
-app.use('*', (req, res) => {
+app.use('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
     res.status(404).json({
       success: false,
@@ -109,7 +106,17 @@ app.use('*', (req, res) => {
     });
     return;
   }
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
+  if (req.method !== 'GET') {
+    return next();
+  }
+  res.sendFile(path.join(frontendDistPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).json({
+        success: false,
+        error: { message: 'Not found', code: 'NOT_FOUND' },
+      });
+    }
+  });
 });
 
 app.use(errorHandler);
