@@ -1,0 +1,49 @@
+# Kuberna Labs - Render Ignore File
+# Excludes unnecessary files from the deployed image
+
+# Smart contracts source (already deployed)
+contracts/
+artifacts/
+cache/
+typechain-types/
+test/
+
+# Documentation and design docs
+docs/
+design/
+examples/
+#.md files are still useful in README
+
+# CI/CD and tooling
+.husky/
+.github/
+.mocharc*
+
+# Development and test files
+*.test.ts
+*.spec.ts
+__tests__/
+__mocks__/
+
+# Local environment
+.env
+.env.local
+.env.development
+*.log
+
+# Source maps (optional, can include for debugging)
+# **/*.map
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker (Render uses its own container)
+docker-compose.yml
+Dockerfile
+
+# Hardhat and blockchain dev files
+hardhat.config.ts
+scripts/deploy*.ts
+scripts/verify*.ts
+scripts/setup-local.ts

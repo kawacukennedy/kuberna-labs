@@ -1,0 +1,63 @@
+# Kuberna Labs - Render Blueprint (Infrastructure as Code)
+# One-click deploy configuration for Render
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: kuberna-labs
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: ./render-build.sh
+    startCommand: npm run start:render
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: RPC_URL
+        sync: false
+      - key: PRIVATE_KEY
+        sync: false
+      - key: ESCROW_CONTRACT_ADDRESS
+        sync: false
+      - key: INTENT_CONTRACT_ADDRESS
+        sync: false
+      - key: AGENT_REGISTRY_CONTRACT_ADDRESS
+        sync: false
+      - key: CERTIFICATE_CONTRACT_ADDRESS
+        sync: false
+      - key: REPUTATION_CONTRACT_ADDRESS
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: FROM_EMAIL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
