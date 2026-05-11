@@ -12,6 +12,7 @@ const agents = [
 ];
 
 export default function AgentsPage() {
+  const [step, setStep] = useState(1);
   const [showWizard, setShowWizard] = useState(false);
 
   return (
@@ -113,37 +114,93 @@ export default function AgentsPage() {
               </button>
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Agent Name</label>
-                <input 
-                  type="text" 
-                  placeholder="My Agent"
-                  className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg focus:ring-0 focus:border-primary" 
-                />
-              </div>
-              
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Framework</label>
-                <select className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg appearance-none">
-                  <option>ElizaOS</option>
-                  <option>LangChain</option>
-                  <option>Custom</option>
-                </select>
-              </div>
+             <div className="mb-6">
+  <div className="flex justify-between text-xs text-neutral-400 mb-2">
+    <span>Agent Setup</span>
+    <span>Step {step} / 3</span>
+  </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Chain</label>
-                <div className="flex gap-3 flex-wrap">
-                  {['Ethereum', 'Arbitrum', 'Polygon', 'Solana'].map((chain) => (
-                    <button key={chain} className="px-4 py-2 bg-surface-container-low rounded-lg hover:bg-surface-container text-sm">
-                      {chain}
-                    </button>
-                  ))}
-                </div>
-              </div>
+  <div className="w-full bg-neutral-800 rounded-full h-2">
+    <div
+      className={`h-2 rounded-full bg-blue-500 transition-all duration-300 ${
+        step === 1
+          ? "w-1/3"
+          : step === 2
+          ? "w-2/3"
+          : "w-full"
+      }`}
+    />
+  </div>
+</div>
 
-              <button className="btn btn-primary w-full py-4">
+{step === 1 && (
+  <div className="space-y-4">
+    <input
+      type="text"
+      placeholder="Agent Name"
+      className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg"
+    />
+
+    <textarea
+      placeholder="Agent Description"
+      className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg"
+    />
+  </div>
+)}
+
+{step === 2 && (
+  <div className="space-y-4">
+    <input
+      type="text"
+      placeholder="Capabilities"
+      className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg"
+    />
+
+    <input
+      type="text"
+      placeholder="Network"
+      className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-lg"
+    />
+  </div>
+)}
+
+{step === 3 && (
+  <div className="space-y-3">
+    <h3 className="font-semibold">
+      Review Configuration
+    </h3>
+
+    <div className="text-sm text-neutral-400">
+      Review agent settings before creation.
+    </div>
+  </div>
+)}
+
+<div className="flex justify-between mt-6">
+  <button
+    onClick={() => setStep(step - 1)}
+    disabled={step === 1}
+    className="px-4 py-2 rounded bg-neutral-800"
+  >
+    Back
+  </button>
+
+  {step < 3 ? (
+    <button
+      onClick={() => setStep(step + 1)}
+      className="px-4 py-2 rounded bg-blue-500"
+    >
+      Next
+    </button>
+  ) : (
+    <button className="px-4 py-2 rounded bg-green-500">
+      Create Agent
+    </button>
+  )}
+</div>
+ </div>
+  
+        <button className="btn btn-primary w-full py-4">
                 Deploy Agent
               </button>
             </div>
