@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import {
@@ -45,6 +46,7 @@ const testimonials = [
 export default function LandingPage() {
   return (
     <Layout>
+      <Head><title>Kuberna Labs — Agentic Web3 Enterprise</title></Head>
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-container-low px-6 pt-24">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">

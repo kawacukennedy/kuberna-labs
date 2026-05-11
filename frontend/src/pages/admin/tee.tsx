@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { Shield, Server, Activity, CheckCircle, AlertTriangle, RefreshCw, Cpu } from 'lucide-react';
 
@@ -11,6 +12,7 @@ const nodes = [
 export default function TEENodePage() {
   return (
     <Layout variant="dashboard">
+      <Head><title>TEE Nodes — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <div>

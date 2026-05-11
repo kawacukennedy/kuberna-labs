@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { ArrowRight, Globe, Zap, Code, Briefcase, MapPin } from 'lucide-react';
@@ -13,6 +14,7 @@ const jobs = [
 export default function CareersPage() {
   return (
     <Layout>
+      <Head><title>Careers — Kuberna Labs</title></Head>
       <section className="relative overflow-hidden pt-28 pb-20 px-6 text-center bg-surface">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-fixed/10 via-transparent to-transparent" />
         <div className="max-w-4xl mx-auto">

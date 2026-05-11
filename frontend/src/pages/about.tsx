@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { ArrowRight, Globe, Users, Rocket } from 'lucide-react';
@@ -13,6 +14,7 @@ const team = [
 export default function AboutPage() {
   return (
     <Layout>
+      <Head><title>About — Kuberna Labs</title></Head>
       <section className="relative overflow-hidden pt-28 pb-20 px-6 text-center bg-surface">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">

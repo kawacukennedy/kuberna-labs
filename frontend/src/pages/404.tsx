@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { Home, Search } from 'lucide-react';
@@ -6,6 +7,7 @@ import { Home, Search } from 'lucide-react';
 export default function NotFoundPage() {
   return (
     <Layout variant="auth">
+      <Head><title>404 — Kuberna Labs</title></Head>
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-primary-fixed-dim/20 rounded-full blur-[120px]" />

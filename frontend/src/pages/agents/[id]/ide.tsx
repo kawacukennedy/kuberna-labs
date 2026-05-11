@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Play, Square, Save, Terminal, Settings, Activity, ChevronDown, Copy, Check } from 'lucide-react';
@@ -22,6 +23,7 @@ export default function AgentIDEPage() {
 
   return (
     <Layout variant="dashboard">
+      <Head><title>Agent IDE — Kuberna Labs</title></Head>
       <div className="flex h-screen">
         {/* IDE Sidebar */}
         <aside className="w-16 lg:w-64 bg-surface border-r border-outline/10 flex flex-col">

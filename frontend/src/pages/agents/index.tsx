@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Cpu, Play, Square, Settings, Trash2, Activity, Plus, Zap, Search, ChevronDown, Layers } from 'lucide-react';
@@ -15,6 +16,7 @@ export default function AgentsPage() {
 
   return (
     <Layout variant="dashboard">
+      <Head><title>Agents — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <div>

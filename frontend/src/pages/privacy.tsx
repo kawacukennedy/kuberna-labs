@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { FileText, ChevronRight, Scale, Shield, Lock, Users } from 'lucide-react';
@@ -6,6 +7,7 @@ import { FileText, ChevronRight, Scale, Shield, Lock, Users } from 'lucide-react
 export default function LegalPage() {
   return (
     <Layout>
+      <Head><title>Privacy Policy — Kuberna Labs</title></Head>
       <div className="flex min-h-screen">
         {/* Sidebar */}
         <aside className="w-64 bg-surface border-r border-outline/10 fixed h-screen overflow-y-auto hidden lg:block">

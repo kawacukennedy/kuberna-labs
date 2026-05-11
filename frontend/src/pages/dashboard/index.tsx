@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { CourseCard } from '@/components/shared/CourseCard';
@@ -31,6 +32,7 @@ export default function DashboardPage() {
 
   return (
     <Layout variant="dashboard">
+      <Head><title>Dashboard — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-end mb-12">
           <div>

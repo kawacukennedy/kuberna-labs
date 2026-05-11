@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
 import { FileText, Code, BookOpen, Zap, ChevronRight, Search, Copy, Check, Terminal, Cpu, Shield, Link2 } from 'lucide-react';
@@ -15,6 +16,7 @@ export default function DocsPage() {
 
   return (
     <Layout>
+      <Head><title>Documentation — Kuberna Labs</title></Head>
       <div className="flex min-h-screen">
         {/* Sidebar */}
         <aside className="w-64 bg-surface border-r border-outline/10 fixed h-screen overflow-y-auto hidden lg:block">

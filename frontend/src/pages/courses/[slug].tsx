@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
@@ -27,6 +28,7 @@ export default function CourseDetailPage() {
 
   return (
     <Layout>
+      <Head><title>{router.query.slug ? `${router.query.slug} — Kuberna Labs` : 'Course — Kuberna Labs'}</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-8">

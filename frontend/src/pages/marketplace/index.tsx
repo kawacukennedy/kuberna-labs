@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { IntentCard } from '@/components/marketplace/IntentCard';
 import { Search, Filter, Plus, ChevronDown, Sparkles, Activity, ArrowRight } from 'lucide-react';
@@ -48,6 +49,7 @@ export default function MarketplacePage() {
 
   return (
     <Layout>
+      <Head><title>Marketplace — Kuberna Labs</title></Head>
       <section className="relative overflow-hidden pt-28 pb-16 px-6 text-center bg-surface">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-secondary-fixed/10 via-transparent to-transparent" />
         <motion.div

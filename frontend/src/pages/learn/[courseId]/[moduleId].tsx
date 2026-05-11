@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/layout/Layout';
 import { ChevronLeft, ChevronRight, Play, BookOpen, CheckCircle2, MessageSquare, Download, Share2, HelpCircle } from 'lucide-react';
@@ -10,6 +11,7 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen flex flex-col pt-0">
+      <Head><title>{courseId && moduleId ? `Module ${moduleId} — ${courseId} — Kuberna Labs` : 'Learn — Kuberna Labs'}</title></Head>
       {/* Learn Header */}
       <nav className="glass sticky top-0 z-50 w-full px-6 h-16 flex items-center justify-between border-b border-glass-border">
         <div className="flex items-center gap-4">

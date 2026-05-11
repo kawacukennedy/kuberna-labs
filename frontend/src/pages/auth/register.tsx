@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
@@ -66,6 +67,7 @@ export default function RegisterPage() {
 
   return (
     <Layout variant="auth">
+      <Head><title>Create Account — Kuberna Labs</title></Head>
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
         <div className="absolute top-[-10%] left-[-5%] w-96 h-96 bg-primary-fixed-dim rounded-full mix-blend-multiply filter blur-3xl opacity-30" />
         <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20" />

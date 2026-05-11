@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import axios from 'axios';
 import { Layout } from '@/components/layout/Layout';
@@ -28,6 +29,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <Layout variant="auth">
+      <Head><title>Forgot Password — Kuberna Labs</title></Head>
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-primary-fixed opacity-30 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-secondary-fixed opacity-20 blur-[100px] pointer-events-none" />

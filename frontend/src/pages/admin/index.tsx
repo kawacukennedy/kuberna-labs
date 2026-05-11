@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Users, DollarSign, Bot, BarChart3, Shield, Search, MoreVertical, ChevronDown } from 'lucide-react';
@@ -13,6 +14,7 @@ const users = [
 export default function AdminDashboard() {
   return (
     <Layout variant="dashboard" sidebarType="admin">
+      <Head><title>Admin — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <div>
