@@ -25,30 +25,34 @@ export class AgentManager {
   constructor(private sdk: KubernaSDK) {}
 
   async create(params: CreateAgentParams): Promise<Agent> {
-    frameworkSchema.parse(params.framework); // Validate
-    const response = await this.sdk.request('POST', '/agents', params);
-    return response;
+    frameworkSchema.parse(params.framework);
+    const response = await this.sdk.request({ method: 'POST', path: '/agents', data: params as unknown as Record<string, unknown> });
+    return response.data as Agent;
   }
 
   async get(id: string): Promise<Agent> {
-    return this.sdk.request('GET', `/agents/${id}`);
+    const response = await this.sdk.request({ method: 'GET', path: `/agents/${id}` });
+    return response.data as Agent;
   }
 
   async list(ownerId?: string): Promise<Agent[]> {
-    const response = await this.sdk.request('GET', '/agents', ownerId ? { ownerId } : undefined);
-    return response.agents;
+    const response = await this.sdk.request({ method: 'GET', path: '/agents', data: ownerId ? { ownerId } : undefined });
+    return (response.data as { agents: Agent[] }).agents;
   }
 
   async deploy(id: string, params: { secureExecution?: string } = {}): Promise<Agent> {
     const endpoint = params.secureExecution === 'TEE' ? `/agents/${id}/deploy-tee` : `/agents/${id}/deploy`;
-    return this.sdk.request('POST', endpoint, {});
+    const response = await this.sdk.request({ method: 'POST', path: endpoint, data: {} });
+    return response.data as Agent;
   }
 
   async start(id: string): Promise<Agent> {
-    return this.sdk.request('POST', `/agents/${id}/start`, {});
+    const response = await this.sdk.request({ method: 'POST', path: `/agents/${id}/start`, data: {} });
+    return response.data as Agent;
   }
 
   async stop(id: string): Promise<Agent> {
-    return this.sdk.request('POST', `/agents/${id}/stop`, {});
+    const response = await this.sdk.request({ method: 'POST', path: `/agents/${id}/stop`, data: {} });
+    return response.data as Agent;
   }
 }

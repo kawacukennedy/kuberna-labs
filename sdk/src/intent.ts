@@ -17,25 +17,30 @@ export class IntentManager {
   constructor(private sdk: KubernaSDK) {}
 
   async create(params: CreateIntentParams): Promise<Intent> {
-    const response = await this.sdk.request("POST", "/intents", {
-      description: params.task,
-      budget: params.budget,
-      deadline: params.deadline,
-      secureExecution: params.secureExecution,
+    const response = await this.sdk.request({
+      method: "POST",
+      path: "/intents",
+      data: {
+        description: params.task,
+        budget: params.budget,
+        deadline: params.deadline,
+        secureExecution: params.secureExecution,
+      } as Record<string, unknown>,
     });
-    return response;
+    return response.data as Intent;
   }
 
   async get(id: string): Promise<Intent> {
-    return this.sdk.request("GET", `/intents/${id}`);
+    const response = await this.sdk.request({ method: "GET", path: `/intents/${id}` });
+    return response.data as Intent;
   }
 
   async list(): Promise<Intent[]> {
-    const response = await this.sdk.request("GET", "/intents");
-    return response.intents;
+    const response = await this.sdk.request({ method: "GET", path: "/intents" });
+    return (response.data as { intents: Intent[] }).intents;
   }
 
   async cancel(id: string): Promise<void> {
-    await this.sdk.request("POST", `/intents/${id}/cancel`, {});
+    await this.sdk.request({ method: "POST", path: `/intents/${id}/cancel`, data: {} });
   }
 }
