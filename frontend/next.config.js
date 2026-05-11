@@ -14,20 +14,6 @@ const nextConfig = {
   },
   transpilePackages: ['@kuberna/sdk'],
   trailingSlash: true,
-  async redirects() {
-    return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/index',
-        destination: '/',
-        permanent: true,
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;
