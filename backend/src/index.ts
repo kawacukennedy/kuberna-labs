@@ -94,11 +94,17 @@ app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
-if (!fs.existsSync(frontendDistPath)) {
-  logger.warn(`Frontend dist path not found: ${frontendDistPath}`);
+logger.info(`Frontend dist path: ${frontendDistPath}`);
+
+const nextStaticPath = path.join(frontendDistPath, '_next');
+if (fs.existsSync(nextStaticPath)) {
+  logger.info(`Serving _next static files from: ${nextStaticPath}`);
+  app.use('/_next', express.static(nextStaticPath));
+} else {
+  logger.warn(`_next static directory not found: ${nextStaticPath}`);
 }
-logger.info(`Serving static files from: ${path.resolve(frontendDistPath)}`);
-app.use(express.static(frontendDistPath));
+
+const rootStatic = express.static(frontendDistPath);
 
 app.use('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
@@ -114,15 +120,17 @@ app.use('*', (req, res, next) => {
   if (req.method !== 'GET') {
     return next();
   }
-  const indexPath = path.resolve(frontendDistPath, 'index.html');
-  if (!fs.existsSync(indexPath)) {
-    res.status(404).json({
-      success: false,
-      error: { message: 'Not found', code: 'NOT_FOUND' },
-    });
-    return;
-  }
-  res.sendFile(indexPath);
+  rootStatic(req, res, () => {
+    const indexPath = path.resolve(frontendDistPath, 'index.html');
+    if (!fs.existsSync(indexPath)) {
+      res.status(404).json({
+        success: false,
+        error: { message: 'Not found', code: 'NOT_FOUND' },
+      });
+      return;
+    }
+    res.sendFile(indexPath);
+  });
 });
 
 app.use(errorHandler);
