@@ -22,16 +22,20 @@ declare global {
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required');
+  console.warn('JWT_SECRET not set - authentication will be disabled');
 }
 
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET + '_refresh';
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || (JWT_SECRET ? JWT_SECRET + '_refresh' : undefined);
 if (!process.env.JWT_REFRESH_SECRET && process.env.NODE_ENV === 'production') {
   console.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
 }
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!JWT_SECRET) {
+      throw new UnauthorizedError('Authentication not configured');
+    }
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -115,17 +119,20 @@ export const requireRoles = (...roles: string[]) => {
 };
 
 export const generateToken = (payload: UserPayload): string => {
+  if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: '7d',
   } as SignOptions);
 };
 
 export const generateRefreshToken = (payload: UserPayload): string => {
+  if (!JWT_REFRESH_SECRET) throw new UnauthorizedError('Authentication not configured');
   return jwt.sign(payload, JWT_REFRESH_SECRET, {
     expiresIn: '30d',
   } as SignOptions);
 };
 
 export const verifyToken = (token: string): UserPayload => {
+  if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
   return jwt.verify(token, JWT_SECRET) as UserPayload;
 };

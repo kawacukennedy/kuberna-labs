@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -93,6 +94,10 @@ app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
+if (!fs.existsSync(frontendDistPath)) {
+  logger.warn(`Frontend dist path not found: ${frontendDistPath}`);
+}
+logger.info(`Serving static files from: ${path.resolve(frontendDistPath)}`);
 app.use(express.static(frontendDistPath));
 
 app.use('*', (req, res, next) => {
@@ -109,14 +114,15 @@ app.use('*', (req, res, next) => {
   if (req.method !== 'GET') {
     return next();
   }
-  res.sendFile(path.join(frontendDistPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(404).json({
-        success: false,
-        error: { message: 'Not found', code: 'NOT_FOUND' },
-      });
-    }
-  });
+  const indexPath = path.resolve(frontendDistPath, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    res.status(404).json({
+      success: false,
+      error: { message: 'Not found', code: 'NOT_FOUND' },
+    });
+    return;
+  }
+  res.sendFile(indexPath);
 });
 
 app.use(errorHandler);
