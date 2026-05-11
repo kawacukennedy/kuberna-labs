@@ -30,12 +30,19 @@ if (!process.env.JWT_REFRESH_SECRET && process.env.NODE_ENV === 'production') {
   console.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
 }
 
+function getJwtSecret(): string {
+  if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
+  return JWT_SECRET;
+}
+
+function getRefreshSecret(): string {
+  if (!JWT_REFRESH_SECRET) throw new UnauthorizedError('Authentication not configured');
+  return JWT_REFRESH_SECRET;
+}
+
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!JWT_SECRET) {
-      throw new UnauthorizedError('Authentication not configured');
-    }
-
+    const secret = getJwtSecret();
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -43,7 +50,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
+    const decoded = jwt.verify(token, secret) as unknown as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -81,7 +88,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
+    const decoded = jwt.verify(token, getJwtSecret()) as unknown as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -119,20 +126,17 @@ export const requireRoles = (...roles: string[]) => {
 };
 
 export const generateToken = (payload: UserPayload): string => {
-  if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, getJwtSecret(), {
     expiresIn: '7d',
   } as SignOptions);
 };
 
 export const generateRefreshToken = (payload: UserPayload): string => {
-  if (!JWT_REFRESH_SECRET) throw new UnauthorizedError('Authentication not configured');
-  return jwt.sign(payload, JWT_REFRESH_SECRET, {
+  return jwt.sign(payload, getRefreshSecret(), {
     expiresIn: '30d',
   } as SignOptions);
 };
 
 export const verifyToken = (token: string): UserPayload => {
-  if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
-  return jwt.verify(token, JWT_SECRET) as UserPayload;
+  return jwt.verify(token, getJwtSecret()) as unknown as UserPayload;
 };
