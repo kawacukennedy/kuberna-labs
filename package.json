@@ -27,7 +27,10 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.{ts,sol,json,md}\"",
     "dev": "cd frontend && npm run dev",
-    "install:frontend": "cd frontend && npm install"
+    "install:frontend": "cd frontend && npm install",
+    "build:all": "cd sdk && npm ci && npm run build && cd ../backend && npm ci && npx prisma generate && npm run build && cd ../frontend && npm ci && npm run build && cd ..",
+    "start:render": "cd backend && npx prisma migrate deploy && cd .. && node backend/dist/index.js",
+    "db:deploy": "cd backend && npx prisma migrate deploy && cd .."
   },
   "keywords": [
     "web3",
