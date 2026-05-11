@@ -1,369 +1,169 @@
-<!-- Kuberna Labs -->
-<!-- Premium README Design -->
+# Kuberna Labs
 
-<div align="center">
+The operating system for agentic Web3 enterprises.
 
-<!-- Hero Section -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231c1c1e'/%3E%3Cstop offset='100%25' stop-color='%232c2c2e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='320' fill='url(%23a)'/%3E%3C/svg%3E">
-  <source media="(prefers-color-scheme: light)" srcset="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fbfbfd'/%3E%3Cstop offset='100%25' stop-color='%23f5f5f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='320' fill='url(%23a)'/%3E%3C/svg%3E">
-  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320'%3E%3Crect width='1200' height='320' fill='%231c1c1e'/%3E%3C/svg%3E" alt="" width="1200" height="320">
-</picture>
-
-<!-- Logo Mark -->
-<div style="margin-top: -200px; position: relative; z-index: 10;">
-  <a href="#overview">
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="72" height="72" rx="18" fill="url(#logoGrad)"/>
-      <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="72" y2="72">
-          <stop offset="0%" stop-color="#0A84FF"/>
-          <stop offset="100%" stop-color="#5E5CE6"/>
-        </linearGradient>
-        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0A84FF" flood-opacity="0.4"/>
-        </filter>
-      </defs>
-      <g filter="url(#shadow)">
-        <path d="M22 36L32 26L36 30L50 16L56 20L36 40L26 50L22 46V36Z" fill="white" fill-opacity="0.95"/>
-        <path d="M36 36L42 30L50 38L44 44L36 36Z" fill="white" fill-opacity="0.7"/>
-      </g>
-    </svg>
-  </a>
-</div>
-
-<!-- Title -->
-<h1 style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif; font-size: 3rem; font-weight: 700; letter-spacing: -0.025em; margin-top: 24px; margin-bottom: 8px;">
-  <span style="color: #000; background: none; -webkit-text-fill-color: initial;" class="dark:text-white">Kuberna</span>
-</h1>
-
-<!-- Tagline -->
-<p style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 1.25rem; font-weight: 400; color: #86868b; margin: 0 0 32px; letter-spacing: -0.01em;">
-  The operating system for agentic Web3 enterprises
-</p>
-
-<!-- Party Parrot - GitHub Sponsorship -->
-<div align="center" style="margin: 0 0 16px;">
-  <img src="https://cultofthepartyparrot.com/parrots/hd/githubparrot.gif" width="30" height="30" alt="parrot">
-  <img src="https://cultofthepartyparrot.com/parrots/hd/60fpsparrot.gif" width="30" height="30" alt="parrot">
-  <img src="https://cultofthepartyparrot.com/parrots/hd/jumpingparrot.gif" width="30" height="30" alt="parrot">
-  <img src="https://cultofthepartyparrot.com/parrots/hd/footballparrot.gif" width="30" height="30" alt="parrot">
-</div>
-
-<!-- CTA -->
-<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-  <a href="#get-started" style="display: inline-flex; align-items: center; padding: 12px 24px; background: #0071e3; color: #fff; border-radius: 980px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease;">
-    Get Started
-  </a>
-  <a href="/docs" style="display: inline-flex; align-items: center; padding: 12px 24px; background: transparent; color: #0071e3; border-radius: 980px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease;">
-    Documentation
-  </a>
-</div>
-
-<!-- Animated Typing Cat -->
-<div align="center" style="margin: 24px 0 0;">
-  <img src="https://user-images.githubusercontent.com/74038190/212284145-bf2c01a8-c448-4f1a-b911-996024c84606.gif" width="120" alt="coding">
-</div>
-
-</div>
-
----
-
-<!-- Navigation Tabs -->
-<div align="center" style="padding: 16px 0; border-bottom: 1px solid #d2d2d7; margin-bottom: 48px;" class="dark:border-[#38383a]">
-  <nav style="display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
-    <a href="#overview" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Overview</a>
-    <a href="#features" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Features</a>
-    <a href="#architecture" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Architecture</a>
-    <a href="#quickstart" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Quick Start</a>
-    <a href="https://docs.kuberna.africa" target="_blank" style="color: #86868b; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all 0.2s ease;" class="dark:text-[#d2d2d7]" onmouseover="this.style.color='#0071e3';this.style.background='rgba(0,113,227,0.1)'" onmouseout="this.style.color='';this.style.background=''">Docs ↗</a>
-  </nav>
-</div>
-
----
-
-<a name="overview"></a>
-
-<!-- Overview Section -->
-<section style="max-width: 680px; margin: 0 auto 64px; padding: 0 24px;">
-
-### Built for the next generation of decentralized apps
-
-Kuberna provides secure, verifiable, and scalable infrastructure for deploying AI agents across multiple blockchain networks. From intent-based DeFi to automated governance, we've abstracted the complexity so you can focus on building.
-
-<div align="center" style="margin: 48px 0;">
-
-| | | |
-|:---:|:---:|:---:|
-| **TEE-Shielded Agents** | **Cross-Chain Intents** | **zkTLS Privacy** |
-| Deploy verified AI agents in Intel TDX / AMD SEV enclaves | Post intents, let solvers compete to fulfill them | Bring Web2 data on-chain with zero-knowledge proofs |
-
-</div>
-
-</section>
-
----
-
-<a name="features"></a>
-
-<!-- Features -->
-<section style="max-width: 800px; margin: 0 auto 64px; padding: 0 24px;">
-
-### Platform Features
-
-<!-- Developer Working -->
-<div align="center" style="margin: 24px 0;">
-  <img src="https://user-images.githubusercontent.com/74038190/212749695-a6817c5a-a794-462b-afca-1b5ce7dd5e63.gif" width="250" alt="lets do it">
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 32px;">
-
-#### Trusted Execution
-Deploy agents inside cryptographically verified enclaves with on-chain attestation.
-
-> **Providers:** Phala Network, Marlin Oyster
-
-#### Cross-Chain Intents
-Native ERC-7683 implementation. Post tasks, receive competitive bids, get results.
-
-> **Chains:** Ethereum, Solana, NEAR, Polygon, Arbitrum
-
-#### zkTLS
-Fetch verified Web2 data (bank balances, KYC) using zero-knowledge proofs.
-
-> **Sources:** Gmail, Twitter, Bank of America, Coinbase
-
-#### Solver Marketplace
-Decentralized network where agents compete to fulfill your intents.
-
-> **Verified:** Reputation NFTs, dispute resolution
-
-#### Type-Safe SDK
-TypeScript, Python, Rust SDKs with full type coverage.
-
-> **Wallets:** MetaMask, WalletConnect, Phantom, NEAR
-
-</div>
-
-<!-- Fun Working Stickers -->
-<div align="center" style="margin: 32px 0;">
-  <img src="https://user-images.githubusercontent.com/74038190/216649417-9acc58df-9186-4132-ad43-819a57babb67.gif" width="80">
-  <img src="https://user-images.githubusercontent.com/74038190/216649421-9e9387cc-b2d3-4375-97e2-f4c43373d3ae.gif" width="80">
-  <img src="https://user-images.githubusercontent.com/74038190/216649426-0c2ee152-84d8-4707-85c4-27a378d2f78a.gif" width="80">
-  <img src="https://user-images.githubusercontent.com/74038190/216649430-0a912dae-e61b-45cf-8f65-895bd6444f3a.gif" width="80">
-</div>
-
-</section>
-
----
-
-<a name="architecture"></a>
-
-<!-- Architecture Diagram - Clean Apple Style -->
-<section style="max-width: 900px; margin: 0 auto 64px; padding: 0 24px;">
-
-### System Architecture
-
-<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; border-radius: 16px; overflow: hidden;" class="dark:bg-[#1c1c1e] bg-[#f5f5f7]">
-  <defs>
-    <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#2c2c2e" stop-opacity="1"/>
-      <stop offset="100%" stop-color="#1c1c1e" stop-opacity="1"/>
-    </linearGradient>
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A84FF"/>
-      <stop offset="100%" stop-color="#0055D4"/>
-    </linearGradient>
-  </defs>
-  
-  <!-- Row 1: Client -->
-  <g>
-    <rect x="350" y="20" width="200" height="50" rx="12" fill="url(#cardBg)"/>
-    <text x="450" y="50" fill="#fff" font-size="13" font-weight="500" text-anchor="middle" font-family="-apple-system, sans-serif">Client SDKs</text>
-  </g>
-  
-  <!-- Row 2: Services -->
-  <g>
-    <rect x="40" y="120" width="160" height="100" rx="12" fill="url(#cardBg)"/>
-    <rect x="40" y="120" width="160" height="24" rx="12" fill="url(#blueGrad)"/>
-    <text x="120" y="138" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Agent Runtime</text>
-    <text x="120" y="165" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">TEE Deployment</text>
-    <text x="120" y="185" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">Attestation</text>
-  </g>
-  
-  <g>
-    <rect x="240" y="120" width="160" height="100" rx="12" fill="url(#cardBg)"/>
-    <rect x="240" y="120" width="160" height="24" rx="12" fill="url(#blueGrad)"/>
-    <text x="320" y="138" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Intent Engine</text>
-    <text x="320" y="165" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">ERC-7683</text>
-    <text x="320" y="185" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">Solver Network</text>
-  </g>
-  
-  <g>
-    <rect x="440" y="120" width="160" height="100" rx="12" fill="url(#cardBg)"/>
-    <rect x="440" y="120" width="160" height="24" rx="12" fill="url(#blueGrad)"/>
-    <text x="520" y="138" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Data Layer</text>
-    <text x="520" y="165" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">zkTLS</text>
-    <text x="520" y="185" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">Attestations</text>
-  </g>
-  
-  <g>
-    <rect x="640" y="120" width="160" height="100" rx="12" fill="url(#cardBg)"/>
-    <rect x="640" y="120" width="160" height="24" rx="12" fill="url(#blueGrad)"/>
-    <text x="720" y="138" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">API Gateway</text>
-    <text x="720" y="165" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">REST</text>
-    <text x="720" y="185" fill="#86868b" font-size="10" text-anchor="middle" font-family="-apple-system, sans-serif">WebSocket</text>
-  </g>
-  
-  <!-- Row 3: Contracts -->
-  <g>
-    <rect x="120" y="270" width="120" height="80" rx="10" fill="url(#cardBg)"/>
-    <text x="180" y="300" fill="#0A84FF" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Escrow</text>
-    <text x="180" y="325" fill="#86868b" font-size="9" text-anchor="middle" font-family="-apple-system, sans-serif">Fund Management</text>
-  </g>
-  
-  <g>
-    <rect x="280" y="270" width="120" height="80" rx="10" fill="url(#cardBg)"/>
-    <text x="340" y="300" fill="#5E5CE6" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Intent</text>
-    <text x="340" y="325" fill="#86868b" font-size="9" text-anchor="middle" font-family="-apple-system, sans-serif">Cross-Chain</text>
-  </g>
-  
-  <g>
-    <rect x="440" y="270" width="120" height="80" rx="10" fill="url(#cardBg)"/>
-    <text x="500" y="300" fill="#30D158" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Attestation</text>
-    <text x="500" y="325" fill="#86868b" font-size="9" text-anchor="middle" font-family="-apple-system, sans-serif">TEE Verification</text>
-  </g>
-  
-  <g>
-    <rect x="600" y="270" width="120" height="80" rx="10" fill="url(#cardBg)"/>
-    <text x="660" y="300" fill="#FF9F0A" font-size="11" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Reputation</text>
-    <text x="660" y="325" fill="#86868b" font-size="9" text-anchor="middle" font-family="-apple-system, sans-serif">Trust Scores</text>
-  </g>
-  
-  <!-- Row 4: Blockchains -->
-  <g>
-    <rect x="80" y="400" width="560" height="50" rx="12" fill="url(#cardBg)" stroke="#3a3a3c" stroke-width="1"/>
-    <text x="170" y="430" fill="#627EEA" font-size="12" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Ethereum</text>
-    <text x="310" y="430" fill="#9945FF" font-size="12" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Solana</text>
-    <text x="430" y="430" fill="#00C08B" font-size="12" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">NEAR</text>
-    <text x="550" y="430" fill="#FF6482" font-size="12" font-weight="600" text-anchor="middle" font-family="-apple-system, sans-serif">Polygon</text>
-  </g>
-  
-  <!-- Arrows -->
-  <path d="M450 70 L450 110" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M120 220 L120 260" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M320 220 L340 260" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M520 220 L500 260" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M720 220 L660 260" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M220 350 L180 390" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M380 350 L340 390" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M540 350 L500 390" stroke="#48484a" stroke-width="1.5" fill="none"/>
-  <path d="M700 350 L660 390" stroke="#48484a" stroke-width="1.5" fill="none"/>
-</svg>
-
-</section>
-
----
-
-<a name="quickstart"></a>
-
-<a name="get-started"></a>
-
-<!-- Quick Start -->
-<section style="max-width: 680px; margin: 0 auto 64px; padding: 0 24px;">
-
-### Get Started
-
-Install the SDK and deploy your first TEE-shielded agent.
-
-<!-- Coding Animation -->
-<div align="center" style="margin: 0 0 24px;">
-  <img src="https://user-images.githubusercontent.com/74038190/212284119-fbfd994d-8c2a-4a07-a75f-84e513833c1c.gif" width="200" alt="coffee coding">
-</div>
+## Quick Start (Local Development)
 
 ```bash
-# Install
-npm install @kuberna/sdk
+# 1. Install dependencies
+npm install
+cd backend && npm install && cd ..
+cd frontend && npm install && cd ..
 
-# Create agent
-npx kuberna create my-agent
+# 2. Set up database (PostgreSQL required)
+cp backend/.env.example backend/.env
+# Edit backend/.env with your DATABASE_URL
+cd backend && npx prisma migrate dev && cd ..
 
-# Deploy
-npx kuberna deploy --tee
+# 3. Start backend
+cd backend && npm run dev
+
+# 4. In another terminal, start frontend
+cd frontend && npm run dev
 ```
 
-<div style="margin-top: 32px; padding: 16px; border-radius: 12px; background: #f5f5f7;" class="dark:bg-[#2c2c2e]">
+## Deploy to Render (One-Click)
 
-```typescript
-import { KubernaSDK } from '@kuberna/sdk';
+Kuberna Labs is configured for zero-manual-intervention deployment on [Render](https://render.com).
 
-const sdk = new KubernaSDK({ apiKey: process.env.KUBERNA_API_KEY });
+### Prerequisites
 
-// Create and deploy TEE-shielded agent
-const agent = await sdk.createAgent({
-  name: 'YieldOptimizer',
-  secureExecution: 'TEE',
-  chains: ['ethereum', 'solana'],
-});
+1. A [Render account](https://dashboard.render.com/register)
+2. A PostgreSQL database (use [Render Managed PostgreSQL](https://render.com/docs/databases) or [Neon](https://neon.tech) / [Supabase](https://supabase.com))
+3. Smart contracts deployed on your target chain (testnet or mainnet)
+4. A [WalletConnect Project ID](https://cloud.walletconnect.com) (free)
 
-// Post an intent
-const intent = await sdk.postIntent({
-  task: 'Swap 1 ETH to USDC on Uniswap',
-  budget: 5, // USD
-});
+### Option A: Deploy via Blueprint (Recommended)
 
-// Done. Solvers compete to fulfill it.
-```
+1. Fork/clone this repository to your GitHub account.
+2. In Render Dashboard, click **New → Blueprint**.
+3. Connect your GitHub repo.
+4. Render reads `render.yaml` and asks for the environment variables marked `sync: false`.
+5. Fill in the required variables (see table below).
+6. Click **Apply** – Render builds and deploys automatically.
 
-</div>
+### Option B: Manual Web Service Setup
 
-</section>
+1. In Render Dashboard, click **New → Web Service**.
+2. Connect your GitHub repo.
+3. Configure the service:
 
----
+   | Setting | Value |
+   |---------|-------|
+   | **Name** | `kuberna-labs` |
+   | **Environment** | `Node` |
+   | **Build Command** | `./render-build.sh` |
+   | **Start Command** | `npm run start:render` |
+   | **Health Check Path** | `/health` |
+   | **Plan** | `Starter` or higher |
 
-<!-- Project Structure -->
-<section style="max-width: 680px; margin: 0 auto 64px; padding: 0 24px;">
+4. Add environment variables (see table below).
+5. Click **Create Web Service**.
 
-### Project Structure
+### Environment Variables
+
+Set these in your Render Dashboard under **Environment Variables**.
+
+#### Required
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db?sslmode=require` |
+| `JWT_SECRET` | JWT signing key (generate with `openssl rand -hex 32`) | `a1b2c3d4e5f6...` |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | From [WalletConnect Cloud](https://cloud.walletconnect.com) | `abc123...` |
+| `NEXT_PUBLIC_API_URL` | Your Render app URL + `/api` | `https://kuberna-labs.onrender.com/api` |
+| `NEXT_PUBLIC_APP_URL` | Your Render app URL | `https://kuberna-labs.onrender.com` |
+
+#### Required for Web3 Features
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `RPC_URL` | Blockchain RPC endpoint | `https://sepolia.base.org` |
+| `PRIVATE_KEY` | Backend wallet private key (minimal funds only!) | `0xabc...` |
+| `ESCROW_CONTRACT_ADDRESS` | Deployed Escrow contract | `0x123...` |
+| `INTENT_CONTRACT_ADDRESS` | Deployed Intent contract | `0x456...` |
+| `AGENT_REGISTRY_CONTRACT_ADDRESS` | Deployed AgentRegistry contract | `0x789...` |
+| `CERTIFICATE_CONTRACT_ADDRESS` | Deployed CertificateNFT contract | `0xabc...` |
+| `REPUTATION_CONTRACT_ADDRESS` | Deployed ReputationNFT contract | `0xdef...` |
+
+#### Optional
+
+| Variable | Description | Notes |
+|----------|-------------|-------|
+| `REDIS_URL` | Redis connection string | Rate limiting; falls back gracefully |
+| `STRIPE_SECRET_KEY` | Stripe API key | For fiat payments |
+| `OPENAI_API_KEY` | OpenAI API key | For AI agent features |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | SMTP credentials | For email notifications |
+| `FROM_EMAIL` | Sender email address | `noreply@yourdomain.com` |
+| `ALLOWED_ORIGINS` | Comma-separated CORS origins | `https://your-app.onrender.com` |
+
+### Setting Up a Database
+
+#### Render Managed PostgreSQL
+
+1. In Render Dashboard, click **New → PostgreSQL**.
+2. Select your plan (Free tier available).
+3. After creation, copy the **Internal Database URL**.
+4. Paste it as the `DATABASE_URL` environment variable in your Web Service.
+
+#### External Database (Neon / Supabase)
+
+1. Create a free PostgreSQL database on [Neon](https://neon.tech) or [Supabase](https://supabase.com).
+2. Copy the connection string (with `?sslmode=require`).
+3. Paste it as the `DATABASE_URL`.
+
+### Auto Deploys
+
+Render automatically deploys when you push to the connected branch. To trigger a manual deploy:
+
+- **Render Dashboard**: Go to your service → **Manual Deploy** → **Deploy latest commit**.
+- **CLI**: `curl -X POST https://api.render.com/v1/services/$SERVICE_ID/deploys -H "Authorization: Bearer $RENDER_API_KEY"`
+
+### Post-Deployment Verification
+
+1. Visit `https://your-app.onrender.com/health` – you should see `{"status":"ok"}`.
+2. Visit `https://your-app.onrender.com/` – you should see the Kuberna Labs frontend.
+3. Try registering a user or connecting a wallet.
+
+## Project Structure
 
 ```
 kuberna-labs/
-├── contracts/           # Smart contracts (Solidity)
-│   ├── Escrow.sol       # Secure fund management
-│   ├── Intent.sol     # ERC-7683 cross-chain intents
-│   └── Attestation.sol # TEE verification
-├── backend/           # Node.js API server
+├── render.yaml              # Render blueprint (infra as code)
+├── render-build.sh          # Build script for Render
+├── .renderignore            # Files excluded from deployment
+├── contracts/               # Smart contracts (Solidity)
+├── backend/                 # Node.js + Express + Prisma API
+│   ├── src/
+│   │   ├── index.ts         # Express server entry point
+│   │   ├── routes/          # REST API routes
+│   │   ├── services/        # Business logic services
+│   │   ├── middleware/       # Auth, validation, rate limiting
+│   │   └── utils/           # Prisma, logger, ABIs
+│   └── prisma/              # Schema and migrations
+├── frontend/                # Next.js dashboard (static export)
 │   └── src/
-│       ├── services/  # TEE, Payment, Blockchain
-│       └── routes/    # REST API
-├── sdk/               # @kuberna/sdk
-├── frontend/          # Next.js dashboard
-└── examples/         # Agent templates
+│       ├── pages/           # Application pages
+│       ├── components/      # Reusable UI components
+│       ├── lib/             # Wagmi, contracts, chains config
+│       ├── services/        # Smart contract interaction services
+│       └── context/         # Auth context provider
+├── sdk/                     # @kuberna/sdk TypeScript SDK
+└── examples/                # Agent template examples
 ```
 
-</section>
+## Architecture
 
----
+- **Backend API**: Express server on configurable `PORT` (Render assigns dynamically)
+- **Frontend**: Next.js static export served by Express middleware
+- **Database**: PostgreSQL via Prisma ORM (migrations run automatically on deploy)
+- **Blockchain**: Contract interaction via ethers.js/viem (separately deployed contracts)
+- **Optional**: Redis for rate limiting, NATS for message queue
 
-<!-- Resources / Footer -->
-<footer style="max-width: 680px; margin: 0 auto; padding: 48px 24px; border-top: 1px solid #d2d2d7;" class="dark:border-[#38383a]">
+## Smart Contracts
 
-<!-- Happy Coder Animation -->
-<div align="center" style="margin-bottom: 24px;">
-  <img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/3b4607a1-1cc6-41f1-926f-892ae880e7a5" width="120" alt="happy coder">
-</div>
+Smart contracts are deployed separately (not part of this Render deployment). After deploying contracts, set their addresses in the environment variables listed above. Deployment scripts are in `scripts/` and `hardhat.config.ts`.
 
-<div align="center" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: rgba(0,113,227,0.05); border-radius: 12px;">
+## License
 
-<a href="https://docs.kuberna.africa" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">📖 Documentation</a>
-<a href="https://discord.gg/kuberna" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">💬 Discord</a>
-<a href="https://x.com/Arnaud_Kennedy" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">𝕏 Twitter</a>
-<a href="https://github.com/kawacukennedy/kuberna-labs" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #0071e3; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(0,113,227,0.15)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='';this.style.transform=''">⭐ GitHub</a>
-
-</div>
-
-<p style="font-size: 0.75rem; color: #86868b; text-align: center;" class="dark:text-[#86868b]">
-  Made with <img src="https://user-images.githubusercontent.com/74038190/216122041-518ac897-8d92-4c6b-9b3f-ca01dcaf38ee.png" width="16" alt="fire"> in Kigali, Rwanda
-</p>
-
-</footer>
+MIT
