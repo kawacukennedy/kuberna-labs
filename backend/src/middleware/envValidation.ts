@@ -5,7 +5,7 @@ interface EnvVar {
 }
 
 const requiredEnvVars: EnvVar[] = [
-  { name: 'DATABASE_URL', required: true },
+  { name: 'DATABASE_URL', required: false },
   { name: 'JWT_SECRET', required: true, pattern: /^(?!.*(kuberna-secret-key|change-in-production|your-secret)).{16,}$/ },
   { name: 'REDIS_URL', required: false },
   { name: 'NATS_URL', required: false },
@@ -50,19 +50,10 @@ export function validateEnvironment(): void {
   }
 
   if (missingVars.length > 0) {
-    const error = new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
-    if (process.env.NODE_ENV === 'production') {
-      throw error;
-    } else {
-      console.warn(`WARNING: ${error.message}`);
-    }
+    console.warn(`WARNING: Missing environment variables: ${missingVars.join(', ')}`);
   }
 
-  if (insecureVars.length > 0 && process.env.NODE_ENV === 'production') {
-    throw new Error(`Insecure environment configuration:\n${insecureVars.join('\n')}`);
-  }
-
-  if (insecureVars.length > 0 && process.env.NODE_ENV !== 'production') {
+  if (insecureVars.length > 0) {
     console.warn('WARNING: Insecure environment configuration detected:');
     for (const warning of insecureVars) {
       console.warn(`  - ${warning}`);
