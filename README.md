@@ -52,7 +52,7 @@ Kuberna Labs is configured for zero-manual-intervention deployment on [Render](h
    |---------|-------|
    | **Name** | `kuberna-labs` |
    | **Environment** | `Node` |
-   | **Build Command** | `./render-build.sh` |
+   | **Build Command** | `npm run build:all` |
    | **Start Command** | `npm run start:render` |
    | **Health Check Path** | `/health` |
    | **Plan** | `Starter` or higher |

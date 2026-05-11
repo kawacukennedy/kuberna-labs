@@ -8,7 +8,7 @@ services:
     env: node
     region: oregon
     plan: starter
-    buildCommand: ./render-build.sh
+    buildCommand: npm run build:all
     startCommand: npm run start:render
     healthCheckPath: /health
     autoDeploy: true
