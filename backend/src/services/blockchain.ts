@@ -236,4 +236,29 @@ export function initializeBlockchainService(config?: BlockchainConfig): Blockcha
   return blockchainServiceInstance;
 }
 
-export const blockchainService = initializeBlockchainService();
+let _blockchainService: BlockchainService | null = null;
+
+export function getBlockchainService(): BlockchainService {
+  if (!_blockchainService) {
+    const privateKey = process.env.PRIVATE_KEY;
+    if (privateKey) {
+      _blockchainService = initializeBlockchainService();
+    } else {
+      throw new Error('PRIVATE_KEY environment variable is required for BlockchainService');
+    }
+  }
+  return _blockchainService;
+}
+
+export const blockchainService: BlockchainService = new Proxy({} as BlockchainService, {
+  get(_target, prop) {
+    return (...args: unknown[]) => {
+      const service = getBlockchainService();
+      const fn = (service as unknown as Record<string, unknown>)[prop as string];
+      if (typeof fn === 'function') {
+        return fn.apply(service, args);
+      }
+      return fn;
+    };
+  },
+});

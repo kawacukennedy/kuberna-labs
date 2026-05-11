@@ -25,9 +25,9 @@ if (!JWT_SECRET) {
   throw new Error('JWT_SECRET environment variable is required');
 }
 
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-if (!JWT_REFRESH_SECRET) {
-  throw new Error('JWT_REFRESH_SECRET environment variable is required');
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET + '_refresh';
+if (!process.env.JWT_REFRESH_SECRET && process.env.NODE_ENV === 'production') {
+  console.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
 }
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {

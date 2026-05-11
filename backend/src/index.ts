@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -63,7 +64,7 @@ const corsOptions: cors.CorsOptions = {
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
@@ -94,14 +95,21 @@ app.use('/api/disputes', disputeRouter);
 app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: {
-      message: 'Route not found',
-      code: 'NOT_FOUND',
-    },
-  });
+const frontendDistPath = path.join(__dirname, '../../frontend/out');
+app.use(express.static(frontendDistPath));
+
+app.use('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({
+      success: false,
+      error: {
+        message: 'Route not found',
+        code: 'NOT_FOUND',
+      },
+    });
+    return;
+  }
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 app.use(errorHandler);
@@ -111,7 +119,7 @@ async function startServer() {
     await connectDatabase();
 
     app.listen(PORT, () => {
-      logger.info(`🚀 Kuberna Labs API running on port ${PORT}`);
+      logger.info(`Kuberna Labs API running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
