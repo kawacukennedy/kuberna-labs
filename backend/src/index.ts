@@ -29,11 +29,6 @@ import { featureFlagRouter } from './routes/featureFlags.js';
 
 dotenv.config();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
-  'http://localhost:3000',
-  'http://localhost:3001',
-];
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const corsOptions: cors.CorsOptions = {
@@ -42,17 +37,22 @@ const corsOptions: cors.CorsOptions = {
       return callback(null, true);
     }
 
+    if (isProduction) {
+      return callback(null, true);
+    }
+
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
-    if (isProduction) {
-      logger.warn('CORS blocked', { origin });
-      const error = new Error('CORS policy violation: Origin not allowed');
-      return callback(error);
-    }
-
-    return callback(null, true);
+    logger.warn('CORS blocked', { origin });
+    const error = new Error('CORS policy violation: Origin not allowed');
+    return callback(error);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -94,17 +94,11 @@ app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
-logger.info(`Frontend dist path: ${frontendDistPath}`);
-
-const nextStaticPath = path.join(frontendDistPath, '_next');
-if (fs.existsSync(nextStaticPath)) {
-  logger.info(`Serving _next static files from: ${nextStaticPath}`);
-  app.use('/_next', express.static(nextStaticPath));
-} else {
-  logger.warn(`_next static directory not found: ${nextStaticPath}`);
+if (!fs.existsSync(frontendDistPath)) {
+  logger.warn(`Frontend dist path not found: ${frontendDistPath}`);
 }
-
-const rootStatic = express.static(frontendDistPath);
+logger.info(`Serving static files from: ${path.resolve(frontendDistPath)}`);
+app.use(express.static(frontendDistPath));
 
 app.use('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
@@ -120,17 +114,15 @@ app.use('*', (req, res, next) => {
   if (req.method !== 'GET') {
     return next();
   }
-  rootStatic(req, res, () => {
-    const indexPath = path.resolve(frontendDistPath, 'index.html');
-    if (!fs.existsSync(indexPath)) {
-      res.status(404).json({
-        success: false,
-        error: { message: 'Not found', code: 'NOT_FOUND' },
-      });
-      return;
-    }
-    res.sendFile(indexPath);
-  });
+  const indexPath = path.resolve(frontendDistPath, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    res.status(404).json({
+      success: false,
+      error: { message: 'Not found', code: 'NOT_FOUND' },
+    });
+    return;
+  }
+  res.sendFile(indexPath);
 });
 
 app.use(errorHandler);
