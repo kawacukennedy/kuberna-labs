@@ -4,6 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
+import { apiUrl } from '@/lib/api';
 import { User, Mail, Lock, Loader2, Eye, EyeOff, CheckCircle, Sparkles, Wallet, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -47,7 +48,7 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/register`, {
+      const response = await axios.post(apiUrl('/auth/register'), {
         fullName,
         email,
         password,

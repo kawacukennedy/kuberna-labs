@@ -4,6 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
+import { apiUrl } from '@/lib/api';
 import { useWallet } from '@/hooks/useWallet';
 import { Mail, Lock, Loader2, Eye, EyeOff, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -25,7 +26,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/login`, {
+      const response = await axios.post(apiUrl('/auth/login'), {
         email,
         password,
       });

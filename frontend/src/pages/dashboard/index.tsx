@@ -4,6 +4,7 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { CourseCard } from '@/components/shared/CourseCard';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
+import { apiUrl } from '@/lib/api';
 import { Cpu, BookOpen, DollarSign, Zap, Play, ChevronRight, Activity, Plus, User } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
@@ -16,7 +17,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/me`);
+        const response = await axios.get(apiUrl('/auth/me'));
         setStats(response.data.stats);
       } catch (err) {
         console.error('Failed to fetch stats', err);
