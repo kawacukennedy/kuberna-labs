@@ -138,8 +138,14 @@ kuberna-labs/
 │   │   ├── index.ts         # Express server entry point
 │   │   ├── routes/          # REST API routes
 │   │   ├── services/        # Business logic services
+│   │   │   ├── intentParser.ts    # NL intent parser (rule-based + compromise)
+│   │   │   ├── agentDecision.ts   # Agent decision engine (arbitrage/yield/stop-loss)
+│   │   │   ├── localMemory.ts     # RAG memory with TF-IDF + cosine similarity
+│   │   │   ├── embeddingService.ts # Transformers.js + hash fallback embeddings
+│   │   │   └── ragService.ts      # Retrieval-augmented generation pipeline
 │   │   ├── middleware/       # Auth, validation, rate limiting
 │   │   └── utils/           # Prisma, logger, ABIs
+│   └── prisma/              # Schema and migrations (includes IntentMemory, AgentMemory)
 │   └── prisma/              # Schema and migrations
 ├── frontend/                # Next.js dashboard (static export)
 │   └── src/
@@ -159,6 +165,53 @@ kuberna-labs/
 - **Database**: PostgreSQL via Prisma ORM (migrations run automatically on deploy)
 - **Blockchain**: Contract interaction via ethers.js/viem (separately deployed contracts)
 - **Optional**: Redis for rate limiting, NATS for message queue
+
+## AI Features (Fully Local, No External APIs)
+
+All AI functionality runs locally using open-source libraries. No API keys required.
+
+### 1. Natural Language Intent Parser
+- **Service**: `backend/src/services/intentParser.ts`
+- **API**: `POST /api/intents/parse` with `{ description: string }`
+- **Libraries**: `compromise` (NLP entity extraction), custom regex patterns
+- **Method**: Hybrid rule-based parser with RAG-enhanced retrieval
+- **Confidence scoring**: Rule match (0.6-1.0), keyword fallback (<0.6), RAG memory (>0.9)
+- **SDK**: `sdk.intent.parse("swap 1 ETH for USDC on Solana")`
+
+### 2. Agent Decision Engine
+- **Service**: `backend/src/services/agentDecision.ts`
+- **API**: `POST /api/agents/:id/decide` with `{ strategies: string[] }`
+- **Strategies**: Arbitrage (cross-DEX price diff), Yield optimization (APY comparison), Stop-loss (price drop detection)
+- **Market data**: Deterministic mock provider based on block timestamp
+
+### 3. AI-Assisted Agent Creation Wizard
+- **Component**: `frontend/src/components/AIAssistant.tsx`
+- **Integration**: Embedded in `/agents` page creation wizard
+- **Heuristics**: Framework/tool suggestions based on description keywords
+- **Intent parsing**: Real-time via backend `/api/intents/parse`
+
+### 4. Local Memory & RAG System
+- **Service**: `backend/src/services/localMemory.ts`
+- **Embeddings**: Transformers.js (`Xenova/all-MiniLM-L6-v2`) with hash fallback
+- **Storage**: Prisma models (`IntentMemory`, `AgentMemory`)
+- **Retrieval**: Cosine similarity + Jaccard coefficient matching
+- **Auto-learning**: Successful parses stored and retrieved for future queries
+
+### Configuration (.env)
+
+```bash
+# AI Parser
+AI_PARSER_RULE_SET=default
+AI_PARSER_MIN_CONFIDENCE=0.6
+
+# Agent Decision Engine
+AGENT_ARBITRAGE_THRESHOLD=0.5
+AGENT_MAX_SLIPPAGE=1.0
+AGENT_STOP_LOSS_PERCENT=5.0
+AGENT_MIN_YIELD_DIFF=1.0
+```
+
+> **Note**: Transformers.js models are auto-downloaded on first use. The embedding model (~80MB) is cached at `~/.cache/xenova/transformers-v3/`.
 
 ## Smart Contracts
 

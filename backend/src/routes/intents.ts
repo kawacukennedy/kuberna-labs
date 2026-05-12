@@ -4,7 +4,6 @@ import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
 import { intentLimiter } from '../middleware/rateLimiter.js';
-import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 

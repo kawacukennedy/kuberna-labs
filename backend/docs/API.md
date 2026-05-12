@@ -90,22 +90,105 @@ Content-Type: application/json
 | GET    | /agents/:id/bids       | Get agent bids       |
 | GET    | /agents/:id/tasks      | Get agent tasks      |
 | GET    | /agents/:id/reputation | Get agent reputation |
+| POST   | /agents/:id/decide     | Run decision engine  |
 
 ### Intents
 
-| Method | Endpoint                        | Description        |
-| ------ | ------------------------------- | ------------------ |
-| GET    | /intents                        | List all intents   |
-| GET    | /intents/:id                    | Get intent details |
-| POST   | /intents                        | Create new intent  |
-| PATCH  | /intents/:id                    | Update intent      |
-| DELETE | /intents/:id                    | Delete intent      |
-| POST   | /intents/:id/bids               | Submit bid         |
-| POST   | /intents/:id/bids/:bidId/accept | Accept bid         |
-| POST   | /intents/:id/bids/:bidId/reject | Reject bid         |
-| POST   | /intents/:id/complete           | Complete intent    |
-| POST   | /intents/:id/dispute            | Raise dispute      |
-| GET    | /intents/:id/bids               | Get intent bids    |
+| Method | Endpoint                        | Description              |
+| ------ | ------------------------------- | ------------------------ |
+| GET    | /intents                        | List all intents         |
+| GET    | /intents/:id                    | Get intent details       |
+| POST   | /intents                        | Create new intent        |
+| PATCH  | /intents/:id                    | Update intent            |
+| DELETE | /intents/:id                    | Delete intent            |
+| POST   | /intents/bids                   | Submit bid               |
+| POST   | /intents/:id/bids/:bidId/accept | Accept bid               |
+| POST   | /intents/:id/bids/:bidId/reject | Reject bid               |
+| POST   | /intents/:id/complete           | Complete intent          |
+| POST   | /intents/:id/dispute            | Raise dispute            |
+| GET    | /intents/:id/bids               | Get intent bids          |
+| POST   | /intents/parse                  | Parse intent from NL     |
+
+### AI Features
+
+| Method | Endpoint               | Description                            |
+| ------ | ---------------------- | -------------------------------------- |
+| POST   | /intents/parse         | Parse natural language to intent       |
+| POST   | /agents/:id/decide     | Run agent decision engine              |
+
+#### POST /intents/parse
+
+Parse a natural language description into a structured intent object using the local rule-based parser with RAG enhancement.
+
+**Request:**
+```json
+{
+  "description": "swap 1 ETH for USDC on Solana"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "sourceChain": "solana",
+    "sourceToken": "ETH",
+    "sourceAmount": "1",
+    "destChain": "solana",
+    "destToken": "USDC",
+    "minDestAmount": "0",
+    "timeoutSeconds": 600,
+    "budget": 10,
+    "currency": "USD",
+    "confidence": 0.85,
+    "rawDescription": "swap 1 ETH for USDC on Solana"
+  }
+}
+```
+
+**Supported patterns:**
+- `swap <amount> <token> for <token> on <chain>`
+- `bridge <amount> <token> from <chain> to <chain>`
+- `send/transfer <amount> <token> from <chain> to <chain>`
+- `<amount> <token> -> <token> on <chain>`
+- Keyword fallback for unstructured descriptions
+
+#### POST /agents/:id/decide
+
+Evaluate market conditions and decide on an action for an autonomous agent. Uses a rule-based engine with mock market data.
+
+**Request:**
+```json
+{
+  "strategies": ["arbitrage", "yield", "stopLoss"]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "agentId": "uuid",
+    "agentName": "My Agent",
+    "strategies": ["arbitrage"],
+    "action": {
+      "type": "postIntent",
+      "intentParams": {
+        "sourceToken": "ETH",
+        "destToken": "USDC",
+        "sourceAmount": "1000"
+      },
+      "reason": "Arbitrage opportunity: ETH 2.5% difference between Uniswap and SushiSwap",
+      "confidence": 0.75
+    },
+    "evaluatedAt": "2026-05-12T09:00:00.000Z"
+  }
+}
+```
+
+**Available strategies:** `arbitrage`, `yield`, `stopLoss`
 
 ### Courses
 

@@ -386,6 +386,35 @@ model Reputation {
   lastCalculatedAt DateTime @default(now())
   
   agent          Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  memories       AgentMemory[]
+}
+
+model IntentMemory {
+  id          String   @id @default(uuid())
+  description String
+  intentData  Json
+  confidence  Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([description])
+  @@index([createdAt(sort: Desc)])
+}
+
+model AgentMemory {
+  id           String   @id @default(uuid())
+  agentId      String
+  decisionType String
+  marketData   Json
+  action       Json
+  success      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  agent        Reputation @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([decisionType])
+  @@index([createdAt(sort: Desc)])
 }
 
 model TEEDeployment {

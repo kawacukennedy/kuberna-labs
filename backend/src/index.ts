@@ -10,6 +10,8 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { defaultTimeout } from './middleware/timeout.js';
 import { connectDatabase } from './utils/prisma.js';
 import logger from './utils/logger.js';
+import { localMemory } from './services/localMemory.js';
+import { embeddingService } from './services/embeddingService.js';
 
 import { correlationId } from './middleware/correlationId.js';
 import { authRouter } from './routes/auth.js';
@@ -26,6 +28,8 @@ import { apiKeyRouter } from './routes/apiKeys.js';
 import { disputeRouter } from './routes/disputes.js';
 import { complianceRouter } from './routes/compliance.js';
 import { featureFlagRouter } from './routes/featureFlags.js';
+import { intentParserRouter } from './routes/intentParser.js';
+import { agentDecisionRouter } from './routes/agentDecision.js';
 
 dotenv.config();
 
@@ -37,14 +41,14 @@ const corsOptions: cors.CorsOptions = {
       return callback(null, true);
     }
 
-    if (isProduction) {
-      return callback(null, true);
-    }
-
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001')
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || (isProduction ? '' : 'http://localhost:3000,http://localhost:3001'))
       .split(',')
       .map(s => s.trim())
       .filter(Boolean);
+
+    if (allowedOrigins.length === 0) {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
@@ -92,6 +96,8 @@ app.use('/api/api-keys', apiKeyRouter);
 app.use('/api/disputes', disputeRouter);
 app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
+app.use('/api/intents', intentParserRouter);
+app.use('/api/agents', agentDecisionRouter);
 
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
 if (!fs.existsSync(frontendDistPath)) {
@@ -132,6 +138,14 @@ async function startServer() {
     await connectDatabase();
   } catch (error) {
     logger.warn('Database unavailable - starting without DB connection', { error });
+  }
+
+  try {
+    await embeddingService.initialize();
+    await localMemory.initialize();
+    logger.info('AI services initialized');
+  } catch (error) {
+    logger.warn('AI services initialization skipped', { error });
   }
 
   app.listen(PORT, () => {

@@ -6,6 +6,14 @@ export { MessageQueueService, messageQueue } from './queue.js';
 export { FiatOnRampService, fiatOnRamp } from './fiat.js';
 export { WebhookService, webhookService } from './webhook.js';
 export { AIService, aiService } from './ai.js';
+export { IntentParserService, intentParserService, parseIntent } from './intentParser.js';
+export type { StructuredIntent } from './intentParser.js';
+export { AgentDecisionEngine, agentDecisionEngine, marketData } from './agentDecision.js';
+export type { Action, DecisionStrategy, MarketState } from './agentDecision.js';
+export { LocalMemoryService, localMemory } from './localMemory.js';
+export { EmbeddingService, embeddingService } from './embeddingService.js';
+export { RAGService, ragService } from './ragService.js';
+export type { RAGContext } from './ragService.js';
 export {
   ChainAdapter,
   EthereumAdapter,
