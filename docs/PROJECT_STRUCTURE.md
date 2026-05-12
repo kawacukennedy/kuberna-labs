@@ -176,28 +176,103 @@ pages/
 
 ## SDK Usage
 
+The Kuberna SDK is published on npm as [`@kuberna/sdk`](https://www.npmjs.com/package/@kuberna/sdk).
+
+```bash
+npm install @kuberna/sdk
+```
+
+### Client Initialization
+
 ```typescript
-import { KubernaSDK } from '@kuberna/sdk';
+import { KubernaClient } from '@kuberna/sdk';
 
-const sdk = new KubernaSDK({
-  apiKey: 'your-api-key',
-  rpcUrl: 'https://rpc.ankr.com/eth',
+const client = new KubernaClient({
+  baseUrl: 'https://api.kuberna.com',
+});
+```
+
+### AI Intent Parsing
+
+```typescript
+// Parse natural language into structured intent
+const intent = await client.ai.parseIntent('swap 1 ETH for USDC on Solana');
+// { sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0', destChain: 'solana', ... }
+
+// Get agent decision
+const decision = await client.ai.getDecision('agent-id', {
+  strategies: ['arbitrage', 'yield'],
 });
 
-// Create an agent
-const agent = await sdk.agent.create({
-  name: 'My Trading Bot',
-  framework: 'elizaos',
-  description: 'Automated DeFi trading',
+// Analyze market conditions
+const analysis = await client.ai.analyze('ETH', {
+  indicators: ['price', 'volume'],
 });
+```
 
-// Post an intent
-const intent = await sdk.intent.create({
-  description: 'Swap ETH for USDC',
+### Authentication
+
+```typescript
+const tokens = await client.auth.login({
+  wallet: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18',
+  signature: '0x...',
+});
+```
+
+### Payment Intents
+
+```typescript
+const payment = await client.payment.createIntent({
   sourceChain: 'ethereum',
-  destChain: 'ethereum',
-  budget: '1000',
+  sourceToken: 'USDC',
+  sourceAmount: '500',
+  destChain: 'arbitrum',
+  destToken: 'USDC',
 });
+
+const status = await client.payment.getStatus(payment.id);
+```
+
+### TEE Deployment
+
+```typescript
+const enclave = await client.tee.createEnclave({
+  name: 'trading-bot',
+  image: 'kuberna/agent:latest',
+});
+
+const attestation = await client.tee.verifyAttestation(enclave.id);
+```
+
+### Certificate Management
+
+```typescript
+const cert = await client.certificate.mint({
+  courseId: 'defi-101',
+  recipient: '0x...',
+});
+```
+
+### Error Handling
+
+```typescript
+import { KubernaError, ValidationError, NotFoundError } from '@kuberna/sdk';
+
+try {
+  await client.payment.getStatus('invalid-id');
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error('Validation:', error.details);
+  }
+}
+```
+
+### SDK Tests
+
+```bash
+cd sdk
+npm install
+npm test
 ```
 
 ## Environment Variables

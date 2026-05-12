@@ -70,7 +70,7 @@ We are currently in the development phase. Professional security audits are plan
 ### Can I interact with the contracts directly?
 
 Yes! All our contracts are open and permissionless. You can:
-- Use our SDK for easy integration
+- Use our [SDK](https://www.npmjs.com/package/@kuberna/sdk) (`npm install @kuberna/sdk`) for easy integration
 - Call contracts directly using Web3 libraries
 - Build your own interfaces
 

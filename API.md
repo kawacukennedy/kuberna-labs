@@ -825,24 +825,83 @@ Configure webhooks to receive real-time notifications for events.
 
 For easier integration, use the Kuberna SDK:
 
+```bash
+npm install @kuberna/sdk
+```
+
+### Client Initialization
+
 ```typescript
-import { KubernaSDK } from '@kuberna/sdk';
+import { KubernaClient } from '@kuberna/sdk';
 
-const sdk = new KubernaSDK({
-  apiKey: 'your-api-key',
-  network: 'mainnet'
+const client = new KubernaClient({
+  baseUrl: 'https://api.kuberna.io/v1',
+});
+```
+
+### Authentication
+
+```typescript
+const tokens = await client.auth.login({
+  wallet: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18',
+  signature: '0x...',
+});
+// { accessToken: '...', refreshToken: '...' }
+```
+
+### Payment Intents
+
+```typescript
+const intent = await client.payment.createIntent({
+  sourceChain: 'ethereum',
+  sourceToken: 'USDC',
+  sourceAmount: '500',
+  destChain: 'arbitrum',
+  destToken: 'USDC',
+  minDestAmount: '499',
+  timeoutSeconds: 3600,
 });
 
-// Create payment intent
-const intent = await sdk.payments.createIntent({
-  amount: '100',
-  token: '0x...',
-  chain: 'ethereum'
+const status = await client.payment.getStatus(intent.id);
+```
+
+### TEE Deployment
+
+```typescript
+const enclave = await client.tee.createEnclave({
+  name: 'agent-123',
+  image: 'kuberna/agent:latest',
 });
 
-// Deploy to TEE
-const deployment = await sdk.tee.deploy({
-  agentId: 'agent-123',
-  provider: 'phala'
+const attestation = await client.tee.verifyAttestation(enclave.id);
+```
+
+### Intent Parsing (AI)
+
+```typescript
+const parsed = await client.ai.parseIntent('swap 1 ETH for USDC on Solana');
+// { sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0', destChain: 'solana', ... }
+```
+
+### Certificates
+
+```typescript
+const cert = await client.certificate.mint({
+  courseId: 'defi-101',
+  recipient: '0x...',
 });
+```
+
+### Error Handling
+
+```typescript
+import { ValidationError, NotFoundError } from '@kuberna/sdk';
+
+try {
+  await client.payment.getStatus('invalid-id');
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error('Validation failed:', error.details);
+  }
+}
 ```

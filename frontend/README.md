@@ -17,3 +17,10 @@ To become the definitive operating system for the agentic economy, where intelli
 - Framer Motion
 - Lucide React
 - Wagmi / Viem (Web3)
+- `@kuberna/sdk` (published on [npm](https://www.npmjs.com/package/@kuberna/sdk))
+
+## Installation
+
+```bash
+npm install @kuberna/sdk
+```

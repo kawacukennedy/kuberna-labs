@@ -213,6 +213,30 @@ AGENT_MIN_YIELD_DIFF=1.0
 
 > **Note**: Transformers.js models are auto-downloaded on first use. The embedding model (~80MB) is cached at `~/.cache/xenova/transformers-v3/`.
 
+## SDK (npm Package)
+
+The Kuberna SDK is published on npm as [`@kuberna/sdk`](https://www.npmjs.com/package/@kuberna/sdk).
+
+```bash
+npm install @kuberna/sdk
+```
+
+```typescript
+import { KubernaClient } from '@kuberna/sdk';
+
+const client = new KubernaClient({ baseUrl: 'https://api.kuberna.com' });
+
+// Parse intents, manage agents, handle payments, deploy to TEE
+const intent = await client.ai.parseIntent('swap 1 ETH for USDC on Solana');
+const agent = await client.tee.createEnclave({ name: 'my-agent' });
+const payment = await client.payment.createIntent({
+  sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0',
+  destChain: 'solana', destToken: 'USDC',
+});
+```
+
+See [SDK README](./sdk/README.md) for complete API documentation.
+
 ## Smart Contracts
 
 Smart contracts are deployed separately (not part of this Render deployment). After deploying contracts, set their addresses in the environment variables listed above. Deployment scripts are in `scripts/` and `hardhat.config.ts`.

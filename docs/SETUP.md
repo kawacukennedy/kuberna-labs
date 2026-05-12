@@ -23,7 +23,7 @@ kuberna-labs/
 │   ├── src/          # TypeScript source code
 │   ├── prisma/       # Database schema and migrations
 │   └── __tests__/    # Backend tests
-├── sdk/              # TypeScript SDK for agents
+├── sdk/              # @kuberna/sdk TypeScript SDK (published on npm)
 ├── frontend/         # Web UI (if applicable)
 └── examples/         # Example implementations
 ```
@@ -43,7 +43,28 @@ cd web3-infrastructure
 npm install
 ```
 
-### 3. Install Backend Dependencies
+### 3. Install SDK (npm Package)
+
+The SDK is published on npm as [`@kuberna/sdk`](https://www.npmjs.com/package/@kuberna/sdk).
+
+```bash
+npm install @kuberna/sdk
+```
+
+```typescript
+import { KubernaClient } from '@kuberna/sdk';
+
+const client = new KubernaClient({ baseUrl: 'https://api.kuberna.com' });
+
+// Parse intents, manage payments, deploy to TEE
+const intent = await client.ai.parseIntent('swap 1 ETH for USDC');
+const payment = await client.payment.createIntent({
+  sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0',
+  destChain: 'solana', destToken: 'USDC',
+});
+```
+
+### 4. Install Backend Dependencies
 
 ```bash
 cd backend

@@ -8,6 +8,35 @@
 
 ## Installation
 
+### Using the npm Package (Recommended)
+
+```bash
+# Install the published SDK package directly
+npm install @kuberna/sdk
+```
+
+```typescript
+import { KubernaClient } from '@kuberna/sdk';
+
+const client = new KubernaClient({
+  baseUrl: 'https://api.kuberna.com',
+});
+
+// Parse a cross-chain intent
+const intent = await client.ai.parseIntent('swap 1 ETH for USDC on Solana');
+
+// Create a payment
+const payment = await client.payment.createIntent({
+  sourceChain: 'ethereum',
+  sourceToken: 'ETH',
+  sourceAmount: '1.0',
+  destChain: 'solana',
+  destToken: 'USDC',
+});
+```
+
+### From Source (Full Platform)
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -332,7 +361,7 @@ redis-cli ping
 4. 🧪 Write comprehensive tests
 5. 🚀 Deploy to testnet
 6. 🎯 Build backend services
-7. 📦 Develop SDK
+7. 📦 Use the SDK: `npm install @kuberna/sdk` — see [SDK README](./sdk/README.md)
 8. 🌐 Create frontend
 
 Happy coding! 🚀

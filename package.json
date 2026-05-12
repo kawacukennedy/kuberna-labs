@@ -101,6 +101,7 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^1.4.0",
+    "@kuberna/sdk": "^1.0.1",
     "@openzeppelin/contracts": "^5.0.2",
     "@tanstack/react-query": "^5.17.0",
     "viem": "^2.0.0",
