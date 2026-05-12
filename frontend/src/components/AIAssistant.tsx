@@ -102,9 +102,9 @@ function extractAgentName(description: string): string {
 
 function generateSuggestion(description: string, intentResult?: IntentParseResult): AgentSuggestion {
   const name = extractAgentName(description);
-  let framework = DEFAULT_HEURISTIC.framework;
-  let tools = [...DEFAULT_HEURISTIC.tools];
-  let deploymentType = DEFAULT_HEURISTIC.deploymentType;
+  let framework: AgentSuggestion['framework'] = DEFAULT_HEURISTIC.framework;
+  let tools: string[] = [...DEFAULT_HEURISTIC.tools];
+  let deploymentType: AgentSuggestion['deploymentType'] = DEFAULT_HEURISTIC.deploymentType;
   let model = DEFAULT_HEURISTIC.model;
 
   for (const heuristic of FRAMEWORK_HEURISTICS) {
