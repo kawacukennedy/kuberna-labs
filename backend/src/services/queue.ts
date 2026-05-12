@@ -1,4 +1,5 @@
 import { connect, JetStreamClient, NatsConnection, Subscription } from "nats";
+import logger from '../utils/logger.js';
 
 export interface IntentMessage {
   intentId: string;
@@ -68,9 +69,9 @@ export class MessageQueueService {
       this.js = this.nc.jetstream();
       this.connected = true;
 
-      console.log("Connected to NATS");
+      logger.info("Connected to NATS");
     } catch (error) {
-      console.error("Failed to connect to NATS:", error);
+      logger.error("Failed to connect to NATS:", error);
       this.connected = false;
     }
   }
@@ -95,7 +96,7 @@ export class MessageQueueService {
 
   async publish(subject: string, data: unknown): Promise<boolean> {
     if (!this.js) {
-      console.warn("NATS not connected, message not published");
+      logger.warn("NATS not connected, message not published");
       return false;
     }
 
@@ -104,7 +105,7 @@ export class MessageQueueService {
       await this.js.publish(subject, new TextEncoder().encode(payload));
       return true;
     } catch (error) {
-      console.error("Failed to publish message:", error);
+      logger.error("Failed to publish message:", error);
       return false;
     }
   }
@@ -130,14 +131,15 @@ export class MessageQueueService {
     callback: (data: unknown) => void,
   ): Promise<string> {
     if (!this.nc) {
-      throw new Error("NATS not connected");
+      logger.warn("NATS not connected, subscription skipped");
+      return "";
     }
 
     const subscriptionId = `${subject}-${Date.now()}`;
     const sub = this.nc.subscribe(subject, {
       callback: (err, msg) => {
         if (err) {
-          console.error("Subscription error:", err);
+          logger.error("Subscription error:", err);
           return;
         }
 
@@ -145,7 +147,7 @@ export class MessageQueueService {
           const data = JSON.parse(new TextDecoder().decode(msg.data));
           callback(data);
         } catch (error) {
-          console.error("Failed to parse message:", error);
+          logger.error("Failed to parse message:", error);
         }
       },
     });
@@ -203,7 +205,8 @@ export class MessageQueueService {
     callback: (data: unknown) => void,
   ): Promise<string> {
     if (!this.nc) {
-      throw new Error("NATS not connected");
+      logger.warn("NATS not connected, queue subscription skipped");
+      return "";
     }
 
     const subscriptionId = `${subject}-${queue}-${Date.now()}`;
@@ -211,7 +214,7 @@ export class MessageQueueService {
       queue,
       callback: (err, msg) => {
         if (err) {
-          console.error("Queue subscription error:", err);
+          logger.error("Queue subscription error:", err);
           return;
         }
 
@@ -219,7 +222,7 @@ export class MessageQueueService {
           const data = JSON.parse(new TextDecoder().decode(msg.data));
           callback(data);
         } catch (error) {
-          console.error("Failed to parse message:", error);
+          logger.error("Failed to parse message:", error);
         }
       },
     });

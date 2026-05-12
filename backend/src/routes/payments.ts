@@ -4,14 +4,15 @@ import Stripe from 'stripe';
 import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
-import { authenticate, requireRoles } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validation.js';
+import logger from '../utils/logger.js';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 if (!stripeSecretKey) {
-  console.warn('STRIPE_SECRET_KEY not configured - Stripe features disabled');
+  logger.warn('STRIPE_SECRET_KEY not configured - Stripe features disabled');
 }
 
 const stripe = stripeSecretKey
@@ -254,7 +255,7 @@ router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: Nex
     }
 
     if (!stripeWebhookSecret) {
-      console.error('STRIPE_WEBHOOK_SECRET not configured');
+      logger.error('STRIPE_WEBHOOK_SECRET not configured');
       return res.status(500).json({ error: 'Webhook configuration error' });
     }
 

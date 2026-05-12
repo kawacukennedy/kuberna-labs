@@ -155,7 +155,12 @@ export class PaymentService {
 
   private async connectNATS(): Promise<void> {
     if (!this.natsConnection) {
-      this.natsConnection = await connect({ servers: this.config.natsUrl });
+      try {
+        this.natsConnection = await connect({ servers: this.config.natsUrl });
+      } catch (error) {
+        logger.warn('Failed to connect to NATS, continuing without messaging', { error: String(error) });
+        this.natsConnection = null;
+      }
     }
   }
 
@@ -395,14 +400,18 @@ export class PaymentService {
     // Publish notification to solver network via NATS
     await this.connectNATS();
     if (this.natsConnection) {
-      const js = this.natsConnection.jetstream();
-      const publishData: NatsPublishData = {
-        intentId,
-        escrowId,
-        chain,
-        timestamp: new Date().toISOString(),
-      };
-      await js.publish('intents.funded', JSON.stringify(publishData));
+      try {
+        const js = this.natsConnection.jetstream();
+        const publishData: NatsPublishData = {
+          intentId,
+          escrowId,
+          chain,
+          timestamp: new Date().toISOString(),
+        };
+        await js.publish('intents.funded', JSON.stringify(publishData));
+      } catch (error) {
+        logger.warn('Failed to publish NATS message', { error: String(error) });
+      }
     }
   }
 

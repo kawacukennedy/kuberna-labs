@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import logger from '../utils/logger.js';
 import jwt, { JsonWebTokenError, TokenExpiredError, SignOptions } from 'jsonwebtoken';
 import { UnauthorizedError, ForbiddenError } from './errorHandler.js';
 import { prisma } from '../utils/prisma.js';
@@ -22,12 +23,12 @@ declare global {
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  console.warn('JWT_SECRET not set - authentication will be disabled');
+  logger.warn('JWT_SECRET not set - authentication will be disabled');
 }
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || (JWT_SECRET ? JWT_SECRET + '_refresh' : undefined);
 if (!process.env.JWT_REFRESH_SECRET && process.env.NODE_ENV === 'production') {
-  console.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
+  logger.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
 }
 
 function getJwtSecret(): string {

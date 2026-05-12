@@ -90,7 +90,7 @@ export class BlockchainListener {
   }
 
   async start(): Promise<void> {
-    console.log('Starting Blockchain Listener...');
+    logger.info('Starting Blockchain Listener...');
     this.isRunning = true;
 
     // Connect to NATS
@@ -104,39 +104,39 @@ export class BlockchainListener {
     // Start fallback polling mechanism
     this.startFallbackPolling();
 
-    console.log('Blockchain Listener started successfully');
+    logger.info('Blockchain Listener started successfully');
   }
 
   async stop(): Promise<void> {
-    console.log('Stopping Blockchain Listener...');
+    logger.info('Stopping Blockchain Listener...');
     this.isRunning = false;
 
     // Close all WebSocket providers
     for (const [chainName, provider] of this.providers.entries()) {
       try {
         await provider.destroy();
-        console.log(`Closed provider for ${chainName}`);
+        logger.info(`Closed provider for ${chainName}`);
       } catch (error) {
-        console.error(`Error closing provider for ${chainName}:`, error);
+        logger.error(`Error closing provider for ${chainName}:`, error);
       }
     }
 
     // Close NATS connection
     if (this.natsConnection) {
       await this.natsConnection.close();
-      console.log('Closed NATS connection');
+      logger.info('Closed NATS connection');
     }
 
-    console.log('Blockchain Listener stopped');
+    logger.info('Blockchain Listener stopped');
   }
 
   private async connectNATS(): Promise<void> {
     try {
       this.natsConnection = await connect({ servers: this.config.natsUrl });
-      console.log('Connected to NATS');
+      logger.info('Connected to NATS');
     } catch (error) {
-      console.error('Failed to connect to NATS:', error);
-      throw error;
+      logger.error('Failed to connect to NATS:', error);
+      this.natsConnection = null;
     }
   }
 
@@ -151,17 +151,17 @@ export class BlockchainListener {
 
       // Set up reconnection logic
       provider.on('error', async (error) => {
-        console.error(`Provider error on ${chainName}:`, error);
+        logger.error(`Provider error on ${chainName}:`, error);
         await this.reconnectProvider(chainName);
       });
 
       // Subscribe to contract events
       await this.subscribeToContracts(chainName, chainConfig, provider);
 
-      console.log(`Initialized chain: ${chainName}`);
+      logger.info(`Initialized chain: ${chainName}`);
       this.reconnectAttempts.set(chainName, 0);
     } catch (error) {
-      console.error(`Failed to initialize chain ${chainName}:`, error);
+      logger.error(`Failed to initialize chain ${chainName}:`, error);
       await this.reconnectProvider(chainName);
     }
   }
@@ -170,12 +170,12 @@ export class BlockchainListener {
     const attempts = this.reconnectAttempts.get(chainName) || 0;
 
     if (attempts >= this.maxReconnectAttempts) {
-      console.error(`Max reconnection attempts reached for ${chainName}. Giving up.`);
+      logger.error(`Max reconnection attempts reached for ${chainName}. Giving up.`);
       return;
     }
 
     const delay = this.baseReconnectDelay * Math.pow(2, attempts); // Exponential backoff
-    console.log(
+    logger.info(
       `Reconnecting to ${chainName} in ${delay}ms (attempt ${attempts + 1}/${this.maxReconnectAttempts})`
     );
 
@@ -232,7 +232,7 @@ export class BlockchainListener {
         await this.handleFundsReleased(chainName, escrowId, recipient, amount, event);
       });
 
-      console.log(`Subscribed to Escrow events on ${chainName}`);
+      logger.info(`Subscribed to Escrow events on ${chainName}`);
     }
 
     // Subscribe to Intent contract events
@@ -252,7 +252,7 @@ export class BlockchainListener {
         await this.handleBidAccepted(chainName, intentId, solver, event);
       });
 
-      console.log(`Subscribed to Intent events on ${chainName}`);
+      logger.info(`Subscribed to Intent events on ${chainName}`);
     }
 
     // Subscribe to Certificate contract events
@@ -278,7 +278,7 @@ export class BlockchainListener {
         }
       );
 
-      console.log(`Subscribed to Certificate events on ${chainName}`);
+      logger.info(`Subscribed to Certificate events on ${chainName}`);
     }
 
     // Subscribe to Attestation contract events
@@ -305,7 +305,7 @@ export class BlockchainListener {
         }
       );
 
-      console.log(`Subscribed to Attestation events on ${chainName}`);
+      logger.info(`Subscribed to Attestation events on ${chainName}`);
     }
   }
 
@@ -330,7 +330,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`EscrowCreated event on ${chain}: ${escrowId}`);
+      logger.info(`EscrowCreated event on ${chain}: ${escrowId}`);
 
       // Mark as processed
       await this.markEventProcessed(
@@ -341,7 +341,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling EscrowCreated event:', error);
+      logger.error('Error handling EscrowCreated event:', error);
     }
   }
 
@@ -362,7 +362,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`EscrowFunded event on ${chain}: ${escrowId}`);
+      logger.info(`EscrowFunded event on ${chain}: ${escrowId}`);
 
       // Update intent status to bidding
       // Note: We need to find the intent by escrowId
@@ -386,7 +386,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling EscrowFunded event:', error);
+      logger.error('Error handling EscrowFunded event:', error);
     }
   }
 
@@ -406,7 +406,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`EscrowAssigned event on ${chain}: ${escrowId} to ${executor}`);
+      logger.info(`EscrowAssigned event on ${chain}: ${escrowId} to ${executor}`);
 
       // Mark as processed
       await this.markEventProcessed(
@@ -417,7 +417,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling EscrowAssigned event:', error);
+      logger.error('Error handling EscrowAssigned event:', error);
     }
   }
 
@@ -437,7 +437,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`TaskCompleted event on ${chain}: ${escrowId}`);
+      logger.info(`TaskCompleted event on ${chain}: ${escrowId}`);
 
       // Mark as processed
       await this.markEventProcessed(
@@ -448,7 +448,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling TaskCompleted event:', error);
+      logger.error('Error handling TaskCompleted event:', error);
     }
   }
 
@@ -469,7 +469,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`FundsReleased event on ${chain}: ${escrowId} to ${recipient}`);
+      logger.info(`FundsReleased event on ${chain}: ${escrowId} to ${recipient}`);
 
       // Mark as processed
       await this.markEventProcessed(
@@ -480,7 +480,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling FundsReleased event:', error);
+      logger.error('Error handling FundsReleased event:', error);
     }
   }
 
@@ -501,7 +501,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`IntentCreated event on ${chain}: ${intentId}`);
+      logger.info(`IntentCreated event on ${chain}: ${intentId}`);
 
       // Mark as processed
       await this.markEventProcessed(
@@ -512,7 +512,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling IntentCreated event:', error);
+      logger.error('Error handling IntentCreated event:', error);
     }
   }
 
@@ -533,7 +533,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`BidSubmitted event on ${chain}: ${intentId} by ${solver}`);
+      logger.info(`BidSubmitted event on ${chain}: ${intentId} by ${solver}`);
 
       // Publish notification
       await this.publishToNATS('bids.submitted', {
@@ -553,7 +553,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling BidSubmitted event:', error);
+      logger.error('Error handling BidSubmitted event:', error);
     }
   }
 
@@ -573,7 +573,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`BidAccepted event on ${chain}: ${intentId} by ${solver}`);
+      logger.info(`BidAccepted event on ${chain}: ${intentId} by ${solver}`);
 
       // Publish notification
       await this.publishToNATS('bids.accepted', {
@@ -592,7 +592,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling BidAccepted event:', error);
+      logger.error('Error handling BidAccepted event:', error);
     }
   }
 
@@ -614,7 +614,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`CertificateMinted event on ${chain}: ${tokenId}`);
+      logger.info(`CertificateMinted event on ${chain}: ${tokenId}`);
 
       // Store certificate record in database
       // Note: This would require finding the user by recipient address
@@ -629,7 +629,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling CertificateMinted event:', error);
+      logger.error('Error handling CertificateMinted event:', error);
     }
   }
 
@@ -652,7 +652,7 @@ export class BlockchainListener {
         return;
       }
 
-      console.log(`AttestationCreated event on ${chain}: ${attestationId}`);
+      logger.info(`AttestationCreated event on ${chain}: ${attestationId}`);
 
       // Store attestation record
       // This would be stored in a separate attestations table
@@ -666,7 +666,7 @@ export class BlockchainListener {
         event.blockNumber
       );
     } catch (error) {
-      console.error('Error handling AttestationCreated event:', error);
+      logger.error('Error handling AttestationCreated event:', error);
     }
   }
 
@@ -760,16 +760,16 @@ export class BlockchainListener {
     data: NatsIntentsFundedData | NatsBidsSubmittedData | NatsBidsAcceptedData
   ): Promise<void> {
     if (!this.natsConnection) {
-      console.error('NATS connection not available');
+      logger.error('NATS connection not available');
       return;
     }
 
     try {
       const sc = StringCodec();
       this.natsConnection.publish(subject, sc.encode(JSON.stringify(data)));
-      console.log(`Published to NATS subject: ${subject}`);
+      logger.info(`Published to NATS subject: ${subject}`);
     } catch (error) {
-      console.error(`Error publishing to NATS subject ${subject}:`, error);
+      logger.error(`Error publishing to NATS subject ${subject}:`, error);
     }
   }
 
@@ -784,7 +784,7 @@ export class BlockchainListener {
       }
     }, this.config.pollInterval);
 
-    console.log(`Started fallback polling with interval: ${this.config.pollInterval}ms`);
+    logger.info(`Started fallback polling with interval: ${this.config.pollInterval}ms`);
   }
 
   private async pollMissedEvents(
@@ -801,7 +801,7 @@ export class BlockchainListener {
 
       if (fromBlock > currentBlock) return;
 
-      console.log(
+      logger.info(
         `Polling missed events on ${chainName} from block ${fromBlock} to ${currentBlock}`
       );
 
@@ -849,7 +849,7 @@ export class BlockchainListener {
       // Update last processed block
       await this.updateLastProcessedBlock(chainName, currentBlock);
     } catch (error) {
-      console.error(`Error polling missed events on ${chainName}:`, error);
+      logger.error(`Error polling missed events on ${chainName}:`, error);
     }
   }
 
@@ -894,11 +894,11 @@ export class BlockchainListener {
           // Process the event based on its name
           await this.processHistoricalEvent(chainName, contractType, parsedLog, log);
         } catch (error) {
-          console.error('Error parsing log:', error);
+          logger.error('Error parsing log:', error);
         }
       }
     } catch (error) {
-      console.error(`Error querying events for ${contractType} on ${chainName}:`, error);
+      logger.error(`Error querying events for ${contractType} on ${chainName}:`, error);
     }
   }
 
@@ -909,7 +909,7 @@ export class BlockchainListener {
     log: ethers.Log
   ): Promise<void> {
     // Process historical events similar to real-time events
-    console.log(`Processing historical event: ${parsedLog.name} on ${chainName}`);
+    logger.info(`Processing historical event: ${parsedLog.name} on ${chainName}`);
 
     // Route to appropriate handler based on event name
     switch (parsedLog.name) {

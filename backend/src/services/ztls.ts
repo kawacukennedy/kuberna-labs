@@ -132,14 +132,14 @@ export class ZKTLService {
       });
 
       if (!response.ok) {
-        console.error("Proof verification failed:", response.statusText);
+        logger.error("Proof verification failed:", response.statusText);
         return false;
       }
 
       const data = await response.json() as Record<string, unknown>;
       return data.valid === true;
     } catch (error) {
-      console.error("Proof verification error:", error);
+      logger.error("Proof verification error:", error);
       return false;
     }
   }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import logger from '../utils/logger.js';
 
 const intentSchema = z.object({
   sourceChain: z.string(),
@@ -107,7 +108,7 @@ Respond with ONLY JSON, no markdown, no explanation.`;
         rawDescription: description,
       };
     } catch (error) {
-      console.error("Intent parsing failed:", error);
+      logger.error("Intent parsing failed:", error);
       return {
         sourceChain: "ethereum",
         sourceToken: "ETH",
@@ -200,7 +201,7 @@ Generate production-quality code with proper error handling, logging, and config
       const cleaned = content.replace(/```json|```/g, "").trim();
       return JSON.parse(cleaned);
     } catch (error) {
-      console.error("Code generation failed:", error);
+      logger.error("Code generation failed:", error);
       return {
         code: "// Code generation failed",
         files: [],
@@ -250,7 +251,7 @@ Generate production-quality code with proper error handling, logging, and config
       };
       return data.choices?.[0]?.message?.content || "Unable to assist";
     } catch (error) {
-      console.error("AI assistance failed:", error);
+      logger.error("AI assistance failed:", error);
       return "Unable to provide assistance at this time";
     }
   }
@@ -282,7 +283,7 @@ ${code}`;
       const cleaned = content.replace(/```json|```/g, "").trim();
       return JSON.parse(cleaned);
     } catch (error) {
-      console.error("Test generation failed:", error);
+      logger.error("Test generation failed:", error);
       return [];
     }
   }

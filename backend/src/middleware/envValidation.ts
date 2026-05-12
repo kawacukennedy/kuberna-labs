@@ -1,3 +1,5 @@
+import logger from '../utils/logger.js';
+
 interface EnvVar {
   name: string;
   required: boolean;
@@ -50,13 +52,13 @@ export function validateEnvironment(): void {
   }
 
   if (missingVars.length > 0) {
-    console.warn(`WARNING: Missing environment variables: ${missingVars.join(', ')}`);
+    logger.warn(`WARNING: Missing environment variables: ${missingVars.join(', ')}`);
   }
 
   if (insecureVars.length > 0) {
-    console.warn('WARNING: Insecure environment configuration detected:');
+    logger.warn('WARNING: Insecure environment configuration detected:');
     for (const warning of insecureVars) {
-      console.warn(`  - ${warning}`);
+      logger.warn(`  - ${warning}`);
     }
   }
 }

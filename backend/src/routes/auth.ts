@@ -1,14 +1,15 @@
 import { Router, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import { z } from 'zod';
-import { verifyMessage } from 'viem';
+import { viem } from '../utils/viem.js';
 import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
-import { authenticate, generateToken } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
+import logger from '../utils/logger.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -199,7 +200,7 @@ router.post('/forgot-password', async (req: AuthRequest, res: Response, next: Ne
       { expiresIn: '1h' }
     );
 
-    console.warn('Password reset emails should be sent via email service in production');
+    logger.warn('Password reset emails should be sent via email service in production');
 
     await prisma.user.update({
       where: { id: user.id },

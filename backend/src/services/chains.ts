@@ -5,6 +5,7 @@ import {
   formatUnits,
   parseUnits,
 } from "ethers";
+import logger from '../utils/logger.js';
 
 export type ChainName =
   | "ethereum"
@@ -308,7 +309,7 @@ export class ChainAdapter {
         })),
       };
     } catch (error) {
-      console.error("Transaction wait error:", error);
+      logger.error("Transaction wait error:", error);
       return null;
     }
   }
@@ -383,7 +384,7 @@ export class EthereumAdapter extends ChainAdapter {
         expiresAt: new Date(Date.now() + 30000),
       };
     } catch (error) {
-      console.error("Quote error:", error);
+      logger.error("Quote error:", error);
       return null;
     }
   }
@@ -617,7 +618,7 @@ export class MultiChainService {
         const balance = await adapter.getBalance(address);
         result[chain] = [balance];
       } catch (error) {
-        console.error(`Failed to get balance for ${chain}:`, error);
+        logger.error(`Failed to get balance for ${chain}:`, error);
         result[chain] = [];
       }
     }

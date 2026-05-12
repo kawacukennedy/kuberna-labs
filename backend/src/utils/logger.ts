@@ -1,8 +1,7 @@
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-interface LogContext {
-  [key: string]: unknown;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LogContext = Record<string, any>;
 
 class Logger {
   private context: LogContext;
@@ -12,13 +11,14 @@ class Logger {
   }
 
   private log(level: LogLevel, message: string, meta: LogContext = {}): void {
+    const sanitizedMeta = meta && typeof meta === 'object' ? meta : { value: meta };
     const timestamp = new Date().toISOString();
     const logEntry = {
       timestamp,
       level,
       message,
       ...this.context,
-      ...meta,
+      ...sanitizedMeta,
     };
 
     if (process.env.NODE_ENV !== 'test') {
@@ -62,11 +62,17 @@ class Logger {
 
 const baseLogger = new Logger({ service: 'kuberna-api' });
 
+function toLogContext(meta: unknown): LogContext | undefined {
+  if (meta === null || meta === undefined) return undefined;
+  if (typeof meta === 'object' && !Array.isArray(meta)) return meta as LogContext;
+  return { value: meta };
+}
+
 export const logger = {
-  debug: (message: string, meta?: LogContext) => baseLogger.debug(message, meta),
-  info: (message: string, meta?: LogContext) => baseLogger.info(message, meta),
-  warn: (message: string, meta?: LogContext) => baseLogger.warn(message, meta),
-  error: (message: string, meta?: LogContext) => baseLogger.error(message, meta),
+  debug: (message: string, meta?: unknown) => baseLogger.debug(message, toLogContext(meta)),
+  info: (message: string, meta?: unknown) => baseLogger.info(message, toLogContext(meta)),
+  warn: (message: string, meta?: unknown) => baseLogger.warn(message, toLogContext(meta)),
+  error: (message: string, meta?: unknown) => baseLogger.error(message, toLogContext(meta)),
   child: (context: LogContext) => baseLogger.child(context),
 };
 

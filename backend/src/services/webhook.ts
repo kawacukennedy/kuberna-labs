@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import logger from '../utils/logger.js';
 
 export type WebhookEvent =
   | "intent.created"
@@ -119,7 +120,7 @@ export class WebhookService {
         this.deliveryAttempts.delete(attemptKey);
       }
     } catch (error) {
-      console.error("Webhook delivery error:", error);
+      logger.error("Webhook delivery error:", error);
       delivery.status = "failed";
       delivery.responseBody =
         error instanceof Error ? error.message : "Unknown error";
