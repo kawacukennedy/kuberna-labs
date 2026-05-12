@@ -1,17 +1,31 @@
 {
   "name": "@kuberna/sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Production-grade SDK for Kuberna Labs - Agentic Web3 Enterprise",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawacukennedy/kuberna-labs.git",
+    "directory": "sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/kawacukennedy/kuberna-labs/issues"
+  },
+  "homepage": "https://github.com/kawacukennedy/kuberna-labs#readme",
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [
     "web3",
