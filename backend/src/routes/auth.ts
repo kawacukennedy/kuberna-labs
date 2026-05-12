@@ -3,11 +3,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
 import { z } from 'zod';
-import { viem } from '../utils/viem.js';
+import { verifyMessage } from '../utils/viem.js';
 import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, generateToken } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
 import logger from '../utils/logger.js';
 
