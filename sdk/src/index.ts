@@ -3,6 +3,12 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { AgentManager } from './agent.js';
 import { IntentManager } from './intent.js';
 import { BlockchainManager } from './blockchain.js';
+import { AuthManager } from './auth.js';
+import { PaymentManager } from './payment.js';
+import { TeeManager } from './tee.js';
+import { CertificateManager } from './certificate.js';
+import { WalletManager } from './wallet.js';
+import { AiManager } from './ai.js';
 
 export interface KubernaConfig {
   apiKey?: string;
@@ -34,9 +40,15 @@ export class KubernaSDK {
   public agent: AgentManager;
   public intent: IntentManager;
   public blockchain: BlockchainManager;
+  public auth: AuthManager;
+  public payment: PaymentManager;
+  public tee: TeeManager;
+  public certificate: CertificateManager;
+  public wallet: WalletManager;
+  public ai: AiManager;
   private config: KubernaConfig;
   private provider: ethers.JsonRpcProvider;
-  private wallet?: ethers.Wallet;
+  private walletInstance?: ethers.Wallet;
 
   constructor(config: KubernaConfig = {}) {
     this.config = {
@@ -51,12 +63,18 @@ export class KubernaSDK {
       if (!/^0x[0-9a-fA-F]{64}$/.test(this.config.privateKey)) {
         throw new Error('Invalid private key format: must be 0x-prefixed 64-char hex string');
       }
-      this.wallet = new ethers.Wallet(this.config.privateKey, this.provider);
+      this.walletInstance = new ethers.Wallet(this.config.privateKey, this.provider);
     }
 
     this.agent = new AgentManager(this);
     this.intent = new IntentManager(this);
     this.blockchain = new BlockchainManager(this);
+    this.auth = new AuthManager(this);
+    this.payment = new PaymentManager(this);
+    this.tee = new TeeManager(this);
+    this.certificate = new CertificateManager(this);
+    this.wallet = new WalletManager(this);
+    this.ai = new AiManager(this);
   }
 
   async initialize(params: { wallet?: string } = {}): Promise<this> {
@@ -64,13 +82,13 @@ export class KubernaSDK {
       if (!/^0x[0-9a-fA-F]{64}$/.test(params.wallet)) {
         throw new Error('Invalid private key format: must be 0x-prefixed 64-char hex string');
       }
-      this.wallet = new ethers.Wallet(params.wallet, this.provider);
+      this.walletInstance = new ethers.Wallet(params.wallet, this.provider);
     }
     return this;
   }
 
   getWallet(): ethers.Wallet | undefined {
-    return this.wallet;
+    return this.walletInstance;
   }
 
   getProvider(): ethers.JsonRpcProvider {
@@ -105,17 +123,15 @@ export class KubernaSDK {
 
     try {
       const response = await axios(requestConfig);
-      return {
-        success: true,
-        data: response.data as T,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+      return response.data as ApiResponse<T>;
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string; code?: string } }; isAxiosError?: boolean; message?: string };
+      if (axiosError?.isAxiosError || axiosError?.response) {
         return {
           success: false,
           error: {
-            message: error.response?.data?.message || error.message,
-            code: error.response?.data?.code || 'REQUEST_ERROR',
+            message: axiosError.response?.data?.message || axiosError.message || 'Request failed',
+            code: axiosError.response?.data?.code || 'REQUEST_ERROR',
           },
         };
       }
@@ -123,3 +139,12 @@ export class KubernaSDK {
     }
   }
 }
+
+export type { CreateAgentParams, Agent } from './agent.js';
+export type { CreateIntentParams, StructuredIntent, Intent } from './intent.js';
+export type { LoginParams, RegisterParams, AuthTokens, UserProfile } from './auth.js';
+export type { CreatePaymentIntentParams, PaymentIntent, PaymentStatus, TokenInfo } from './payment.js';
+export type { CreateEnclaveParams, Enclave, AttestationReport } from './tee.js';
+export type { MintCertificateParams, Certificate, CertificateVerification } from './certificate.js';
+export type { WalletInfo, TransactionResult } from './wallet.js';
+export type { ParseIntentResult, AgentDecision, AnalyzeParams, AnalysisResult } from './ai.js';

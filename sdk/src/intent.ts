@@ -7,6 +7,20 @@ export interface CreateIntentParams {
   secureExecution?: "TEE" | "NONE";
 }
 
+export interface StructuredIntent {
+  sourceChain: string;
+  sourceToken: string;
+  sourceAmount: string;
+  destChain: string;
+  destToken: string;
+  minDestAmount: string;
+  timeoutSeconds: number;
+  budget: number;
+  currency: string;
+  confidence: number;
+  rawDescription: string;
+}
+
 export interface Intent {
   id: string;
   status: string;
@@ -42,5 +56,14 @@ export class IntentManager {
 
   async cancel(id: string): Promise<void> {
     await this.sdk.request({ method: "POST", path: `/intents/${id}/cancel`, data: {} });
+  }
+
+  async parse(description: string): Promise<StructuredIntent> {
+    const response = await this.sdk.request({
+      method: "POST",
+      path: "/intents/parse",
+      data: { description },
+    });
+    return response.data as StructuredIntent;
   }
 }
