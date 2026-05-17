@@ -1,5 +1,7 @@
 # Web3 Infrastructure Setup Guide
 
+> **Supabase Database Setup:** See [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) for configuring the PostreSQL database.
+
 ## Overview
 
 This document provides setup instructions for the Kuberna Labs Web3 Infrastructure project, including smart contracts, backend services, and development tools.
