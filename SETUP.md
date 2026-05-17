@@ -61,20 +61,55 @@ cp .env.example .env
 
 Edit `.env` and fill in the required values:
 
-- **PRIVATE_KEY**: Your wallet private key for deployments (NEVER commit this!)
-- **RPC URLs**: Infura, Alchemy, or other RPC endpoints
-- **API Keys**: CoinMarketCap, Stripe, TEE providers, etc.
-- **Database**: PostgreSQL connection string
-- **Redis**: Redis connection details
-- **NATS**: NATS messaging server URL
+| Purpose | Connection String |
+|---------|------------------|
+| **Transaction pooler** (recommended for apps) | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
+| **Session pooler** (for migrations) | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:5432/postgres` |
 
-### 5. Database Setup
+Set in your `.env`:
+
+```env
+DATABASE_URL="postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:5432/postgres"
+```
+
+> **Why two URLs?**  
+> `DATABASE_URL` uses the **transaction pooler** (port 6543) which works behind IPv4-only hosts like Render, Vercel, and Railway. The `connection_limit=1` prevents connection pool exhaustion in serverless environments.  
+> `DIRECT_URL` uses the **session pooler** (port 5432) — used internally by `prisma migrate` to run DDL statements. This is required for IPv4-only networks (the direct IPv6 Supabase host is not reachable from most environments).
+
+---
+
+## 3. Deploy Migrations
+
+### Automatically (GitHub Actions)
+
+Every push to `main` triggers `.github/workflows/supabase-migrations.yml`, which runs:
 
 ```bash
+npx prisma migrate deploy
+```
+
+The workflow requires these **GitHub Secrets**:
+
+| Secret | Value |
+|--------|-------|
+| `DATABASE_URL` | Transaction pooler URL with `?pgbouncer=true` |
+| `DIRECT_URL` | Direct connection URL (port 5432) |
+
+### Manually (Local)
+
+```bash
+# 1. Ensure .env has DATABASE_URL and DIRECT_URL
+# 2. Create .env symlink so the backend can find it
+ln -sf ../.env backend/.env
+
+# 3. Generate the Prisma client
 cd backend
 npx prisma migrate dev --name init
 npx prisma generate
-cd ..
+
+# 4. Deploy pending migrations
+npx prisma migrate deploy
 ```
 
 ### 6. Start Local Services
@@ -103,13 +138,40 @@ npm run compile
 
 This compiles all Solidity contracts in the `contracts/` directory and generates TypeScript types in `typechain-types/`.
 
-### Run Smart Contract Tests
+---
+
+## 4. Prisma Schema & Table Naming
+
+The Prisma schema lives at `/prisma/schema.prisma` (project root). The backend's `package.json` references it via:
+
+```json
+"prisma": { "schema": "../prisma/schema.prisma" }
+```
+
+All database tables use **snake_case plural** naming (e.g., `users`, `profiles`, `intents`, `tee_deployments`) via Prisma's `@@map` annotation. This keeps the TypeScript model names PascalCase while the database uses conventional PostgreSQL naming.
+
+To regenerate the Prisma Client after schema changes:
+
+```bash
+cd backend
+npx prisma generate
+```
+
+---
+
+## 5. One-Time Data Migration
+
+If you have existing data in a local PostgreSQL database, migrate it to Supabase:
 
 ```bash
 npm test
 ```
 
-### Start Local Hardhat Node
+The script is **idempotent** — it uses upserts on unique fields so you can re-run it safely.
+
+---
+
+## 6. Verify the Connection
 
 ```bash
 npm run node
@@ -117,7 +179,7 @@ npm run node
 
 This starts a local Ethereum node at `http://127.0.0.1:8545` with 20 test accounts.
 
-### Deploy Contracts Locally
+## 7. Architecture Overview
 
 In a separate terminal (with local node running):
 
@@ -127,215 +189,53 @@ npm run deploy:local
 
 ### Run Backend Development Server
 
-```bash
-cd backend
-npm run dev
+---
+
+## 8. Troubleshooting
+
+### "Can't reach database server"
+
+Ensure your IP is allowlisted in Supabase Dashboard → Authentication → Settings → **Network Restrictions**.
+
+### "prepared statement already exists" errors
+
+The `?pgbouncer=true` flag in `DATABASE_URL` enables prepared statement support for PgBouncer.  
+If you still see issues, try the session pooler (port 5432):
+
+```env
+DATABASE_URL="postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:5432/postgres"
 ```
 
 The API server will start at `http://localhost:3000`.
 
-### Run Backend Tests
+1. Check the workflow logs for the exact error.
+2. Run the migration locally to reproduce: `npx prisma migrate deploy`.
+3. If you need to roll back: `npx prisma migrate resolve --rolled-back <migration-name>`.
+4. **Never run destructive operations** on the Supabase database directly.
+
+---
+
+## 9. Running the Backend
 
 ```bash
+# 1. Ensure .env symlink exists (read from root .env)
 cd backend
-npm test
+ln -sf ../.env .env  # creates backend/.env -> ../.env
+
+# 2. Start the compiled server
+node dist/index.js
+
+# Or with the `start` script
+npm start
 ```
 
-## Testing Frameworks
+> **Note:** `npm run dev` (ts-node) is currently not supported because `src/index.ts` does not exist. Use the compiled version via `npm start`.
 
-### Smart Contracts
-- **Hardhat**: Ethereum development environment
-- **Chai**: Assertion library
-- **fast-check**: Property-based testing
-
-### Backend
-- **Jest**: JavaScript testing framework
-- **Supertest**: HTTP assertion library
-- **fast-check**: Property-based testing
-
-## Code Quality Tools
-
-### Linting
+### Health Check
 
 ```bash
-# Lint smart contracts
-npm run lint
+curl http://localhost:3000/health
 
-# Lint backend code
-cd backend
-npm run lint
+# Expected:
+# {"status":"ok","database":"connected","provider":"supabase","uptime":...}
 ```
-
-### Formatting
-
-```bash
-# Format all code
-npm run format
-
-# Format backend code
-cd backend
-npm run format
-```
-
-### Solidity Linting
-
-```bash
-npx solhint 'contracts/**/*.sol'
-```
-
-## Deployment
-
-### Deploy to Testnet (Sepolia)
-
-1. Ensure `.env` has `SEPOLIA_RPC_URL` and `PRIVATE_KEY` configured
-2. Fund your wallet with Sepolia ETH from a faucet
-3. Run deployment:
-
-```bash
-npm run deploy:sepolia
-```
-
-### Deploy to Mainnet
-
-⚠️ **WARNING**: Deploying to mainnet requires real ETH and is irreversible!
-
-1. Ensure `.env` has `MAINNET_RPC_URL` and `PRIVATE_KEY` configured
-2. Verify all contracts are audited and tested
-3. Run deployment:
-
-```bash
-npm run deploy:mainnet
-```
-
-### Deploy to Polygon
-
-```bash
-npm run deploy:polygon
-```
-
-### Deploy to Arbitrum
-
-```bash
-npm run deploy:arbitrum
-```
-
-## Multi-Chain Support
-
-The infrastructure supports the following chains:
-
-- **Ethereum** (Mainnet, Sepolia)
-- **Polygon** (Mainnet, Mumbai)
-- **Arbitrum** (One, Sepolia)
-- **NEAR Protocol**
-- **Solana**
-
-Each chain requires its own RPC endpoint and configuration in `.env`.
-
-## TEE Integration
-
-### Phala Network
-
-1. Sign up at https://phala.network
-2. Get API credentials
-3. Add to `.env`:
-   ```
-   PHALA_ENDPOINT=https://api.phala.network
-   PHALA_API_KEY=your_key
-   ```
-
-### Marlin Oyster
-
-1. Sign up at https://www.marlin.org/oyster
-2. Get API credentials
-3. Add to `.env`:
-   ```
-   MARLIN_ENDPOINT=https://api.marlin.org
-   MARLIN_API_KEY=your_key
-   ```
-
-## zkTLS Integration
-
-### Reclaim Protocol
-
-1. Sign up at https://reclaimprotocol.org
-2. Get API key
-3. Add to `.env`:
-   ```
-   RECLAIM_API_KEY=your_key
-   ```
-
-### zkPass
-
-1. Sign up at https://zkpass.org
-2. Get API key
-3. Add to `.env`:
-   ```
-   ZKPASS_API_KEY=your_key
-   ```
-
-## Monitoring and Logging
-
-The backend uses Winston for logging. Log levels can be configured in `.env`:
-
-```
-LOG_LEVEL=info  # Options: error, warn, info, debug
-```
-
-## Security Best Practices
-
-1. **Never commit `.env` files** - They contain sensitive credentials
-2. **Use hardware wallets** for mainnet deployments
-3. **Audit contracts** before mainnet deployment
-4. **Enable rate limiting** in production
-5. **Use HTTPS** for all API endpoints
-6. **Rotate API keys** regularly
-7. **Monitor contract events** for suspicious activity
-
-## Troubleshooting
-
-### Contract Compilation Errors
-
-```bash
-npm run clean
-npm run compile
-```
-
-### Database Connection Issues
-
-Verify PostgreSQL is running and DATABASE_URL is correct:
-
-```bash
-psql $DATABASE_URL
-```
-
-### Redis Connection Issues
-
-Verify Redis is running:
-
-```bash
-redis-cli ping
-# Should return: PONG
-```
-
-### Gas Estimation Errors
-
-Ensure you have sufficient balance and the RPC endpoint is responsive.
-
-## Additional Resources
-
-- [Hardhat Documentation](https://hardhat.org/docs)
-- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts)
-- [Ethers.js Documentation](https://docs.ethers.org)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Express.js Documentation](https://expressjs.com)
-
-## Support
-
-For issues and questions:
-- GitHub Issues: https://github.com/kuberna-labs/web3-infrastructure/issues
-- Discord: https://discord.gg/kuberna-labs
-- Email: support@kuberna.africa
-
-## License
-
-MIT License - see LICENSE file for details
