@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -165,159 +166,165 @@ enum SubscriptionTier {
 }
 
 model User {
-  id                     String     @id @default(uuid())
-  email                  String     @unique
-  passwordHash           String?
-  fullName               String
-  avatarUrl              String?
-  web3Address            String?    @unique
-  authMethod             AuthMethod @default(EMAIL)
-  roles                  Role[]     @default([LEARNER])
-  mfaEnabled             Boolean    @default(false)
-  mfaSecret              String?
-  mfaMethod              String?
-  phone                  String?
-  emailVerified          Boolean    @default(false)
+  id                      String     @id @default(uuid())
+  email                   String     @unique
+  passwordHash            String?
+  fullName                String
+  avatarUrl               String?
+  web3Address             String?    @unique
+  authMethod              AuthMethod @default(EMAIL)
+  roles                   Role[]     @default([LEARNER])
+  mfaEnabled              Boolean    @default(false)
+  mfaSecret               String?
+  mfaMethod               String?
+  phone                   String?
+  emailVerified           Boolean    @default(false)
   emailVerificationToken  String?
   emailVerificationSentAt DateTime?
-  resetPasswordToken     String?
+  resetPasswordToken      String?
   resetPasswordExpires    DateTime?
-  lastLogin              DateTime?
-  loginCount             Int        @default(0)
-  settings               Json       @default("{}")
-  web3Nonce              String?
-  failedLoginAttempts    Int        @default(0)
-  lockoutUntil           DateTime?
-  createdAt              DateTime   @default(now())
-  updatedAt              DateTime   @updatedAt
-  deletedAt              DateTime?
+  lastLogin               DateTime?
+  loginCount              Int        @default(0)
+  settings                Json       @default("{}")
+  web3Nonce               String?
+  failedLoginAttempts     Int        @default(0)
+  lockoutUntil            DateTime?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+  deletedAt               DateTime?
 
-  profile               Profile?
-  coursesCreated        Course[]         @relation("CourseInstructor")
-  coInstructors         Course[]         @relation("CourseCoInstructor")
-  enrollments          Enrollment[]
-  agents                Agent[]
-  intents               Intent[]         @relation("IntentRequester")
-  tasksAssigned         Task[]           @relation("TaskExecutor")
-  submittedBids          Bid[]            @relation("BidSolver")
-  tickets               Ticket[]
-  forumPosts            ForumPost[]
-  certificates          Certificate[]
+  profile                Profile?
+  coursesCreated         Course[]               @relation("CourseInstructor")
+  coInstructors          Course[]               @relation("CourseCoInstructor")
+  enrollments            Enrollment[]
+  agents                 Agent[]
+  intents                Intent[]               @relation("IntentRequester")
+  tasksAssigned          Task[]                 @relation("TaskExecutor")
+  submittedBids          Bid[]                  @relation("BidSolver")
+  tickets                Ticket[]
+  forumPosts             ForumPost[]
+  certificates           Certificate[]
   workshopRegistrations  WorkshopRegistration[]
-  notifications         Notification[]
-  apiKeys               ApiKey[]
-  auditLogs             AuditLog[]
-  forumTopics           ForumTopic[]
-  supportTickets        SupportTicket[]     @relation("SupportTicketUser")
-  assignedSupportTickets SupportTicket[]   @relation("SupportTicketAssignedTo")
-  subscriptions         Subscription[]
-  whitelistedIps       IpWhitelist[]
-  webhookConfigs        WebhookConfig[]
+  notifications          Notification[]
+  apiKeys                ApiKey[]
+  auditLogs              AuditLog[]
+  forumTopics            ForumTopic[]
+  supportTickets         SupportTicket[]        @relation("SupportTicketUser")
+  assignedSupportTickets SupportTicket[]        @relation("SupportTicketAssignedTo")
+  subscriptions          Subscription[]
+  whitelistedIps         IpWhitelist[]
+  webhookConfigs         WebhookConfig[]
 
   @@index([web3Address])
   @@index([email])
   @@index([deletedAt])
   @@index([createdAt(sort: Desc)])
+  @@map("users")
 }
 
 model Profile {
-  id             String   @id @default(uuid())
-  userId         String   @unique
-  bio            String?
-  website         String?
-  github         String?
-  twitter        String?
-  discord        String?
-  telegram       String?
-  linkedin       String?
-  skills         String[]
-  reputation     Int      @default(0)
-  totalTasksCompleted Int  @default(0)
-  totalEarned    Float    @default(0)
-  
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  bio                 String?
+  website             String?
+  github              String?
+  twitter             String?
+  discord             String?
+  telegram            String?
+  linkedin            String?
+  skills              String[]
+  reputation          Int      @default(0)
+  totalTasksCompleted Int      @default(0)
+  totalEarned         Float    @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
 }
 
 model Course {
-  id                  String        @id @default(uuid())
+  id                 String      @id @default(uuid())
   title              String
-  slug               String        @unique
+  slug               String      @unique
   description        String
   level              CourseLevel
   durationHours      Int
   price              Float
-  currency           String        @default("USD")
+  currency           String      @default("USD")
   cryptoPrice        Json?
   thumbnailUrl       String?
-  previewVideoUrl   String?
+  previewVideoUrl    String?
   learningObjectives String[]
-  prerequisites       String[]
-  published          Boolean       @default(false)
+  prerequisites      String[]
+  published          Boolean     @default(false)
   publishedAt        DateTime?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  
-  instructorId       String
-  instructor         User          @relation("CourseInstructor", fields: [instructorId], references: [id])
-  coInstructorIds    String[]     @default([])
-  
-  coInstructors      User[]     @relation("CourseCoInstructor")
-  modules            Module[]
-  enrollments        Enrollment[]
-  workshops          Workshop[]
-  forumTopics        ForumTopic[]
-  certificates       Certificate[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  instructorId    String
+  instructor      User     @relation("CourseInstructor", fields: [instructorId], references: [id])
+  coInstructorIds String[] @default([])
+
+  coInstructors User[]        @relation("CourseCoInstructor")
+  modules       Module[]
+  enrollments   Enrollment[]
+  workshops     Workshop[]
+  forumTopics   ForumTopic[]
+  certificates  Certificate[]
 
   @@index([slug])
   @@index([instructorId])
   @@index([published])
   @@index([createdAt(sort: Desc)])
+  @@map("courses")
 }
 
 model Module {
-  id              String      @id @default(uuid())
-  courseId        String
-  title          String
-  order          Int
-  contentType    ContentType
-  contentUrl     String?
-  videoDuration  Int?
-  documentText   String?
-  labConfig      Json?
-  quizQuestions  Json?
+  id               String      @id @default(uuid())
+  courseId         String
+  title            String
+  order            Int
+  contentType      ContentType
+  contentUrl       String?
+  videoDuration    Int?
+  documentText     String?
+  labConfig        Json?
+  quizQuestions    Json?
   estimatedMinutes Int
-  isFree         Boolean    @default(false)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  
-  course         Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  progress       ModuleProgress[]
+  isFree           Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress ModuleProgress[]
 
   @@index([courseId, order])
+  @@map("modules")
 }
 
 model Enrollment {
-  id               String          @id @default(uuid())
-  userId           String
-  courseId         String
-  status           EnrollmentStatus @default(ACTIVE)
-  progressPercent  Int              @default(0)
-  completedModules String[]
-  certificateId    String?
+  id                  String           @id @default(uuid())
+  userId              String
+  courseId            String
+  status              EnrollmentStatus @default(ACTIVE)
+  progressPercent     Int              @default(0)
+  completedModules    String[]
+  certificateId       String?
   certificateIpfsHash String?
-  enrolledAt       DateTime        @default(now())
-  completedAt     DateTime?
-  paymentTxHash   String?
-  paymentStatus  String          @default("PENDING")
-  
-  user            User     @relation(fields: [userId], references: [id])
-  course          Course   @relation(fields: [courseId], references: [id])
+  enrolledAt          DateTime         @default(now())
+  completedAt         DateTime?
+  paymentTxHash       String?
+  paymentStatus       String           @default("PENDING")
+
+  user           User             @relation(fields: [userId], references: [id])
+  course         Course           @relation(fields: [courseId], references: [id])
   moduleProgress ModuleProgress[]
 
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
   @@index([status])
+  @@map("enrollments")
 }
 
 model ModuleProgress {
@@ -327,39 +334,40 @@ model ModuleProgress {
   completed    Boolean   @default(false)
   watchTime    Int       @default(0)
   quizScore    Int?
-  completedAt DateTime?
-  
-  module      Module     @relation(fields: [moduleId], references: [id])
+  completedAt  DateTime?
+
+  module     Module     @relation(fields: [moduleId], references: [id])
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
 
   @@unique([moduleId, enrollmentId])
+  @@map("module_progress")
 }
 
 model Agent {
-  id               String          @id @default(uuid())
-  ownerId          String
-  name             String
+  id              String         @id @default(uuid())
+  ownerId         String
+  name            String
   description     String
   framework       AgentFramework
   model           String
   codeRepo        String?
   config          Json
   tools           String[]
-  status          AgentStatus       @default(DRAFT)
-  deploymentType  DeploymentType   @default(CLOUD)
+  status          AgentStatus    @default(DRAFT)
+  deploymentType  DeploymentType @default(CLOUD)
   deploymentUrl   String?
   teeAttestation  Json?
-  version         Int              @default(1)
+  version         Int            @default(1)
   lastActive      DateTime?
   lastPing        DateTime?
-  pricingModel   PricingModel     @default(FIXED)
-  price          Float?
-  ipWhitelist    String[]          @default([])
-  supportedChains String[]         @default(["ethereum"])
-  createdAt      DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  
-  owner          User            @relation(fields: [ownerId], references: [id])
+  pricingModel    PricingModel   @default(FIXED)
+  price           Float?
+  ipWhitelist     String[]       @default([])
+  supportedChains String[]       @default(["ethereum"])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  owner         User           @relation(fields: [ownerId], references: [id])
   bids          Bid[]
   reputation    Reputation?
   teeDeployment TEEDeployment?
@@ -368,25 +376,28 @@ model Agent {
   @@index([ownerId])
   @@index([status])
   @@index([framework])
+  @@map("agents")
 }
 
 model Reputation {
-  id             String   @id @default(uuid())
-  agentId        String   @unique
-  totalTasks     Int      @default(0)
-  successfulTasks Int      @default(0)
-  failedTasks    Int      @default(0)
-  avgRating     Float    @default(0)
-  ratingCount    Int      @default(0)
-  totalEarnings Float    @default(0)
-  score          Int     @default(0)
-  percentileRank Int     @default(0)
-  badges         Json    @default("[]")
-  responseTimeAvg Int    @default(0)
+  id               String   @id @default(uuid())
+  agentId          String   @unique
+  totalTasks       Int      @default(0)
+  successfulTasks  Int      @default(0)
+  failedTasks      Int      @default(0)
+  avgRating        Float    @default(0)
+  ratingCount      Int      @default(0)
+  totalEarnings    Float    @default(0)
+  score            Int      @default(0)
+  percentileRank   Int      @default(0)
+  badges           Json     @default("[]")
+  responseTimeAvg  Int      @default(0)
   lastCalculatedAt DateTime @default(now())
-  
-  agent          Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  memories       AgentMemory[]
+
+  agent    Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  memories AgentMemory[]
+
+  @@map("reputations")
 }
 
 model IntentMemory {
@@ -399,6 +410,7 @@ model IntentMemory {
 
   @@index([description])
   @@index([createdAt(sort: Desc)])
+  @@map("intent_memories")
 }
 
 model AgentMemory {
@@ -410,31 +422,34 @@ model AgentMemory {
   success      Boolean  @default(true)
   createdAt    DateTime @default(now())
 
-  agent        Reputation @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+  agent Reputation @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
 
   @@index([agentId])
   @@index([decisionType])
   @@index([createdAt(sort: Desc)])
+  @@map("agent_memories")
 }
 
 model TEEDeployment {
-  id            String             @id @default(uuid())
-  agentId       String            @unique
-  provider      String
-  enclaveId     String
-  endpoint     String?
-  status       TEEDeploymentStatus @default(PROVISIONING)
-  attestation  Json?
-  cpu           Int               @default(2)
-  memory       Int               @default(4096)
-  storage      Int               @default(10240)
-  createdAt    DateTime          @default(now())
+  id          String              @id @default(uuid())
+  agentId     String              @unique
+  provider    String
+  enclaveId   String
+  endpoint    String?
+  status      TEEDeploymentStatus @default(PROVISIONING)
+  attestation Json?
+  cpu         Int                 @default(2)
+  memory      Int                 @default(4096)
+  storage     Int                 @default(10240)
+  createdAt   DateTime            @default(now())
   startedAt   DateTime?
   stoppedAt   DateTime?
   expiresAt   DateTime?
-  
-  agent        Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  agent        Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade)
   attestations Attestation[]
+
+  @@map("tee_deployments")
 }
 
 model Attestation {
@@ -444,36 +459,38 @@ model Attestation {
   mrenclave       String
   isValid         Boolean
   verifiedAt      DateTime @default(now())
-  
-  teeDeployment  TEEDeployment @relation(fields: [teeDeploymentId], references: [id], onDelete: Cascade)
+
+  teeDeployment TEEDeployment @relation(fields: [teeDeploymentId], references: [id], onDelete: Cascade)
+
+  @@map("attestations")
 }
 
 model Intent {
-  id              String      @id @default(uuid())
-  requesterId     String
-  description     String
-  structuredData  Json?
-  sourceChain     String
-  sourceToken     String
-  sourceAmount    String
-  destChain       String
-  destToken       String
-  minDestAmount   String
-  deadline       DateTime
-  budget         Decimal     @db.Decimal(20, 8)
-  currency       String      @default("NEAR")
-  status         IntentStatus @default(OPEN)
+  id               String       @id @default(uuid())
+  requesterId      String
+  description      String
+  structuredData   Json?
+  sourceChain      String
+  sourceToken      String
+  sourceAmount     String
+  destChain        String
+  destToken        String
+  minDestAmount    String
+  deadline         DateTime
+  budget           Decimal      @db.Decimal(20, 8)
+  currency         String       @default("NEAR")
+  status           IntentStatus @default(OPEN)
   selectedSolverId String?
-  escrowId       String?
-  autoAcceptRules Json?
-  createdAt      DateTime    @default(now())
-  expiresAt      DateTime
-  completedAt    DateTime?
-  
-  requester       User        @relation("IntentRequester", fields: [requesterId], references: [id])
-  bids            Bid[]
-  task            Task?
-  escrow         Escrow?
+  escrowId         String?
+  autoAcceptRules  Json?
+  createdAt        DateTime     @default(now())
+  expiresAt        DateTime
+  completedAt      DateTime?
+
+  requester User    @relation("IntentRequester", fields: [requesterId], references: [id])
+  bids      Bid[]
+  task      Task?
+  escrow    Escrow?
 
   @@index([status])
   @@index([requesterId])
@@ -483,150 +500,158 @@ model Intent {
   @@index([expiresAt])
   @@index([sourceChain])
   @@index([destChain])
+  @@map("intents")
 }
 
 model Bid {
-  id             String    @id @default(uuid())
-  intentId       String
-  agentId        String
-  solverId       String?
-  price          Decimal   @db.Decimal(20, 8)
-  estimatedTime  Int
-  routeDetails   Json?
-  status         BidStatus @default(PENDING)
-  createdAt      DateTime  @default(now())
-  
-  intent         Intent    @relation(fields: [intentId], references: [id], onDelete: Cascade)
-  agent          Agent     @relation(fields: [agentId], references: [id])
-  solver         User?     @relation("BidSolver", fields: [solverId], references: [id])
+  id            String    @id @default(uuid())
+  intentId      String
+  agentId       String
+  solverId      String?
+  price         Decimal   @db.Decimal(20, 8)
+  estimatedTime Int
+  routeDetails  Json?
+  status        BidStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+
+  intent Intent @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  agent  Agent  @relation(fields: [agentId], references: [id])
+  solver User?  @relation("BidSolver", fields: [solverId], references: [id])
 
   @@unique([intentId, agentId])
   @@index([intentId])
   @@index([agentId])
   @@index([status])
+  @@map("bids")
 }
 
 model Task {
-  id              String      @id @default(uuid())
-  intentId       String      @unique
+  id              String     @id @default(uuid())
+  intentId        String     @unique
   assignedAgentId String
-  status          TaskStatus  @default(ASSIGNED)
+  status          TaskStatus @default(ASSIGNED)
   result          Json?
   proof           Json?
   startedAt       DateTime?
-  completedAt    DateTime?
-  txHash         String?
-  disputeReason  String?
-  errorMessage   String?
-  createdAt      DateTime    @default(now())
-  
-  intent          Intent     @relation(fields: [intentId], references: [id], onDelete: Cascade)
-  executor        User        @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
-  dispute         Dispute?
+  completedAt     DateTime?
+  txHash          String?
+  disputeReason   String?
+  errorMessage    String?
+  createdAt       DateTime   @default(now())
+
+  intent   Intent   @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  executor User     @relation("TaskExecutor", fields: [assignedAgentId], references: [id])
+  dispute  Dispute?
 
   @@index([status])
   @@index([assignedAgentId])
   @@index([createdAt(sort: Desc)])
+  @@map("tasks")
 }
 
 model Escrow {
-  id                String       @id @default(uuid())
-  intentId          String       @unique
-  contractAddress   String
-  chain             String
-  token             String
-  amount            Decimal      @db.Decimal(20, 8)
-  status            EscrowStatus @default(FUNDED)
-  fundingTx         String?
-  releaseTx         String?
-  refundTx          String?
-  createdAt         DateTime     @default(now())
-  fundedAt         DateTime?
-  releasedAt       DateTime?
-  refundedAt       DateTime?
-  expiresAt        DateTime?
-  
-  intent            Intent       @relation(fields: [intentId], references: [id])
+  id              String       @id @default(uuid())
+  intentId        String       @unique
+  contractAddress String
+  chain           String
+  token           String
+  amount          Decimal      @db.Decimal(20, 8)
+  status          EscrowStatus @default(FUNDED)
+  fundingTx       String?
+  releaseTx       String?
+  refundTx        String?
+  createdAt       DateTime     @default(now())
+  fundedAt        DateTime?
+  releasedAt      DateTime?
+  refundedAt      DateTime?
+  expiresAt       DateTime?
+
+  intent Intent @relation(fields: [intentId], references: [id])
 
   @@index([status])
   @@index([chain])
   @@index([createdAt(sort: Desc)])
+  @@map("escrows")
 }
 
 model Dispute {
-  id             String            @id @default(uuid())
-  taskId         String            @unique
-  raisedBy       String
-  reason         String
-  evidence       Json?
-  status         DisputeStatus   @default(OPEN)
-  resolution     DisputeResolution?
+  id              String             @id @default(uuid())
+  taskId          String             @unique
+  raisedBy        String
+  reason          String
+  evidence        Json?
+  status          DisputeStatus      @default(OPEN)
+  resolution      DisputeResolution?
   resolutionNotes String?
-  resolvedAt     DateTime?
-  resolvedBy    String?
-  appealFeePaid  Boolean          @default(false)
-  createdAt     DateTime         @default(now())
-  
-  task           Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  resolvedAt      DateTime?
+  resolvedBy      String?
+  appealFeePaid   Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([raisedBy])
+  @@map("disputes")
 }
 
 model Workshop {
   id                  String   @id @default(uuid())
-  courseId           String
-  title              String
-  description        String
-  instructorId       String
-  scheduledAt        DateTime
-  duration          Int
-  maxParticipants    Int
-  currentParticipants Int @default(0)
-  recordingUrl       String?
-  streamUrl          String?
-  status            String   @default("SCHEDULED")
-  createdAt         DateTime  @default(now())
-  
-  course            Course   @relation(fields: [courseId], references: [id])
-  registrations    WorkshopRegistration[]
+  courseId            String
+  title               String
+  description         String
+  instructorId        String
+  scheduledAt         DateTime
+  duration            Int
+  maxParticipants     Int
+  currentParticipants Int      @default(0)
+  recordingUrl        String?
+  streamUrl           String?
+  status              String   @default("SCHEDULED")
+  createdAt           DateTime @default(now())
+
+  course        Course                 @relation(fields: [courseId], references: [id])
+  registrations WorkshopRegistration[]
 
   @@index([courseId])
   @@index([scheduledAt])
+  @@map("workshops")
 }
 
 model WorkshopRegistration {
-  id             String   @id @default(uuid())
-  workshopId     String
-  userId         String
-  attended       Boolean  @default(false)
-  joinedAt       DateTime @default(now())
-  
-  workshop       Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
-  user           User     @relation(fields: [userId], references: [id])
+  id         String   @id @default(uuid())
+  workshopId String
+  userId     String
+  attended   Boolean  @default(false)
+  joinedAt   DateTime @default(now())
+
+  workshop Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
 
   @@unique([workshopId, userId])
+  @@map("workshop_registrations")
 }
 
 model ForumTopic {
-  id          String   @id @default(uuid())
-  courseId    String?
-  userId      String
-  title       String
-  content     String
-  pinned      Boolean  @default(false)
-  locked     Boolean  @default(false)
-  views       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
-  course      Course?   @relation(fields: [courseId], references: [id])
-  posts      ForumPost[]
-  user       User      @relation(fields: [userId], references: [id])
+  id        String   @id @default(uuid())
+  courseId  String?
+  userId    String
+  title     String
+  content   String
+  pinned    Boolean  @default(false)
+  locked    Boolean  @default(false)
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course Course?     @relation(fields: [courseId], references: [id])
+  posts  ForumPost[]
+  user   User        @relation(fields: [userId], references: [id])
 
   @@index([courseId])
   @@index([userId])
   @@index([pinned])
+  @@map("forum_topics")
 }
 
 model ForumPost {
@@ -634,215 +659,228 @@ model ForumPost {
   topicId   String
   userId    String
   content   String
-  upvotes  Int      @default(0)
+  upvotes   Int      @default(0)
   isCorrect Boolean  @default(false)
   parentId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  topic     ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  user      User       @relation(fields: [userId], references: [id])
+
+  topic ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id])
 
   @@index([topicId])
   @@index([userId])
+  @@map("forum_posts")
 }
 
 model Ticket {
-  id              String         @id @default(uuid())
-  userId          String
-  subject         String
-  description     String
-  status          TicketStatus   @default(OPEN)
-  priority        TicketPriority @default(MEDIUM)
-  category        String?
-  assignedTo     String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  resolvedAt     DateTime?
-  
-  user            User           @relation(fields: [userId], references: [id])
+  id          String         @id @default(uuid())
+  userId      String
+  subject     String
+  description String
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(MEDIUM)
+  category    String?
+  assignedTo  String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  resolvedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([assignedTo])
   @@index([status])
+  @@map("tickets")
 }
 
 model SupportTicket {
-  id            String       @id @default(uuid())
-  userId        String
-  subject       String
-  description   String
-  status        TicketStatus @default(OPEN)
-  priority      String       @default("MEDIUM")
-  category      String?
-  assignedToId  String?
-  attachments   Json?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  resolvedAt    DateTime?
-  
-  user         User         @relation("SupportTicketUser", fields: [userId], references: [id])
-  assignedTo   User?        @relation("SupportTicketAssignedTo", fields: [assignedToId], references: [id])
+  id           String       @id @default(uuid())
+  userId       String
+  subject      String
+  description  String
+  status       TicketStatus @default(OPEN)
+  priority     String       @default("MEDIUM")
+  category     String?
+  assignedToId String?
+  attachments  Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  resolvedAt   DateTime?
+
+  user       User  @relation("SupportTicketUser", fields: [userId], references: [id])
+  assignedTo User? @relation("SupportTicketAssignedTo", fields: [assignedToId], references: [id])
+
+  @@map("support_tickets")
 }
 
 model Certificate {
-  id               String   @id @default(uuid())
-  userId           String
-  courseId         String
-  tokenId          BigInt
-  ipfsHash         String?
+  id              String   @id @default(uuid())
+  userId          String
+  courseId        String
+  tokenId         BigInt
+  ipfsHash        String?
   verificationUrl String?
-  issuedAt         DateTime @default(now())
-  
+  issuedAt        DateTime @default(now())
+
   user   User   @relation(fields: [userId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
 
   @@unique([tokenId])
   @@index([userId])
   @@index([courseId])
+  @@map("certificates")
 }
 
 model Payment {
-  id          String       @id @default(uuid())
-  userId     String
-  agentId    String?
-  amount     Decimal      @db.Decimal(20, 8)
-  currency   String
-  token      String?
-  txHash     String?
-  status     PaymentStatus @default(PENDING)
-  type       PaymentType
-  createdAt  DateTime     @default(now())
+  id          String        @id @default(uuid())
+  userId      String
+  agentId     String?
+  amount      Decimal       @db.Decimal(20, 8)
+  currency    String
+  token       String?
+  txHash      String?
+  status      PaymentStatus @default(PENDING)
+  type        PaymentType
+  createdAt   DateTime      @default(now())
   completedAt DateTime?
-  failedAt   DateTime?
-  metadata   Json?
+  failedAt    DateTime?
+  metadata    Json?
 
   @@index([userId])
   @@index([agentId])
   @@index([status])
   @@index([type])
   @@index([createdAt(sort: Desc)])
+  @@map("payments")
 }
 
 model Subscription {
-  id              String            @id @default(uuid())
-  userId          String
-  tier            SubscriptionTier
-  status          String            @default("ACTIVE")
-  startDate       DateTime          @default(now())
-  endDate         DateTime?
-  autoRenew      Boolean           @default(true)
+  id               String           @id @default(uuid())
+  userId           String
+  tier             SubscriptionTier
+  status           String           @default("ACTIVE")
+  startDate        DateTime         @default(now())
+  endDate          DateTime?
+  autoRenew        Boolean          @default(true)
   stripeCustomerId String?
-  stripeSubId    String?
-  amount          Float
-  currency        String            @default("USD")
-  interval        String            @default("monthly")
-  lastPaymentAt   DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  
-  user            User              @relation(fields: [userId], references: [id])
+  stripeSubId      String?
+  amount           Float
+  currency         String           @default("USD")
+  interval         String           @default("monthly")
+  lastPaymentAt    DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([status])
   @@index([endDate])
+  @@map("subscriptions")
 }
 
 model ApiKey {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
-  key         String   @unique
+  key         String    @unique
   name        String
   permissions String[]
   expiresAt   DateTime?
   lastUsedAt  DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   revokedAt   DateTime?
   revokedBy   String?
-  
-  user        User     @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@map("api_keys")
 }
 
 model IpWhitelist {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
   ipAddress   String
   description String?
-  createdAt  DateTime @default(now())
-  expiresAt  DateTime?
-  
-  user        User    @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, ipAddress])
+  @@map("ip_whitelists")
 }
 
 model WebhookConfig {
-  id          String   @id @default(uuid())
-  userId      String
-  url         String
-  events      String[]
-  secret      String?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id              String    @id @default(uuid())
+  userId          String
+  url             String
+  events          String[]
+  secret          String?
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
   lastTriggeredAt DateTime?
-  
-  user        User     @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([active])
+  @@map("webhook_configs")
 }
 
 model Notification {
   id        String           @id @default(uuid())
-  userId   String
-  type     NotificationType @default(INFO)
-  title    String
-  message  String
-  read     Boolean          @default(false)
-  data     Json?
-  link     String?
-  createdAt DateTime       @default(now())
-  readAt   DateTime?
-  
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      NotificationType @default(INFO)
+  title     String
+  message   String
+  read      Boolean          @default(false)
+  data      Json?
+  link      String?
+  createdAt DateTime         @default(now())
+  readAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([userId, read])
   @@index([createdAt(sort: Desc)])
+  @@map("notifications")
 }
 
 model AuditLog {
-  id          String   @id @default(uuid())
-  userId      String?
-  action      String
-  resource    String
-  resourceId  String?
-  details     Json?
-  ipAddress   String?
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  details    Json?
+  ipAddress  String?
   userAgent  String?
-  createdAt   DateTime @default(now())
-  
-  user        User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([action])
   @@index([resource])
   @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
 }
 
 model FeatureFlag {
   id          String   @id @default(uuid())
-  name       String   @unique
-  enabled    Boolean  @default(false)
+  name        String   @unique
+  enabled     Boolean  @default(false)
   description String?
-  rules      Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  createdBy  String?
-  
+  rules       Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String?
+
   @@index([enabled])
+  @@map("feature_flags")
 }
 
 model Session {
@@ -854,46 +892,52 @@ model Session {
   createdAt    DateTime @default(now())
   ipAddress    String?
   userAgent    String?
-  
+
   @@index([userId])
   @@index([token])
   @@index([expiresAt])
+  @@map("sessions")
 }
 
 model Pricing {
-  id          String   @id @default(uuid())
-  tier        String   @unique
-  price       Float
-  currency    String   @default("USD")
-  interval    String   @default("one_time")
-  features    Json
+  id           String   @id @default(uuid())
+  tier         String   @unique
+  price        Float
+  currency     String   @default("USD")
+  interval     String   @default("one_time")
+  features     Json
   cryptoPrices Json?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("pricing")
 }
 
 model Webinar {
   id              String   @id @default(uuid())
-  title          String
-  description    String
-  scheduledAt    DateTime
-  duration       Int
-  hostId         String
+  title           String
+  description     String
+  scheduledAt     DateTime
+  duration        Int
+  hostId          String
   maxParticipants Int
-  link           String?
-  recordingUrl   String?
-  status         String   @default("SCHEDULED")
-  createdAt      DateTime @default(now())
+  link            String?
+  recordingUrl    String?
+  status          String   @default("SCHEDULED")
+  createdAt       DateTime @default(now())
+
+  @@map("webinars")
 }
 
 model WebinarRegistration {
-  id         String   @id @default(uuid())
-  webinarId  String
+  id        String   @id @default(uuid())
+  webinarId String
   userId    String
   joinedAt  DateTime @default(now())
-  
+
   @@unique([webinarId, userId])
+  @@map("webinar_registrations")
 }
 
 model ProcessedEvent {
@@ -909,4 +953,5 @@ model ProcessedEvent {
   @@unique([transactionHash, eventName])
   @@index([chain, blockNumber])
   @@index([createdAt])
+  @@map("processed_events")
 }

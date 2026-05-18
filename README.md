@@ -2,6 +2,15 @@
 
 The operating system for agentic Web3 enterprises.
 
+## Prerequisites
+
+| Tool | Version |
+|------|---------|
+| Node.js | >= 18.0.0 |
+| npm | >= 9.0.0 |
+| Supabase account | Free tier (for database) |
+| WalletConnect Project ID | Free from https://cloud.walletconnect.com |
+
 ## Quick Start (Local Development)
 
 ```bash
@@ -10,17 +19,45 @@ npm install
 cd backend && npm install && cd ..
 cd frontend && npm install && cd ..
 
-# 2. Set up database (PostgreSQL required)
+# 2. Set up environment variables
 cp backend/.env.example backend/.env
-# Edit backend/.env with your DATABASE_URL
+# Edit backend/.env with your Supabase credentials (see "Supabase Setup" below)
+# Minimum required: DATABASE_URL, DIRECT_URL, JWT_SECRET
+
+# 3. Run database migrations
 cd backend && npx prisma migrate dev && cd ..
 
-# 3. Start backend
+# 4. Start backend (API on port 3000)
 cd backend && npm run dev
 
-# 4. In another terminal, start frontend
+# 5. In another terminal, start frontend (dev server on port 3001)
 cd frontend && npm run dev
 ```
+
+## Supabase Database Setup
+
+1. **Create a project** at https://supabase.com (free tier works).
+2. **Go to Project Settings → Database** and find the connection strings:
+   - **Connection string (transaction pooler)**: `postgresql://postgres.project-ref:password@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1`
+   - **Direct connection**: `postgresql://postgres.project-ref:password@db.project-ref.supabase.co:5432/postgres`
+3. **Set these in your `.env`**:
+
+```
+DATABASE_URL="postgresql://postgres.project-ref:password@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres.project-ref:password@db.project-ref.supabase.co:5432/postgres"
+```
+
+> **Why two URLs?** Supabase uses PgBouncer for connection pooling. `DATABASE_URL` (transaction pooler) is used for normal app queries. `DIRECT_URL` bypasses the pooler and is only used by Prisma Migrate (which needs direct database access).
+
+### Common Supabase Connection Errors
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `no pg_hba.conf entry` | Wrong host/port | Use pooler (`*.pooler.supabase.com:6543`) for `DATABASE_URL`, direct (`db.*.supabase.co:5432`) for `DIRECT_URL` |
+| `too many connections` | Pooler limit hit | Add `&connection_limit=1` to `DATABASE_URL` |
+| `SSL required` | Missing `sslmode` | Append `?sslmode=require` to connection strings |
+| `password authentication failed` | Wrong password | Reset via Supabase Dashboard → Database → Reset password |
+| `Prisma needs direct database access for migrations` | `DIRECT_URL` missing | Set `DIRECT_URL` in your `.env` or environment variables |
 
 ## Deploy to Render (One-Click)
 
@@ -29,7 +66,7 @@ Kuberna Labs is configured for zero-manual-intervention deployment on [Render](h
 ### Prerequisites
 
 1. A [Render account](https://dashboard.render.com/register)
-2. A PostgreSQL database (use [Render Managed PostgreSQL](https://render.com/docs/databases) or [Neon](https://neon.tech) / [Supabase](https://supabase.com))
+2. A Supabase PostgreSQL database (see "Supabase Database Setup" above)
 3. Smart contracts deployed on your target chain (testnet or mainnet)
 4. A [WalletConnect Project ID](https://cloud.walletconnect.com) (free)
 
@@ -38,8 +75,8 @@ Kuberna Labs is configured for zero-manual-intervention deployment on [Render](h
 1. Fork/clone this repository to your GitHub account.
 2. In Render Dashboard, click **New → Blueprint**.
 3. Connect your GitHub repo.
-4. Render reads `render.yaml` and asks for the environment variables marked `sync: false`.
-5. Fill in the required variables (see table below).
+4. Render reads `render.yaml` and prompts for `sync: false` variables.
+5. Fill in the required variables (see below).
 6. Click **Apply** – Render builds and deploys automatically.
 
 ### Option B: Manual Web Service Setup
@@ -60,32 +97,28 @@ Kuberna Labs is configured for zero-manual-intervention deployment on [Render](h
 4. Add environment variables (see table below).
 5. Click **Create Web Service**.
 
-### Environment Variables
-
-Set these in your Render Dashboard under **Environment Variables**.
-
-#### Required
+### Required Environment Variables
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db?sslmode=require` |
-| `JWT_SECRET` | JWT signing key (generate with `openssl rand -hex 32`) | `a1b2c3d4e5f6...` |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | From [WalletConnect Cloud](https://cloud.walletconnect.com) | `abc123...` |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | From [WalletConnect Cloud](https://cloud.walletconnect.com) | `abc123...` |
+| `DATABASE_URL` | Supabase transaction pooler URL (runtime) | `postgresql://postgres.p-ref:pass@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
+| `DIRECT_URL` | Supabase direct URL (Prisma Migrate only) | `postgresql://postgres.p-ref:pass@db.p-ref.supabase.co:5432/postgres` |
+| `JWT_SECRET` | JWT signing key (`openssl rand -hex 32`) | `a1b2c3d4...` |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud ID | `abc123...` |
 
-#### Required for Web3 Features
+### Required for Web3 Features
 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `RPC_URL` | Blockchain RPC endpoint | `https://sepolia.base.org` |
-| `PRIVATE_KEY` | Backend wallet private key (minimal funds only!) | `0xabc...` |
+| `PRIVATE_KEY` | Backend wallet private key | `0xabc...` |
 | `ESCROW_CONTRACT_ADDRESS` | Deployed Escrow contract | `0x123...` |
 | `INTENT_CONTRACT_ADDRESS` | Deployed Intent contract | `0x456...` |
 | `AGENT_REGISTRY_CONTRACT_ADDRESS` | Deployed AgentRegistry contract | `0x789...` |
 | `CERTIFICATE_CONTRACT_ADDRESS` | Deployed CertificateNFT contract | `0xabc...` |
 | `REPUTATION_CONTRACT_ADDRESS` | Deployed ReputationNFT contract | `0xdef...` |
 
-#### Optional
+### Optional
 
 | Variable | Description | Notes |
 |----------|-------------|-------|
@@ -97,33 +130,31 @@ Set these in your Render Dashboard under **Environment Variables**.
 | `FRONTEND_DIST_PATH` | Frontend build output path | `../frontend/out` |
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins | `https://your-app.onrender.com` |
 
-### Setting Up a Database
+### GitHub Secrets (for Automated Migrations)
 
-#### Render Managed PostgreSQL
+The `.github/workflows/migrate-database.yml` workflow runs Prisma Migrate automatically on pushes to `main`/`develop` that change `prisma/schema.prisma`.
 
-1. In Render Dashboard, click **New → PostgreSQL**.
-2. Select your plan (Free tier available).
-3. After creation, copy the **Internal Database URL**.
-4. Paste it as the `DATABASE_URL` environment variable in your Web Service.
+Add these secrets in your repo **Settings → Secrets and variables → Actions**:
 
-#### External Database (Neon / Supabase)
+| Secret | Value |
+|--------|-------|
+| `DATABASE_URL` | Your Supabase transaction pooler URL |
+| `DIRECT_URL` | Your Supabase direct connection URL |
 
-1. Create a free PostgreSQL database on [Neon](https://neon.tech) or [Supabase](https://supabase.com).
-2. Copy the connection string (with `?sslmode=require`).
-3. Paste it as the `DATABASE_URL`.
+### Post-Deployment
 
-### Auto Deploys
+1. **Run initial migration**: If starting with an empty database:
+   ```bash
+   # Locally (one-time):
+   cd backend && npx prisma migrate dev --name init
+   git add prisma/migrations && git commit -m "Initial migration"
+   git push
+   # GitHub workflow will deploy migration to production
+   ```
 
-Render automatically deploys when you push to the connected branch. To trigger a manual deploy:
+2. **Verify deployment**: Visit `https://your-app.onrender.com/health` – expect `{"status":"ok"}`.
 
-- **Render Dashboard**: Go to your service → **Manual Deploy** → **Deploy latest commit**.
-- **CLI**: `curl -X POST https://api.render.com/v1/services/$SERVICE_ID/deploys -H "Authorization: Bearer $RENDER_API_KEY"`
-
-### Post-Deployment Verification
-
-1. Visit `https://your-app.onrender.com/health` – you should see `{"status":"ok"}`.
-2. Visit `https://your-app.onrender.com/` – you should see the Kuberna Labs frontend.
-3. Try registering a user or connecting a wallet.
+3. **Visit the app**: `https://your-app.onrender.com/` shows the Kuberna Labs dashboard.
 
 ## Project Structure
 

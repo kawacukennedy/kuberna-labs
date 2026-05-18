@@ -19,6 +19,8 @@ services:
         value: "10000"
       - key: DATABASE_URL
         sync: false
+      - key: DIRECT_URL
+        sync: false
       - key: JWT_SECRET
         sync: false
       - key: JWT_REFRESH_SECRET
