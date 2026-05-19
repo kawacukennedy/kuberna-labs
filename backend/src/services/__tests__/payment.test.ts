@@ -1,6 +1,7 @@
 import { PaymentService, PaymentServiceConfig } from "../payment";
 
 jest.mock("ethers", () => {
+  const actualEthers = jest.requireActual("ethers");
   const mockProvider = {
     getTransactionReceipt: jest.fn().mockResolvedValue(null),
     getBlockNumber: jest.fn().mockResolvedValue(100),
@@ -46,26 +47,16 @@ jest.mock("ethers", () => {
   };
 
   return {
-    ZeroAddress: "0x0000000000000000000000000000000000000000",
-    MaxUint256: BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
-    id: jest.fn((data: any) => "0x" + Buffer.from(String(data)).toString("hex").padStart(64, "0")),
-    parseUnits: jest.fn((amount: any, decimals: any) => BigInt(Math.round(parseFloat(String(amount)) * 10 ** Number(decimals)))),
-    formatEther: jest.fn((wei: any) => String(Number(wei) / 1e18)),
-    formatUnits: jest.fn((value: any, decimals: any) => String(Number(value) / 10 ** Number(decimals))),
-    AbiCoder: {
-      defaultAbiCoder: jest.fn(() => ({
-        encode: jest.fn(() => "0xencoded"),
+    ...actualEthers,
+    ethers: {
+      ...actualEthers.ethers,
+      JsonRpcProvider: jest.fn(() => ({ ...mockProvider })),
+      Wallet: jest.fn(() => ({
+        getAddress: jest.fn().mockResolvedValue("0x1234567890123456789012345678901234567890"),
+        connect: jest.fn().mockReturnThis(),
       })),
+      Contract: jest.fn(() => ({ ...mockContract })),
     },
-    JsonRpcProvider: jest.fn(() => ({ ...mockProvider })),
-    Wallet: jest.fn(() => ({
-      getAddress: jest.fn().mockResolvedValue("0x1234567890123456789012345678901234567890"),
-      connect: jest.fn().mockReturnThis(),
-    })),
-    Contract: jest.fn(() => ({ ...mockContract })),
-    keccak256: jest.fn(() => "0x" + "a".repeat(64)),
-    hexlify: jest.fn(() => "0xabcdef"),
-    randomBytes: jest.fn(() => new Uint8Array(32)),
   };
 });
 

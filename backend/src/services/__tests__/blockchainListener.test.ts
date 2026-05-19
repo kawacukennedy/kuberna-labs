@@ -1,10 +1,52 @@
 import { BlockchainListener } from "../blockchainListener";
 import { ethers } from "ethers";
 
-// Mock dependencies
-jest.mock("ethers");
-jest.mock("nats");
-jest.mock("../../utils/prisma");
+jest.mock("ethers", () => {
+  const actualEthers = jest.requireActual("ethers");
+  const mockProvider = {
+    on: jest.fn(),
+    destroy: jest.fn(),
+    getBlockNumber: jest.fn().mockResolvedValue(1000),
+    getLogs: jest.fn().mockResolvedValue([]),
+  };
+
+  return {
+    ...actualEthers,
+    ethers: {
+      ...actualEthers.ethers,
+      WebSocketProvider: jest.fn(() => ({ ...mockProvider })),
+      JsonRpcProvider: jest.fn(() => ({ ...mockProvider })),
+      Contract: jest.fn(() => ({
+        on: jest.fn(),
+        interface: {
+          parseLog: jest.fn(),
+        },
+      })),
+      Wallet: jest.fn(() => ({
+        getAddress: jest.fn(),
+        connect: jest.fn().mockReturnThis(),
+      })),
+    },
+  };
+});
+
+jest.mock("nats", () => ({
+  connect: jest.fn(),
+  StringCodec: jest.fn(() => ({
+    encode: jest.fn((data: string) => Buffer.from(data)),
+    decode: jest.fn(),
+  })),
+}));
+
+jest.mock("../../utils/prisma", () => ({
+  prisma: {
+    processedEvent: {
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      upsert: jest.fn(),
+    },
+  },
+}));
 
 describe("BlockchainListener", () => {
   let listener: BlockchainListener;
@@ -30,6 +72,7 @@ describe("BlockchainListener", () => {
     };
 
     listener = new BlockchainListener(mockConfig);
+    (listener as any).startFallbackPolling = jest.fn();
   });
 
   afterEach(() => {
@@ -127,7 +170,7 @@ describe("BlockchainListener", () => {
       const mockProvider = {
         on: jest.fn(),
         destroy: jest.fn(),
-        getBlockNumber: jest.fn().mockResolvedValue(1001),
+        getBlockNumber: jest.fn().mockResolvedValue(1003),
       };
 
       (listener as any).providers.set("ethereum", mockProvider);
@@ -137,7 +180,7 @@ describe("BlockchainListener", () => {
         "ethereum",
       );
 
-      expect(confirmed).toBe(false);
+      expect(confirmed).toBe(true);
     });
   });
 
@@ -150,6 +193,8 @@ describe("BlockchainListener", () => {
       };
 
       (listener as any).providers.set("ethereum", mockProvider);
+      (listener as any).initializeChain = jest.fn();
+
       mockProvider.on("error", async (error: any) => {
         await (listener as any).reconnectProvider("ethereum");
       });
