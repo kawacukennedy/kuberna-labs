@@ -20,7 +20,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Deploy to Sepolia
         env:
@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd sdk
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Build SDK
         run: |
@@ -81,7 +81,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Build backend
         run: |
