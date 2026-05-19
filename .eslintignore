@@ -2,6 +2,9 @@ node_modules/
 frontend/
 backend/
 sdk/
+examples/
+scripts/
+test/
 contracts/
 artifacts/
 cache/
