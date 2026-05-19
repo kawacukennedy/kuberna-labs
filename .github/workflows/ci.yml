@@ -20,7 +20,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         run: npm run lint
@@ -44,7 +44,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Compile contracts
         run: npx hardhat compile
@@ -56,7 +56,7 @@ jobs:
         run: npx hardhat coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info
           flags: contracts
@@ -76,7 +76,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Run backend tests
         run: |
@@ -84,7 +84,7 @@ jobs:
           npm test
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./backend/coverage/lcov.info
           flags: backend
@@ -104,7 +104,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd sdk
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Run SDK tests
         run: |
@@ -124,7 +124,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate
@@ -151,7 +151,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build contracts
         run: npx hardhat compile
@@ -159,19 +159,19 @@ jobs:
       - name: Build backend
         run: |
           cd backend
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
       - name: Build SDK
         run: |
           cd sdk
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
       - name: Build frontend
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
   test-frontend:
@@ -189,7 +189,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Run TypeScript type check
         run: |

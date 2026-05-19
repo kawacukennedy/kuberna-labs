@@ -26,6 +26,7 @@
     "clean": "hardhat clean",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.{ts,sol,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,sol,json,md}\"",
     "dev": "cd frontend && npm run dev",
     "install:frontend": "cd frontend && npm install",
     "build:sdk": "cd sdk && npm ci && npm run build",
