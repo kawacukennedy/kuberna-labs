@@ -1,5 +1,8 @@
 node_modules/
 frontend/
+backend/
+sdk/
+contracts/
 artifacts/
 cache/
 coverage/
