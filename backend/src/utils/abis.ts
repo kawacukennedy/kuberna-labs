@@ -66,3 +66,90 @@ export const ATTESTATION_ABI = [
   "event AttestationCreated(bytes32 indexed attestationId, bytes32 indexed schema, address indexed recipient, address issuer, uint64 expirationTime)",
   "event AttestationRevoked(bytes32 indexed attestationId, address indexed revoker)",
 ];
+
+export const SUBSCRIPTION_ABI = [
+  "function createPlan(string calldata name, address token, uint256 price, uint8 planType, uint256 durationSeconds) external returns (uint256)",
+  "function subscribe(uint256 planId) external payable",
+  "function renew(uint256 planId) external payable",
+  "function cancelSubscription(uint256 planId) external",
+  "function pauseSubscription(uint256 planId) external",
+  "function resumeSubscription(uint256 planId) external",
+  "function getSubscription(address user, uint256 planId) external view returns (tuple(address subscriber, uint256 planId, uint256 startTime, uint256 nextPaymentTime, uint256 amountPaid, uint8 status))",
+  "function getPlan(uint256 planId) external view returns (tuple(string name, address token, uint256 price, uint8 planType, uint256 durationSeconds, bool active))",
+  "function isActive(address user, uint256 planId) external view returns (bool)",
+];
+
+export const COURSE_NFT_ABI = [
+  "function createCourse(string calldata name, string calldata description, string calldata metadataURI, uint256 price, address paymentToken, uint256 maxStudents, bool hasCertificate, uint256 duration) external returns (uint256)",
+  "function updateCourse(uint256 courseId, string calldata name, string calldata description, string calldata metadataURI, uint256 price, uint256 maxStudents) external",
+  "function publishCourse(uint256 courseId) external",
+  "function enrollStudent(uint256 courseId, address student) external",
+  "function grantAccess(uint256 courseId, address student) external",
+  "function revokeAccess(uint256 courseId, address student) external",
+  "function archiveCourse(uint256 courseId) external",
+  "function isEnrolled(uint256 courseId, address student) external view returns (bool)",
+  "function getCourse(uint256 courseId) external view returns (tuple(string name, string description, string metadataURI, uint256 price, address paymentToken, uint8 status, uint256 maxStudents, uint256 enrolledCount, bool hasCertificate, uint256 duration))",
+  "function getCourseStudents(uint256 courseId) external view returns (address[])",
+  "function getUserCourses(address user) external view returns (uint256[])",
+];
+
+export const WORKSHOP_ABI = [
+  "function createWorkshop(string calldata title, string calldata description, string calldata instructor, uint256 startTime, uint256 duration, uint256 maxParticipants, string calldata streamingUrl) external returns (uint256)",
+  "function startWorkshop(uint256 workshopId) external",
+  "function endWorkshop(uint256 workshopId) external",
+  "function register(uint256 workshopId) external",
+  "function cancelWorkshop(uint256 workshopId) external",
+  "function setRecordingUrl(uint256 workshopId, string calldata url) external",
+  "function markAttendance(uint256 workshopId, address participant) external",
+  "function workshops(uint256) external view returns (tuple(string title, string description, string instructor, uint256 startTime, uint256 duration, uint256 maxParticipants, uint256 currentParticipants, string streamingUrl, uint8 status))",
+  "function registered(uint256, address) external view returns (bool)",
+  "function attended(uint256, address) external view returns (bool)",
+  "function participants(uint256, uint256) external view returns (address)",
+];
+
+export const DISPUTE_ABI = [
+  "function openDispute(bytes32 escrowId, address requester, address executor, string calldata reason, string calldata requesterEvidence) external returns (bytes32)",
+  "function submitEvidence(bytes32 disputeId, string calldata evidence) external",
+  "function castVote(bytes32 disputeId, uint8 vote) external",
+  "function resolveDispute(bytes32 disputeId) external",
+  "function appealDispute(bytes32 disputeId) external",
+  "function registerJuror() external payable",
+  "function claimReward(bytes32 disputeId) external",
+  "function disputes(bytes32) external view returns (tuple(bytes32 escrowId, address requester, address executor, string reason, string requesterEvidence, string executorEvidence, uint256 createdAt, uint256 votingEndTime, uint256 requesterVotes, uint256 executorVotes, uint8 status, uint8 result, bool appealed))",
+  "function hasVoted(bytes32, address) external view returns (bool)",
+];
+
+export const TREASURY_ABI = [
+  "function deposit(address token, uint256 amount) external payable",
+  "function createProposal(address recipient, address token, uint256 amount, string calldata description) external returns (uint256)",
+  "function castVote(uint256 id, bool support) external",
+  "function executeProposal(uint256 id) external",
+  "function cancelProposal(uint256 id) external",
+  "function setVotingPower(address account, uint256 power) external",
+  "function getProposal(uint256 id) external view returns (address, address, uint256, string memory, uint256, uint256, bool, bool, uint256)",
+  "function hasVotedOnProposal(uint256 id, address voter) external view returns (bool)",
+];
+
+export const FEE_MANAGER_ABI = [
+  "function setPlatformFee(uint256 fee) external",
+  "function addRecipient(address account, uint256 share) external",
+  "function removeRecipient(address account) external",
+  "function distributeFees(address token, uint256 amount) external",
+  "function addTier(uint256 threshold, uint256 percentage) external",
+  "function removeTier(uint256 index) external",
+  "function getTierFee(uint256 volume) external view returns (uint256)",
+  "function getRecipients() external view returns (tuple(address account, uint256 share, bool active)[])",
+  "function platformFee() external view returns (uint256)",
+];
+
+export const CROSSCHAIN_ROUTER_ABI = [
+  "function initiateTransfer(uint256 destinationChainId, address recipient, address token, uint256 amount, uint256 minReceived) external payable",
+  "function executeTransfer(bytes32 messageId, address recipient, address token, uint256 amount, uint256 minReceived) external",
+  "function setChainSupport(uint256 chainId, bool supported) external",
+  "function setBridgeFee(uint256 newFee) external",
+  "function setSlippageTolerance(uint256 tolerance) external",
+  "function getMinReceived(uint256 amount) external view returns (uint256)",
+  "function getMessage(bytes32 messageId) external view returns (tuple(bytes32 messageId, uint256 sourceChainId, uint256 destinationChainId, address sender, address recipient, address token, uint256 amount, bytes data, uint256 nonce, bool executed, uint256 timestamp))",
+  "function supportedChains(uint256) external view returns (bool)",
+  "function bridgeFee() external view returns (uint256)",
+];
