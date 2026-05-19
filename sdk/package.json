@@ -35,6 +35,10 @@
     "sdk",
     "kuberna"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "author": "Arnaud Kennedy",
   "license": "MIT",
   "devDependencies": {

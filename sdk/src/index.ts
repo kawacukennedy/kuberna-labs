@@ -9,6 +9,7 @@ import { TeeManager } from './tee.js';
 import { CertificateManager } from './certificate.js';
 import { WalletManager } from './wallet.js';
 import { AiManager } from './ai.js';
+import { SilentVerifyManager } from './silentverify.js';
 
 export interface KubernaConfig {
   apiKey?: string;
@@ -46,6 +47,7 @@ export class KubernaSDK {
   public certificate: CertificateManager;
   public wallet: WalletManager;
   public ai: AiManager;
+  public verify: SilentVerifyManager;
   private config: KubernaConfig;
   private provider: ethers.JsonRpcProvider;
   private walletInstance?: ethers.Wallet;
@@ -75,6 +77,7 @@ export class KubernaSDK {
     this.certificate = new CertificateManager(this);
     this.wallet = new WalletManager(this);
     this.ai = new AiManager(this);
+    this.verify = new SilentVerifyManager(this);
   }
 
   async initialize(params: { wallet?: string } = {}): Promise<this> {
@@ -148,3 +151,21 @@ export type { CreateEnclaveParams, Enclave, AttestationReport } from './tee.js';
 export type { MintCertificateParams, Certificate, CertificateVerification } from './certificate.js';
 export type { WalletInfo, TransactionResult } from './wallet.js';
 export type { ParseIntentResult, AgentDecision, AnalyzeParams, AnalysisResult } from './ai.js';
+export type {
+  SilentVerifyConfig,
+  AgentCertIssueRequest,
+  StateCertIssueRequest,
+  CertIssueResponse,
+  CertVerifyResponse,
+  StateCertWire,
+  ChainBindingResponse,
+  ChainVerifyResult,
+  ChainHealth,
+  ChainCatalogResponse,
+  ChainCatalogEntry,
+  EvmChainRequest,
+  SolanaChainRequest,
+  CosmosChainRequest,
+  XrpChainRequest,
+} from './silentverify.js';
+export { SilentVerifyManager } from './silentverify.js';
