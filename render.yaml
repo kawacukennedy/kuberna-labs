@@ -31,15 +31,35 @@ services:
         sync: false
       - key: PRIVATE_KEY
         sync: false
+      - key: BASE_SEPOLIA_RPC_URL
+        sync: false
       - key: ESCROW_CONTRACT_ADDRESS
         sync: false
       - key: INTENT_CONTRACT_ADDRESS
         sync: false
+      - key: CERTIFICATE_NFT_CONTRACT_ADDRESS
+        sync: false
+      - key: PAYMENT_CONTRACT_ADDRESS
+        sync: false
+      - key: SUBSCRIPTION_CONTRACT_ADDRESS
+        sync: false
+      - key: REPUTATION_NFT_CONTRACT_ADDRESS
+        sync: false
       - key: AGENT_REGISTRY_CONTRACT_ADDRESS
         sync: false
-      - key: CERTIFICATE_CONTRACT_ADDRESS
+      - key: COURSE_NFT_CONTRACT_ADDRESS
         sync: false
-      - key: REPUTATION_CONTRACT_ADDRESS
+      - key: WORKSHOP_CONTRACT_ADDRESS
+        sync: false
+      - key: DISPUTE_CONTRACT_ADDRESS
+        sync: false
+      - key: TREASURY_CONTRACT_ADDRESS
+        sync: false
+      - key: FEE_MANAGER_CONTRACT_ADDRESS
+        sync: false
+      - key: ATTESTATION_CONTRACT_ADDRESS
+        sync: false
+      - key: CROSSCHAIN_ROUTER_CONTRACT_ADDRESS
         sync: false
       - key: STRIPE_SECRET_KEY
         sync: false
