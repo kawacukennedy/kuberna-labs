@@ -48,7 +48,17 @@ interface BlockchainListenerConfig {
         escrow?: string;
         intent?: string;
         certificate?: string;
+        payment?: string;
+        subscription?: string;
+        reputation?: string;
+        agentRegistry?: string;
+        courseNft?: string;
+        workshop?: string;
+        dispute?: string;
+        treasury?: string;
+        feeManager?: string;
         attestation?: string;
+        crossChainRouter?: string;
       };
     };
   };

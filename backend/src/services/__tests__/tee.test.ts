@@ -2,6 +2,48 @@ import { TEEService, TEEServiceConfig, TEEDeploymentRequest, AttestationReport }
 import { prisma } from "../../utils/prisma";
 import { zkTLSService } from "../ztls";
 
+jest.mock("ethers", () => {
+  const mockProvider = {
+    getBlockNumber: jest.fn().mockResolvedValue(100),
+    getFeeData: jest.fn().mockResolvedValue({ gasPrice: BigInt(1) }),
+    destroy: jest.fn(),
+    send: jest.fn(),
+    detectNetwork: jest.fn().mockResolvedValue({ name: "local", chainId: 1337 }),
+    getNetwork: jest.fn().mockResolvedValue({ name: "local", chainId: 1337 }),
+  };
+
+  return {
+    ZeroAddress: "0x0000000000000000000000000000000000000000",
+    MaxUint256: BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
+    id: jest.fn((data: any) => "0x" + Buffer.from(String(data)).toString("hex").padStart(64, "0")),
+    parseUnits: jest.fn((amount: any, decimals: any) => BigInt(Math.round(parseFloat(String(amount)) * 10 ** Number(decimals)))),
+    formatEther: jest.fn((wei: any) => String(Number(wei) / 1e18)),
+    formatUnits: jest.fn((value: any, decimals: any) => String(Number(value) / 10 ** Number(decimals))),
+    AbiCoder: {
+      defaultAbiCoder: jest.fn(() => ({
+        encode: jest.fn(() => "0xencoded"),
+      })),
+    },
+    JsonRpcProvider: jest.fn(() => ({ ...mockProvider })),
+    Wallet: jest.fn(() => ({
+      getAddress: jest.fn().mockResolvedValue("0x1234567890123456789012345678901234567890"),
+      connect: jest.fn().mockReturnThis(),
+    })),
+    Contract: jest.fn(() => ({
+      attest: jest.fn().mockReturnValue({
+        wait: jest.fn().mockResolvedValue({ hash: "0x...", logs: [] }),
+      }),
+      interface: {
+        parseLog: jest.fn().mockReturnValue({ name: "AttestationCreated", args: ["attestation-id-123"] }),
+      },
+      verify: jest.fn().mockResolvedValue(true),
+    })),
+    keccak256: jest.fn(() => "0x" + "a".repeat(64)),
+    hexlify: jest.fn(() => "0xabcdef"),
+    randomBytes: jest.fn(() => new Uint8Array(32)),
+  };
+});
+
 // Mock dependencies
 jest.mock("../../utils/prisma", () => ({
   prisma: {

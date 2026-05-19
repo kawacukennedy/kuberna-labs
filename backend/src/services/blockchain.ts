@@ -6,6 +6,15 @@ import {
   AGENT_REGISTRY_ABI,
   CERTIFICATE_ABI,
   REPUTATION_ABI,
+  PAYMENT_ABI,
+  SUBSCRIPTION_ABI,
+  COURSE_NFT_ABI,
+  WORKSHOP_ABI,
+  DISPUTE_ABI,
+  TREASURY_ABI,
+  FEE_MANAGER_ABI,
+  ATTESTATION_ABI,
+  CROSSCHAIN_ROUTER_ABI,
 } from '../utils/abis.js';
 import logger from '../utils/logger.js';
 
@@ -14,9 +23,18 @@ export interface ChainConfig {
   privateKey: string;
   escrowAddress: string;
   intentAddress: string;
-  agentRegistryAddress: string;
   certificateAddress: string;
+  paymentAddress: string;
+  subscriptionAddress: string;
   reputationAddress: string;
+  agentRegistryAddress: string;
+  courseNftAddress: string;
+  workshopAddress: string;
+  disputeAddress: string;
+  treasuryAddress: string;
+  feeManagerAddress: string;
+  attestationAddress: string;
+  crossChainRouterAddress: string;
 }
 
 export interface BlockchainConfig {
@@ -125,19 +143,64 @@ export class BlockchainService {
     return this.getContract(config.intentAddress, INTENT_ABI, chain);
   }
 
-  getAgentRegistryContract(chain?: string): Contract {
-    const config = this.getChainConfig(chain);
-    return this.getContract(config.agentRegistryAddress, AGENT_REGISTRY_ABI, chain);
-  }
-
   getCertificateContract(chain?: string): Contract {
     const config = this.getChainConfig(chain);
     return this.getContract(config.certificateAddress, CERTIFICATE_ABI, chain);
   }
 
+  getPaymentContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.paymentAddress, PAYMENT_ABI, chain);
+  }
+
+  getSubscriptionContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.subscriptionAddress, SUBSCRIPTION_ABI, chain);
+  }
+
   getReputationContract(chain?: string): Contract {
     const config = this.getChainConfig(chain);
     return this.getContract(config.reputationAddress, REPUTATION_ABI, chain);
+  }
+
+  getAgentRegistryContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.agentRegistryAddress, AGENT_REGISTRY_ABI, chain);
+  }
+
+  getCourseNftContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.courseNftAddress, COURSE_NFT_ABI, chain);
+  }
+
+  getWorkshopContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.workshopAddress, WORKSHOP_ABI, chain);
+  }
+
+  getDisputeContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.disputeAddress, DISPUTE_ABI, chain);
+  }
+
+  getTreasuryContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.treasuryAddress, TREASURY_ABI, chain);
+  }
+
+  getFeeManagerContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.feeManagerAddress, FEE_MANAGER_ABI, chain);
+  }
+
+  getAttestationContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.attestationAddress, ATTESTATION_ABI, chain);
+  }
+
+  getCrossChainRouterContract(chain?: string): Contract {
+    const config = this.getChainConfig(chain);
+    return this.getContract(config.crossChainRouterAddress, CROSSCHAIN_ROUTER_ABI, chain);
   }
 
   async waitForTransaction(
@@ -217,17 +280,28 @@ export function initializeBlockchainService(config?: BlockchainConfig): Blockcha
     throw new Error('PRIVATE_KEY environment variable is required for BlockchainService');
   }
 
+  const rpcUrl = process.env.BASE_SEPOLIA_RPC_URL || process.env.ETHEREUM_RPC_URL || process.env.RPC_URL || 'http://localhost:8545';
+
   const defaultConfig: BlockchainConfig = {
     defaultChain: process.env.DEFAULT_CHAIN || 'ethereum',
     chains: {
       ethereum: {
-        rpcUrl: process.env.ETHEREUM_RPC_URL || 'http://localhost:8545',
+        rpcUrl,
         privateKey,
-        escrowAddress: process.env.ESCROW_ADDRESS || '',
-        intentAddress: process.env.INTENT_ADDRESS || '',
-        agentRegistryAddress: process.env.AGENT_REGISTRY_ADDRESS || '',
-        certificateAddress: process.env.CERTIFICATE_ADDRESS || '',
-        reputationAddress: process.env.REPUTATION_ADDRESS || '',
+        escrowAddress: process.env.ESCROW_CONTRACT_ADDRESS || '',
+        intentAddress: process.env.INTENT_CONTRACT_ADDRESS || '',
+        certificateAddress: process.env.CERTIFICATE_NFT_CONTRACT_ADDRESS || '',
+        paymentAddress: process.env.PAYMENT_CONTRACT_ADDRESS || '',
+        subscriptionAddress: process.env.SUBSCRIPTION_CONTRACT_ADDRESS || '',
+        reputationAddress: process.env.REPUTATION_NFT_CONTRACT_ADDRESS || '',
+        agentRegistryAddress: process.env.AGENT_REGISTRY_CONTRACT_ADDRESS || '',
+        courseNftAddress: process.env.COURSE_NFT_CONTRACT_ADDRESS || '',
+        workshopAddress: process.env.WORKSHOP_CONTRACT_ADDRESS || '',
+        disputeAddress: process.env.DISPUTE_CONTRACT_ADDRESS || '',
+        treasuryAddress: process.env.TREASURY_CONTRACT_ADDRESS || '',
+        feeManagerAddress: process.env.FEE_MANAGER_CONTRACT_ADDRESS || '',
+        attestationAddress: process.env.ATTESTATION_CONTRACT_ADDRESS || '',
+        crossChainRouterAddress: process.env.CROSSCHAIN_ROUTER_CONTRACT_ADDRESS || '',
       },
     },
   };
