@@ -10,6 +10,7 @@ import { CertificateManager } from './certificate.js';
 import { WalletManager } from './wallet.js';
 import { AiManager } from './ai.js';
 import { SilentVerifyManager } from './silentverify.js';
+import { KiteManager } from './kite.js';
 
 export interface KubernaConfig {
   apiKey?: string;
@@ -48,6 +49,7 @@ export class KubernaSDK {
   public wallet: WalletManager;
   public ai: AiManager;
   public verify: SilentVerifyManager;
+  public kite: KiteManager;
   private config: KubernaConfig;
   private provider: ethers.JsonRpcProvider;
   private walletInstance?: ethers.Wallet;
@@ -78,6 +80,7 @@ export class KubernaSDK {
     this.wallet = new WalletManager(this);
     this.ai = new AiManager(this);
     this.verify = new SilentVerifyManager(this);
+    this.kite = new KiteManager(this);
   }
 
   async initialize(params: { wallet?: string } = {}): Promise<this> {
@@ -169,3 +172,14 @@ export type {
   XrpChainRequest,
 } from './silentverify.js';
 export { SilentVerifyManager } from './silentverify.js';
+export { KiteManager } from './kite.js';
+export type {
+  KiteWalletInfo,
+  KiteSessionRequest,
+  KiteSession,
+  KiteAgentInfo,
+  X402PaymentRequest,
+  X402PaymentCreate,
+  X402SettleResult,
+  X402VerifyResult,
+} from './kite.js';

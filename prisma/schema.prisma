@@ -115,6 +115,17 @@ enum PaymentType {
   WITHDRAWAL
   ESCROW_FUND
   ESCROW_RELEASE
+  KITE_X402
+}
+
+enum KitePaymentStatus {
+  SESSION_CREATED
+  SESSION_APPROVED
+  PAYMENT_AUTHORIZED
+  PAYMENT_SETTLED
+  COMPLETED
+  FAILED
+  EXPIRED
 }
 
 enum TicketStatus {
@@ -172,6 +183,7 @@ model User {
   fullName                String
   avatarUrl               String?
   web3Address             String?    @unique
+  kiteWalletAddress       String?
   authMethod              AuthMethod @default(EMAIL)
   roles                   Role[]     @default([LEARNER])
   mfaEnabled              Boolean    @default(false)
@@ -364,6 +376,9 @@ model Agent {
   price           Float?
   ipWhitelist     String[]       @default([])
   supportedChains String[]       @default(["ethereum"])
+  kiteWalletAddress String?
+  kiteAgentDid      String?
+  kiteSessionId     String?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -747,12 +762,39 @@ model Payment {
   failedAt    DateTime?
   metadata    Json?
 
+  kitePayment KitePayment?
+
   @@index([userId])
   @@index([agentId])
   @@index([status])
   @@index([type])
   @@index([createdAt(sort: Desc)])
   @@map("payments")
+}
+
+model KitePayment {
+  id              String            @id @default(uuid())
+  paymentId       String            @unique
+  sessionId       String?
+  agentKiteDid    String?
+  kiteWalletAddr  String?
+  amount          Decimal           @db.Decimal(20, 8)
+  asset           String?
+  network         String            @default("kite-testnet")
+  status          KitePaymentStatus @default(SESSION_CREATED)
+  authorization   Json?
+  settlementTx    String?
+  facilitatorResp Json?
+  expiresAt       DateTime?
+  createdAt       DateTime          @default(now())
+  settledAt       DateTime?
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("kite_payments")
 }
 
 model Subscription {

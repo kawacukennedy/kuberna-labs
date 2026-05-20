@@ -9,6 +9,7 @@ import { apiUrl } from '@/lib/api';
 import { Cpu, BookOpen, DollarSign, Zap, Play, ChevronRight, Activity, Plus, User } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
+import { KiteWalletConnect } from '@/components/Wallet/KiteWalletConnect';
 
 export default function DashboardPage() {
   const { user, token } = useAuth();
@@ -145,6 +146,8 @@ export default function DashboardPage() {
 
           {/* Sidebar: Activity/Marketplace */}
           <div className="space-y-8">
+            <KiteWalletConnect />
+
             <section className="bg-surface-container-low p-6 rounded-xl">
               <h3 className="text-xl font-bold mb-6">Recent Activity</h3>
               <div className="space-y-6">

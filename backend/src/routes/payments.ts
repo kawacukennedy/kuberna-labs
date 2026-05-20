@@ -7,6 +7,7 @@ import type { AuthRequest } from '../types/express.d.js';
 import { authenticate } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validation.js';
 import logger from '../utils/logger.js';
+import { kitePassportService, kitePaymentService } from '../services/index.js';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -240,6 +241,190 @@ router.post(
         withdrawalId: payment.id,
         status: 'processing',
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/x402/parse',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { body } = req;
+      const paymentReq = await kitePaymentService.parseX402Response(body);
+
+      if (!paymentReq) {
+        res.status(400).json({ success: false, error: 'Invalid x402 response format' });
+        return;
+      }
+
+      res.json({ success: true, data: paymentReq });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/x402/create',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { sessionId, agentKiteDid, kiteWalletAddr, amount, asset, network, intentId } = req.body;
+
+      if (!amount) {
+        res.status(400).json({ success: false, error: 'Amount is required' });
+        return;
+      }
+
+      const payment = await prisma.payment.create({
+        data: {
+          userId: req.user!.id,
+          amount,
+          currency: asset || 'USDC',
+          token: asset || 'USDC',
+          type: 'KITE_X402',
+          status: 'PENDING',
+          metadata: { sessionId, agentKiteDid, kiteWalletAddr, network, intentId },
+        },
+      });
+
+      await kitePaymentService.createKitePaymentRecord({
+        paymentId: payment.id,
+        sessionId,
+        agentKiteDid,
+        kiteWalletAddr,
+        amount,
+        asset: asset || 'USDC',
+        network: network || 'kite-testnet',
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          paymentId: payment.id,
+          kitePaymentId: payment.id,
+          status: 'SESSION_CREATED',
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/x402/settle',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { kitePaymentId, authorization, signature, network } = req.body;
+
+      if (!kitePaymentId || !authorization || !signature) {
+        res.status(400).json({ success: false, error: 'Missing required fields' });
+        return;
+      }
+
+      await kitePaymentService.updatePaymentAuthorization(
+        kitePaymentId,
+        authorization,
+        'PAYMENT_AUTHORIZED'
+      );
+
+      const result = await kitePaymentService.settleViaFacilitator(
+        authorization,
+        signature,
+        network || 'kite-testnet'
+      );
+
+      if (!result.success) {
+        res.status(502).json({ success: false, error: result.error || 'Settlement failed' });
+        return;
+      }
+
+      await kitePaymentService.markSettled(kitePaymentId, result.txHash!);
+
+      await prisma.payment.update({
+        where: { id: kitePaymentId },
+        data: {
+          status: 'COMPLETED',
+          txHash: result.txHash,
+          completedAt: new Date(),
+        },
+      });
+
+      res.json({
+        success: true,
+        data: {
+          txHash: result.txHash,
+          status: 'PAYMENT_SETTLED',
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/x402/verify',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { txHash } = req.body;
+
+      if (!txHash) {
+        res.status(400).json({ success: false, error: 'txHash is required' });
+        return;
+      }
+
+      const result = await kitePaymentService.verifyPaymentOnChain(txHash);
+
+      if (!result) {
+        res.status(404).json({ success: false, error: 'Transaction not found or failed' });
+        return;
+      }
+
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  '/x402/sessions/:sessionId/payments',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { sessionId } = req.params;
+
+      const payments = await kitePaymentService.getKitePaymentsBySession(sessionId);
+
+      res.json({ success: true, data: payments });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  '/x402/payments/:kitePaymentId',
+  authenticate,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { kitePaymentId } = req.params;
+
+      const payment = await kitePaymentService.getKitePayment(kitePaymentId);
+
+      if (!payment) {
+        res.status(404).json({ success: false, error: 'Payment not found' });
+        return;
+      }
+
+      res.json({ success: true, data: payment });
     } catch (error) {
       next(error);
     }

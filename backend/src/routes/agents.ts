@@ -3,6 +3,8 @@ import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
+import { kitePassportService } from '../services/index.js';
+import logger from '../utils/logger.js';
 
 const router = Router();
 
@@ -230,6 +232,26 @@ router.post('/', authenticate, async (req: AuthRequest, res: Response, next: Nex
         agentId: agent.id,
       },
     });
+
+    try {
+      const kiteReg = await kitePassportService.registerKiteAgent(
+        req.user!.id,
+        name,
+        'coding-assistant'
+      );
+
+      await kitePassportService.updateAgentKiteInfo(agent.id, kiteReg);
+
+      logger.info('Agent registered with Kite Passport', {
+        agentId: agent.id,
+        kiteDid: kiteReg.kiteDid,
+      });
+    } catch (kiteError) {
+      logger.warn('Kite registration skipped', {
+        agentId: agent.id,
+        error: String(kiteError),
+      });
+    }
 
     res.status(201).json(agent);
   } catch (error) {

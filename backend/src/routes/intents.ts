@@ -4,6 +4,8 @@ import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
 import { intentLimiter } from '../middleware/rateLimiter.js';
+import { kitePassportService } from '../services/index.js';
+import logger from '../utils/logger.js';
 
 const router = Router();
 
@@ -119,6 +121,7 @@ router.post(
         deadline,
         budget,
         autoAcceptRules,
+        paymentMethod,
       } = req.body;
 
       const intent = await prisma.intent.create({
@@ -139,6 +142,54 @@ router.post(
           status: 'OPEN',
         },
       });
+
+      if (paymentMethod === 'kite') {
+        const agent = await prisma.agent.findFirst({
+          where: {
+            ownerId: req.user!.id,
+            kiteAgentDid: { not: null },
+            status: { in: ['DEPLOYED', 'RUNNING'] },
+          },
+        });
+
+        if (agent?.kiteAgentDid) {
+          try {
+            const session = await kitePassportService.createSpendingSession(
+              req.user!.id,
+              agent.kiteAgentDid,
+              {
+                taskSummary: `Execute intent: ${description}`,
+                maxAmountPerTx: Number(budget),
+                maxTotalAmount: Number(budget),
+                ttl: '24h',
+                assets: ['USDC'],
+                paymentApproach: 'x402_http',
+              }
+            );
+
+            await prisma.intent.update({
+              where: { id: intent.id },
+              data: {
+                structuredData: {
+                  ...(structuredData as Record<string, unknown> || {}),
+                  kiteSessionId: session.sessionId,
+                  kiteApprovalUrl: session.approvalUrl,
+                },
+              },
+            });
+
+            logger.info('Kite session created for intent', {
+              intentId: intent.id,
+              sessionId: session.sessionId,
+            });
+          } catch (kiteError) {
+            logger.warn('Kite session creation skipped for intent', {
+              intentId: intent.id,
+              error: String(kiteError),
+            });
+          }
+        }
+      }
 
       await prisma.notification.create({
         data: {

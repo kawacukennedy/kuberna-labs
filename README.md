@@ -276,6 +276,36 @@ const payment = await client.payment.createIntent({
 
 See [SDK README](./sdk/README.md) for complete API documentation.
 
+## Kite AI Integration (Agent Payments)
+
+Kuberna integrates [Kite AI](https://gokite.ai/) — the payments layer for the agent economy. AI agents can discover, pay for, and settle with services using **Kite Passport** (session-based spending) and the **x402** payment protocol.
+
+### Architecture
+
+```
+User → Kite Passport (passkey approval) → Agent → Spending Session
+  → x402 Payment → Pieverse Facilitator → Kite Chain Settlement
+```
+
+### Key Components
+
+- **Kite Passport**: Users create an account at [agentpassport.ai](https://agentpassport.ai), fund a wallet with USDC.e on Kite Chain, and approve spending sessions with passkeys
+- **Spending Sessions**: Budget (per-tx + total), TTL, asset scope — agents spend only within the envelope
+- **x402 Payments**: HTTP 402 `Payment Required` flow with `X-PAYMENT` header, settled via the Pieverse facilitator
+- **Kite Chain**: EVM-compatible L1 (Chain ID 2368, RPC `https://rpc-testnet.gokite.ai`)
+
+### Setup
+
+1. Create Passport account at [agentpassport.ai](https://agentpassport.ai)
+2. Fund wallet via faucet or transfer USDC.e
+3. Connect wallet: `POST /api/kite/wallet/connect`
+4. Register agent (auto on creation) for Kite DID
+5. Create spending session: `POST /api/kite/sessions/create`
+6. Approve session URL (passkey)
+7. Execute x402 payments via SDK: `sdk.kite.createX402Payment()`
+
+See [KITE.md](./KITE.md) for full integration guide and API reference.
+
 ## Smart Contracts
 
 Smart contracts are deployed separately (not part of this Render deployment). After deploying contracts, set their addresses in the environment variables listed above. Deployment scripts are in `scripts/` and `hardhat.config.ts`.
