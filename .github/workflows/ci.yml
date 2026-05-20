@@ -62,6 +62,8 @@ jobs:
         with:
           files: ./coverage/lcov.info
           flags: contracts
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
 
   test-backend:
     name: Test Backend Services
@@ -90,6 +92,8 @@ jobs:
         with:
           files: ./backend/coverage/lcov.info
           flags: backend
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
 
   test-sdk:
     name: Test SDK
