@@ -63,8 +63,8 @@ cp .env.example .env
 
 Edit `.env` and fill in the required values:
 
-| Purpose                                       | Connection String                                                                                                                                     |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Purpose                                       | Connection String                                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Transaction pooler** (recommended for apps) | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:REDACTED@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
 | **Session pooler** (for migrations)           | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:REDACTED@aws-1-eu-north-1.pooler.supabase.com:5432/postgres`                                   |
 
