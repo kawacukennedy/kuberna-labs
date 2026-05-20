@@ -8,10 +8,10 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 /**
  * @title PriceOracle
  * @dev Oracle contract for fetching and storing token prices for Kuberna Labs.
- * 
+ *
  * This contract provides price data for various tokens used in the platform,
  * enabling accurate valuation for escrow, subscriptions, and marketplace transactions.
- * 
+ *
  * Features:
  * - Chainlink Data Feeds support for real-time reliable pricing
  * - Admin-updated prices with timelock for security (used as fallback or for unsupported tokens)
@@ -29,14 +29,14 @@ contract PriceOracle is Ownable, Pausable {
     // Manual oracle data
     mapping(address => PriceData) public tokenPrices;
     mapping(address => uint256[]) public priceHistory;
-    
+
     // Chainlink Data Feeds
     mapping(address => address) public priceFeeds;
-    
+
     uint256 public constant PRICE_UPDATE_DELAY = 1 hours;
     mapping(address => uint256) public pendingPrices;
     mapping(address => uint256) public pendingPriceTimestamps;
-    
+
     event PriceUpdated(address indexed token, uint256 price, uint256 timestamp);
     event PricePending(address indexed token, uint256 pendingPrice, uint256 timestamp);
     event FeedUpdated(address indexed token, address feed);
@@ -65,7 +65,7 @@ contract PriceOracle is Ownable, Pausable {
     function setPendingPrice(address token, uint256 price) external onlyOwner whenNotPaused {
         require(token != address(0), "Invalid token address");
         require(price > 0, "Price must be greater than 0");
-        
+
         pendingPrices[token] = price;
         pendingPriceTimestamps[token] = block.timestamp;
         emit PricePending(token, price, block.timestamp);
@@ -77,23 +77,16 @@ contract PriceOracle is Ownable, Pausable {
      */
     function confirmPrice(address token) external onlyOwner {
         require(pendingPrices[token] > 0, "No pending price");
-        require(
-            block.timestamp >= pendingPriceTimestamps[token] + PRICE_UPDATE_DELAY,
-            "Delay not elapsed"
-        );
+        require(block.timestamp >= pendingPriceTimestamps[token] + PRICE_UPDATE_DELAY, "Delay not elapsed");
 
         uint256 newPrice = pendingPrices[token];
-        tokenPrices[token] = PriceData({
-            price: newPrice,
-            timestamp: block.timestamp,
-            isSet: true
-        });
-        
+        tokenPrices[token] = PriceData({price: newPrice, timestamp: block.timestamp, isSet: true});
+
         priceHistory[token].push(newPrice);
-        
+
         delete pendingPrices[token];
         delete pendingPriceTimestamps[token];
-        
+
         emit PriceUpdated(token, newPrice, block.timestamp);
     }
 
@@ -107,14 +100,8 @@ contract PriceOracle is Ownable, Pausable {
         address feedAddress = priceFeeds[token];
         if (feedAddress != address(0)) {
             AggregatorV3Interface feed = AggregatorV3Interface(feedAddress);
-            (
-                uint80 roundId,
-                int256 answer,
-                ,
-                uint256 updatedAt,
-                uint80 answeredInRound
-            ) = feed.latestRoundData();
-            
+            (uint80 roundId, int256 answer, , uint256 updatedAt, uint80 answeredInRound) = feed.latestRoundData();
+
             // Basic staleness and validity checks
             if (answer > 0 && answeredInRound >= roundId && updatedAt > 0) {
                 return (true, uint256(answer));
@@ -133,7 +120,7 @@ contract PriceOracle is Ownable, Pausable {
         if (hasChainlink) {
             return chainlinkPrice;
         }
-        
+
         require(tokenPrices[token].isSet, "Price not set");
         return tokenPrices[token].price;
     }
@@ -166,14 +153,8 @@ contract PriceOracle is Ownable, Pausable {
         address feedAddress = priceFeeds[token];
         if (feedAddress != address(0)) {
             AggregatorV3Interface feed = AggregatorV3Interface(feedAddress);
-            (
-                uint80 roundId,
-                int256 answer,
-                ,
-                uint256 updatedAt,
-                uint80 answeredInRound
-            ) = feed.latestRoundData();
-            
+            (uint80 roundId, int256 answer, , uint256 updatedAt, uint80 answeredInRound) = feed.latestRoundData();
+
             if (answer > 0 && answeredInRound >= roundId && updatedAt > 0) {
                 return (uint256(answer), updatedAt);
             }
@@ -207,4 +188,3 @@ contract PriceOracle is Ownable, Pausable {
         _unpause();
     }
 }
-

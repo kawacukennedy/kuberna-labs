@@ -59,8 +59,11 @@ const client = new KubernaClient({ baseUrl: 'https://api.kuberna.com' });
 // Parse intents, manage payments, deploy to TEE
 const intent = await client.ai.parseIntent('swap 1 ETH for USDC');
 const payment = await client.payment.createIntent({
-  sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0',
-  destChain: 'solana', destToken: 'USDC',
+  sourceChain: 'ethereum',
+  sourceToken: 'ETH',
+  sourceAmount: '1.0',
+  destChain: 'solana',
+  destToken: 'USDC',
 });
 ```
 
@@ -101,17 +104,20 @@ cd ..
 ### 6. Start Local Services
 
 #### Start Redis (in separate terminal)
+
 ```bash
 redis-server
 ```
 
 #### Start NATS (in separate terminal)
+
 ```bash
 # Install NATS server: https://docs.nats.io/running-a-nats-service/introduction/installation
 nats-server
 ```
 
 #### Start PostgreSQL
+
 Ensure PostgreSQL is running and accessible at the DATABASE_URL specified in `.env`
 
 ## Development Workflow
@@ -165,11 +171,13 @@ npm test
 ## Testing Frameworks
 
 ### Smart Contracts
+
 - **Hardhat**: Ethereum development environment
 - **Chai**: Assertion library
 - **fast-check**: Property-based testing
 
 ### Backend
+
 - **Jest**: JavaScript testing framework
 - **Supertest**: HTTP assertion library
 - **fast-check**: Property-based testing
@@ -353,6 +361,7 @@ Ensure you have sufficient balance and the RPC endpoint is responsive.
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/kuberna-labs/web3-infrastructure/issues
 - Discord: https://discord.gg/kuberna-labs
 - Email: support@kuberna.africa

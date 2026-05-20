@@ -28,6 +28,7 @@ X-API-Key: <your-api-key>
 - **Burst Limit**: 20 requests per second
 
 Rate limit headers are included in all responses:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -45,6 +46,7 @@ POST /api/v1/payments/intents
 ```
 
 **Request Body:**
+
 ```json
 {
   "userId": "user-123",
@@ -60,6 +62,7 @@ POST /api/v1/payments/intents
 ```
 
 **Response:**
+
 ```json
 {
   "intentId": "0x...",
@@ -80,6 +83,7 @@ POST /api/v1/payments/escrows/:id/fund
 ```
 
 **Request Body:**
+
 ```json
 {
   "txHash": "0x...",
@@ -88,6 +92,7 @@ POST /api/v1/payments/escrows/:id/fund
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -103,6 +108,7 @@ POST /api/v1/payments/escrows/:id/release
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -118,6 +124,7 @@ POST /api/v1/payments/escrows/:id/refund
 ```
 
 **Request Body:**
+
 ```json
 {
   "reason": "Task not completed"
@@ -125,6 +132,7 @@ POST /api/v1/payments/escrows/:id/refund
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -140,6 +148,7 @@ GET /api/v1/payments/intents/:id
 ```
 
 **Response:**
+
 ```json
 {
   "intentId": "0x...",
@@ -162,6 +171,7 @@ POST /api/v1/payments/withdrawals
 ```
 
 **Request Body:**
+
 ```json
 {
   "userId": "user-123",
@@ -172,6 +182,7 @@ POST /api/v1/payments/withdrawals
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -186,6 +197,7 @@ GET /api/v1/payments/tokens?chain=ethereum
 ```
 
 **Response:**
+
 ```json
 {
   "tokens": [
@@ -208,6 +220,7 @@ POST /api/v1/payments/gas-estimate
 ```
 
 **Request Body:**
+
 ```json
 {
   "chain": "ethereum",
@@ -222,6 +235,7 @@ POST /api/v1/payments/gas-estimate
 ```
 
 **Response:**
+
 ```json
 {
   "gasLimit": "150000",
@@ -241,6 +255,7 @@ POST /api/v1/tee/deployments
 ```
 
 **Request Body:**
+
 ```json
 {
   "agentId": "agent-123",
@@ -260,6 +275,7 @@ POST /api/v1/tee/deployments
 ```
 
 **Response:**
+
 ```json
 {
   "deploymentId": "phala-1234567890-abc",
@@ -284,6 +300,7 @@ GET /api/v1/tee/deployments/:id
 ```
 
 **Response:**
+
 ```json
 {
   "deploymentId": "phala-1234567890-abc",
@@ -310,6 +327,7 @@ DELETE /api/v1/tee/deployments/:id
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -325,6 +343,7 @@ POST /api/v1/tee/attestations/verify
 ```
 
 **Request Body:**
+
 ```json
 {
   "quote": "0x...",
@@ -337,6 +356,7 @@ POST /api/v1/tee/attestations/verify
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -355,6 +375,7 @@ POST /api/v1/tee/zktls/proofs
 ```
 
 **Request Body:**
+
 ```json
 {
   "agentId": "agent-123",
@@ -368,6 +389,7 @@ POST /api/v1/tee/zktls/proofs
 ```
 
 **Response:**
+
 ```json
 {
   "proofId": "session-123",
@@ -391,6 +413,7 @@ GET /api/v1/tee/zktls/proofs/:id/verify
 ```
 
 **Response:**
+
 ```json
 {
   "proofId": "session-123",
@@ -409,6 +432,7 @@ GET /api/v1/tee/enclaves/:id/health
 ```
 
 **Response:**
+
 ```json
 {
   "enclaveId": "enclave-123",
@@ -430,6 +454,7 @@ POST /api/v1/intents
 ```
 
 **Request Body:**
+
 ```json
 {
   "description": "Swap 1 ETH to USDC",
@@ -445,6 +470,7 @@ POST /api/v1/intents
 ```
 
 **Response:**
+
 ```json
 {
   "intentId": "0x...",
@@ -460,6 +486,7 @@ GET /api/v1/intents/:id
 ```
 
 **Response:**
+
 ```json
 {
   "intentId": "0x...",
@@ -485,6 +512,7 @@ GET /api/v1/intents?page=1&limit=10&status=open
 ```
 
 **Response:**
+
 ```json
 {
   "intents": [
@@ -511,6 +539,7 @@ POST /api/v1/intents/:id/bids
 ```
 
 **Request Body:**
+
 ```json
 {
   "price": "950000000000000000",
@@ -520,6 +549,7 @@ POST /api/v1/intents/:id/bids
 ```
 
 **Response:**
+
 ```json
 {
   "bidId": 0,
@@ -536,6 +566,7 @@ POST /api/v1/intents/:id/bids/:bidId/accept
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -552,6 +583,7 @@ DELETE /api/v1/intents/:id/bids/:bidId
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -567,6 +599,7 @@ POST /api/v1/intents/:id/cancel
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -584,6 +617,7 @@ POST /api/v1/certificates
 ```
 
 **Request Body:**
+
 ```json
 {
   "recipient": "0x...",
@@ -596,6 +630,7 @@ POST /api/v1/certificates
 ```
 
 **Response:**
+
 ```json
 {
   "tokenId": 1,
@@ -611,6 +646,7 @@ GET /api/v1/certificates/:id
 ```
 
 **Response:**
+
 ```json
 {
   "tokenId": 1,
@@ -630,6 +666,7 @@ GET /api/v1/certificates/verify/:hash
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -646,6 +683,7 @@ POST /api/v1/certificates/:id/revoke
 ```
 
 **Request Body:**
+
 ```json
 {
   "reason": "Fraudulent completion"
@@ -653,6 +691,7 @@ POST /api/v1/certificates/:id/revoke
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -668,6 +707,7 @@ GET /api/v1/users/:id/certificates
 ```
 
 **Response:**
+
 ```json
 {
   "certificates": [
@@ -690,6 +730,7 @@ POST /api/v1/wallets/connect
 ```
 
 **Request Body:**
+
 ```json
 {
   "address": "0x...",
@@ -699,6 +740,7 @@ POST /api/v1/wallets/connect
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -714,6 +756,7 @@ POST /api/v1/wallets/disconnect
 ```
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -727,6 +770,7 @@ GET /api/v1/wallets/balance?address=0x...&chain=ethereum
 ```
 
 **Response:**
+
 ```json
 {
   "address": "0x...",
@@ -749,6 +793,7 @@ POST /api/v1/wallets/sign
 ```
 
 **Request Body:**
+
 ```json
 {
   "message": "Sign this message",
@@ -757,6 +802,7 @@ POST /api/v1/wallets/sign
 ```
 
 **Response:**
+
 ```json
 {
   "signature": "0x...",

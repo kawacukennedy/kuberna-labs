@@ -46,24 +46,24 @@ contract KubernaFeeManager is Ownable {
     function addRecipient(address account, uint256 share) external onlyOwner {
         require(!isRecipient[account]);
         require(_totalActiveShares() + share <= 10000, "Total shares exceed 10000 BPS");
-        
+
         recipients.push(Recipient(account, share, true));
         recipientShares[account] = share;
         isRecipient[account] = true;
-        
+
         emit RecipientAdded(account, share);
     }
 
     function removeRecipient(address account) external onlyOwner {
         require(isRecipient[account]);
-        
+
         for (uint256 i = 0; i < recipients.length; i++) {
             if (recipients[i].account == account) {
                 recipients[i].active = false;
                 break;
             }
         }
-        
+
         isRecipient[account] = false;
         emit RecipientRemoved(account);
     }
@@ -77,17 +77,17 @@ contract KubernaFeeManager is Ownable {
         for (uint256 i = 0; i < recipients.length; i++) {
             Recipient memory r = recipients[i];
             if (!r.active) continue;
-            
+
             uint256 shareAmount = (distributeAmount * r.share) / 10000;
             if (shareAmount == 0) continue;
 
             if (token == address(0)) {
-                (bool success,) = payable(r.account).call{value: shareAmount}("");
+                (bool success, ) = payable(r.account).call{value: shareAmount}("");
                 require(success);
             } else {
                 require(IERC20(token).transfer(r.account, shareAmount));
             }
-            
+
             emit FeeDistributed(r.account, shareAmount);
         }
     }

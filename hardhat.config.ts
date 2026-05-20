@@ -36,7 +36,11 @@ const config: HardhatUserConfig = {
     },
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL || '',
-      accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : (process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : []),
+      accounts: process.env.SEPOLIA_PRIVATE_KEY
+        ? [process.env.SEPOLIA_PRIVATE_KEY]
+        : process.env.PRIVATE_KEY
+          ? [process.env.PRIVATE_KEY]
+          : [],
       chainId: 11155111,
     },
     mainnet: {
@@ -56,7 +60,9 @@ const config: HardhatUserConfig = {
     },
     arbitrumSepolia: {
       url: process.env.ARBITRUM_SEPOLIA_RPC_URL || '',
-      accounts: process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY ? [process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY] : [],
+      accounts: process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY
+        ? [process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY]
+        : [],
       chainId: 421614,
     },
     baseSepolia: {
@@ -78,7 +84,9 @@ const config: HardhatUserConfig = {
     },
     mantleSepolia: {
       url: process.env.MANTLE_SEPOLIA_RPC_URL || 'https://rpc.sepolia.mantle.xyz',
-      accounts: process.env.MANTLE_SEPOLIA_PRIVATE_KEY ? [process.env.MANTLE_SEPOLIA_PRIVATE_KEY] : [],
+      accounts: process.env.MANTLE_SEPOLIA_PRIVATE_KEY
+        ? [process.env.MANTLE_SEPOLIA_PRIVATE_KEY]
+        : [],
       chainId: 5003,
     },
   },

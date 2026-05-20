@@ -64,6 +64,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 ### 1. Smart Contracts
 
 #### Escrow Contract
+
 - Manages secure fund holding for task execution
 - Supports native tokens and ERC20
 - Implements dispute resolution
@@ -71,42 +72,49 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 - Emergency pause functionality
 
 #### Intent Contract (ERC-7683)
+
 - Cross-chain intent protocol implementation
 - Bid submission and acceptance
 - Intent lifecycle management
 - Solver network integration
 
 #### Payment Contract
+
 - Multi-token payment processing
 - Batch payment support
 - Fee management
 - Withdrawal functionality
 
 #### Attestation Contract
+
 - On-chain attestation storage
 - TEE deployment verification
 - zkTLS proof validation
 - Schema-based attestation types
 
 #### Reputation NFT
+
 - Agent reputation tracking
 - Success rate calculation
 - Badge award system
 - Time-based decay mechanism
 
 #### Certificate NFT
+
 - Course completion certificates
 - Verification system
 - Revocation support
 - Metadata storage
 
 #### Cross-Chain Router
+
 - Multi-chain message passing
 - Token mapping management
 - Bridge fee configuration
 - Transfer execution
 
 #### Subscription Contract
+
 - Plan management
 - Subscription lifecycle
 - Payment processing
@@ -115,6 +123,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 ### 2. Backend Services
 
 #### Payment Service
+
 - Payment intent creation
 - Escrow funding tracking
 - Fund release and refund
@@ -123,6 +132,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 - Multi-chain support
 
 #### TEE Service
+
 - Agent deployment to Phala Network and Marlin Oyster
 - Attestation verification
 - zkTLS proof generation (Reclaim Protocol, zkPass)
@@ -130,6 +140,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 - Health monitoring
 
 #### Blockchain Listener
+
 - WebSocket event monitoring
 - Multi-chain support
 - Exponential backoff reconnection
@@ -138,12 +149,14 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 - NATS integration for notifications
 
 #### Multi-Chain Adapters
+
 - Ethereum adapter with Uniswap and Aave integration
 - Solana adapter with Raydium and Marinade
 - NEAR adapter with Ref Finance and Burrow
 - Polygon and Arbitrum adapters
 
 #### API Gateway
+
 - RESTful API endpoints
 - JWT authentication
 - Rate limiting
@@ -151,6 +164,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 - Request validation
 
 #### Notification Service
+
 - Email notifications (SendGrid/AWS SES)
 - Push notifications (Firebase)
 - In-app notifications
@@ -159,6 +173,7 @@ Kuberna Labs is a comprehensive Web3 infrastructure platform that enables develo
 ### 3. SDK
 
 The Kuberna SDK provides a unified interface for:
+
 - Wallet connection (MetaMask, WalletConnect, Phantom, NEAR)
 - Payment intent creation
 - Intent submission and bidding
@@ -211,6 +226,7 @@ The Kuberna SDK provides a unified interface for:
 ## Security Considerations
 
 ### Smart Contract Security
+
 - OpenZeppelin v5 standards
 - ReentrancyGuard on all fund transfers
 - Access control with Ownable
@@ -219,6 +235,7 @@ The Kuberna SDK provides a unified interface for:
 - Event emission for all state changes
 
 ### Backend Security
+
 - JWT authentication
 - API rate limiting
 - Input sanitization
@@ -227,6 +244,7 @@ The Kuberna SDK provides a unified interface for:
 - AWS KMS for key management
 
 ### TEE Security
+
 - Attestation verification
 - MRENCLAVE hash validation
 - Quote signature checking
@@ -235,12 +253,14 @@ The Kuberna SDK provides a unified interface for:
 ## Scalability
 
 ### Horizontal Scaling
+
 - Multiple Blockchain Listener instances
 - Load-balanced API Gateway
 - Distributed NATS messaging
 - Database read replicas
 
 ### Performance Optimizations
+
 - Gas-efficient smart contracts
 - Redis caching layer
 - Database connection pooling
@@ -250,17 +270,20 @@ The Kuberna SDK provides a unified interface for:
 ## Monitoring and Observability
 
 ### Logging
+
 - Winston logger with structured logging
 - Request ID tracking
 - Audit logging for all transactions
 
 ### Metrics
+
 - Datadog integration
 - Error rate monitoring
 - Latency tracking
 - Gas cost monitoring
 
 ### Alerting
+
 - Sentry error tracking
 - High error rate alerts
 - Large withdrawal alerts
@@ -269,18 +292,21 @@ The Kuberna SDK provides a unified interface for:
 ## Deployment
 
 ### Testnet Deployment
+
 - Ethereum Sepolia
 - Polygon Mumbai
 - Arbitrum Sepolia
 - NEAR Testnet
 
 ### Mainnet Deployment
+
 - Ethereum Mainnet
 - Polygon Mainnet
 - Arbitrum Mainnet
 - NEAR Mainnet
 
 ### Infrastructure
+
 - Smart contracts on EVM chains
 - Backend services on cloud infrastructure
 - Database with automated backups

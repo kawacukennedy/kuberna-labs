@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Web3 Infrastructure implementation with multi-chain support
 - Payment Service with Ethereum, Polygon, and Arbitrum integration
 - TEE Service with Phala Network and Marlin Oyster support
@@ -20,17 +21,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and setup guides
 
 ### Changed
+
 - Enhanced Escrow contract with Pausable functionality
 - Enhanced Intent contract with Pausable functionality
 - Updated Hardhat configuration for multi-chain deployment
 
 ### Fixed
+
 - Gas estimation accuracy improvements
 - Event deduplication in Blockchain Listener
 
 ## [0.1.0] - 2024-01-15
 
 ### Added
+
 - Initial project structure
 - Basic smart contracts (AgentRegistry, CertificateNFT, CourseNFT)
 - Frontend dashboard

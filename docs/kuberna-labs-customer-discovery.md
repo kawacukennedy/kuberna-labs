@@ -2,11 +2,11 @@
 
 ## Compiled: May 2026
 
-| Priority | Count |
-|----------|-------|
-| Critical | 18 |
-| High | 22 |
-| Medium | 15 |
+| Priority  | Count  |
+| --------- | ------ |
+| Critical  | 18     |
+| High      | 22     |
+| Medium    | 15     |
 | **Total** | **55** |
 
 ---
@@ -16,6 +16,7 @@
 ---
 
 ## 1. Shaw Walters — Creator, ElizaOS
+
 - **Role:** Founder, Eliza Labs
 - **Org:** ElizaOS (ai16z)
 - **X/Twitter:** @shawmakesmagic
@@ -31,6 +32,7 @@
 ---
 
 ## 2. Peter Steinberger — Creator, OpenClaw (now at OpenAI)
+
 - **Role:** Creator of OpenClaw; now AI Agent Lead @ OpenAI
 - **Org:** OpenAI / OpenClaw Foundation
 - **X/Twitter:** @steipete
@@ -46,6 +48,7 @@
 ---
 
 ## 3. Jesse Pollak — Creator of Base
+
 - **Role:** Head of Base & Coinbase Wallet, Coinbase Exec Team
 - **Org:** Coinbase
 - **X/Twitter:** @jessepollak
@@ -60,6 +63,7 @@
 ---
 
 ## 4. Mark Toda — Co-Author, ERC-7683
+
 - **Role:** Engineer @ Uniswap Labs
 - **Org:** Uniswap Labs
 - **X/Twitter:** @mark_toda
@@ -74,6 +78,7 @@
 ---
 
 ## 5. Madhavan (Maddy) Malolan — Co-Founder & CEO, Reclaim Protocol
+
 - **Role:** Co-Founder & CEO
 - **Org:** Reclaim Protocol (YC W21)
 - **X/Twitter:** @madhavanmalolan
@@ -89,6 +94,7 @@
 ---
 
 ## 6. Kevin Wang — Lead Developer, dstack (Phala TEE SDK)
+
 - **Role:** Core Developer, dstack @ Phala Network
 - **Org:** Phala Network
 - **GitHub:** github.com/kvinwang (Phala-Network/dstack)
@@ -103,6 +109,7 @@
 ---
 
 ## 7. Siddhartha Dutta — Co-Founder & CEO, Marlin Protocol
+
 - **Role:** CEO & Co-Founder
 - **Org:** Marlin Protocol
 - **X/Twitter:** @siddharthadutta
@@ -118,6 +125,7 @@
 ---
 
 ## 8. Greg Osuri — CEO & Founder, Akash Network
+
 - **Role:** CEO, Overclock Labs (creators of Akash)
 - **Org:** Overclock Labs / Akash Network
 - **X/Twitter:** @gregosuri
@@ -133,6 +141,7 @@
 ---
 
 ## 9. Illia Polosukhin — Co-Founder, NEAR Protocol & NEAR AI
+
 - **Role:** Co-Founder & CEO of NEAR Foundation; Co-Author of "Attention Is All You Need"
 - **Org:** NEAR Foundation / NEAR AI
 - **X/Twitter:** @ilblackdragon
@@ -148,6 +157,7 @@
 ---
 
 ## 10. Adeniyi Abiodun — Co-Founder & CPO, Mysten Labs (Sui)
+
 - **Role:** Co-Founder & CPO
 - **Org:** Mysten Labs (Sui, Walrus)
 - **X/Twitter:** @AdeniyiSui
@@ -161,6 +171,7 @@
 ---
 
 ## 11. Anatoly Yakovenko — Co-Founder, Solana Labs
+
 - **Role:** Co-Founder
 - **Org:** Solana Labs
 - **X/Twitter:** @aeyakovenko
@@ -174,6 +185,7 @@
 ---
 
 ## 12. George Zeng — CPO, NEAR Protocol & GM, NEAR AI
+
 - **Role:** Chief Product Officer, NEAR Protocol / GM, NEAR AI
 - **Org:** NEAR Foundation
 - **X/Twitter:** @georgezeng
@@ -187,6 +199,7 @@
 ---
 
 ## 13. Matt Rice — Co-Author, ERC-7683; Co-Founder, Across Protocol
+
 - **Role:** Co-Founder
 - **Org:** Across Protocol
 - **X/Twitter:** @maerice
@@ -200,6 +213,7 @@
 ---
 
 ## 14. Anil Murty — Head of Product, Overclock Labs (Akash)
+
 - **Role:** Head of Product / VP Product & Engineering
 - **Org:** Overclock Labs (Akash Network)
 - **X/Twitter:** @anilmurty
@@ -214,6 +228,7 @@
 ---
 
 ## 15. Cameron Dennis — Director of AI, NEAR Foundation
+
 - **Role:** Director of AI
 - **Org:** NEAR Foundation
 - **X/Twitter:** @camdennis
@@ -227,6 +242,7 @@
 ---
 
 ## 16. Roshan Raghupathy — Co-Founder & Lead, Marlin Protocol
+
 - **Role:** Co-Founder / Core Engineer
 - **Org:** Marlin Protocol
 - **GitHub:** github.com/roshanrags
@@ -241,6 +257,7 @@
 ---
 
 ## 17. Joseph Beverley — Founder Success Manager (AI x Web3), NEAR Foundation
+
 - **Role:** Founder Success Manager, AI x Web3
 - **Org:** NEAR Foundation
 - **LinkedIn:** linkedin.com/in/joseph-beverley-0558a0bb
@@ -254,6 +271,7 @@
 ---
 
 ## 18. Florian — Founder & Head of Quant, Stratium
+
 - **Role:** Founder & Head of Quant
 - **Org:** StratiumSol (Solana copy trading bot)
 - **X/Twitter:** @StratiumSol
@@ -271,6 +289,7 @@
 ---
 
 ## 19. Davis (wtfsayo) — Top ElizaOS Contributor
+
 - **Role:** Core Contributor
 - **Org:** ElizaOS
 - **GitHub:** github.com/wtfsayo
@@ -283,6 +302,7 @@
 ---
 
 ## 20. Brian Fox — Co-Founder, Akash Network
+
 - **Role:** Co-Founder (Creator of GNU Bash Shell)
 - **Org:** Overclock Labs / Akash Network
 - **X/Twitter:** @brianfox
@@ -294,6 +314,7 @@
 ---
 
 ## 21. Jarrod Barnes — Head of Founder Success, NEAR Foundation
+
 - **Role:** Head of Founder Success
 - **Org:** NEAR Foundation
 - **LinkedIn:** Jarrod Barnes (NEAR)
@@ -306,6 +327,7 @@
 ---
 
 ## 22. Shai Perednik — Principal Ecosystem Architect, NEAR Foundation
+
 - **Role:** Principal Ecosystem Architect
 - **Org:** NEAR Foundation
 - **X/Twitter:** @shaiss
@@ -319,6 +341,7 @@
 ---
 
 ## 23. Ayush Ranjan — Software Engineer / DevRel, Marlin Protocol
+
 - **Role:** Software Engineer - Developer Relations
 - **Org:** Marlin Protocol
 - **LinkedIn:** Ayush Ranjan (Marlin)
@@ -331,6 +354,7 @@
 ---
 
 ## 24. Abdul Rashid Reshamwala — Engineering Lead, Reclaim Protocol
+
 - **Role:** Engineering Lead
 - **Org:** Reclaim Protocol
 - **LinkedIn:** Abdul Rashid Reshamwala (Reclaim)
@@ -343,6 +367,7 @@
 ---
 
 ## 25. Austin Griffith — Builder Growth, Ethereum Foundation
+
 - **Role:** Builder Growth Lead
 - **Org:** Ethereum Foundation
 - **X/Twitter:** @austingriffith
@@ -355,6 +380,7 @@
 ---
 
 ## 26. Lord of a Few — Founder, Daydreams
+
 - **Role:** Founder
 - **Org:** Daydreams
 - **X/Twitter:** @lordofafew
@@ -366,6 +392,7 @@
 ---
 
 ## 27. Cygaar — Top ElizaOS & Agent Infrastructure Builder
+
 - **Role:** Core Contributor / Developer
 - **Org:** ElizaOS / Agent Ecosystem
 - **GitHub:** github.com/cygaar
@@ -378,6 +405,7 @@
 ---
 
 ## 28. Shakker Nerd (shakkernerd) — Top ElizaOS Contributor
+
 - **Role:** Core Contributor
 - **Org:** ElizaOS
 - **GitHub:** github.com/shakkernerd
@@ -389,6 +417,7 @@
 ---
 
 ## 29. Tina — TEE Community Lead, Flashbots
+
 - **Role:** TEE Community / Ecosystem Lead
 - **Org:** Flashbots
 - **X/Twitter:** @tina_flashbots
@@ -400,6 +429,7 @@
 ---
 
 ## 30. Andrew Miller — Researcher, Flashbots / Teleport
+
 - **Role:** Researcher
 - **Org:** Flashbots / Teleport / UIUC
 - **X/Twitter:** @socrates1024
@@ -411,6 +441,7 @@
 ---
 
 ## 31. Sxy Sun — Teleport Team
+
 - **Role:** Builder
 - **Org:** Teleport
 - **X/Twitter:** @sxysun
@@ -422,6 +453,7 @@
 ---
 
 ## 32. Prateesh Goyal — Co-Founder, Marlin Protocol
+
 - **Role:** Co-Founder
 - **Org:** Marlin Protocol
 - **LinkedIn:** Prateesh Goyal (Marlin)
@@ -433,6 +465,7 @@
 ---
 
 ## 33. Tyler Wright — Program Manager, Akash Network
+
 - **Role:** Ecosystem / Program Manager
 - **Org:** Overclock Labs (Akash Network)
 - **LinkedIn:** Tyler Wright (Akash)
@@ -445,6 +478,7 @@
 ---
 
 ## 34. Niranjan Agaram — Web3 Data Architect / Agent Builder
+
 - **Role:** Independent Web3 Data Architect
 - **X/Twitter:** @niranjanagaram
 - **Email:** niranjanagaram@gmail.com
@@ -457,6 +491,7 @@
 ---
 
 ## 35. Ibrahim Arshad — LangChain & Blockchain Contributor
+
 - **Role:** AI & Blockchain Developer
 - **GitHub:** github.com/ibrahim1023
 - **Why:** Contributes to LangChain core while also building on Uniswap and other blockchain protocols. Bridges the AI agent framework and DeFi worlds.
@@ -467,6 +502,7 @@
 ---
 
 ## 36. Sajjad Haider Sayed — Software Developer, Reclaim Protocol
+
 - **Role:** Software Developer
 - **Org:** Reclaim Protocol
 - **LinkedIn:** Sajjad Haider Sayed (Reclaim)
@@ -480,6 +516,7 @@
 ---
 
 ## 37. Greg Osuri's Team — Artur Troian (VP Core Eng, Akash)
+
 - **Role:** VP of Core Engineering
 - **Org:** Overclock Labs (Akash Network)
 - **GitHub:** github.com/troian
@@ -491,6 +528,7 @@
 ---
 
 ## 38. Leechael — Core Developer, Phala Cloud / dstack
+
 - **Role:** Core Developer
 - **Org:** Phala Network
 - **GitHub:** github.com/Leechael
@@ -502,6 +540,7 @@
 ---
 
 ## 39. Shelven Zhou — Core Developer, Phala Network
+
 - **Role:** Core Developer
 - **Org:** Phala Network
 - **GitHub:** github.com/shelvenzhou
@@ -513,6 +552,7 @@
 ---
 
 ## 40. Scott Caruthers — Overclock Labs / Akash Network
+
 - **Role:** Core Team Member
 - **Org:** Overclock Labs (Akash Network)
 - **X/Twitter:** @ScottCaruthers
@@ -528,6 +568,7 @@
 ---
 
 ## 41. Adam Bozanich — Co-Founder & CTO, Akash Network
+
 - **Role:** Co-Founder & CTO
 - **Org:** Overclock Labs
 - **LinkedIn:** Adam Bozanich (Akash)
@@ -540,6 +581,7 @@
 ---
 
 ## 42. Jon Roethke — Senior Developer Advocate (Base), Coinbase
+
 - **Role:** Senior Developer Advocate
 - **Org:** Coinbase (Base)
 - **LinkedIn:** Jon Roethke (Base/Coinbase)
@@ -551,6 +593,7 @@
 ---
 
 ## 43. Arpan Nanavati — CEO, Beep (Sui Agentic Wallet)
+
 - **Role:** CEO
 - **Org:** Beep (Sui Agentic Finance)
 - **X/Twitter:** @arpan_nanavati
@@ -562,6 +605,7 @@
 ---
 
 ## 44. Abbas Abou Daya — Founder & CEO, Maestro Bots
+
 - **Role:** Founder & CEO
 - **Org:** Gearlay Technologies (Maestro Bots)
 - **Why:** Built one of the most popular DeFi trading bots on Telegram (100K+ users, multi-chain). He understands high-frequency agent execution for trading.
@@ -572,6 +616,7 @@
 ---
 
 ## 45. Ethan Carter — Founder & CEO, Deft Trade
+
 - **Role:** Founder & CEO
 - **Org:** Deft Trade
 - **Why:** Building AI-powered DeFi trading automation. Exactly the kind of protocol that needs cross-chain execution infrastructure.
@@ -582,6 +627,7 @@
 ---
 
 ## 46. Stephen Morris — CEO, Pact Swap Labs
+
 - **Role:** CEO
 - **Org:** Pact Swap
 - **X/Twitter:** @PactSwap
@@ -593,6 +639,7 @@
 ---
 
 ## 47. Gehan — Founder, Precog Finance
+
 - **Role:** Founder
 - **Org:** Precog Finance
 - **X/Twitter:** @PrecogFinance
@@ -604,6 +651,7 @@
 ---
 
 ## 48. Maxwell Allman — PhD, Stanford / Reclaim Protocol
+
 - **Role:** Researcher / Contributor
 - **Org:** Stanford / Reclaim Protocol
 - **X/Twitter:** @maxwell_allman
@@ -615,6 +663,7 @@
 ---
 
 ## 49. Sui Agent Kit (grxkun) — Creator
+
 - **Role:** Developer, sui-agent-kit
 - **GitHub:** github.com/grxkun
 - **X/Twitter:** @grxkun
@@ -626,6 +675,7 @@
 ---
 
 ## 50. Mario Zechner (mariozechner) — Creator of Pi Agent Framework
+
 - **Role:** Creator, Pi Agent Framework
 - **GitHub:** github.com/mariozechner
 - **X/Twitter:** @mariozechner
@@ -637,6 +687,7 @@
 ---
 
 ## 51. Mintlabs / RaptorX — Claw 5.0 Builder
+
 - **Role:** Builder
 - **X/Twitter:** @raptorx
 - **Why:** Premiered Claw 5.0 — an AI model built specifically for crypto. Active in the Solana agent ecosystem.
@@ -647,6 +698,7 @@
 ---
 
 ## 52. Honcho for Agents / Plastic Labs — Xeno Grant Team
+
 - **Role:** Team
 - **Org:** Plastic Labs
 - **Email:** apply@xenogrant.org
@@ -659,6 +711,7 @@
 ---
 
 ## 53. moltmatch — Agent Dating Platform Builder
+
 - **Role:** Builder
 - **X/Twitter:** @moltmatch
 - **Why:** Built a dating platform for AI agents — a novel agent-to-agent social coordination experiment. Pushing boundaries of what agents do autonomously.
@@ -669,6 +722,7 @@
 ---
 
 ## 54. BankrBot — Autonomous Token Deployment Agent
+
 - **Role:** Builder
 - **X/Twitter:** @bankrbot
 - **Why:** Built an agent that autonomously deploys tokens via Raydium triggered by social media tags. Live on Solana. Exactly the kind of autonomous agent Kuzerna Labs would serve.
@@ -679,6 +733,7 @@
 ---
 
 ## 55. Checkr / x402 Micropayments Team
+
 - **Role:** Team
 - **Org:** Checkr
 - **X/Twitter:** @checkr
@@ -691,56 +746,66 @@
 
 # POTENTIAL PILOT CUSTOMERS (5-10)
 
-*Small DeFi protocols / trading shops that would benefit from testing Kuzerna Labs*
+_Small DeFi protocols / trading shops that would benefit from testing Kuzerna Labs_
 
 ---
 
 ## 1. Paragon Protocol
+
 - **What:** DEX on BNB Chain with AI agent (Volts) for DCA, LP rebalancing, auto-compound
 - **Why Pilot:** Already using ElizaOS-based AI agents. Has explicit policy-layer architecture. Would benefit from Kuzerna as execution backend.
 - **Contact:** @ParagonChain / Discord
 
 ## 2. Pact Swap
+
 - **What:** Cross-chain DEX, $22.8M volume, built on Coinweb
 - **Why Pilot:** Needs efficient cross-chain settlement. Currently rolling their own. CEO Stephen Morris is vocal about infrastructure needs.
 - **Contact:** @PactSwap / stephen@pactswap.io (inferred)
 
 ## 3. Quant Flow (web3spreads)
+
 - **What:** AI-powered perpetual futures trading bot for Hyperliquid (LangChain/LangGraph)
 - **Why Pilot:** Open-source, active development (5 contributors). Uses LLMs for trading decisions — needs trustworthy execution layer.
 - **Contact:** github.com/web3spreads/quant-flow
 
 ## 4. Deft Trade
+
 - **What:** AI-powered DeFi trading automation platform
 - **Why Pilot:** Mission-built for automated DeFi trading. Would benefit from cross-chain execution infrastructure.
 - **Contact:** @defttradeio
 
 ## 5. ArbiTrace
+
 - **What:** AI arbitrage bot using Claude + x402 for atomic settlement
 - **Why Pilot:** Already using x402. Needs reliable multi-hop execution. Built for Cronos but could expand.
 - **Contact:** dorahacks.io/buidl/38436
 
 ## 6. Precog Finance (Sentient)
+
 - **What:** AI-backed DeFi arbitrage automation protocol
 - **Why Pilot:** Their Sentient product automates complex trading strategies. Needs cross-chain execution.
 - **Contact:** @PrecogFinance
 
 ## 7. Clober
+
 - **What:** DEX launching on Monad, integrated Avail Nexus for unified balances
 - **Why Pilot:** Already thinking about cross-chain UX abstraction. Small team (1 frontend engineer did their integration).
 - **Contact:** clober.io
 
 ## 8. Perpbot
+
 - **What:** Telegram bot automating perpetual DEX trading on Aster, expanding to Hyperliquid
 - **Why Pilot:** Needs reliable execution automation. Plans multi-venue support. Active development.
 - **Contact:** @perpbot_io
 
 ## 9. Malda Protocol
+
 - **What:** Unified Liquidity Lending using zkProofs + Across settlement
 - **Why Pilot:** Already using intents-based settlement. Understands cross-chain execution deeply.
 - **Contact:** Across Protocol ecosystem
 
 ## 10. StratiumSol
+
 - **What:** Solana copy trading bot (825ms execution)
 - **Why Pilot:** High-frequency agent execution. Already pushing the limits of on-chain execution speed.
 - **Contact:** @StratiumSol / Telegram
@@ -750,6 +815,7 @@
 ## How to approach these contacts
 
 ### Priority sequence for outreach:
+
 1. **Week 1-2:** Reach out to Shaw Walters, Jesse Pollak, Madhavan Malolan, Kevin Wang — these are the most likely to give candid, technical feedback
 2. **Week 2-3:** Siddhartha Dutta, Mark Toda, Greg Osuri, Adeniyi Abiodun — ecosystem leaders who can open doors
 3. **Week 3-4:** Peter Steinberger (via OpenAI/OpenClaw channels), Illia Polosukhin, George Zeng — high-level strategic conversations
@@ -757,10 +823,11 @@
 5. **Ongoing:** Pilot customer conversations with Pact Swap, Paragon, Quant Flow, Stratium
 
 ### Outreach tips:
+
 - **For builders:** Lead with "I've been studying [their specific project]. I'd love to understand your execution infrastructure pain points — I'm not selling anything, just doing deep customer discovery."
 - **For ecosystem leads:** Lead with "Kuzerna Labs is building an execution layer for AI agents. We want to optimize for your ecosystem — can we interview your builders?"
 - **For researchers:** Lead with the technical problem, not the product. Discuss tradeoffs in TEE vs. ZK vs. intents.
 
 ---
 
-*Research compiled by automated web search and analysis, May 2026. Verify specific contact details before outreach.*
+_Research compiled by automated web search and analysis, May 2026. Verify specific contact details before outreach._

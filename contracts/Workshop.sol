@@ -7,7 +7,12 @@ error Workshop__Invalid();
 error Workshop__Full();
 error Workshop__Ended();
 
-enum WorkshopStatus { Scheduled, Live, Completed, Cancelled }
+enum WorkshopStatus {
+    Scheduled,
+    Live,
+    Completed,
+    Cancelled
+}
 
 struct Workshop {
     string title;
@@ -49,9 +54,9 @@ contract KubernaWorkshop is Ownable {
         string calldata streamingUrl
     ) external onlyOwner returns (uint256) {
         require(startTime > block.timestamp);
-        
+
         uint256 id = workshopCount++;
-        
+
         workshops[id] = Workshop({
             title: title,
             description: description,
@@ -78,8 +83,10 @@ contract KubernaWorkshop is Ownable {
         registered[workshopId][msg.sender] = true;
         participants[workshopId].push(msg.sender);
         userWorkshops[msg.sender].push(workshopId);
-        
-        unchecked { w.currentParticipants++; }
+
+        unchecked {
+            w.currentParticipants++;
+        }
 
         emit ParticipantRegistered(workshopId, msg.sender);
     }
@@ -90,8 +97,10 @@ contract KubernaWorkshop is Ownable {
         require(w.status == WorkshopStatus.Scheduled);
 
         registered[workshopId][msg.sender] = false;
-        
-        unchecked { w.currentParticipants--; }
+
+        unchecked {
+            w.currentParticipants--;
+        }
 
         emit ParticipantRemoved(workshopId, msg.sender);
     }
@@ -99,18 +108,18 @@ contract KubernaWorkshop is Ownable {
     function startWorkshop(uint256 workshopId) external onlyOwner {
         Workshop storage w = workshops[workshopId];
         require(w.status == WorkshopStatus.Scheduled);
-        
+
         w.status = WorkshopStatus.Live;
-        
+
         emit WorkshopStarted(workshopId);
     }
 
     function endWorkshop(uint256 workshopId) external onlyOwner {
         Workshop storage w = workshops[workshopId];
         require(w.status == WorkshopStatus.Live);
-        
+
         w.status = WorkshopStatus.Completed;
-        
+
         emit WorkshopEnded(workshopId);
     }
 
@@ -144,7 +153,7 @@ contract KubernaWorkshop is Ownable {
     function cancelWorkshop(uint256 workshopId) external onlyOwner {
         Workshop storage w = workshops[workshopId];
         require(w.status == WorkshopStatus.Scheduled);
-        
+
         w.status = WorkshopStatus.Cancelled;
     }
 

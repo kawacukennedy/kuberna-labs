@@ -7,7 +7,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 error CourseNFT__Invalid();
 
-enum CourseStatus { Draft, Published, Archived }
+enum CourseStatus {
+    Draft,
+    Published,
+    Archived
+}
 
 struct Course {
     string name;
@@ -50,7 +54,7 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
         uint256 duration
     ) external onlyOwner returns (uint256) {
         uint256 courseId = _nextTokenId++;
-        
+
         courses[courseId] = Course({
             name: name,
             description: description,
@@ -65,7 +69,7 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
         });
 
         _safeMint(address(this), courseId);
-        
+
         emit CourseCreated(courseId, name, price);
         return courseId;
     }
@@ -80,20 +84,20 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
     ) external onlyOwner {
         Course storage c = courses[courseId];
         require(c.price > 0);
-        
+
         c.name = name;
         c.description = description;
         c.metadataURI = metadataURI;
         c.price = price;
         c.maxStudents = maxStudents;
-        
+
         emit CourseUpdated(courseId);
     }
 
     function publishCourse(uint256 courseId) external onlyOwner {
         Course storage c = courses[courseId];
         require(c.price > 0);
-        
+
         c.status = CourseStatus.Published;
         emit CoursePublished(courseId);
     }
@@ -103,20 +107,22 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
         require(c.status == CourseStatus.Published);
         require(!courseEnrolled[courseId][student]);
         require(c.enrolledCount < c.maxStudents || c.maxStudents == 0);
-        
+
         courseEnrolled[courseId][student] = true;
         courseStudents[courseId].push(student);
         userEnrolledCourses[student].push(courseId);
-        
-        unchecked { c.enrolledCount++; }
-        
+
+        unchecked {
+            c.enrolledCount++;
+        }
+
         emit StudentEnrolled(courseId, student);
     }
 
     function grantAccess(uint256 courseId, address student) external onlyOwner {
         require(courses[courseId].price > 0);
         courseEnrolled[courseId][student] = true;
-        
+
         emit AccessGranted(courseId, student);
     }
 
@@ -140,7 +146,9 @@ contract KubernaCourseNFT is ERC721, ERC721URIStorage, Ownable {
     function removeStudent(uint256 courseId, address student) external onlyOwner {
         require(courseEnrolled[courseId][student], "Student not enrolled");
         courseEnrolled[courseId][student] = false;
-        unchecked { courses[courseId].enrolledCount--; }
+        unchecked {
+            courses[courseId].enrolledCount--;
+        }
         emit StudentRemoved(courseId, student);
     }
 

@@ -6,8 +6,19 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 error Dispute__Invalid();
 
-enum DisputeStatus { Open, Voting, Resolved, Appealed, Closed }
-enum Vote { None, RequesterWins, ExecutorWins, Split }
+enum DisputeStatus {
+    Open,
+    Voting,
+    Resolved,
+    Appealed,
+    Closed
+}
+enum Vote {
+    None,
+    RequesterWins,
+    ExecutorWins,
+    Split
+}
 
 struct DisputeData {
     bytes32 escrowId;
@@ -50,7 +61,7 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     mapping(bytes32 => mapping(address => uint256)) public pendingRewards;
     mapping(address => Juror) public jurors;
     address[] public jurorList;
-    
+
     event RewardClaimed(address indexed juror, uint256 amount);
 
     event DisputeOpened(bytes32, bytes32, address, address);
@@ -67,13 +78,19 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
 
         jurors[juror] = Juror(juror, msg.value, true);
         jurorList.push(juror);
-        unchecked { disputeCount++; }
+        unchecked {
+            disputeCount++;
+        }
 
         emit JurorRegistered(juror);
     }
 
-    function openDispute(bytes32 escrowId, address requester, address executor, string calldata reason)
-        external onlyOwner returns (bytes32) {
+    function openDispute(
+        bytes32 escrowId,
+        address requester,
+        address executor,
+        string calldata reason
+    ) external onlyOwner returns (bytes32) {
         require(disputes[escrowId].createdAt == 0);
 
         bytes32 disputeId = keccak256(abi.encodePacked(escrowId, block.timestamp));
@@ -124,8 +141,15 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         hasVoted[disputeId][msg.sender] = true;
         disputeVotes[disputeId].push(VoteRecord(msg.sender, support, block.timestamp));
 
-        if (support == Vote.RequesterWins) { unchecked { d.requesterVotes++; } }
-        else if (support == Vote.ExecutorWins) { unchecked { d.executorVotes++; } }
+        if (support == Vote.RequesterWins) {
+            unchecked {
+                d.requesterVotes++;
+            }
+        } else if (support == Vote.ExecutorWins) {
+            unchecked {
+                d.executorVotes++;
+            }
+        }
 
         emit VoteCast(disputeId, msg.sender, support);
     }
@@ -164,7 +188,7 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     function _rewardJurors(bytes32 disputeId) internal {
         VoteRecord[] storage votes = disputeVotes[disputeId];
         Vote result = disputes[disputeId].result;
-        
+
         for (uint256 i = 0; i < votes.length; i++) {
             uint256 reward = votes[i].vote == result ? JUROR_REWARD * 2 : JUROR_REWARD;
             pendingRewards[disputeId][votes[i].voter] += reward;
@@ -179,9 +203,15 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit RewardClaimed(msg.sender, reward);
     }
 
-    function getDispute(bytes32 disputeId) external view returns (DisputeData memory) { return disputes[disputeId]; }
-    function getVoteCount(bytes32 disputeId) external view returns (uint256) { return disputeVotes[disputeId].length; }
-    function getJurors() external view returns (address[] memory) { return jurorList; }
+    function getDispute(bytes32 disputeId) external view returns (DisputeData memory) {
+        return disputes[disputeId];
+    }
+    function getVoteCount(bytes32 disputeId) external view returns (uint256) {
+        return disputeVotes[disputeId].length;
+    }
+    function getJurors() external view returns (address[] memory) {
+        return jurorList;
+    }
 
     receive() external payable {}
 }

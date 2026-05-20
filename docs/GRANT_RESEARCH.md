@@ -13,53 +13,54 @@
 
 ### ⚠️ EXPIRING SOON (apply within 7–30 days)
 
-| # | Grant & Org | Size | Deadline | Link |
-|---|---|---|---|---|
-| 1 | **0G APAC Hackathon** (0G Labs) | $1.3K–$45K | **May 16, 2026** (9 days) | https://www.hackquest.io/hackathons/0G-APAC-Hackathon |
-| 2 | **D-Prize** (Global poverty, but open to tech) | Up to $20K | **May 17, 2026** (early) | https://d-prize.org/home |
-| 3 | **Filecoin ProPGF Batch 3** (Filecoin Foundation) | $5K–$200K+ | **Applications May/June 2026** | https://filpgf.io/propgf/ |
-| 4 | **Phala Builders Program** (Phala Network) | Up to $50K in PHA | **Rolling but quarterly reviews** | https://wiki.phala.network/en-us/build/general/builders-program/ |
+| #   | Grant & Org                                       | Size              | Deadline                          | Link                                                             |
+| --- | ------------------------------------------------- | ----------------- | --------------------------------- | ---------------------------------------------------------------- |
+| 1   | **0G APAC Hackathon** (0G Labs)                   | $1.3K–$45K        | **May 16, 2026** (9 days)         | https://www.hackquest.io/hackathons/0G-APAC-Hackathon            |
+| 2   | **D-Prize** (Global poverty, but open to tech)    | Up to $20K        | **May 17, 2026** (early)          | https://d-prize.org/home                                         |
+| 3   | **Filecoin ProPGF Batch 3** (Filecoin Foundation) | $5K–$200K+        | **Applications May/June 2026**    | https://filpgf.io/propgf/                                        |
+| 4   | **Phala Builders Program** (Phala Network)        | Up to $50K in PHA | **Rolling but quarterly reviews** | https://wiki.phala.network/en-us/build/general/builders-program/ |
 
 ---
 
 ### 🔄 ROLLING (open now, no hard deadline)
 
-| # | Grant & Org | Size | Link |
-|---|---|---|---|
-| 5 | **Solana Foundation Grants** | $5K–$100K+ | https://solana.org/grants-funding |
-| 6 | **NEAR DevHub Grants / Protocol Rewards** | $5K–$100K | https://www.near.org/funding |
-| 7 | **Ethereum Foundation ESP** (Wishlist/RFP) | $10K–$250K | https://esp.ethereum.foundation/applicants |
-| 8 | **Gitcoin Grants (GG25 likely Q3 2026)** | $2.5K–$30K match | https://gitcoin.co/campaigns |
-| 9 | **Uniswap Foundation Protocol Grants** | $5K–$75K+ | https://uniswapfoundation.org/grants |
-| 10 | **Arbitrum Foundation (Questbook DDA)** | Up to 25K ARB + $10K Trailblazer 2.0 | https://arbitrum.questbook.app/ |
-| 11 | **Optimism Retro Funding** (ongoing in 2026) | Varies (OP tokens) | https://gov.optimism.io/c/grants/retrofunding/46 |
-| 12 | **Akash Developer Grants** | $100–$100K in AKT | https://akash.network/development/funding-program/ |
-| 13 | **Base Builder Grants** | 1–5 ETH (~$2K–$10K) | https://docs.base.org/get-started/get-funded |
-| 14 | **Base Batches (Student Track)** | $10K grant + $50K potential investment | https://batches.base.org/ |
-| 15 | **Reclaim Protocol Grants** (via Questbook) | ~$5K–$50K | https://blog.reclaimprotocol.org/posts/zktls-rfps |
-| 16 | **Superteam Earn Agentic Engineering** | ~$200–$2K per grant | https://superteam.fun/earn/grants/agentic-engineering/ |
-| 17 | **SafePal Solana Builders Grant** | $70K–$100K in wallets + $10K marketing | https://www.safepal.com/en/grant/solana |
-| 18 | **OneChain Builders' Hub** | Up to $100K/team | https://www.linkedin.com/posts/onechainlabs_onechain-move-web3builders-activity-7393854037940637696-X2Pp |
+| #   | Grant & Org                                  | Size                                   | Link                                                                                                     |
+| --- | -------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 5   | **Solana Foundation Grants**                 | $5K–$100K+                             | https://solana.org/grants-funding                                                                        |
+| 6   | **NEAR DevHub Grants / Protocol Rewards**    | $5K–$100K                              | https://www.near.org/funding                                                                             |
+| 7   | **Ethereum Foundation ESP** (Wishlist/RFP)   | $10K–$250K                             | https://esp.ethereum.foundation/applicants                                                               |
+| 8   | **Gitcoin Grants (GG25 likely Q3 2026)**     | $2.5K–$30K match                       | https://gitcoin.co/campaigns                                                                             |
+| 9   | **Uniswap Foundation Protocol Grants**       | $5K–$75K+                              | https://uniswapfoundation.org/grants                                                                     |
+| 10  | **Arbitrum Foundation (Questbook DDA)**      | Up to 25K ARB + $10K Trailblazer 2.0   | https://arbitrum.questbook.app/                                                                          |
+| 11  | **Optimism Retro Funding** (ongoing in 2026) | Varies (OP tokens)                     | https://gov.optimism.io/c/grants/retrofunding/46                                                         |
+| 12  | **Akash Developer Grants**                   | $100–$100K in AKT                      | https://akash.network/development/funding-program/                                                       |
+| 13  | **Base Builder Grants**                      | 1–5 ETH (~$2K–$10K)                    | https://docs.base.org/get-started/get-funded                                                             |
+| 14  | **Base Batches (Student Track)**             | $10K grant + $50K potential investment | https://batches.base.org/                                                                                |
+| 15  | **Reclaim Protocol Grants** (via Questbook)  | ~$5K–$50K                              | https://blog.reclaimprotocol.org/posts/zktls-rfps                                                        |
+| 16  | **Superteam Earn Agentic Engineering**       | ~$200–$2K per grant                    | https://superteam.fun/earn/grants/agentic-engineering/                                                   |
+| 17  | **SafePal Solana Builders Grant**            | $70K–$100K in wallets + $10K marketing | https://www.safepal.com/en/grant/solana                                                                  |
+| 18  | **OneChain Builders' Hub**                   | Up to $100K/team                       | https://www.linkedin.com/posts/onechainlabs_onechain-move-web3builders-activity-7393854037940637696-X2Pp |
 
 ---
 
 ### 🗓️ LONG-TERM / SEASONAL (future rounds)
 
-| # | Grant & Org | Size | Next Window |
-|---|---|---|---|
-| 19 | **Stellar Community Fund (SCF v7)** | Up to $150K in XLM | Next round TBA (SCF #42?) |
-| 20 | **Polygon Community Grants S3** | $5K–$100K+ in POL | Season 3 TBA (S2 active) |
-| 21 | **Sui Foundation RFPs** | $10K–$200K | Rolling RFPs |
-| 22 | **Morph Payment Accelerator** | Grant + incentives from $150M pool | Rolling, but needs live payment ops |
-| 23 | **Kenzi Wang Scholarship** (teen founders) | $10K follow-on | Rolling |
-| 24 | **MIT Sandbox** | Up to $25K | Fall 2026 cohort |
-| 25 | **Stanford StartX** | $10K grants + $1M+ in resources | Rolling (needs Stanford affiliation or 3 referrals) |
+| #   | Grant & Org                                | Size                               | Next Window                                         |
+| --- | ------------------------------------------ | ---------------------------------- | --------------------------------------------------- |
+| 19  | **Stellar Community Fund (SCF v7)**        | Up to $150K in XLM                 | Next round TBA (SCF #42?)                           |
+| 20  | **Polygon Community Grants S3**            | $5K–$100K+ in POL                  | Season 3 TBA (S2 active)                            |
+| 21  | **Sui Foundation RFPs**                    | $10K–$200K                         | Rolling RFPs                                        |
+| 22  | **Morph Payment Accelerator**              | Grant + incentives from $150M pool | Rolling, but needs live payment ops                 |
+| 23  | **Kenzi Wang Scholarship** (teen founders) | $10K follow-on                     | Rolling                                             |
+| 24  | **MIT Sandbox**                            | Up to $25K                         | Fall 2026 cohort                                    |
+| 25  | **Stanford StartX**                        | $10K grants + $1M+ in resources    | Rolling (needs Stanford affiliation or 3 referrals) |
 
 ---
 
 ## DETAILED GRANT PROFILES (A–T Priority Order)
 
 ### (a) Solana Foundation Grants
+
 - **Org**: Solana Foundation
 - **Link**: https://solana.org/grants-funding
 - **Deadline**: Rolling — reviewed weekly, decision in ~4 weeks
@@ -72,6 +73,7 @@
 - **Decision**: ~1 week review, ~3 weeks total.
 
 ### (b) NEAR Foundation / DevHub Grants
+
 - **Org**: NEAR Foundation + NEAR DevHub
 - **Link**: https://nearn.io/devhub/ + https://www.near.org/funding
 - **Deadline**: Rolling via DevHub proposals. Infrastructure Committee reviews quarterly (next: Q2 2026)
@@ -83,6 +85,7 @@
 - **KYC**: Likely for amount >$10K
 
 ### (c) Ethereum Foundation Ecosystem Support Program (ESP)
+
 - **Org**: Ethereum Foundation
 - **Link**: https://esp.ethereum.foundation/applicants
 - **Deadline**: Rolling — Wishlist and RFP items; reviewed 3–6 weeks
@@ -95,6 +98,7 @@
 - **Contact**: Office hours via website; email via application portal.
 
 ### (d) Protocol Labs / Filecoin Grants
+
 - **Org**: Filecoin Foundation + FIL-B
 - **Link**: https://github.com/filecoin-project/devgrants
 - **Deadline**: ProPGF Batch 3 expected applications in April/May 2026. Microgrants rolling.
@@ -107,6 +111,7 @@
 - **Decision**: Microgrants: 2–4 weeks. ProPGF: batch-dependent.
 
 ### (e) Gitcoin Grants
+
 - **Org**: Gitcoin
 - **Link**: https://gitcoin.co/campaigns
 - **Deadline**: GG25 likely Q3 2026 (October/November window). Community rounds happen between seasons.
@@ -119,6 +124,7 @@
 - **Decision**: ~4 weeks after round closes.
 
 ### (f) Uniswap Foundation Grants
+
 - **Org**: Uniswap Foundation
 - **Link**: https://uniswapfoundation.org/grants
 - **Deadline**: Rolling — apply via website
@@ -130,6 +136,7 @@
 - **KYC**: Yes.
 
 ### (g) Arbitrum Foundation Grants
+
 - **Org**: Arbitrum Foundation
 - **Link**: https://arbitrum.foundation/grants + https://arbitrum.questbook.app/
 - **Deadline**: Rolling via Questbook domains. Trailblazer 2.0 ($1M, up to $10K/submission) active.
@@ -141,6 +148,7 @@
 - **KYC**: Yes for larger grants.
 
 ### (h) Optimism Retroactive Public Goods Funding
+
 - **Org**: Optimism Collective
 - **Link**: https://gov.optimism.io/c/grants/retrofunding/46
 - **Deadline**: Continuous in 2026 (shifted from rounds to rolling evaluation)
@@ -152,6 +160,7 @@
 - **KYC**: Yes.
 
 ### (i) Akash Network DeCloud Grants
+
 - **Org**: Overclock Labs / Akash Network
 - **Link**: https://akash.network/development/funding-program/
 - **Deadline**: Rolling — via governance proposals
@@ -163,6 +172,7 @@
 - **KYC**: Not required for smaller grants. Governance proposals for larger amounts.
 
 ### (j) Phala Network Builders Program
+
 - **Org**: Phala Network
 - **Link**: https://wiki.phala.network/en-us/build/general/builders-program/
 - **Deadline**: Rolling, reviewed quarterly
@@ -174,6 +184,7 @@
 - **Contact**: Phala Discord / Builders Program channel
 
 ### (k) Reclaim Protocol Grants
+
 - **Org**: Reclaim Protocol
 - **Link**: https://blog.reclaimprotocol.org/posts/zktls-rfps + Questbook
 - **Deadline**: Rolling via RFPs on blog
@@ -184,6 +195,7 @@
 - **KYC**: Depends on grant size.
 
 ### (l) Sui Foundation Grants
+
 - **Org**: Sui Foundation
 - **Link**: https://sui.io/grants-hub + https://sui.io/request-for-proposals
 - **Deadline**: Rolling RFPs (Cohort 2 live)
@@ -195,6 +207,7 @@
 - **KYC**: Yes.
 
 ### (m) Base Ecosystem Grants
+
 - **Org**: Coinbase / Base
 - **Link**: https://docs.base.org/get-started/get-funded + https://batches.base.org/
 - **Deadline**: Builder Grants rolling; Base Batches Student Track ongoing (already live)
@@ -206,6 +219,7 @@
 - **KYC**: Required for larger grants.
 
 ### (n) Polygon Grants
+
 - **Org**: Polygon Labs
 - **Link**: https://founders.polygon.technology/funding-opportunities
 - **Deadline**: Season 2 active; Season 3 TBA
@@ -217,6 +231,7 @@
 - **KYC**: Likely.
 
 ### (o) Stellar Community Fund (SCF v7)
+
 - **Org**: Stellar Development Foundation
 - **Link**: https://communityfund.stellar.org/awards
 - **Deadline**: Rolling rounds. Next round TBA (SCF #42 likely June/July 2026)
@@ -228,6 +243,7 @@
 - **KYC**: Yes (KYC/KYB required).
 
 ### (p) SafePal Solana Builders Grant
+
 - **Org**: SafePal
 - **Link**: https://www.safepal.com/en/grant/solana
 - **Deadline**: **Dec 31, 2026** (rolling, reviewed within ~7 days)
@@ -239,6 +255,7 @@
 - **KYC**: Yes.
 
 ### (q) Morph Payment Accelerator
+
 - **Org**: Morph
 - **Link**: https://morph.network/accelerator
 - **Deadline**: Rolling — but requires live payment volume
@@ -250,6 +267,7 @@
 - **KYC**: Yes.
 
 ### (r) 0G APAC Hackathon — Already Applied
+
 - **Org**: 0G Labs
 - **Link**: https://www.hackquest.io/hackathons/0G-APAC-Hackathon
 - **Deadline**: **May 16, 2026** (9 days away)
@@ -260,6 +278,7 @@
 - **KYC**: Winners likely need KYC.
 
 ### (s) OneChain Builders' Hub Grant
+
 - **Org**: OneChain Labs
 - **Link**: LinkedIn post or https://onechain.medium.com for details
 - **Deadline**: Rolling — early builders get priority
@@ -271,6 +290,7 @@
 - **KYC**: Likely.
 
 ### (t) Superteam Earn Agentic Engineering Grant
+
 - **Org**: Superteam (Solana ecosystem)
 - **Link**: https://superteam.fun/earn/grants/agentic-engineering/
 - **Deadline**: Rolling — avg. response ~200 days (fast for small amounts)
@@ -286,13 +306,16 @@
 ## UNIVERSITY / ACCELERATOR PROGRAMS
 
 ### MIT Sandbox (MIT students only)
+
 - **Need MIT affiliation** — not applicable unless you enroll at MIT. Look for similar programs at your local university.
 
 ### Stanford StartX
+
 - **Stanford affiliation required** — you'd need a Stanford student, alum, professor, or 3 StartX founder referrals. Not applicable without connection.
-- *Alternative*: Reach out to 3 StartX founders via LinkedIn for referrals (Visiting Founder track). Unlikely but worth trying.
+- _Alternative_: Reach out to 3 StartX founders via LinkedIn for referrals (Visiting Founder track). Unlikely but worth trying.
 
 ### Kenzi Wang Scholarship (Teen founders — AGES 15–19)
+
 - **Link**: https://www.kenziwang.org/
 - **Size**: $10K follow-on grant + mentorship + Discord community
 - **Eligibility**: Ages 15–19, anywhere on Earth. Building in AI, Blockchain/Crypto, or Hardware. Immigrant/refugee/resource-constrained preferred.
@@ -301,18 +324,21 @@
 - **Tips**: Apply immediately. This is the single most aligned grant for your demographic profile. The $10K is non-dilutive.
 
 ### D-Prize (Poverty-focused — tech angle possible)
+
 - **Link**: https://d-prize.org/home
 - **Size**: Up to $20K
 - **Deadline**: Early May 17, 2026 / Regular June 7, 2026
 - **Fit**: Low direct fit — D-Prize funds poverty interventions. Only apply if you can frame Kuberna as enabling financial inclusion for unbanked populations via DeFi agents.
 
 ### Global Changemakers
+
 - **Link**: https://www.global-changemakers.net/grants
 - **Size**: Up to ~1,000 CHF
 - **Eligibility**: Ages 18–30. Must complete their online course to be eligible for grants.
 - **Fit**: Low direct fit (small amounts, social impact focus). Not worth the course time cost.
 
 ### Resolution Project (Undergraduate social ventures)
+
 - **Size**: Up to $5K
 - **Requires**: Current undergraduate enrollment. You're in high school — not eligible.
 
@@ -321,26 +347,32 @@
 ## ACTION PLAN: NEXT 30 DAYS (Top 5 Grants)
 
 ### Priority 1: Kenzi Wang Scholarship
-- *Why*: $10K grant, ages 15–19, blockchain/AI focus. You match perfectly. Rolling deadline.
-- *Action*: Apply today (1-hour application). Highlight your age, location (Rwanda), and the Kuberna GitHub/tests.
+
+- _Why_: $10K grant, ages 15–19, blockchain/AI focus. You match perfectly. Rolling deadline.
+- _Action_: Apply today (1-hour application). Highlight your age, location (Rwanda), and the Kuberna GitHub/tests.
 
 ### Priority 2: 0G APAC Hackathon (already applied)
-- *Why*: $45K grand prize. You have testnet contracts. Submission deadline May 16.
-- *Action*: Polish your submission with a 3-min demo video and clear 0G integration proof. Target the "Verifiable On-chain Transactions" track.
+
+- _Why_: $45K grand prize. You have testnet contracts. Submission deadline May 16.
+- _Action_: Polish your submission with a 3-min demo video and clear 0G integration proof. Target the "Verifiable On-chain Transactions" track.
 
 ### Priority 3: Arbitrum Trailblazer 2.0
-- *Why*: $10K cap, specifically for agentic DeFi. Arbitrum is investing $1M in this. Vibekit integration bonus.
-- *Action*: Deploy a demo agent on Arbitrum Sepolia using your SDK. Submit to Trailblazer 2.0 within 2 weeks. Bonus: Integrate Vibekit.
+
+- _Why_: $10K cap, specifically for agentic DeFi. Arbitrum is investing $1M in this. Vibekit integration bonus.
+- _Action_: Deploy a demo agent on Arbitrum Sepolia using your SDK. Submit to Trailblazer 2.0 within 2 weeks. Bonus: Integrate Vibekit.
 
 ### Priority 4: Superteam Earn Agentic Engineering
-- *Why*: Fastest cash flow (~$200–$2K). You're in Africa (Superteam region). Builds Solana credibility.
-- *Action*: Apply today (30-minute process). Submit a grant request to build Solana agent toolkit integration.
+
+- _Why_: Fastest cash flow (~$200–$2K). You're in Africa (Superteam region). Builds Solana credibility.
+- _Action_: Apply today (30-minute process). Submit a grant request to build Solana agent toolkit integration.
 
 ### Priority 5: Phala Builders Program
-- *Why*: Up to $50K, perfect TEE+zkTLS alignment. Phala is actively seeking projects like yours.
-- *Action*: Write a 2-page proposal: "Integrating Kuberna's TEE-attested AI agents with Phat Contracts for cross-chain zkTLS proofs." Join Phala Discord. Submit within 3 weeks.
+
+- _Why_: Up to $50K, perfect TEE+zkTLS alignment. Phala is actively seeking projects like yours.
+- _Action_: Write a 2-page proposal: "Integrating Kuberna's TEE-attested AI agents with Phat Contracts for cross-chain zkTLS proofs." Join Phala Discord. Submit within 3 weeks.
 
 ### Quick wins (this week):
+
 1. Apply to **Superteam Earn** Agentic Engineering → cash in 1–2 weeks
 2. Apply to **Kenzi Wang Scholarship** → decision in 2–4 weeks
 3. Polish **0G Hackathon** submission → deadline May 16
@@ -348,6 +380,7 @@
 5. Write **Phala Builders Program** proposal
 
 ### Pipeline (next 3 months):
+
 6. **Solana Foundation Grant** → request $25K for Solana integration
 7. **NEAR DevHub/Infrastructure Committee** → $15K for NEAR Intents
 8. **Filecoin ProPGF Batch 3 or 4** → $10K for IPFS proof storage
@@ -358,26 +391,27 @@
 
 ## SUMMARY TABLE: KEY METADATA
 
-| Program | Max Size | Deadline | KYC? | Entity Required? | Geography Restriction? | Age Restriction? | Decision Timeline |
-|---|---|---|---|---|---|---|---|
-| Kenzi Wang Scholarship | $10K | Rolling | No | No | None | 15–19 | 2–4 weeks |
-| Superteam Earn Agentic | ~$2K | Rolling | Yes | No | Africa-friendly | None | 1–2 weeks |
-| 0G Hackathon | $45K | May 16 | Yes | No | None (APAC focus) | None | 2–3 weeks |
-| Arbitrum Trailblazer 2.0 | $10K | Rolling | Yes | No | None | None | 2–4 weeks |
-| Phala Builders Program | $50K | Rolling | Yes | No | None | None | ~1 month |
-| Solana Foundation | $100K+ | Rolling | Yes | Recommended | None | None | ~4 weeks |
-| NEAR DevHub | $100K | Rolling | Possibly | No | None | None | ~2–4 weeks |
-| Ethereum ESP | $250K+ | Rolling | Yes | Not required | None | None | 3–6 weeks |
-| Filecoin ProPGF | $200K+ | Batch (Q2) | Yes | Recommended | None | None | ~2 months |
-| Gitcoin GG25 | ~$30K | Q3 2026 | Yes | Not required | None | None | ~4–6 weeks |
-| Base Builder Grants | 5 ETH | Rolling | Yes | No | None | None | ~2 weeks |
-| Stellar SCF | $150K | Round TBA | Yes | Recommended | None | None | ~2 months |
-| Akash Network | $100K | Rolling | No (small) | Not required | None | None | Governance vote |
-| OneChain Builders' Hub | $100K | Rolling | Likely | No | None | None | ~1 month |
-| SafePal Grant | $100K | Dec 31 | Yes | No | Solana only | None | ~1 week |
-| Sui Foundation | $200K+ | Rolling | Yes | Recommended | None | None | ~1 month |
-| Uniswap Foundation | $75K+ | Rolling | Yes | Recommended | None | None | ~3–6 weeks |
-| D-Prize | $20K | May 17 | No | No | LMIC focus | None | ~2 months |
+| Program                  | Max Size | Deadline   | KYC?       | Entity Required? | Geography Restriction? | Age Restriction? | Decision Timeline |
+| ------------------------ | -------- | ---------- | ---------- | ---------------- | ---------------------- | ---------------- | ----------------- |
+| Kenzi Wang Scholarship   | $10K     | Rolling    | No         | No               | None                   | 15–19            | 2–4 weeks         |
+| Superteam Earn Agentic   | ~$2K     | Rolling    | Yes        | No               | Africa-friendly        | None             | 1–2 weeks         |
+| 0G Hackathon             | $45K     | May 16     | Yes        | No               | None (APAC focus)      | None             | 2–3 weeks         |
+| Arbitrum Trailblazer 2.0 | $10K     | Rolling    | Yes        | No               | None                   | None             | 2–4 weeks         |
+| Phala Builders Program   | $50K     | Rolling    | Yes        | No               | None                   | None             | ~1 month          |
+| Solana Foundation        | $100K+   | Rolling    | Yes        | Recommended      | None                   | None             | ~4 weeks          |
+| NEAR DevHub              | $100K    | Rolling    | Possibly   | No               | None                   | None             | ~2–4 weeks        |
+| Ethereum ESP             | $250K+   | Rolling    | Yes        | Not required     | None                   | None             | 3–6 weeks         |
+| Filecoin ProPGF          | $200K+   | Batch (Q2) | Yes        | Recommended      | None                   | None             | ~2 months         |
+| Gitcoin GG25             | ~$30K    | Q3 2026    | Yes        | Not required     | None                   | None             | ~4–6 weeks        |
+| Base Builder Grants      | 5 ETH    | Rolling    | Yes        | No               | None                   | None             | ~2 weeks          |
+| Stellar SCF              | $150K    | Round TBA  | Yes        | Recommended      | None                   | None             | ~2 months         |
+| Akash Network            | $100K    | Rolling    | No (small) | Not required     | None                   | None             | Governance vote   |
+| OneChain Builders' Hub   | $100K    | Rolling    | Likely     | No               | None                   | None             | ~1 month          |
+| SafePal Grant            | $100K    | Dec 31     | Yes        | No               | Solana only            | None             | ~1 week           |
+| Sui Foundation           | $200K+   | Rolling    | Yes        | Recommended      | None                   | None             | ~1 month          |
+| Uniswap Foundation       | $75K+    | Rolling    | Yes        | Recommended      | None                   | None             | ~3–6 weeks        |
+| D-Prize                  | $20K     | May 17     | No         | No               | LMIC focus             | None             | ~2 months         |
 
 ### Practical Note:
+
 Open a Wise account now (KYC expected by most programs). You do not strictly need a legal entity for sub-$50K grants — most accept individual applicants. But creating a simple Rwandan sole proprietorship (or using a fiscal sponsor) will unblock larger grants.

@@ -21,10 +21,10 @@ npm start
 
 ## Connection Strings
 
-| Purpose | Connection String |
-|---------|------------------|
+| Purpose                          | Connection String                                                                                                             |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | **Transaction pooler** (runtime) | `postgresql://postgres.project:password@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
-| **Session pooler** (migrations) | `postgresql://postgres.project:password@aws-1-eu-north-1.pooler.supabase.com:5432/postgres` |
+| **Session pooler** (migrations)  | `postgresql://postgres.project:password@aws-1-eu-north-1.pooler.supabase.com:5432/postgres`                                   |
 
 ## Prisma Schema
 
@@ -33,6 +33,7 @@ The schema lives at `/prisma/schema.prisma`. All 38 tables use snake_case naming
 ## CI/CD
 
 `.github/workflows/supabase-migrations.yml` runs `prisma migrate deploy` on push to `main`. Requires GitHub Secrets:
+
 - `DATABASE_URL` — transaction pooler URL
 - `DIRECT_URL` — session pooler URL
 

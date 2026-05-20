@@ -4,11 +4,11 @@ The operating system for agentic Web3 enterprises.
 
 ## Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | >= 18.0.0 |
-| npm | >= 9.0.0 |
-| Supabase account | Free tier (for database) |
+| Tool                     | Version                                   |
+| ------------------------ | ----------------------------------------- |
+| Node.js                  | >= 18.0.0                                 |
+| npm                      | >= 9.0.0                                  |
+| Supabase account         | Free tier (for database)                  |
 | WalletConnect Project ID | Free from https://cloud.walletconnect.com |
 
 ## Quick Start (Local Development)
@@ -51,13 +51,13 @@ DIRECT_URL="postgresql://postgres.project-ref:password@db.project-ref.supabase.c
 
 ### Common Supabase Connection Errors
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `no pg_hba.conf entry` | Wrong host/port | Use pooler (`*.pooler.supabase.com:6543`) for `DATABASE_URL`, direct (`db.*.supabase.co:5432`) for `DIRECT_URL` |
-| `too many connections` | Pooler limit hit | Add `&connection_limit=1` to `DATABASE_URL` |
-| `SSL required` | Missing `sslmode` | Append `?sslmode=require` to connection strings |
-| `password authentication failed` | Wrong password | Reset via Supabase Dashboard → Database → Reset password |
-| `Prisma needs direct database access for migrations` | `DIRECT_URL` missing | Set `DIRECT_URL` in your `.env` or environment variables |
+| Error                                                | Cause                | Fix                                                                                                             |
+| ---------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `no pg_hba.conf entry`                               | Wrong host/port      | Use pooler (`*.pooler.supabase.com:6543`) for `DATABASE_URL`, direct (`db.*.supabase.co:5432`) for `DIRECT_URL` |
+| `too many connections`                               | Pooler limit hit     | Add `&connection_limit=1` to `DATABASE_URL`                                                                     |
+| `SSL required`                                       | Missing `sslmode`    | Append `?sslmode=require` to connection strings                                                                 |
+| `password authentication failed`                     | Wrong password       | Reset via Supabase Dashboard → Database → Reset password                                                        |
+| `Prisma needs direct database access for migrations` | `DIRECT_URL` missing | Set `DIRECT_URL` in your `.env` or environment variables                                                        |
 
 ## Deploy to Render (One-Click)
 
@@ -85,50 +85,50 @@ Kuberna Labs is configured for zero-manual-intervention deployment on [Render](h
 2. Connect your GitHub repo.
 3. Configure the service:
 
-   | Setting | Value |
-   |---------|-------|
-   | **Name** | `kuberna-labs` |
-   | **Environment** | `Node` |
-   | **Build Command** | `npm run build:all` |
-   | **Start Command** | `npm run start:render` |
-   | **Health Check Path** | `/health` |
-   | **Plan** | `Starter` or higher |
+   | Setting               | Value                  |
+   | --------------------- | ---------------------- |
+   | **Name**              | `kuberna-labs`         |
+   | **Environment**       | `Node`                 |
+   | **Build Command**     | `npm run build:all`    |
+   | **Start Command**     | `npm run start:render` |
+   | **Health Check Path** | `/health`              |
+   | **Plan**              | `Starter` or higher    |
 
 4. Add environment variables (see table below).
 5. Click **Create Web Service**.
 
 ### Required Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DATABASE_URL` | Supabase transaction pooler URL (runtime) | `postgresql://postgres.p-ref:pass@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
-| `DIRECT_URL` | Supabase direct URL (Prisma Migrate only) | `postgresql://postgres.p-ref:pass@db.p-ref.supabase.co:5432/postgres` |
-| `JWT_SECRET` | JWT signing key (`openssl rand -hex 32`) | `a1b2c3d4...` |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud ID | `abc123...` |
+| Variable                               | Description                               | Example                                                                                                                 |
+| -------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                         | Supabase transaction pooler URL (runtime) | `postgresql://postgres.p-ref:pass@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
+| `DIRECT_URL`                           | Supabase direct URL (Prisma Migrate only) | `postgresql://postgres.p-ref:pass@db.p-ref.supabase.co:5432/postgres`                                                   |
+| `JWT_SECRET`                           | JWT signing key (`openssl rand -hex 32`)  | `a1b2c3d4...`                                                                                                           |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud ID                    | `abc123...`                                                                                                             |
 
 ### Required for Web3 Features
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `RPC_URL` | Blockchain RPC endpoint | `https://sepolia.base.org` |
-| `PRIVATE_KEY` | Backend wallet private key | `0xabc...` |
-| `ESCROW_CONTRACT_ADDRESS` | Deployed Escrow contract | `0x123...` |
-| `INTENT_CONTRACT_ADDRESS` | Deployed Intent contract | `0x456...` |
-| `AGENT_REGISTRY_CONTRACT_ADDRESS` | Deployed AgentRegistry contract | `0x789...` |
-| `CERTIFICATE_CONTRACT_ADDRESS` | Deployed CertificateNFT contract | `0xabc...` |
-| `REPUTATION_CONTRACT_ADDRESS` | Deployed ReputationNFT contract | `0xdef...` |
+| Variable                          | Description                      | Example                    |
+| --------------------------------- | -------------------------------- | -------------------------- |
+| `RPC_URL`                         | Blockchain RPC endpoint          | `https://sepolia.base.org` |
+| `PRIVATE_KEY`                     | Backend wallet private key       | `0xabc...`                 |
+| `ESCROW_CONTRACT_ADDRESS`         | Deployed Escrow contract         | `0x123...`                 |
+| `INTENT_CONTRACT_ADDRESS`         | Deployed Intent contract         | `0x456...`                 |
+| `AGENT_REGISTRY_CONTRACT_ADDRESS` | Deployed AgentRegistry contract  | `0x789...`                 |
+| `CERTIFICATE_CONTRACT_ADDRESS`    | Deployed CertificateNFT contract | `0xabc...`                 |
+| `REPUTATION_CONTRACT_ADDRESS`     | Deployed ReputationNFT contract  | `0xdef...`                 |
 
 ### Optional
 
-| Variable | Description | Notes |
-|----------|-------------|-------|
-| `REDIS_URL` | Redis connection string | Rate limiting; falls back gracefully |
-| `STRIPE_SECRET_KEY` | Stripe API key | For fiat payments |
-| `OPENAI_API_KEY` | OpenAI API key | For AI agent features |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | SMTP credentials | For email notifications |
-| `FROM_EMAIL` | Sender email address | `noreply@yourdomain.com` |
-| `FRONTEND_DIST_PATH` | Frontend build output path | `../frontend/out` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS origins | `https://your-app.onrender.com` |
+| Variable                                              | Description                  | Notes                                |
+| ----------------------------------------------------- | ---------------------------- | ------------------------------------ |
+| `REDIS_URL`                                           | Redis connection string      | Rate limiting; falls back gracefully |
+| `STRIPE_SECRET_KEY`                                   | Stripe API key               | For fiat payments                    |
+| `OPENAI_API_KEY`                                      | OpenAI API key               | For AI agent features                |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | SMTP credentials             | For email notifications              |
+| `FROM_EMAIL`                                          | Sender email address         | `noreply@yourdomain.com`             |
+| `FRONTEND_DIST_PATH`                                  | Frontend build output path   | `../frontend/out`                    |
+| `ALLOWED_ORIGINS`                                     | Comma-separated CORS origins | `https://your-app.onrender.com`      |
 
 ### GitHub Secrets (for Automated Migrations)
 
@@ -136,14 +136,15 @@ The `.github/workflows/migrate-database.yml` workflow runs Prisma Migrate automa
 
 Add these secrets in your repo **Settings → Secrets and variables → Actions**:
 
-| Secret | Value |
-|--------|-------|
+| Secret         | Value                                |
+| -------------- | ------------------------------------ |
 | `DATABASE_URL` | Your Supabase transaction pooler URL |
-| `DIRECT_URL` | Your Supabase direct connection URL |
+| `DIRECT_URL`   | Your Supabase direct connection URL  |
 
 ### Post-Deployment
 
 1. **Run initial migration**: If starting with an empty database:
+
    ```bash
    # Locally (one-time):
    cd backend && npx prisma migrate dev --name init
@@ -202,6 +203,7 @@ kuberna-labs/
 All AI functionality runs locally using open-source libraries. No API keys required.
 
 ### 1. Natural Language Intent Parser
+
 - **Service**: `backend/src/services/intentParser.ts`
 - **API**: `POST /api/intents/parse` with `{ description: string }`
 - **Libraries**: `compromise` (NLP entity extraction), custom regex patterns
@@ -210,18 +212,21 @@ All AI functionality runs locally using open-source libraries. No API keys requi
 - **SDK**: `sdk.intent.parse("swap 1 ETH for USDC on Solana")`
 
 ### 2. Agent Decision Engine
+
 - **Service**: `backend/src/services/agentDecision.ts`
 - **API**: `POST /api/agents/:id/decide` with `{ strategies: string[] }`
 - **Strategies**: Arbitrage (cross-DEX price diff), Yield optimization (APY comparison), Stop-loss (price drop detection)
 - **Market data**: Deterministic mock provider based on block timestamp
 
 ### 3. AI-Assisted Agent Creation Wizard
+
 - **Component**: `frontend/src/components/AIAssistant.tsx`
 - **Integration**: Embedded in `/agents` page creation wizard
 - **Heuristics**: Framework/tool suggestions based on description keywords
 - **Intent parsing**: Real-time via backend `/api/intents/parse`
 
 ### 4. Local Memory & RAG System
+
 - **Service**: `backend/src/services/localMemory.ts`
 - **Embeddings**: Transformers.js (`Xenova/all-MiniLM-L6-v2`) with hash fallback
 - **Storage**: Prisma models (`IntentMemory`, `AgentMemory`)
@@ -261,8 +266,11 @@ const client = new KubernaClient({ baseUrl: 'https://api.kuberna.com' });
 const intent = await client.ai.parseIntent('swap 1 ETH for USDC on Solana');
 const agent = await client.tee.createEnclave({ name: 'my-agent' });
 const payment = await client.payment.createIntent({
-  sourceChain: 'ethereum', sourceToken: 'ETH', sourceAmount: '1.0',
-  destChain: 'solana', destToken: 'USDC',
+  sourceChain: 'ethereum',
+  sourceToken: 'ETH',
+  sourceAmount: '1.0',
+  destChain: 'solana',
+  destToken: 'USDC',
 });
 ```
 

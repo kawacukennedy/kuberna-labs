@@ -24,6 +24,7 @@ Yes! Kuberna Labs is fully open source under the MIT License. You can view, fork
 ### Which blockchains does Kuberna Labs support?
 
 Currently, we support:
+
 - Ethereum (Mainnet and Sepolia testnet)
 - Polygon (Mainnet and Mumbai testnet)
 - Base (Mainnet and Sepolia testnet)
@@ -33,6 +34,7 @@ We plan to add more chains based on community demand.
 ### What are Trusted Execution Environments (TEEs)?
 
 TEEs are secure areas within processors that protect code and data from external access. We integrate with:
+
 - **Phala Network**: Confidential smart contracts on Polkadot
 - **Marlin Oyster**: Decentralized TEE infrastructure
 
@@ -41,6 +43,7 @@ TEEs ensure that AI agent computations are verifiable and tamper-proof.
 ### Do I need cryptocurrency to use Kuberna Labs?
 
 Yes, you'll need cryptocurrency for:
+
 - Gas fees for blockchain transactions
 - Payments for services (can use various tokens)
 - Staking for certain features
@@ -50,6 +53,7 @@ However, we're working on fiat on-ramps to make it easier for non-crypto users.
 ### What wallets are supported?
 
 We support all Web3 wallets compatible with EIP-1193, including:
+
 - MetaMask
 - WalletConnect
 - Coinbase Wallet
@@ -63,6 +67,7 @@ We support all Web3 wallets compatible with EIP-1193, including:
 ### Are the smart contracts audited?
 
 We are currently in the development phase. Professional security audits are planned before mainnet launch. In the meantime:
+
 - Code is open source for community review
 - We follow best practices and use OpenZeppelin libraries
 - Comprehensive testing including property-based tests
@@ -70,6 +75,7 @@ We are currently in the development phase. Professional security audits are plan
 ### Can I interact with the contracts directly?
 
 Yes! All our contracts are open and permissionless. You can:
+
 - Use our [SDK](https://www.npmjs.com/package/@kuberna/sdk) (`npm install @kuberna/sdk`) for easy integration
 - Call contracts directly using Web3 libraries
 - Build your own interfaces
@@ -98,6 +104,7 @@ Contract addresses and ABIs are available in our [documentation](./API.md).
 ### Can I build my own AI agent?
 
 Absolutely! We provide:
+
 - SDK for agent development
 - Documentation and tutorials
 - Example agents
@@ -108,6 +115,7 @@ Check our [Developer Guide](./CONTRIBUTING.md) to get started.
 ### How is AI agent work verified?
 
 Verification methods include:
+
 - TEE attestations for computational integrity
 - Human review for subjective tasks
 - Automated testing for code/data tasks
@@ -139,6 +147,7 @@ Verification methods include:
 ### Can I get a refund?
 
 Yes, through our dispute resolution system:
+
 1. Raise a dispute within the specified timeframe
 2. Provide evidence
 3. Arbitrators review the case
@@ -151,6 +160,7 @@ Yes, through our dispute resolution system:
 ### Are certificates NFTs?
 
 Yes! Educational certificates are minted as NFTs, providing:
+
 - Permanent, verifiable credentials
 - Portability across platforms
 - Proof of achievement
@@ -159,6 +169,7 @@ Yes! Educational certificates are minted as NFTs, providing:
 ### Who can create courses?
 
 Anyone can create courses, but:
+
 - Creators must stake tokens
 - Quality is community-reviewed
 - Reputation affects visibility
@@ -187,6 +198,7 @@ Anyone can create courses, but:
 ### What data is stored on-chain?
 
 Only essential data:
+
 - Transaction records
 - Reputation scores
 - Certificate metadata
@@ -197,6 +209,7 @@ Detailed content and personal information are stored off-chain.
 ### How do I report a security issue?
 
 Please follow our [Security Policy](./SECURITY.md):
+
 - Email: security@kubernalabs.com
 - Use our bug bounty program (coming soon)
 - Do NOT disclose publicly until patched
@@ -215,6 +228,7 @@ Please follow our [Security Policy](./SECURITY.md):
 ### How can I contribute?
 
 See our [Contributing Guide](./CONTRIBUTING.md) for:
+
 - Code contributions
 - Documentation improvements
 - Bug reports
@@ -224,6 +238,7 @@ See our [Contributing Guide](./CONTRIBUTING.md) for:
 ### Is there a governance token?
 
 Not yet, but it's on our roadmap! The governance token will enable:
+
 - Platform governance
 - Fee sharing
 - Staking rewards
@@ -264,6 +279,7 @@ Not yet, but it's on our roadmap! The governance token will enable:
 ### What's next for Kuberna Labs?
 
 See our detailed [Roadmap](./ROADMAP.md) for upcoming features including:
+
 - Mainnet launch
 - Mobile apps
 - Additional integrations
@@ -273,6 +289,7 @@ See our detailed [Roadmap](./ROADMAP.md) for upcoming features including:
 ### Can I suggest features?
 
 Yes! We welcome feature suggestions:
+
 - Open a GitHub Issue with the "feature request" label
 - Discuss in our community channels
 - Vote on existing proposals
@@ -280,6 +297,7 @@ Yes! We welcome feature suggestions:
 ### When is mainnet launch?
 
 We're targeting Q4 2026 for mainnet launch. Follow our progress:
+
 - [Project Status](./PROJECT_STATUS.md)
 - [Roadmap](./ROADMAP.md)
 - Twitter/Discord for updates
@@ -295,4 +313,4 @@ We're targeting Q4 2026 for mainnet launch. Follow our progress:
 
 ---
 
-*Last updated: March 2026*
+_Last updated: March 2026_

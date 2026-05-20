@@ -10,6 +10,7 @@
 ## SUPER-CONTRIBUTORS (Track Record of Sustained OSS — Potential Core Team)
 
 ### 1. Sayo (@wtfsayo)
+
 - **GitHub:** github.com/wtfsayo
 - **X:** @wtfsayonara
 - **Role:** Top contributor to elizaOS (#1 PR author, 931 PRs, core maintainer)
@@ -19,6 +20,7 @@
 - **DM (X):** DM @wtfsayonara
 
 ### 2. Ting-Chien Meng (@tcm390)
+
 - **GitHub:** github.com/tcm390
 - **Role:** #2 elizaOS contributor (484 PRs, active maintainer)
 - **Skills:** TypeScript, CI/CD, agent systems, core infrastructure
@@ -27,6 +29,7 @@
 - **Link:** GitHub issue mention @tcm390
 
 ### 3. odilitime
+
 - **GitHub:** github.com/odilitime
 - **Role:** elizaOS core maintainer (159 PRs, major reviewer/merger)
 - **Skills:** TypeScript, code review, OSS governance, agent frameworks
@@ -35,6 +38,7 @@
 - **Link:** GitHub issue @odilitime
 
 ### 4. Shakker Nerd (@shakkernerd)
+
 - **GitHub:** github.com/shakkernerd
 - **Role:** elizaOS core maintainer (52 PRs, paper co-author)
 - **Skills:** TypeScript, agent systems, OSS, architecture
@@ -43,6 +47,7 @@
 - **Link:** GitHub issue @shakkernerd
 
 ### 5. ChristopherTrimboli
+
 - **GitHub:** github.com/ChristopherTrimboli
 - **Role:** elizaOS core maintainer (266 PRs)
 - **Skills:** TypeScript, plugins, integrations, full-stack
@@ -51,6 +56,7 @@
 - **Link:** GitHub @ChristopherTrimboli
 
 ### 6. META-DREAMER
+
 - **GitHub:** github.com/META-DREAMER
 - **Role:** elizaOS leaderboard top contributor, multi-repo OSS contributor
 - **Skills:** TypeScript, Web3, agent systems, documentation
@@ -59,6 +65,7 @@
 - **Link:** GitHub @META-DREAMER
 
 ### 7. Developer Uche (@developeruche)
+
 - **GitHub:** github.com/developeruche
 - **X:** @developeruche
 - **Role:** Ethereum Foundation fellow, Rust/blockchain researcher
@@ -68,6 +75,7 @@
 - **Link:** GitHub @developeruche, X DM @developeruche
 
 ### 8. Chance Desire IRADUKUNDA
+
 - **GitHub:** github.com/chancedira (not found directly — check)
 - **LinkedIn:** linkedin.com/in/chance-desire-i-iradukunda (Rwanda)
 - **Role:** Senior full-stack dev, 7+ years, Web3 expert, Solidity, Rwanda Blockchain Association executive member
@@ -81,6 +89,7 @@
 ## TIER 1: RWANDA/EAST AFRICA DEVS (High Resonance with Founder Story)
 
 ### 9. Cyusa Asaph
+
 - **GitHub:** search Cyusa Asaph on GitHub
 - **LinkedIn:** Cyusa Asaph
 - **Role:** Certified smart contract engineer, Solana Foundation scholar, organized Africa Blockchain Festival 2025 Kigali, trained dozens of Rwandans in blockchain
@@ -90,6 +99,7 @@
 - **Link:** LinkedIn, X (search @cyusaasaph)
 
 ### 10. Nyumbayire Laurent (@NyLaurent)
+
 - **GitHub:** github.com/NyLaurent
 - **LinkedIn:** linkedin.com/in/nyumbayire-laurent
 - **Role:** Developer Relations Specialist at Web3 Mates (Kigali), CTO at StoneProof Labs
@@ -99,6 +109,7 @@
 - **Link:** LinkedIn DM, GitHub @NyLaurent
 
 ### 11. Roland MN (@RolandM99)
+
 - **GitHub:** github.com/RolandM99
 - **X:** @ManfulMwez
 - **Role:** Software engineer, blockchain enthusiast, Kigali/Bukavu
@@ -108,6 +119,7 @@
 - **Link:** GitHub @RolandM99, X DM @ManfulMwez
 
 ### 12. Kandi Peter Kamuntu (@Kandy-Peter)
+
 - **GitHub:** github.com/Kandy-Peter
 - **X:** @peter_kandy
 - **Role:** Full-stack software engineer, Kigali
@@ -117,6 +129,7 @@
 - **Link:** GitHub @Kandy-Peter, X DM
 
 ### 13. Niyomugabo Etiene (@niyomugaboetiene)
+
 - **GitHub:** github.com/niyomugaboetiene
 - **X:** @Niyomugabo_250
 - **Role:** Mobile/Web3 developer, Bugesera Rwanda
@@ -126,6 +139,7 @@
 - **Link:** GitHub @niyomugaboetiene, X DM
 
 ### 14. IRAGUHA Jean Aime (@jeanaimeiraguha)
+
 - **GitHub:** github.com/jeanaimeiraguha
 - **Role:** Software engineer, Bugesera/Kigali. Blockchain eLearning platform builder.
 - **Skills:** Solidity, Web3, React, Node.js, Laravel
@@ -134,6 +148,7 @@
 - **Link:** GitHub @jeanaimeiraguha
 
 ### 15. Bruno Rwanda (@brunorwanda4)
+
 - **GitHub:** github.com/brunorwanda4
 - **X:** @rwanda_bruno
 - **Role:** TypeScript/Rust dev, Kigali. Creator of space-together.
@@ -143,6 +158,7 @@
 - **Link:** GitHub @brunorwanda4, X DM
 
 ### 16. Muhirwa Gilbert
+
 - **LinkedIn:** linkedin.com/in/muhirwa-gilbert
 - **Role:** Blockchain Developer at Web3 Mates (Kigali), Chainlink certified
 - **Skills:** Blockchain, Python, Solidity, Web3
@@ -151,6 +167,7 @@
 - **Link:** LinkedIn message
 
 ### 17. Maïc SEBAKARA
+
 - **LinkedIn:** linkedin.com/in/maic-sebakara
 - **Role:** Hub Lead at ICP Rwanda, blockchain trainer, Kigali
 - **Skills:** Blockchain education, community building, TypeScript, React, Node.js
@@ -163,6 +180,7 @@
 ## TIER 2: AFRICAN WEB3 DEVS (Resonate with Building in Africa)
 
 ### 18. Delight (@Delightech28)
+
 - **GitHub:** github.com/Delightech28
 - **X:** @delightcodes
 - **Role:** Blockchain developer, Nigeria. Avalanche advocate. Building dApps for onchain adoption in Africa.
@@ -172,6 +190,7 @@
 - **Link:** GitHub @Delightech28, X DM @delightcodes
 
 ### 19. Wilfred (@Wilfred007)
+
 - **GitHub:** github.com/Wilfred007
 - **Role:** Frontend & blockchain developer, Lagos Nigeria. "Web3 for Africa."
 - **Skills:** TypeScript, Rust, Clarity, React, frontend
@@ -180,6 +199,7 @@
 - **Link:** GitHub @Wilfred007
 
 ### 20. Ebuka Moses Okoye (@EbukaMoses)
+
 - **GitHub:** github.com/EbukaMoses
 - **X:** @bukan_moses
 - **Role:** Full-stack/blockchain engineer, Lagos. 182 repos.
@@ -189,6 +209,7 @@
 - **Link:** GitHub @EbukaMoses, X DM @bukan_moses
 
 ### 21. James Victor (@JamesVictor-O)
+
 - **GitHub:** github.com/JamesVictor-O
 - **X:** @codeX_james
 - **Role:** Frontend & smart contract engineer, Nigeria. TypeScript, Solidity, Cairo, Rust.
@@ -198,8 +219,9 @@
 - **Link:** GitHub @JamesVictor-O, X DM
 
 ### 22. Michael Anokam (@MerlinTheWhiz)
+
 - **GitHub:** github.com/MerlinTheWhiz
-- **X:** @madebymichael_
+- **X:** @madebymichael\_
 - **Role:** Software engineer, Nigeria. OSS contributor, Web3 explorer.
 - **Skills:** TypeScript, Solidity, Web3, full-stack, security
 - **Why free:** Nigerian. High PR activity (36%). Contributed to multiple Web3 contract repos (Credence, Commitlabs, Callora, Remitlend). Portfolio building.
@@ -207,6 +229,7 @@
 - **Link:** GitHub @MerlinTheWhiz, X DM
 
 ### 23. Agnilonda Pakou (@apakou)
+
 - **GitHub:** github.com/apakou
 - **X:** @PakouNiel
 - **Role:** OSS contributor, Web3 dev, community builder, Lome Togo
@@ -216,6 +239,7 @@
 - **Link:** GitHub @apakou, X DM
 
 ### 24. Adebakin Olujimi (@olujimiAdebakin)
+
 - **GitHub:** github.com/olujimiAdebakin
 - **X:** @olujimi_the_dev
 - **Role:** Blockchain engineer, Lagos. Solidity, Rust, Go.
@@ -225,6 +249,7 @@
 - **Link:** GitHub @olujimiAdebakin, X DM
 
 ### 25. Okoli Evans (@OkoliEvans)
+
 - **GitHub:** github.com/OkoliEvans
 - **X:** @OkoliEvans
 - **Role:** Blockchain engineer, Lagos. Building StarkNet and AI projects.
@@ -234,6 +259,7 @@
 - **Link:** GitHub @OkoliEvans, X DM
 
 ### 26. dimka (@dimka90)
+
 - **GitHub:** github.com/dimka90
 - **X:** @dimkayilrit
 - **Role:** Web3 dev, Nigeria. Rust, TS, Cairo, Solidity, Python.
@@ -243,8 +269,9 @@
 - **Link:** GitHub @dimka90, X DM
 
 ### 27. Babalola Taiwo J (@thebabalola)
+
 - **GitHub:** github.com/thebabalola
-- **X:** @_therebirth
+- **X:** @\_therebirth
 - **Role:** Web3 developer, contributed to Rust Foundation interop initiative, rust-lang/rust.
 - **Skills:** Rust, TypeScript, Stacks/Clarity, smart contracts
 - **Why free:** Nigerian. Contributed to rust-lang/rust and Rust Foundation interop. Deep Rust skills for TEE/cross-chain work.
@@ -252,6 +279,7 @@
 - **Link:** GitHub @thebabalola, X DM
 
 ### 28. Michael Dean Oyewole (@intelliDean)
+
 - **GitHub:** github.com/intelliDean
 - **Role:** Rust & blockchain engineer. Building devtools for Ethereum, StarkNet, Monad, ZK.
 - **Skills:** Rust, Solidity, ZK, EVM, blockchain devtools
@@ -260,6 +288,7 @@
 - **Link:** GitHub @intelliDean
 
 ### 29. Oghenerukevwe Sandra Idjighere (@Sandijigs)
+
 - **GitHub:** github.com/Sandijigs
 - **Role:** Fullstack Web3 engineer. Rust, Solidity, Cairo, Soroban. Btrust Builders participant.
 - **Skills:** Rust, Solidity, Cairo, Soroban, React, React Native
@@ -268,6 +297,7 @@
 - **Link:** GitHub @Sandijigs
 
 ### 30. Kelechi Kizito Ugwu (@Kelechikizito)
+
 - **GitHub:** github.com/Kelechikizito
 - **X:** @0xkelechii
 - **Role:** Smart contract engineer + technical writer. Nigeria.
@@ -281,6 +311,7 @@
 ## TIER 3: TECHNICAL WRITERS & DevRel (Docs, Tutorials, Community)
 
 ### 31. Owanate Amachree
+
 - **LinkedIn:** Owanate Amachree
 - **Role:** Senior Technical Writer at RootstockLabs. Web3 technical writer making blockchain accessible.
 - **Skills:** Technical writing, developer documentation, Web3 education, content strategy
@@ -289,6 +320,7 @@
 - **Link:** LinkedIn message
 
 ### 32. Mayowa Ogungbola
+
 - **LinkedIn:** linkedin.com/in/mayowa-ogungbola
 - **Role:** DevRel Engineer, Senior Technical Writer at Hackmamba. Open source contributor.
 - **Skills:** DevRel, technical writing, Web3, developer advocacy
@@ -297,6 +329,7 @@
 - **Link:** LinkedIn message
 
 ### 33. DappaDan
+
 - **Website:** dappadan.xyz
 - **Role:** Freelance Web3 technical writer. Member of Developer DAO. Writes Protocol Newsletter.
 - **Skills:** Technical writing, Web3 content, tutorials, documentation
@@ -305,6 +338,7 @@
 - **Link:** X DM (search @dappadan), website contact
 
 ### 34. Ihuoma Anosike
+
 - **LinkedIn:** linkedin.com/in/ihuoma-anosike
 - **Role:** Technical content writer, community manager, Women in Blockchain Africa volunteer
 - **Skills:** Technical writing, community management, blockchain education, open source
@@ -313,6 +347,7 @@
 - **Link:** LinkedIn message
 
 ### 35. oxpampam
+
 - **Linktree:** linktr.ee/oxpam_pam
 - **Role:** Developer Advocate and Technical Writer, 2+ years Web3
 - **Skills:** DevRel, technical writing, Web3 education
@@ -325,6 +360,7 @@
 ## TIER 4: ElizaOS/Agent ECOSYSTEM DEVS (Platform Alignment)
 
 ### 36. tsubasakong
+
 - **GitHub:** github.com/tsubasakong
 - **Role:** Core contributor to elizaOS, Heurist Network contributor
 - **Skills:** TypeScript, AI agents, blockchain, automation
@@ -333,6 +369,7 @@
 - **Link:** GitHub @tsubasakong
 
 ### 37. buckybonez
+
 - **GitHub:** github.com/buckybonez
 - **Role:** Building on Solana, Sui, EVM. Rust/Solidity/Python. elizaOS contributor.
 - **Skills:** Rust, Solidity, Python, Solana, Sui, EVM, AI/ML
@@ -341,6 +378,7 @@
 - **Link:** GitHub @buckybonez
 
 ### 38. Deeptanshu-sankhwar
+
 - **GitHub:** github.com/Deeptanshu-sankhwar
 - **Role:** elizaOS contributor (removed LangChain dependency, core refactor)
 - **Skills:** TypeScript, agent systems, refactoring, optimization
@@ -349,6 +387,7 @@
 - **Link:** GitHub @Deeptanshu-sankhwar
 
 ### 39. standujar
+
 - **GitHub:** github.com/standujar
 - **Role:** elizaOS contributor (58 PRs, leaderboard top). Plugin ecosystem.
 - **Skills:** TypeScript, plugins, CI/CD, security (SHA1-HULUD scanner)
@@ -357,6 +396,7 @@
 - **Link:** GitHub @standujar
 
 ### 40. Abdulkareem Babatunde
+
 - **GitHub:** search "Abdulkareem Babatunde" on GitHub
 - **Role:** SpoonOS core contributor. Nigerian Web3/ML engineer. Building agentic architectures with Web3.
 - **Skills:** Full-stack, ML, Web3, agent frameworks, community building

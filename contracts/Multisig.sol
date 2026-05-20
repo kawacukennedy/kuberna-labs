@@ -98,12 +98,7 @@ contract KubernaMultisig {
         return id;
     }
 
-    function confirmTransaction(uint256 id)
-        external
-        onlyMultisigOwner
-        txExists(id)
-        notExecuted(id)
-    {
+    function confirmTransaction(uint256 id) external onlyMultisigOwner txExists(id) notExecuted(id) {
         if (confirmations[id][msg.sender]) revert Multisig__AlreadyConfirmed();
 
         confirmations[id][msg.sender] = true;
@@ -112,12 +107,7 @@ contract KubernaMultisig {
         emit TransactionConfirmed(id, msg.sender);
     }
 
-    function revokeConfirmation(uint256 id)
-        external
-        onlyMultisigOwner
-        txExists(id)
-        notExecuted(id)
-    {
+    function revokeConfirmation(uint256 id) external onlyMultisigOwner txExists(id) notExecuted(id) {
         require(confirmations[id][msg.sender], "Not confirmed");
 
         confirmations[id][msg.sender] = false;
@@ -126,12 +116,7 @@ contract KubernaMultisig {
         emit TransactionRevoked(id, msg.sender);
     }
 
-    function executeTransaction(uint256 id)
-        external
-        onlyMultisigOwner
-        txExists(id)
-        notExecuted(id)
-    {
+    function executeTransaction(uint256 id) external onlyMultisigOwner txExists(id) notExecuted(id) {
         Transaction storage t = transactions[id];
         if (t.confirmationCount < threshold) revert Multisig__NotConfirmed();
 
@@ -153,12 +138,7 @@ contract KubernaMultisig {
         emit TransactionExecuted(id);
     }
 
-    function cancelTransaction(uint256 id)
-        external
-        onlyMultisigOwner
-        txExists(id)
-        notExecuted(id)
-    {
+    function cancelTransaction(uint256 id) external onlyMultisigOwner txExists(id) notExecuted(id) {
         transactions[id].executed = true;
         emit TransactionCancelled(id);
     }

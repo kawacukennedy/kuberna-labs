@@ -32,15 +32,25 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
 
     constructor() Ownable(msg.sender) {
         supportedTokens.push(address(0));
-        tokenConfigs[address(0)] = TokenConfig({enabled: true, minAmount: 0, maxAmount: type(uint256).max, oracle: address(0)});
+        tokenConfigs[address(0)] = TokenConfig({
+            enabled: true,
+            minAmount: 0,
+            maxAmount: type(uint256).max,
+            oracle: address(0)
+        });
     }
 
     function addToken(address token, uint256 minAmount, uint256 maxAmount) external onlyOwner {
         require(!tokenConfigs[token].enabled, "Token already enabled");
-        
-        tokenConfigs[token] = TokenConfig({enabled: true, minAmount: minAmount, maxAmount: maxAmount, oracle: address(0)});
+
+        tokenConfigs[token] = TokenConfig({
+            enabled: true,
+            minAmount: minAmount,
+            maxAmount: maxAmount,
+            oracle: address(0)
+        });
         supportedTokens.push(token);
-        
+
         emit TokenAdded(token, minAmount, maxAmount);
     }
 
@@ -64,32 +74,32 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
 
         userBalances[msg.sender][token] += amount;
         platformBalances[token] += amount;
-        
+
         emit PaymentReceived(msg.sender, token, amount);
     }
 
     function batchProcessPayment(address[] calldata tokens, uint256[] calldata amounts) external payable nonReentrant {
         require(tokens.length == amounts.length, "Array length mismatch");
-        
+
         uint256 totalNativeAmount = 0;
-        
+
         for (uint256 i = 0; i < tokens.length; i++) {
             TokenConfig memory c = tokenConfigs[tokens[i]];
             require(c.enabled, "Token not supported");
             require(amounts[i] >= c.minAmount && amounts[i] <= c.maxAmount, "Amount out of range");
-            
+
             if (tokens[i] == address(0)) {
                 totalNativeAmount += amounts[i];
             } else {
                 require(IERC20(tokens[i]).transferFrom(msg.sender, address(this), amounts[i]), "Transfer failed");
             }
-            
+
             userBalances[msg.sender][tokens[i]] += amounts[i];
             platformBalances[tokens[i]] += amounts[i];
-            
+
             emit PaymentReceived(msg.sender, tokens[i], amounts[i]);
         }
-        
+
         // Validate total native token amount matches msg.value
         require(msg.value == totalNativeAmount, "Incorrect total ETH amount");
     }
@@ -107,7 +117,7 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
 
     function withdrawFees(address token, uint256 amount) external onlyOwner nonReentrant {
         require(amount <= platformBalances[token], "Insufficient platform balance");
-        
+
         platformBalances[token] -= amount;
 
         _transfer(token, owner(), amount);
@@ -118,15 +128,19 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
     function _transfer(address token, address to, uint256 amount) internal {
         if (amount == 0) return;
         if (token == address(0)) {
-            (bool success,) = payable(to).call{value: amount}("");
+            (bool success, ) = payable(to).call{value: amount}("");
             require(success, "ETH transfer failed");
         } else {
             require(IERC20(token).transfer(to, amount), "Token transfer failed");
         }
     }
 
-    function getBalance(address user, address token) external view returns (uint256) { return userBalances[user][token]; }
-    function getSupportedTokens() external view returns (address[] memory) { return supportedTokens; }
+    function getBalance(address user, address token) external view returns (uint256) {
+        return userBalances[user][token];
+    }
+    function getSupportedTokens() external view returns (address[] memory) {
+        return supportedTokens;
+    }
 
     receive() external payable {}
 }

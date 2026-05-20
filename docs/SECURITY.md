@@ -22,6 +22,7 @@ If you discover a security vulnerability in this project, **please do not report
 ### Response Timeline
 
 We take all security reports seriously and commit to the following response timeline:
+
 - **Acknowledgment**: Within 24 hours of receiving your report.
 - **Initial Assessment**: Within 48 hours, we will confirm the vulnerability and provide an estimated timeline for a fix.
 - **Resolution**: We aim to resolve critical vulnerabilities within 72 hours.

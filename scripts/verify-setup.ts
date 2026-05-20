@@ -68,20 +68,10 @@ check(
 );
 
 // Check npm
-check(
-  'npm',
-  () => checkCommand('npm --version'),
-  'npm is installed',
-  'npm is not installed'
-);
+check('npm', () => checkCommand('npm --version'), 'npm is installed', 'npm is not installed');
 
 // Check Git
-check(
-  'Git',
-  () => checkCommand('git --version'),
-  'Git is installed',
-  'Git is not installed'
-);
+check('Git', () => checkCommand('git --version'), 'Git is installed', 'Git is not installed');
 
 // Check project structure
 check(
@@ -230,12 +220,7 @@ check(
 );
 
 // Check documentation
-check(
-  'Setup Documentation',
-  () => checkFile('SETUP.md'),
-  'SETUP.md exists',
-  'SETUP.md not found'
-);
+check('Setup Documentation', () => checkFile('SETUP.md'), 'SETUP.md exists', 'SETUP.md not found');
 
 check(
   'Quick Start Guide',

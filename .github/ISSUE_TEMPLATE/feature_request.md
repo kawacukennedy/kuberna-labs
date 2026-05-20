@@ -16,6 +16,7 @@ A clear and concise description of what you want to happen.
 A clear and concise description of any alternative solutions or features you've considered.
 
 **Which component does this affect?**
+
 - [ ] Smart Contracts
 - [ ] Backend Services
 - [ ] Frontend Dashboard
@@ -27,5 +28,6 @@ A clear and concise description of any alternative solutions or features you've 
 Add any other context or screenshots about the feature request here.
 
 **Would you like to work on this feature?**
+
 - [ ] Yes, I'd like to submit a PR
 - [ ] No, just suggesting

@@ -6,7 +6,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 error AgentRegistry__Invalid();
 
-enum AgentStatus { None, Registered, Active, Paused, Deprecated }
+enum AgentStatus {
+    None,
+    Registered,
+    Active,
+    Paused,
+    Deprecated
+}
 
 struct Agent {
     address owner;
@@ -45,7 +51,7 @@ contract KubernaAgentRegistry is ERC721, Ownable {
         string[] calldata tools
     ) external returns (uint256) {
         require(!agentNames[name]);
-        
+
         uint256 tokenId = _nextTokenId++;
         _safeMint(owner, tokenId);
 
@@ -72,7 +78,12 @@ contract KubernaAgentRegistry is ERC721, Ownable {
         return tokenId;
     }
 
-    function updateAgent(uint256 tokenId, string calldata description, string calldata model, string calldata config) external {
+    function updateAgent(
+        uint256 tokenId,
+        string calldata description,
+        string calldata model,
+        string calldata config
+    ) external {
         Agent storage a = agents[tokenId];
         require(a.owner == msg.sender || msg.sender == owner());
         a.description = description;
@@ -97,10 +108,20 @@ contract KubernaAgentRegistry is ERC721, Ownable {
         emit ToolAdded(tokenId, tool);
     }
 
-    function getAgent(uint256 tokenId) external view returns (Agent memory) { return agents[tokenId]; }
-    function getOwnerAgents(address owner) external view returns (uint256[] memory) { return ownerAgents[owner]; }
-    function hasTool(address owner, string calldata tool) external view returns (bool) { return ownerHasTool[owner][tool]; }
+    function getAgent(uint256 tokenId) external view returns (Agent memory) {
+        return agents[tokenId];
+    }
+    function getOwnerAgents(address owner) external view returns (uint256[] memory) {
+        return ownerAgents[owner];
+    }
+    function hasTool(address owner, string calldata tool) external view returns (bool) {
+        return ownerHasTool[owner][tool];
+    }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) { return super.tokenURI(tokenId); }
-    function supportsInterface(bytes4 interfaceId) public view override returns (bool) { return super.supportsInterface(interfaceId); }
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+    function supportsInterface(bytes4 interfaceId) public view override returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
 }

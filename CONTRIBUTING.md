@@ -47,28 +47,33 @@ We welcome many types of contributions:
 
 1. Fork the repository
 2. Clone your fork:
+
 ```sh
 git clone https://github.com/YOUR_USERNAME/kuberna-labs.git
 cd kuberna-labs
 ```
 
 3. Install dependencies:
+
 ```sh
 npm install
 ```
 
 4. Set up environment variables:
+
 ```sh
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 5. Compile smart contracts:
+
 ```sh
 npx hardhat compile
 ```
 
 6. Run tests to verify setup:
+
 ```sh
 npm test
 ```
@@ -86,6 +91,7 @@ git checkout -b 325-add-solana-adapter
 ```
 
 Branch naming conventions:
+
 - `feat/description` - New features
 - `fix/description` - Bug fixes
 - `docs/description` - Documentation changes
@@ -178,6 +184,7 @@ footer
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -187,6 +194,7 @@ Types:
 - `chore`: Build process or auxiliary tool changes
 
 Example:
+
 ```
 feat(contracts): add Pausable functionality to Escrow contract
 
@@ -275,6 +283,7 @@ Once approved, a maintainer will merge your PR. Congratulations! 🎉
 ### Recognition
 
 Contributors will be:
+
 - Listed in our README
 - Mentioned in release notes
 - Eligible for contributor NFTs (coming soon)

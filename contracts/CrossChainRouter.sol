@@ -10,13 +10,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 /**
  * @title CrossChainRouter
  * @dev Router contract for cross-chain token transfers and message passing.
- * 
+ *
  * This contract handles:
  * - Token bridging across supported chains
  * - Message relay between chains
  * - Fee management for cross-chain operations
  * - Slippage protection
- * 
+ *
  * Features:
  * - Multi-hop routing support
  * - Message authentication
@@ -56,11 +56,11 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     mapping(uint256 => mapping(address => address)) public chainTokenMapping;
     mapping(bytes32 => CrossChainMessage) public messages;
     mapping(address => uint256) public nonces;
-    
+
     uint256 public bridgeFee;
     uint256 public constant BPS_DENOMINATOR = 10000;
     uint256 public slippageTolerance = 50; // 0.5%
-    
+
     event CrossChainTransferInitiated(
         bytes32 indexed messageId,
         uint256 indexed sourceChain,
@@ -70,11 +70,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         address token,
         uint256 amount
     );
-    event CrossChainTransferExecuted(
-        bytes32 indexed messageId,
-        address indexed recipient,
-        uint256 amount
-    );
+    event CrossChainTransferExecuted(bytes32 indexed messageId, address indexed recipient, uint256 amount);
     event ChainSupportUpdated(uint256 chainId, bool supported);
     event FeeUpdated(uint256 newFee);
     event TokenMappingUpdated(uint256 chainId, address localToken, address remoteToken);
@@ -112,14 +108,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         }
 
         bytes32 messageId = keccak256(
-            abi.encodePacked(
-                msg.sender,
-                recipient,
-                token,
-                amount,
-                nonces[msg.sender]++,
-                block.timestamp
-            )
+            abi.encodePacked(msg.sender, recipient, token, amount, nonces[msg.sender]++, block.timestamp)
         );
 
         messages[messageId] = CrossChainMessage({
@@ -238,7 +227,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
      * @return The minimum amount to receive
      */
     function getMinReceived(uint256 amount) external view returns (uint256) {
-        return amount * (BPS_DENOMINATOR - slippageTolerance) / BPS_DENOMINATOR;
+        return (amount * (BPS_DENOMINATOR - slippageTolerance)) / BPS_DENOMINATOR;
     }
 
     /**
@@ -266,11 +255,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
      * @param recipient The recipient address
      * @param amount The amount to withdraw
      */
-    function withdrawTokens(
-        address token,
-        address recipient,
-        uint256 amount
-    ) external onlyOwner {
+    function withdrawTokens(address token, address recipient, uint256 amount) external onlyOwner {
         require(recipient != address(0), "Invalid recipient");
         IERC20(token).safeTransfer(recipient, amount);
     }

@@ -41,7 +41,9 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
 
     constructor() Ownable(msg.sender) {}
 
-    receive() external payable { emit Deposit(msg.sender, msg.value); }
+    receive() external payable {
+        emit Deposit(msg.sender, msg.value);
+    }
 
     function deposit(address token, uint256 amount) external payable nonReentrant {
         if (token == address(0)) {
@@ -54,10 +56,14 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         }
     }
 
-    function createProposal(address recipient, address token, uint256 amount, string calldata description)
-        external onlyOwner returns (uint256) {
+    function createProposal(
+        address recipient,
+        address token,
+        uint256 amount,
+        string calldata description
+    ) external onlyOwner returns (uint256) {
         require(recipient != address(0));
-        
+
         uint256 id = proposalCount++;
         Proposal storage p = proposals[id];
         p.recipient = recipient;
@@ -65,7 +71,7 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         p.amount = amount;
         p.description = description;
         p.createdAt = block.timestamp;
-        
+
         emit ProposalCreated(id, token, amount, description);
         return id;
     }
@@ -80,8 +86,15 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         p.hasVoted[msg.sender] = true;
         p.votedFor[msg.sender] = support;
 
-        if (support) { unchecked { p.votesFor += votingPower[msg.sender]; } }
-        else { unchecked { p.votesAgainst += votingPower[msg.sender]; } }
+        if (support) {
+            unchecked {
+                p.votesFor += votingPower[msg.sender];
+            }
+        } else {
+            unchecked {
+                p.votesAgainst += votingPower[msg.sender];
+            }
+        }
 
         emit VoteCast(id, msg.sender, support);
     }
@@ -94,9 +107,9 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         require(p.votesFor >= QUORUM);
 
         p.executed = true;
-        
+
         if (p.token == address(0)) {
-            (bool success,) = payable(p.recipient).call{value: p.amount}("");
+            (bool success, ) = payable(p.recipient).call{value: p.amount}("");
             require(success);
         } else {
             require(IERC20(p.token).transfer(p.recipient, p.amount));
@@ -109,7 +122,7 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         Proposal storage p = proposals[id];
         require(p.createdAt > 0);
         require(!p.executed);
-        
+
         p.cancelled = true;
         emit ProposalCancelled(id);
     }
@@ -118,13 +131,20 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         votingPower[account] = power;
     }
 
-    function getProposal(uint256 id) external view returns (
-        address, address, uint256, string memory, uint256, uint256, bool, bool, uint256
-    ) {
+    function getProposal(
+        uint256 id
+    ) external view returns (address, address, uint256, string memory, uint256, uint256, bool, bool, uint256) {
         Proposal storage p = proposals[id];
         return (
-            p.recipient, p.token, p.amount, p.description,
-            p.votesFor, p.votesAgainst, p.executed, p.cancelled, p.createdAt
+            p.recipient,
+            p.token,
+            p.amount,
+            p.description,
+            p.votesFor,
+            p.votesAgainst,
+            p.executed,
+            p.cancelled,
+            p.createdAt
         );
     }
 

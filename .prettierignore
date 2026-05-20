@@ -10,5 +10,6 @@ typechain-types
 dist
 build
 out
+specs.json
 *.env
 .env.*

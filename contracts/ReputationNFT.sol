@@ -83,7 +83,12 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
      * @param metadataURI URI pointing to agent metadata JSON
      * @return tokenId The minted identity token ID
      */
-    function registerAgent(address agentAddress, string calldata name, string calldata framework, string calldata metadataURI) external returns (uint256) {
+    function registerAgent(
+        address agentAddress,
+        string calldata name,
+        string calldata framework,
+        string calldata metadataURI
+    ) external returns (uint256) {
         require(agentAddress != address(0), "Invalid address");
         require(agentAddressToTokenId[agentAddress] == 0, "Already registered");
 
@@ -156,12 +161,20 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
 
     function updateReputation(uint256 tokenId, bool success, uint256 responseTimeSeconds) external onlyOwner {
         if (_ownerOf(tokenId) == address(0)) revert ReputationNFT__InvalidToken();
-        
+
         AgentReputation storage rep = agentReputations[tokenId];
-        
-        unchecked { rep.totalTasks++; }
-        if (success) { unchecked { rep.successfulTasks++; } }
-        unchecked { rep.totalResponseTime += responseTimeSeconds; }
+
+        unchecked {
+            rep.totalTasks++;
+        }
+        if (success) {
+            unchecked {
+                rep.successfulTasks++;
+            }
+        }
+        unchecked {
+            rep.totalResponseTime += responseTimeSeconds;
+        }
         rep.lastUpdated = block.timestamp;
 
         _checkAndAwardBadges(tokenId);
@@ -172,9 +185,9 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     function submitRating(uint256 tokenId, uint256 rating) external {
         require(rating >= 1 && rating <= 5);
         require(ownerOf(tokenId) != address(0));
-        
+
         AgentReputation storage rep = agentReputations[tokenId];
-        unchecked { 
+        unchecked {
             rep.ratingSum += rating;
             rep.ratingCount++;
         }
@@ -212,21 +225,30 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
 
     function _checkAndAwardBadges(uint256 tokenId) internal {
         AgentReputation memory rep = agentReputations[tokenId];
-        
+
         if (rep.totalTasks >= 100 && rep.successfulTasks >= 95) {
             bytes32 h = keccak256("Elite Solver");
-            if (!hasBadge[tokenId][h]) { hasBadge[tokenId][h] = true; _awardBadge(tokenId, "Elite Solver"); }
+            if (!hasBadge[tokenId][h]) {
+                hasBadge[tokenId][h] = true;
+                _awardBadge(tokenId, "Elite Solver");
+            }
         }
-        
+
         if (rep.totalTasks >= 50 && getSuccessRate(tokenId) >= 9800) {
             bytes32 h = keccak256("Trusted Agent");
-            if (!hasBadge[tokenId][h]) { hasBadge[tokenId][h] = true; _awardBadge(tokenId, "Trusted Agent"); }
+            if (!hasBadge[tokenId][h]) {
+                hasBadge[tokenId][h] = true;
+                _awardBadge(tokenId, "Trusted Agent");
+            }
         }
 
         if (rep.ratingCount >= 10) {
             if (rep.ratingSum / rep.ratingCount >= 4) {
                 bytes32 h = keccak256("Highly Rated");
-                if (!hasBadge[tokenId][h]) { hasBadge[tokenId][h] = true; _awardBadge(tokenId, "Highly Rated"); }
+                if (!hasBadge[tokenId][h]) {
+                    hasBadge[tokenId][h] = true;
+                    _awardBadge(tokenId, "Highly Rated");
+                }
             }
         }
     }
@@ -236,7 +258,9 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
         emit BadgeEarned(tokenId, name, "");
     }
 
-    function getBadges(uint256 tokenId) external view returns (Badge[] memory) { return agentBadges[tokenId]; }
+    function getBadges(uint256 tokenId) external view returns (Badge[] memory) {
+        return agentBadges[tokenId];
+    }
 
     /**
      * @dev Apply reputation decay for inactive agents.

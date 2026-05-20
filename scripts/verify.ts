@@ -39,9 +39,7 @@ async function main() {
     process.exit(1);
   }
 
-  const deploymentAddresses: DeploymentAddresses = JSON.parse(
-    fs.readFileSync(latestFile, 'utf-8')
-  );
+  const deploymentAddresses: DeploymentAddresses = JSON.parse(fs.readFileSync(latestFile, 'utf-8'));
 
   console.log('\n📝 Verifying contracts...\n');
 

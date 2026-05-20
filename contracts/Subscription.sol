@@ -7,8 +7,17 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 error Subscription__Invalid();
 
-enum SubStatus { None, Active, Paused, Cancelled, Expired }
-enum PlanType { Monthly, Annual }
+enum SubStatus {
+    None,
+    Active,
+    Paused,
+    Cancelled,
+    Expired
+}
+enum PlanType {
+    Monthly,
+    Annual
+}
 
 struct Subscription {
     address subscriber;
@@ -46,8 +55,13 @@ contract KubernaSubscription is Ownable, ReentrancyGuard {
 
     constructor() Ownable(msg.sender) {}
 
-    function createPlan(string calldata name, address token, uint256 price, PlanType planType, uint256 durationSeconds)
-        external onlyOwner returns (uint256) {
+    function createPlan(
+        string calldata name,
+        address token,
+        uint256 price,
+        PlanType planType,
+        uint256 durationSeconds
+    ) external onlyOwner returns (uint256) {
         require(price > 0 && durationSeconds > 0);
 
         uint256 planId = planCount++;
@@ -97,7 +111,9 @@ contract KubernaSubscription is Ownable, ReentrancyGuard {
         _processPayment(msg.sender, p.token, p.price);
 
         s.nextPaymentTime = block.timestamp + p.durationSeconds;
-        unchecked { s.amountPaid += p.price; }
+        unchecked {
+            s.amountPaid += p.price;
+        }
         s.status = SubStatus.Active;
 
         emit SubscriptionRenewed(msg.sender, planId, p.price);
@@ -133,20 +149,26 @@ contract KubernaSubscription is Ownable, ReentrancyGuard {
 
     function withdraw(address token, address to, uint256 amount) external onlyOwner nonReentrant {
         require(to != address(0));
-        
+
         if (token == address(0)) {
-            (bool success,) = payable(to).call{value: amount}("");
+            (bool success, ) = payable(to).call{value: amount}("");
             require(success);
         } else {
             require(IERC20(token).transfer(to, amount));
         }
-        
+
         emit Payout(to, amount, token);
     }
 
-    function getSubscription(address user, uint256 planId) external view returns (Subscription memory) { return subscriptions[user][planId]; }
-    function getPlan(uint256 planId) external view returns (Plan memory) { return plans[planId]; }
-    function getUserPlans(address user) external view returns (uint256[] memory) { return subscriberPlans[user]; }
+    function getSubscription(address user, uint256 planId) external view returns (Subscription memory) {
+        return subscriptions[user][planId];
+    }
+    function getPlan(uint256 planId) external view returns (Plan memory) {
+        return plans[planId];
+    }
+    function getUserPlans(address user) external view returns (uint256[] memory) {
+        return subscriberPlans[user];
+    }
 
     function isActive(address user, uint256 planId) external view returns (bool) {
         Subscription memory s = subscriptions[user][planId];

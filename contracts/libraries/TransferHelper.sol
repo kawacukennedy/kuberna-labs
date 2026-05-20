@@ -22,9 +22,9 @@ library TransferHelper {
      */
     function safeTransfer(address token, address to, uint256 amount) internal {
         if (amount == 0) revert TransferHelper__ZeroAmount();
-        
+
         if (token == address(0)) {
-            (bool success,) = payable(to).call{value: amount}("");
+            (bool success, ) = payable(to).call{value: amount}("");
             if (!success) revert TransferHelper__EthTransferFailed();
         } else {
             IERC20(token).safeTransfer(to, amount);

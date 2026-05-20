@@ -8,13 +8,13 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 /**
  * @title Attestation
  * @dev On-chain attestation contract for Kuberna Labs.
- * 
+ *
  * This contract provides verifiable attestations for:
  * - Agent identity and credentials
  * - TEE (Trusted Execution Environment) attestations
  * - Cross-chain message verification
  * - User/agent reputation claims
- * 
+ *
  * Features:
  * - EIP-712 typed signatures
  * - Schema-based attestations
@@ -34,17 +34,16 @@ contract Attestation is Ownable, EIP712 {
         bool revoked;
     }
 
-    bytes32 public constant ATTESTATION_TYPEHASH = keccak256(
-        "Attestation(bytes32 schema,address recipient,uint64 expirationTime,bytes data)"
-    );
+    bytes32 public constant ATTESTATION_TYPEHASH =
+        keccak256("Attestation(bytes32 schema,address recipient,uint64 expirationTime,bytes data)");
 
     mapping(bytes32 => AttestationData) public attestations;
     mapping(bytes32 => mapping(address => bool)) public revocationHistory;
     mapping(address => bytes32[]) public issuerAttestations;
     mapping(address => bytes32[]) public recipientAttestations;
-    
+
     uint256 public attestationCount;
-    
+
     event AttestationCreated(
         bytes32 indexed attestationId,
         bytes32 indexed schema,
@@ -52,10 +51,7 @@ contract Attestation is Ownable, EIP712 {
         address issuer,
         uint64 expirationTime
     );
-    event AttestationRevoked(
-        bytes32 indexed attestationId,
-        address indexed revoker
-    );
+    event AttestationRevoked(bytes32 indexed attestationId, address indexed revoker);
 
     /**
      * @dev Initializes the attestation contract.
@@ -78,11 +74,9 @@ contract Attestation is Ownable, EIP712 {
         bytes memory data
     ) external returns (bytes32) {
         require(recipient != address(0), "Invalid recipient");
-        
-        bytes32 attestationId = keccak256(
-            abi.encodePacked(schema, recipient, block.timestamp, msg.sender)
-        );
-        
+
+        bytes32 attestationId = keccak256(abi.encodePacked(schema, recipient, block.timestamp, msg.sender));
+
         attestations[attestationId] = AttestationData({
             schema: schema,
             recipient: recipient,
@@ -92,13 +86,13 @@ contract Attestation is Ownable, EIP712 {
             data: data,
             revoked: false
         });
-        
+
         issuerAttestations[msg.sender].push(attestationId);
         recipientAttestations[recipient].push(attestationId);
         attestationCount++;
-        
+
         emit AttestationCreated(attestationId, schema, recipient, msg.sender, expirationTime);
-        
+
         return attestationId;
     }
 
@@ -121,16 +115,14 @@ contract Attestation is Ownable, EIP712 {
         bytes32 structHash = keccak256(
             abi.encode(ATTESTATION_TYPEHASH, schema, recipient, expirationTime, keccak256(data))
         );
-        
+
         bytes32 digest = _hashTypedDataV4(structHash);
         address signer = digest.recover(signature);
-        
+
         require(signer != address(0), "Invalid signature");
-        
-        bytes32 attestationId = keccak256(
-            abi.encodePacked(schema, recipient, block.timestamp, signer)
-        );
-        
+
+        bytes32 attestationId = keccak256(abi.encodePacked(schema, recipient, block.timestamp, signer));
+
         attestations[attestationId] = AttestationData({
             schema: schema,
             recipient: recipient,
@@ -140,13 +132,13 @@ contract Attestation is Ownable, EIP712 {
             data: data,
             revoked: false
         });
-        
+
         issuerAttestations[signer].push(attestationId);
         recipientAttestations[recipient].push(attestationId);
         attestationCount++;
-        
+
         emit AttestationCreated(attestationId, schema, recipient, signer, expirationTime);
-        
+
         return attestationId;
     }
 
@@ -158,10 +150,10 @@ contract Attestation is Ownable, EIP712 {
         AttestationData storage attestation = attestations[attestationId];
         require(attestation.issuer == msg.sender || msg.sender == owner(), "Not authorized");
         require(!attestation.revoked, "Already revoked");
-        
+
         attestation.revoked = true;
         revocationHistory[attestationId][msg.sender] = true;
-        
+
         emit AttestationRevoked(attestationId, msg.sender);
     }
 
@@ -172,13 +164,13 @@ contract Attestation is Ownable, EIP712 {
      */
     function verify(bytes32 attestationId) external view returns (bool) {
         AttestationData memory attestation = attestations[attestationId];
-        
+
         if (attestation.issuedAt == 0) return false;
         if (attestation.revoked) return false;
         if (attestation.expirationTime > 0 && block.timestamp > attestation.expirationTime) {
             return false;
         }
-        
+
         return true;
     }
 

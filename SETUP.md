@@ -63,10 +63,10 @@ cp .env.example .env
 
 Edit `.env` and fill in the required values:
 
-| Purpose | Connection String |
-|---------|------------------|
+| Purpose                                       | Connection String                                                                                                                                     |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Transaction pooler** (recommended for apps) | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:REDACTED@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1` |
-| **Session pooler** (for migrations) | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:REDACTED@aws-1-eu-north-1.pooler.supabase.com:5432/postgres` |
+| **Session pooler** (for migrations)           | `postgresql://postgres.rjlnyyqanqhvikhjfmvk:REDACTED@aws-1-eu-north-1.pooler.supabase.com:5432/postgres`                                   |
 
 Set in your `.env`:
 
@@ -93,10 +93,10 @@ npx prisma migrate deploy
 
 The workflow requires these **GitHub Secrets**:
 
-| Secret | Value |
-|--------|-------|
+| Secret         | Value                                         |
+| -------------- | --------------------------------------------- |
 | `DATABASE_URL` | Transaction pooler URL with `?pgbouncer=true` |
-| `DIRECT_URL` | Direct connection URL (port 5432) |
+| `DIRECT_URL`   | Direct connection URL (port 5432)             |
 
 ### Manually (Local)
 
@@ -117,17 +117,20 @@ npx prisma migrate deploy
 ### 6. Start Local Services
 
 #### Start Redis (in separate terminal)
+
 ```bash
 redis-server
 ```
 
 #### Start NATS (in separate terminal)
+
 ```bash
 # Install NATS server: https://docs.nats.io/running-a-nats-service/introduction/installation
 nats-server
 ```
 
 #### Start PostgreSQL
+
 Ensure PostgreSQL is running and accessible at the DATABASE_URL specified in `.env`
 
 ## Development Workflow

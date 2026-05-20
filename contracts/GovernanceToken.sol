@@ -8,22 +8,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title GovernanceToken
  * @dev ERC20 token with governance capabilities for Kuberna Labs protocol.
- * 
+ *
  * This token serves as the governance token for the Kuberna Labs ecosystem,
  * allowing holders to participate in protocol governance, voting on proposals,
  * and staking for rewards.
- * 
+ *
  * Features:
  * - Mintable by owner for initial distribution
  * - Burnable by holders
  * - Delegation support for vote weight
  */
 contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18;
-    
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
+
     mapping(address => address) public delegates;
     mapping(address => uint256) public delegateCheckpoints;
-    
+
     struct Checkpoint {
         uint256 fromBlock;
         uint256 votes;
@@ -39,13 +39,13 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         bool executed;
         bool cancelled;
     }
-    
+
     mapping(address => Checkpoint[]) public checkpoints;
     mapping(uint256 => Proposal) public proposals;
     mapping(uint256 => mapping(address => bool)) public hasVoted;
     uint256 public proposalCount;
     uint256 public constant PROPOSAL_VOTING_PERIOD = 3 days;
-    uint256 public constant PROPOSAL_QUORUM = 1_000_000 * 10**18; // 0.1% of max supply
+    uint256 public constant PROPOSAL_QUORUM = 1_000_000 * 10 ** 18; // 0.1% of max supply
 
     mapping(address => uint256) public stakedBalance;
     uint256 public totalStaked;
@@ -61,11 +61,8 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
      * @dev Initializes the governance token.
      * @param _owner The owner address for minting permissions
      */
-    constructor(address _owner) 
-        ERC20("Kuberna Labs", "KNL") 
-        Ownable(_owner) 
-    {
-        _mint(_owner, 100_000_000 * 10**18);
+    constructor(address _owner) ERC20("Kuberna Labs", "KNL") Ownable(_owner) {
+        _mint(_owner, 100_000_000 * 10 ** 18);
     }
 
     /**
@@ -85,9 +82,9 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
     function delegate(address delegatee) external {
         address currentDelegate = delegates[msg.sender];
         uint256 amount = balanceOf(msg.sender);
-        
+
         delegates[msg.sender] = delegatee;
-        
+
         _moveDelegates(currentDelegate, delegatee, amount);
     }
 
@@ -98,11 +95,11 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
     function stake(uint256 amount) external {
         require(amount > 0, "Cannot stake 0");
         require(balanceOf(msg.sender) >= amount, "Insufficient balance");
-        
+
         _transfer(msg.sender, address(this), amount);
         stakedBalance[msg.sender] += amount;
         totalStaked += amount;
-        
+
         emit Staked(msg.sender, amount);
     }
 
@@ -113,11 +110,11 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
     function unstake(uint256 amount) external {
         require(amount > 0, "Cannot unstake 0");
         require(stakedBalance[msg.sender] >= amount, "Insufficient staked balance");
-        
+
         stakedBalance[msg.sender] -= amount;
         totalStaked -= amount;
         _transfer(address(this), msg.sender, amount);
-        
+
         emit Unstaked(msg.sender, amount);
     }
 
@@ -137,14 +134,14 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         bytes calldata callData
     ) external returns (uint256) {
         require(getEffectiveVotingPower(msg.sender) > 0, "No voting power");
-        
+
         uint256 id = proposalCount++;
         Proposal storage p = proposals[id];
         p.description = description;
         p.target = target;
         p.callData = callData;
         p.endTime = block.timestamp + PROPOSAL_VOTING_PERIOD;
-        
+
         emit ProposalCreated(id, msg.sender, description);
         return id;
     }
@@ -158,18 +155,18 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         require(block.timestamp < p.endTime, "Voting period ended");
         require(!p.executed && !p.cancelled, "Proposal finalized");
         require(!hasVoted[proposalId][msg.sender], "Already voted");
-        
+
         uint256 weight = getEffectiveVotingPower(msg.sender);
         require(weight > 0, "No voting power");
-        
+
         hasVoted[proposalId][msg.sender] = true;
-        
+
         if (support) {
             p.votesFor += weight;
         } else {
             p.votesAgainst += weight;
         }
-        
+
         emit VoteCastOnProposal(proposalId, msg.sender, support, weight);
     }
 
@@ -183,14 +180,14 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         require(!p.executed && !p.cancelled, "Proposal finalized");
         require(p.votesFor >= PROPOSAL_QUORUM, "Quorum not reached");
         require(p.votesFor > p.votesAgainst, "Proposal not passed");
-        
+
         p.executed = true;
-        
+
         if (p.target != address(0) && p.callData.length > 0) {
             (bool success, ) = p.target.call(p.callData);
             require(success, "Execution failed");
         }
-        
+
         emit ProposalExecuted(proposalId);
     }
 
@@ -224,10 +221,10 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
     function getPastVotes(address account, uint256 blockNumber) external view returns (uint256) {
         Checkpoint[] storage ckpts = checkpoints[account];
         if (ckpts.length == 0) return 0;
-        
+
         uint256 low = 0;
         uint256 high = ckpts.length;
-        
+
         while (low < high) {
             uint256 mid = (low + high) / 2;
             if (ckpts[mid].fromBlock > blockNumber) {
@@ -236,16 +233,12 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
                 low = mid + 1;
             }
         }
-        
+
         if (low == 0) return 0;
         return ckpts[low - 1].votes;
     }
 
-    function _moveDelegates(
-        address from,
-        address to,
-        uint256 amount
-    ) internal {
+    function _moveDelegates(address from, address to, uint256 amount) internal {
         if (from != to && amount > 0) {
             if (from != address(0)) {
                 uint256 fromOld = _getVotes(from);
@@ -266,11 +259,7 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         return ckpts[ckpts.length - 1].votes;
     }
 
-    function _writeCheckpoint(
-        address delegatee,
-        uint256 oldVotes,
-        uint256 newVotes
-    ) internal {
+    function _writeCheckpoint(address delegatee, uint256 oldVotes, uint256 newVotes) internal {
         uint256 pos = checkpoints[delegatee].length;
         if (pos > 0 && checkpoints[delegatee][pos - 1].fromBlock == block.number) {
             checkpoints[delegatee][pos - 1].votes = newVotes;
@@ -279,11 +268,7 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         }
     }
 
-    function _update(
-        address from,
-        address to,
-        uint256 value
-    ) internal override {
+    function _update(address from, address to, uint256 value) internal override {
         super._update(from, to, value);
         _moveDelegates(delegates[from], delegates[to], value);
     }

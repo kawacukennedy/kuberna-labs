@@ -1,4 +1,5 @@
 # Kuberna Labs — Accelerator Intelligence Report
+
 ## Compiled May 7, 2026
 
 Prepared for: Kuberna Labs (17-year-old founder, Kigali, Rwanda)
@@ -302,6 +303,7 @@ Status: Smart contracts on testnet (Base Sepolia, 0G Galileo, NEAR), TypeScript 
 ## QUICK-ACTION SUMMARY
 
 ### Apply THIS WEEK (deadlines imminent):
+
 1. **a16z speedrun** — May 17 deadline → https://speedrun.a16z.com/apply
 2. **Y Combinator SU26** — Late applications accepted NOW → https://apply.ycombinator.com/
 3. **Antler** — May 11 (Nordic/Europe) or Sep cohorts → https://www.antler.co/apply
@@ -311,6 +313,7 @@ Status: Smart contracts on testnet (Base Sepolia, 0G Galileo, NEAR), TypeScript 
 7. **Entrepreneur First Bridge** — Rolling, Summer 2026 → https://apply.joinef.com/
 
 ### Priority watchlist (next cohort windows):
+
 - Outlier Ventures Post Web Base Camp — register interest now
 - dAGI Accelerator (Delphi Labs) — watch for next 8-team cohort
 - Rapid Accelerator — blockchain infrastructure, strong fit
@@ -318,6 +321,7 @@ Status: Smart contracts on testnet (Base Sepolia, 0G Galileo, NEAR), TypeScript 
 - a16z CSX — Fall 2026 cohort likely
 
 ### Key recommendation:
+
 Apply to a16z speedrun (May 17), Alliance (May 27), and Thiel Fellowship (rolling) THIS WEEK. These are your highest-ROI applications. YC late application is worth doing simultaneously.
 
 Your profile (17, Kigali, solo, shipped working cross-chain infrastructure with TEEs/zkTLS) is genuinely rare and compelling. Emphasize the built product over the idea, your age + location as a signal of exceptional determination, and the open-source MIT nature of your work.

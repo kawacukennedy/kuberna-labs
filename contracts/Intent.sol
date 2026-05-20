@@ -10,8 +10,20 @@ error Intent__InsufficientBudget();
 error Intent__InvalidDeadline();
 error Intent__OnlyRequester();
 
-enum IntentStatus { Open, Bidding, Assigned, Executing, Completed, Expired, Disputed }
-enum BidStatus { Pending, Accepted, Rejected }
+enum IntentStatus {
+    Open,
+    Bidding,
+    Assigned,
+    Executing,
+    Completed,
+    Expired,
+    Disputed
+}
+enum BidStatus {
+    Pending,
+    Accepted,
+    Rejected
+}
 
 struct IntentData {
     address requester;
@@ -101,19 +113,28 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
             escrowId: bytes32(0)
         });
 
-        unchecked { intentCount++; }
+        unchecked {
+            intentCount++;
+        }
         emit IntentCreated(intentId, msg.sender, deadline);
         return intentId;
     }
 
-    function submitBid(bytes32 intentId, uint256 price, uint256 estimatedTime, bytes calldata routeDetails) external whenNotPaused {
+    function submitBid(
+        bytes32 intentId,
+        uint256 price,
+        uint256 estimatedTime,
+        bytes calldata routeDetails
+    ) external whenNotPaused {
         IntentData storage i = intents[intentId];
         require(i.requester != address(0));
         require(block.timestamp < i.deadline);
         require(i.status == IntentStatus.Open || i.status == IntentStatus.Bidding);
         require(!hasBid[intentId][msg.sender]);
 
-        bids[intentId].push(BidData(msg.sender, price, estimatedTime, routeDetails, BidStatus.Pending, block.timestamp));
+        bids[intentId].push(
+            BidData(msg.sender, price, estimatedTime, routeDetails, BidStatus.Pending, block.timestamp)
+        );
         hasBid[intentId][msg.sender] = true;
         solverIntents[msg.sender].push(intentId);
 
@@ -227,8 +248,16 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit IntentExpired(intentId);
     }
 
-    function getIntent(bytes32 intentId) external view returns (IntentData memory) { return intents[intentId]; }
-    function getBidCount(bytes32 intentId) external view returns (uint256) { return bids[intentId].length; }
-    function getBid(bytes32 intentId, uint256 index) external view returns (BidData memory) { return bids[intentId][index]; }
-    function getSolverIntents(address solver) external view returns (bytes32[] memory) { return solverIntents[solver]; }
+    function getIntent(bytes32 intentId) external view returns (IntentData memory) {
+        return intents[intentId];
+    }
+    function getBidCount(bytes32 intentId) external view returns (uint256) {
+        return bids[intentId].length;
+    }
+    function getBid(bytes32 intentId, uint256 index) external view returns (BidData memory) {
+        return bids[intentId][index];
+    }
+    function getSolverIntents(address solver) external view returns (bytes32[] memory) {
+        return solverIntents[solver];
+    }
 }

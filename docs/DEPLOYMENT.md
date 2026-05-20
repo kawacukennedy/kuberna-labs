@@ -370,6 +370,7 @@ Use Let's Encrypt or your cloud provider's certificate manager.
 ### 4. Configure Monitoring
 
 Set up monitoring for:
+
 - API uptime
 - Smart contract events
 - Database performance
@@ -379,6 +380,7 @@ Set up monitoring for:
 ### 5. Set Up Alerts
 
 Configure alerts for:
+
 - Service downtime
 - High error rates
 - Large withdrawals
@@ -406,6 +408,7 @@ npm install newrelic
 ### Smart Contract Monitoring
 
 Use services like:
+
 - Tenderly
 - Defender (OpenZeppelin)
 - Blocknative
@@ -425,6 +428,7 @@ Configure CloudWatch agent on EC2 instances.
 ### Uptime Monitoring
 
 Use services like:
+
 - UptimeRobot
 - Pingdom
 - StatusCake
@@ -455,6 +459,7 @@ netlify rollback
 ### Smart Contract Rollback
 
 ⚠️ Smart contracts cannot be rolled back. Use:
+
 - Emergency pause functionality
 - Upgrade proxy patterns (if implemented)
 - Deploy new version and migrate
@@ -477,16 +482,19 @@ netlify rollback
 ### Common Issues
 
 **Contract deployment fails**
+
 - Check gas price and limit
 - Verify sufficient ETH in deployer wallet
 - Check RPC endpoint is responding
 
 **Backend won't start**
+
 - Verify environment variables
 - Check database connection
 - Verify Redis and NATS are running
 
 **Frontend build fails**
+
 - Clear node_modules and reinstall
 - Check for TypeScript errors
 - Verify environment variables
@@ -494,6 +502,7 @@ netlify rollback
 ## Support
 
 For deployment support:
+
 - Discord: https://discord.gg/kuberna
 - Email: support@kuberna.io
 - Documentation: https://docs.kuberna.io
