@@ -1,6 +1,32 @@
 # Kuberna Labs
 
-The operating system for agentic Web3 enterprises.
+**Agent Orchestration Platform** — Deploy, run, and certify AI agents that autonomously execute cross-chain Web3 tasks.
+
+Kuberna Labs gives AI agents secure execution rails across any blockchain: agents parse natural language intents, make autonomous trading decisions, settle via on-chain escrow, and get post-quantum certified for verifiable reputation — all without writing agent boilerplate.
+
+**Target users:** Web3 developers and teams who want to deploy autonomous AI agents that can trade, monitor, and execute on any chain without managing LLM infrastructure, blockchain RPCs, or certification pipelines.
+
+## Architecture Overview
+
+```
+User Task ("swap 1 ETH for USDC on Solana")
+  → LLM Intent Parser (GPT-4 or local)     ← AI decision pathway
+  → Agent Decision Engine (arbitrage/yield/stop-loss)  ← Autonomous strategy
+  → Intent Creation & On-Chain Escrow       ← Execution rail
+  → Task Completion → SilentVerify Cert    ← Post-quantum certification
+  → Reputation Update + Decision Trace     ← Observability
+```
+
+Every agent operation is logged as a decision trace — inspect what your agent thought, why it acted, and what happened next via `GET /api/agents/:id/trace`.
+
+## Core Distinction: Infrastructure vs. Orchestration
+
+| This is NOT just infra tooling | This IS agent orchestration |
+|-------------------------------|------------------------------|
+| Smart contract ABI management | LLM-parsed natural language → structured intents |
+| RPC endpoint configuration | Autonomous strategy evaluation (arbitrage, yield, stop-loss) |
+| Wallet connection helpers | On-chain escrow settlement with SilentVerify certification |
+| Static agent templates | Full decision trace with AI reasoning for every action |
 
 ## Prerequisites
 
@@ -198,11 +224,45 @@ kuberna-labs/
 - **Blockchain**: Contract interaction via ethers.js/viem (separately deployed contracts)
 - **Optional**: Redis for rate limiting, NATS for message queue
 
-## AI Features (Fully Local, No External APIs)
+## AI Agent System
 
-All AI functionality runs locally using open-source libraries. No API keys required.
+Kuberna Labs has two AI tiers: a **local zero-dependency parser** and an **OpenAI GPT-4 pipeline** for full autonomous agent behavior.
 
-### 1. Natural Language Intent Parser
+### 1. Autonomous Agent Orchestration (LLM-Powered)
+
+The headline feature: give an agent a task in plain English and it runs autonomously.
+
+```
+POST /api/agents/:id/run
+Body: { "task": "swap 1 ETH for USDC on Solana, avoid DEXes with low liquidity" }
+
+Response:
+{
+  "steps": [
+    { "step": "resolve_agent",        "status": "completed" },
+    { "step": "llm_intent_parsing",    "status": "completed",
+      "output": { "model": "gpt-4-turbo-preview",
+                  "parsedIntent": { "sourceChain": "solana", "sourceToken": "ETH", ... } }},
+    { "step": "market_analysis",       "status": "completed",
+      "output": { "prices": { "ETH": 3200, ... }, "apy": { "Aave": 3.5, ... } }},
+    { "step": "agent_decision",        "status": "completed",
+      "output": { "action": { "type": "postIntent",
+                              "reason": "Arbitrage: 2.3% diff on Raydium vs Orca",
+                              "confidence": 0.72 } }},
+    { "step": "intent_creation",       "status": "completed",
+      "output": { "id": "...", "status": "OPEN" }},
+    { "step": "decision_trace_logging","status": "completed" }
+  ]
+}
+```
+
+- **Service**: `backend/src/services/agentOrchestrator.ts`
+- **Route**: `backend/src/routes/agentOrchestrator.ts`
+- **Decision trace**: `GET /api/agents/:id/trace` — inspect every past decision
+- **Preview mode**: `POST /api/agents/:id/preview` — see what the agent would do without executing
+- **LLM**: Uses `gpt-4-turbo-preview` (requires `OPENAI_API_KEY`) or falls back to local intent parser
+
+### 2. Natural Language Intent Parser
 
 - **Service**: `backend/src/services/intentParser.ts`
 - **API**: `POST /api/intents/parse` with `{ description: string }`
@@ -211,27 +271,37 @@ All AI functionality runs locally using open-source libraries. No API keys requi
 - **Confidence scoring**: Rule match (0.6-1.0), keyword fallback (<0.6), RAG memory (>0.9)
 - **SDK**: `sdk.intent.parse("swap 1 ETH for USDC on Solana")`
 
-### 2. Agent Decision Engine
+### 3. Agent Decision Engine
 
 - **Service**: `backend/src/services/agentDecision.ts`
 - **API**: `POST /api/agents/:id/decide` with `{ strategies: string[] }`
 - **Strategies**: Arbitrage (cross-DEX price diff), Yield optimization (APY comparison), Stop-loss (price drop detection)
 - **Market data**: Deterministic mock provider based on block timestamp
 
-### 3. AI-Assisted Agent Creation Wizard
+### 4. AI-Assisted Agent Creation Wizard
 
 - **Component**: `frontend/src/components/AIAssistant.tsx`
 - **Integration**: Embedded in `/agents` page creation wizard
 - **Heuristics**: Framework/tool suggestions based on description keywords
 - **Intent parsing**: Real-time via backend `/api/intents/parse`
 
-### 4. Local Memory & RAG System
+### 5. Local Memory & RAG System
 
 - **Service**: `backend/src/services/localMemory.ts`
 - **Embeddings**: Transformers.js (`Xenova/all-MiniLM-L6-v2`) with hash fallback
 - **Storage**: Prisma models (`IntentMemory`, `AgentMemory`)
 - **Retrieval**: Cosine similarity + Jaccard coefficient matching
 - **Auto-learning**: Successful parses stored and retrieved for future queries
+
+### 6. OpenAI Integration (Optional)
+
+When `OPENAI_API_KEY` is set, Kuberna uses GPT-4 for:
+- Intent parsing with higher accuracy and broader language understanding
+- Agent code generation (ElizaOS, LangChain, AutoGen, Rig frameworks)
+- Code assistance (explain, debug, optimize, complete)
+- Test case generation and agent code validation
+
+See `backend/src/services/ai.ts` for the full integration.
 
 ### Configuration (.env)
 
@@ -245,6 +315,10 @@ AGENT_ARBITRAGE_THRESHOLD=0.5
 AGENT_MAX_SLIPPAGE=1.0
 AGENT_STOP_LOSS_PERCENT=5.0
 AGENT_MIN_YIELD_DIFF=1.0
+
+# OpenAI (optional — enables LLM-powered agent orchestration)
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
 ```
 
 > **Note**: Transformers.js models are auto-downloaded on first use. The embedding model (~80MB) is cached at `~/.cache/xenova/transformers-v3/`.
