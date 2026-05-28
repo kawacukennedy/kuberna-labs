@@ -3,10 +3,6 @@ name: Publish SDK to npm
 on:
   push:
     branches: [main]
-    paths:
-      - 'sdk/src/**'
-      - 'sdk/package.json'
-      - 'sdk/tsconfig.json'
   workflow_dispatch:
 
 jobs:
