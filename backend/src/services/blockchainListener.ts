@@ -449,6 +449,76 @@ export class BlockchainListener {
 
       logger.info(`TaskCompleted event on ${chain}: ${escrowId}`);
 
+      // Lookup escrow record to find intent and agent
+      try {
+        const escrow = await prisma.escrow.findFirst({
+          where: { contractAddress: event.address, chain },
+          include: {
+            intent: {
+              include: {
+                task: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        if (escrow?.intent) {
+          const intent = escrow.intent;
+
+          // Update intent status
+          await prisma.intent.update({
+            where: { id: intent.id },
+            data: {
+              status: 'COMPLETED',
+              completedAt: new Date(),
+            },
+          });
+
+          // Update task if it exists
+          if (intent.task) {
+            await prisma.task.update({
+              where: { id: intent.task.id },
+              data: {
+                status: 'COMPLETED',
+                completedAt: new Date(),
+                txHash: event.transactionHash,
+                proof: { proofHash, chain },
+              },
+            });
+
+            // Update reputation for the assigned agent
+            const assignedAgentId = intent.task.assignedAgentId;
+            if (assignedAgentId) {
+              const reputation = await prisma.reputation.findUnique({
+                where: { agentId: assignedAgentId },
+              });
+              if (reputation) {
+                await prisma.reputation.update({
+                  where: { agentId: assignedAgentId },
+                  data: {
+                    totalTasks: { increment: 1 },
+                    successfulTasks: { increment: 1 },
+                    lastCalculatedAt: new Date(),
+                  },
+                });
+              }
+            }
+          }
+
+          // Publish certification event asynchronously
+          await this.publishToNATS('tasks.certification.required', {
+            intentId: intent.id,
+            escrowId: escrowId.toString(),
+            amount: '0',
+            chain,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      } catch (dbError) {
+        logger.error('Error updating task/reputation from TaskCompleted event:', dbError);
+      }
+
       // Mark as processed
       await this.markEventProcessed(
         event.transactionHash,
@@ -767,7 +837,8 @@ export class BlockchainListener {
 
   private async publishToNATS(
     subject: string,
-    data: NatsIntentsFundedData | NatsBidsSubmittedData | NatsBidsAcceptedData
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: Record<string, any>
   ): Promise<void> {
     if (!this.natsConnection) {
       logger.error('NATS connection not available');
