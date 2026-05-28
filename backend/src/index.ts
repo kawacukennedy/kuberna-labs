@@ -30,6 +30,7 @@ import { complianceRouter } from './routes/compliance.js';
 import { featureFlagRouter } from './routes/featureFlags.js';
 import { intentParserRouter } from './routes/intentParser.js';
 import { agentDecisionRouter } from './routes/agentDecision.js';
+import { agentOrchestratorRouter } from './routes/agentOrchestrator.js';
 import { kiteRouter } from './routes/kite.js';
 
 dotenv.config();
@@ -99,6 +100,7 @@ app.use('/api/compliance', complianceRouter);
 app.use('/api/feature-flags', featureFlagRouter);
 app.use('/api/intents', intentParserRouter);
 app.use('/api/agents', agentDecisionRouter);
+app.use('/api/agents', agentOrchestratorRouter);
 app.use('/api/kite', kiteRouter);
 
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
