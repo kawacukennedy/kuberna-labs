@@ -7,13 +7,17 @@ export type SupportedChainId =
   | typeof CHAIN_IDS.ETHEREUM_MAINNET
   | typeof CHAIN_IDS.ETHEREUM_SEPOLIA
   | typeof CHAIN_IDS.POLYGON
-  | typeof CHAIN_IDS.ARBITRUM;
+  | typeof CHAIN_IDS.ARBITRUM
+  | typeof CHAIN_IDS.BASE_SEPOLIA
+  | typeof CHAIN_IDS.OG_TESTNET;
 
 const CHAIN_ADAPTERS: Record<number, new (chainId: number, privateKey?: `0x${string}`) => ChainAdapter> = {
   [CHAIN_IDS.ETHEREUM_MAINNET]: EthereumAdapter,
   [CHAIN_IDS.ETHEREUM_SEPOLIA]: EthereumAdapter,
   [CHAIN_IDS.POLYGON]: EthereumAdapter,
   [CHAIN_IDS.ARBITRUM]: EthereumAdapter,
+  [CHAIN_IDS.BASE_SEPOLIA]: EthereumAdapter,
+  [CHAIN_IDS.OG_TESTNET]: EthereumAdapter,
 };
 
 export const SUPPORTED_CHAIN_IDS = Object.keys(CHAIN_ADAPTERS).map(Number);
@@ -115,6 +119,16 @@ export async function getSupportedTokens(
         isNative: false,
       },
     ],
+    [CHAIN_IDS.BASE_SEPOLIA]: [
+      {
+        address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as Address,
+        symbol: 'USDC',
+        name: 'USD Coin (Base Sepolia)',
+        decimals: 6,
+        isNative: false,
+      },
+    ],
+    [CHAIN_IDS.OG_TESTNET]: [],
   };
   
   const chainTokens = commonTokens[chainId];

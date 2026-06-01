@@ -6,7 +6,7 @@ import {
   Hash,
   getAddress,
 } from 'viem';
-import { mainnet, sepolia, polygon, arbitrum } from 'viem/chains';
+import { mainnet, sepolia, polygon, arbitrum, baseSepolia } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 import { BaseChainAdapter, TokenInfo, CallResult } from './base';
 import { ERC20_ABI } from '../contracts';
@@ -28,6 +28,25 @@ const CHAIN_CONFIG = {
   [CHAIN_IDS.ARBITRUM]: {
     chain: arbitrum,
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
+  },
+  [CHAIN_IDS.BASE_SEPOLIA]: {
+    chain: baseSepolia,
+    rpcUrl: 'https://sepolia.base.org',
+  },
+  [CHAIN_IDS.OG_TESTNET]: {
+    chain: {
+      id: 16602,
+      name: '0G Galileo Testnet',
+      nativeCurrency: { name: 'A0GI', symbol: 'A0GI', decimals: 18 },
+      rpcUrls: {
+        default: { http: ['https://evmrpc-testnet.0g.ai'] },
+      },
+      blockExplorers: {
+        default: { name: '0G Scan', url: 'https://scan-testnet.0g.ai' },
+      },
+      testnet: true,
+    } as const,
+    rpcUrl: 'https://evmrpc-testnet.0g.ai',
   },
 } as const;
 
