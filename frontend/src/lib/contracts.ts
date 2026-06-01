@@ -384,6 +384,8 @@ const FALLBACK_ADDRESSES = {
   crossChainRouter: '0xE2924838E5914cE099e5969aD63b0C4A4eeB8BAD',
   governanceToken: '0x0000000000000000000000000000000000000000',
   priceOracle: '0x0000000000000000000000000000000000000000',
+  multisig: '0x0000000000000000000000000000000000000000',
+  vesting: '0x0000000000000000000000000000000000000000',
 };
 
 const readEnv = (key: string): string | undefined => {
@@ -411,6 +413,8 @@ const envAddresses = {
   crossChainRouter: readEnv('NEXT_PUBLIC_CROSSCHAIN_ROUTER_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.crossChainRouter,
   governanceToken: readEnv('NEXT_PUBLIC_GOVERNANCE_TOKEN_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.governanceToken,
   priceOracle: readEnv('NEXT_PUBLIC_PRICE_ORACLE_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.priceOracle,
+  multisig: readEnv('NEXT_PUBLIC_MULTISIG_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.multisig,
+  vesting: readEnv('NEXT_PUBLIC_VESTING_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.vesting,
 };
 
 export const CONTRACT_ADDRESSES: Record<number, Record<ContractName, string>> = {
@@ -438,7 +442,9 @@ export type ContractName =
   | 'attestation'
   | 'crossChainRouter'
   | 'governanceToken'
-  | 'priceOracle';
+  | 'priceOracle'
+  | 'multisig'
+  | 'vesting';
 
 export const getContractAddress = (chainId: number, contract: ContractName): string => {
   const addresses = CONTRACT_ADDRESSES[chainId as keyof typeof CONTRACT_ADDRESSES];
@@ -645,6 +651,192 @@ export const priceOracleABI = [
     outputs: [{ name: '', type: 'uint256[]' }],
     stateMutability: 'view',
     type: 'function',
+  },
+] as const;
+
+export const multisigABI = [
+  {
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'token', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'data', type: 'bytes' },
+    ],
+    name: 'submitTransaction',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'uint256' }],
+    name: 'confirmTransaction',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'uint256' }],
+    name: 'revokeConfirmation',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'uint256' }],
+    name: 'executeTransaction',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'uint256' }],
+    name: 'getTransaction',
+    outputs: [
+      {
+        components: [
+          { name: 'to', type: 'address' },
+          { name: 'token', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+          { name: 'data', type: 'bytes' },
+          { name: 'executed', type: 'bool' },
+          { name: 'confirmationCount', type: 'uint256' },
+        ],
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'uint256' }],
+    name: 'isConfirmed',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getOwners',
+    outputs: [{ name: '', type: 'address[]' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'threshold',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: '', type: 'address' }],
+    name: 'isOwner',
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'id', type: 'uint256' },
+      { indexed: false, name: 'to', type: 'address' },
+      { indexed: false, name: 'amount', type: 'uint256' },
+    ],
+    name: 'TransactionSubmitted',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'id', type: 'uint256' },
+      { indexed: true, name: 'owner', type: 'address' },
+    ],
+    name: 'TransactionConfirmed',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'id', type: 'uint256' },
+      { indexed: true, name: 'owner', type: 'address' },
+    ],
+    name: 'TransactionExecuted',
+    type: 'event',
+  },
+] as const;
+
+export const vestingABI = [
+  {
+    inputs: [
+      { name: 'beneficiary', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'startTime', type: 'uint256' },
+    ],
+    name: 'createVesting',
+    outputs: [{ name: '', type: 'bytes32' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'bytes32' }],
+    name: 'release',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'bytes32' }],
+    name: 'computeReleasable',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'bytes32' }],
+    name: 'computeVested',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'id', type: 'bytes32' }],
+    name: 'revoke',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'beneficiary', type: 'address' }],
+    name: 'getBeneficiarySchedules',
+    outputs: [{ name: '', type: 'bytes32[]' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'id', type: 'bytes32' },
+      { indexed: false, name: 'beneficiary', type: 'address' },
+      { indexed: false, name: 'amount', type: 'uint256' },
+    ],
+    name: 'VestingCreated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'id', type: 'bytes32' },
+      { indexed: false, name: 'amount', type: 'uint256' },
+    ],
+    name: 'VestingReleased',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: true, name: 'id', type: 'bytes32' }],
+    name: 'VestingRevoked',
+    type: 'event',
   },
 ] as const;
 
