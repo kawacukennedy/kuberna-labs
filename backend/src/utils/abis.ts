@@ -142,6 +142,57 @@ export const FEE_MANAGER_ABI = [
   "function platformFee() external view returns (uint256)",
 ];
 
+export const GOVERNANCE_TOKEN_ABI = [
+  "function mint(address to, uint256 amount) external",
+  "function delegate(address delegatee) external",
+  "function stake(uint256 amount) external",
+  "function unstake(uint256 amount) external",
+  "function getVotes(address account) external view returns (uint256)",
+  "function getPastVotes(address account, uint256 blockNumber) external view returns (uint256)",
+  "function getEffectiveVotingPower(address account) external view returns (uint256)",
+  "function balanceOf(address account) external view returns (uint256)",
+  "function totalSupply() external view returns (uint256)",
+  "event Staked(address indexed user, uint256 amount)",
+  "event Unstaked(address indexed user, uint256 amount)",
+];
+
+export const PRICE_ORACLE_ABI = [
+  "function setPriceFeed(address token, address feed) external",
+  "function setPendingPrice(address token, uint256 price) external",
+  "function confirmPrice(address token) external",
+  "function getPrice(address token) external view returns (uint256)",
+  "function getPriceOrFallback(address token, uint256 fallbackPrice) external view returns (uint256)",
+  "function getPriceData(address token) external view returns (uint256 price, uint256 timestamp)",
+  "event PriceUpdated(address indexed token, uint256 price, uint256 timestamp)",
+  "event FeedUpdated(address indexed token, address feed)",
+];
+
+export const MULTISIG_ABI = [
+  "function submitTransaction(address to, address token, uint256 amount, bytes calldata data) external returns (uint256)",
+  "function confirmTransaction(uint256 id) external",
+  "function revokeConfirmation(uint256 id) external",
+  "function executeTransaction(uint256 id) external",
+  "function getTransaction(uint256 id) external view returns (tuple(address to, address token, uint256 amount, bytes data, bool executed, uint256 confirmationCount))",
+  "function getOwners() external view returns (address[])",
+  "function threshold() external view returns (uint256)",
+  "function isOwner(address) external view returns (bool)",
+  "event TransactionSubmitted(uint256 indexed id, address to, uint256 amount)",
+  "event TransactionConfirmed(uint256 indexed id, address owner)",
+  "event TransactionExecuted(uint256 indexed id)",
+];
+
+export const VESTING_ABI = [
+  "function createVesting(address beneficiary, uint256 amount, uint256 startTime) external returns (bytes32)",
+  "function release(bytes32 id) external",
+  "function computeReleasable(bytes32 id) external view returns (uint256)",
+  "function computeVested(bytes32 id) external view returns (uint256)",
+  "function revoke(bytes32 id) external",
+  "function getBeneficiarySchedules(address beneficiary) external view returns (bytes32[])",
+  "event VestingCreated(bytes32 indexed id, address beneficiary, uint256 amount)",
+  "event VestingReleased(bytes32 indexed id, uint256 amount)",
+  "event VestingRevoked(bytes32 indexed id)",
+];
+
 export const CROSSCHAIN_ROUTER_ABI = [
   "function initiateTransfer(uint256 destinationChainId, address recipient, address token, uint256 amount, uint256 minReceived) external payable",
   "function executeTransfer(bytes32 messageId, address recipient, address token, uint256 amount, uint256 minReceived) external",
