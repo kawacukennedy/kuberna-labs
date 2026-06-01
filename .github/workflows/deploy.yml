@@ -27,12 +27,39 @@ jobs:
           PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
           SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy.ts --network sepolia
+        run: npx hardhat run scripts/deploy-all.ts --network sepolia
 
-      - name: Verify contracts
+      - name: Verify contracts on Sepolia
         env:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: npx hardhat run scripts/verify.ts --network sepolia
+
+      - name: Deploy to Base Sepolia
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/deploy-all.ts --network baseSepolia
+
+      - name: Deploy to OG Testnet
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          OG_RPC_URL: ${{ secrets.OG_RPC_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/deploy-all.ts --network ogTestnet
+
+      - name: Deploy to Polygon
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          POLYGON_RPC_URL: ${{ secrets.POLYGON_RPC_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/deploy-all.ts --network polygon
+
+      - name: Deploy to Arbitrum
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/deploy-all.ts --network arbitrum
 
   publish-sdk:
     name: Publish SDK to NPM

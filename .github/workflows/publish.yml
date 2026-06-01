@@ -52,7 +52,13 @@ jobs:
 
       - name: Publish to npm
         if: steps.check.outputs.needs_publish == 'true'
-        run: npm publish --provenance --access public
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "Skipping npm publish — NPM_TOKEN secret is not set."
+            echo "Set it in Settings → Secrets and variables → Actions."
+            exit 0
+          fi
+          npm publish --provenance --access public
         working-directory: sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
