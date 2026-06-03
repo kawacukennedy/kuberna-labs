@@ -1,0 +1,66 @@
+name: Publish @kuberna/aip-adapter
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/aip-adapter/**'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Build & Publish @kuberna/aip-adapter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: packages/aip-adapter/package-lock.json
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+        working-directory: packages/aip-adapter
+
+      - name: Run tests
+        run: npm test
+        working-directory: packages/aip-adapter
+
+      - name: Build
+        run: npm run build
+        working-directory: packages/aip-adapter
+
+      - name: Check version against registry
+        id: check
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          REGISTRY_VERSION=$(npm view @kuberna/aip-adapter version 2>/dev/null || echo "0.0.0")
+          echo "package_version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "registry_version=$REGISTRY_VERSION" >> $GITHUB_OUTPUT
+          if [ "$PACKAGE_VERSION" != "$REGISTRY_VERSION" ]; then
+            echo "needs_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "needs_publish=false" >> $GITHUB_OUTPUT
+          fi
+        working-directory: packages/aip-adapter
+
+      - name: Publish to npm
+        if: steps.check.outputs.needs_publish == 'true'
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "Skipping npm publish — NPM_TOKEN secret is not set."
+            echo "Set it in Settings → Secrets and variables → Actions."
+            exit 0
+          fi
+          npm publish --provenance --access public
+        working-directory: packages/aip-adapter
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
