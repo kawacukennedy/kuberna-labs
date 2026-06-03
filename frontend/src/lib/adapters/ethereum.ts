@@ -5,6 +5,7 @@ import {
   Address, 
   Hash,
   getAddress,
+  PublicClient,
 } from 'viem';
 import { mainnet, sepolia, polygon, arbitrum, baseSepolia } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -66,7 +67,7 @@ export class EthereumAdapter extends BaseChainAdapter {
       transport: http(config.rpcUrl),
     });
     
-    super(publicClient);
+    super(publicClient as unknown as PublicClient);
     
     this.chainId = chainId;
     this.chainName = config.chain.name;

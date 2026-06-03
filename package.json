@@ -68,7 +68,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=18.0.0 <26.0.0",
     "npm": ">=9.0.0"
   },
   "devDependencies": {

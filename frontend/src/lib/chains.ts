@@ -61,7 +61,6 @@ export const SUPPORTED_CHAINS: KubernaChain[] = [
   {
     id: 16602,
     name: '0G Galileo Testnet',
-    network: 'og-testnet',
     nativeCurrency: { name: 'A0GI', symbol: 'A0GI', decimals: 18 },
     rpcUrls: {
       default: { http: ['https://evmrpc-testnet.0g.ai'] },
