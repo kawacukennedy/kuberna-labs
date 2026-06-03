@@ -1,10 +1,7 @@
 import { ethers } from 'ethers';
-import type { Prisma } from '@prisma/client';
 import { prisma } from '../utils/prisma';
 import { zkTLSService } from './ztls';
 import logger from '../utils/logger';
-
-type PrismaInputJsonValue = Prisma.InputJsonValue;
 
 export type TEEProvider = 'phala' | 'marlin';
 
@@ -217,7 +214,7 @@ export class TEEService {
           provider: request.provider,
           resources: request.resources,
           createdAt: new Date().toISOString(),
-        } as unknown as PrismaInputJsonValue,
+        } as unknown as Record<string, unknown>,
         lastActive: new Date(),
       },
     });

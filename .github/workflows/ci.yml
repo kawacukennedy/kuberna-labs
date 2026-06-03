@@ -58,17 +58,12 @@ jobs:
         run: npx hardhat coverage
 
       - name: Upload coverage to Codecov
-        if: secrets.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info
           flags: contracts
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
-
-      - name: Skip Codecov (no token)
-        if: secrets.CODECOV_TOKEN == ''
-        run: echo "Skipping Codecov upload — CODECOV_TOKEN secret is not set."
 
   test-backend:
     name: Test Backend Services
@@ -93,17 +88,12 @@ jobs:
           npm test
 
       - name: Upload coverage to Codecov
-        if: secrets.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v5
         with:
           files: ./backend/coverage/lcov.info
           flags: backend
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
-
-      - name: Skip Codecov (no token)
-        if: secrets.CODECOV_TOKEN == ''
-        run: echo "Skipping Codecov upload — CODECOV_TOKEN secret is not set."
 
   test-sdk:
     name: Test SDK
@@ -222,44 +212,4 @@ jobs:
           cd frontend
           npm test -- --passWithNoTests
 
-  deploy-frontend-preview:
-    name: Deploy Frontend Preview to Vercel
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://api-staging.kuberna.africa' }}
-          NEXT_PUBLIC_GRAPHQL_URL: ${{ secrets.NEXT_PUBLIC_GRAPHQL_URL || 'https://api-staging.kuberna.africa/graphql' }}
-          NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Comment PR with Preview URL
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { default: fs } = require('fs');
-            const deploymentUrl = fs.readFileSync('.vercel/url', 'utf8').trim();
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 Frontend preview deployed to: ${deploymentUrl}`
-            })

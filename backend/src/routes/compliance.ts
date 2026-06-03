@@ -169,9 +169,9 @@ router.get(
         }),
       ]);
 
-      const totalRevenue = payments.reduce((sum, p) => sum + Number(p.amount), 0);
+      const totalRevenue = payments.reduce((sum: number, p: { amount: string }) => sum + Number(p.amount), 0);
       const revenueByCurrency = payments.reduce(
-        (acc, p) => {
+        (acc: Record<string, number>, p: { amount: string; currency: string }) => {
           acc[p.currency] = (acc[p.currency] || 0) + Number(p.amount);
           return acc;
         },
@@ -179,14 +179,14 @@ router.get(
       );
 
       const revenueByType = payments.reduce(
-        (acc, p) => {
+        (acc: Record<string, number>, p: { type: string; amount: string }) => {
           acc[p.type] = (acc[p.type] || 0) + Number(p.amount);
           return acc;
         },
         {} as Record<string, number>
       );
 
-      const dailyRevenue = payments.reduce((acc, p) => {
+      const dailyRevenue = payments.reduce((acc: Record<string, number>, p: { amount: string; createdAt: { toISOString: () => string } }) => {
         const date = p.createdAt.toISOString().split('T')[0];
         acc[date] = (acc[date] || 0) + Number(p.amount);
         return acc;

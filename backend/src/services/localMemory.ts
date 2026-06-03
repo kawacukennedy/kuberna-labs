@@ -2,10 +2,6 @@ import { prisma } from '../utils/prisma.js';
 import logger from '../utils/logger.js';
 import { embeddingService } from './embeddingService.js';
 import type { StructuredIntent } from './intentParser.js';
-import type { Prisma } from '@prisma/client';
-
-type PrismaJsonValue = Prisma.JsonValue;
-type PrismaInputJsonValue = Prisma.InputJsonValue;
 
 interface MemoryEntry {
   description: string;
@@ -59,7 +55,7 @@ export class LocalMemoryService {
       await prisma.intentMemory.create({
         data: {
           description,
-          intentData: intent as unknown as PrismaInputJsonValue,
+          intentData: intent as unknown as Record<string, unknown>,
           confidence: intent.confidence,
         },
       });
@@ -134,8 +130,8 @@ export class LocalMemoryService {
         data: {
           agentId,
           decisionType,
-          marketData: marketData as unknown as PrismaInputJsonValue,
-          action: action as unknown as PrismaInputJsonValue,
+          marketData: marketData as unknown as Record<string, unknown>,
+          action: action as unknown as Record<string, unknown>,
           success,
         },
       });
@@ -154,7 +150,7 @@ export class LocalMemoryService {
         orderBy: { createdAt: 'desc' },
         take: 20,
       });
-      return memories.map(m => ({
+      return memories.map((m: { marketData: unknown; action: unknown; success: boolean }) => ({
         marketData: m.marketData as Record<string, unknown>,
         action: m.action as Record<string, unknown>,
         success: m.success,
