@@ -1,1 +1,2 @@
-export type { AuthRequest } from '../middleware/auth.js';
+import { Request } from 'express';
+export type AuthRequest = Request;

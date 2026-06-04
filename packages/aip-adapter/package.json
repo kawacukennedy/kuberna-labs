@@ -4,6 +4,7 @@
   "description": "Bridge between AIP (Agent Identity Protocol) and ERC-8004 on-chain agent identity registry",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "files": [
     "dist",
     "README.md",

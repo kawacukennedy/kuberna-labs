@@ -55,7 +55,7 @@ export class LocalMemoryService {
       await prisma.intentMemory.create({
         data: {
           description,
-          intentData: intent as unknown as Record<string, unknown>,
+          intentData: intent as unknown as any,
           confidence: intent.confidence,
         },
       });
@@ -121,8 +121,8 @@ export class LocalMemoryService {
   async storeAgentMemory(
     agentId: string,
     decisionType: string,
-    marketData: Record<string, unknown>,
-    action: Record<string, unknown>,
+    marketData: any,
+    action: any,
     success: boolean,
   ): Promise<void> {
     try {
@@ -130,8 +130,8 @@ export class LocalMemoryService {
         data: {
           agentId,
           decisionType,
-          marketData: marketData as unknown as Record<string, unknown>,
-          action: action as unknown as Record<string, unknown>,
+          marketData: marketData as unknown as any,
+          action: action as unknown as any,
           success,
         },
       });
@@ -143,7 +143,7 @@ export class LocalMemoryService {
   async queryAgentMemory(
     agentId: string,
     decisionType: string,
-  ): Promise<Array<{ marketData: Record<string, unknown>; action: Record<string, unknown>; success: boolean }>> {
+  ): Promise<Array<{ marketData: any; action: any; success: boolean }>> {
     try {
       const memories = await prisma.agentMemory.findMany({
         where: { agentId, decisionType },
@@ -151,8 +151,8 @@ export class LocalMemoryService {
         take: 20,
       });
       return memories.map((m: { marketData: unknown; action: unknown; success: boolean }) => ({
-        marketData: m.marketData as Record<string, unknown>,
-        action: m.action as Record<string, unknown>,
+        marketData: m.marketData as any,
+        action: m.action as any,
         success: m.success,
       }));
     } catch {

@@ -214,7 +214,7 @@ export class TEEService {
           provider: request.provider,
           resources: request.resources,
           createdAt: new Date().toISOString(),
-        } as unknown as Record<string, unknown>,
+        } as any,
         lastActive: new Date(),
       },
     });

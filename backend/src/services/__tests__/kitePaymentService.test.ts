@@ -1,5 +1,15 @@
 import { KitePaymentService } from '../kitePaymentService';
 
+jest.mock('../kiteService', () => ({
+  kitePassportService: {
+    getProvider: jest.fn().mockReturnValue({
+      getTransactionReceipt: jest.fn().mockRejectedValue(new Error('No network')),
+      getTransaction: jest.fn(),
+    }),
+    getConfig: jest.fn().mockReturnValue({ facilitatorUrl: 'https://facilitator.test' }),
+  },
+}));
+
 jest.mock('../../utils/prisma', () => ({
   prisma: {
     kitePayment: {
