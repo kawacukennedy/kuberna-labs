@@ -29,6 +29,7 @@ frontend/dist/
 *.tsbuildinfo
 .pnp
 .pnp.js
+session-*.md
 test/
 tests/
 *.test.ts
@@ -44,3 +45,7 @@ pnpm-debug.log*
 lerna-debug.log*
 .nyc_output/
 frontend/coverage/
+
+# aip-adapter uses test/ at package root (negate blanket test/ and *.test.ts rules)
+!packages/aip-adapter/test/
+!packages/aip-adapter/**/*.test.ts

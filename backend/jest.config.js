@@ -12,8 +12,4 @@ module.exports = {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   testPathIgnorePatterns: ["/node_modules/", "/dist/", "\\.d\\.ts$", "tee-usage-example"],
-  reporters: [
-    "default",
-    ["jest-junit", { outputDirectory: "./coverage", outputName: "junit.xml" }],
-  ],
 };

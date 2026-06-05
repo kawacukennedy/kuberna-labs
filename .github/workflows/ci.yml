@@ -95,15 +95,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
-      - name: Upload test results to Codecov
-        if: always()
-        uses: codecov/test-results-action@v1
-        with:
-          files: ./backend/coverage/junit.xml
-          flags: backend
-          token: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: true
-
   test-sdk:
     name: Test SDK
     runs-on: ubuntu-latest
