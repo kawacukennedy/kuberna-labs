@@ -9,6 +9,7 @@ import { TeeManager } from './tee.js';
 import { CertificateManager } from './certificate.js';
 import { WalletManager } from './wallet.js';
 import { AiManager } from './ai.js';
+import { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 import { SilentVerifyManager } from './silentverify.js';
 import { KiteManager } from './kite.js';
 
@@ -49,6 +50,7 @@ export class KubernaSDK {
   public wallet: WalletManager;
   public ai: AiManager;
   public verify: SilentVerifyManager;
+  public crossChainIdentity: CrossChainIdentityManager;
   public kite: KiteManager;
   private config: KubernaConfig;
   private provider: ethers.JsonRpcProvider;
@@ -80,6 +82,7 @@ export class KubernaSDK {
     this.wallet = new WalletManager(this);
     this.ai = new AiManager(this);
     this.verify = new SilentVerifyManager(this);
+    this.crossChainIdentity = new CrossChainIdentityManager(this);
     this.kite = new KiteManager(this);
   }
 
@@ -173,6 +176,14 @@ export type {
 } from './silentverify.js';
 export { SilentVerifyManager } from './silentverify.js';
 export { KiteManager } from './kite.js';
+export { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
+export type {
+  CrossChainIdentityRecord,
+  AgentCertificateRecord,
+  RegisterIdentityParams,
+  CertIssueResult,
+  SolanaWalletMapping,
+} from './identity/crossChainIdentity.js';
 export type {
   KiteWalletInfo,
   KiteSessionRequest,
