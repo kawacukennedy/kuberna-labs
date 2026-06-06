@@ -28,10 +28,15 @@ router.post('/register', authenticate, async (req: AuthRequest, res: Response, n
       throw createError('No agent found for this user', 404, 'AGENT_NOT_FOUND');
     }
 
+    const user = await prisma.user.findUnique({
+      where: { id: req.user!.id },
+      select: { web3Address: true },
+    });
+
     const identity = await agentService.registerCrossChainIdentity({
       agentId: existingAgent.id,
       solanaAddress,
-      evmAddress: evmAddress ?? req.user!.web3Address,
+      evmAddress: evmAddress ?? user?.web3Address ?? undefined,
     });
 
     res.status(201).json(identity);
@@ -85,7 +90,10 @@ router.post('/:agentId/issue-certificates', authenticate, async (req: AuthReques
       throw createError('escrowId, chain, and txHash are required', 400, 'VALIDATION_ERROR');
     }
 
-    const agent = await prisma.agent.findUnique({ where: { id: agentId } });
+    const agent = await prisma.agent.findUnique({
+      where: { id: agentId },
+      include: { owner: { select: { web3Address: true } } },
+    });
     if (!agent) {
       throw createError('Agent not found', 404, 'AGENT_NOT_FOUND');
     }
@@ -93,7 +101,7 @@ router.post('/:agentId/issue-certificates', authenticate, async (req: AuthReques
       throw createError('Not authorized', 403, 'FORBIDDEN');
     }
 
-    const agentDid = `did:erc8004:${agent.owner?.web3Address || agentId}`;
+    const agentDid = `did:erc8004:${agent.owner.web3Address || agentId}`;
     const result = await agentService.issueCertificatesForTaskCompletion(
       agentId,
       agentDid,
