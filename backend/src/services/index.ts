@@ -22,6 +22,7 @@ export {
   MultiChainService,
   multiChainService,
 } from './chains.js';
+export { AgentService, agentService } from './agentService.js';
 export { BlockchainListener, createBlockchainListener } from './blockchainListener.js';
 export { KitePassportService, kitePassportService } from './kiteService.js';
 export type { KitePassportConfig, KiteSessionParams, KiteAgentRegistration } from './kiteService.js';
