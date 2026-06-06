@@ -46,6 +46,9 @@ lerna-debug.log*
 .nyc_output/
 frontend/coverage/
 
+# internal docs
+docs/kuberna-bd-research.md
+
 # aip-adapter uses test/ at package root (negate blanket test/ and *.test.ts rules)
 !packages/aip-adapter/test/
 !packages/aip-adapter/**/*.test.ts

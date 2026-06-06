@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
@@ -356,36 +356,38 @@ model ModuleProgress {
 }
 
 model Agent {
-  id              String         @id @default(uuid())
-  ownerId         String
-  name            String
-  description     String
-  framework       AgentFramework
-  model           String
-  codeRepo        String?
-  config          Json
-  tools           String[]
-  status          AgentStatus    @default(DRAFT)
-  deploymentType  DeploymentType @default(CLOUD)
-  deploymentUrl   String?
-  teeAttestation  Json?
-  version         Int            @default(1)
-  lastActive      DateTime?
-  lastPing        DateTime?
-  pricingModel    PricingModel   @default(FIXED)
-  price           Float?
-  ipWhitelist     String[]       @default([])
-  supportedChains String[]       @default(["ethereum"])
+  id                String         @id @default(uuid())
+  ownerId           String
+  name              String
+  description       String
+  framework         AgentFramework
+  model             String
+  codeRepo          String?
+  config            Json
+  tools             String[]
+  status            AgentStatus    @default(DRAFT)
+  deploymentType    DeploymentType @default(CLOUD)
+  deploymentUrl     String?
+  teeAttestation    Json?
+  version           Int            @default(1)
+  lastActive        DateTime?
+  lastPing          DateTime?
+  pricingModel      PricingModel   @default(FIXED)
+  price             Float?
+  ipWhitelist       String[]       @default([])
+  supportedChains   String[]       @default(["ethereum"])
   kiteWalletAddress String?
   kiteAgentDid      String?
   kiteSessionId     String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
-  owner         User           @relation(fields: [ownerId], references: [id])
-  bids          Bid[]
-  reputation    Reputation?
-  teeDeployment TEEDeployment?
+  owner              User                @relation(fields: [ownerId], references: [id])
+  bids               Bid[]
+  reputation         Reputation?
+  teeDeployment      TEEDeployment?
+  agentCertificates  AgentCertificate[]
+  crossChainIdentity CrossChainIdentity?
 
   @@unique([ownerId, name])
   @@index([ownerId])
@@ -983,20 +985,20 @@ model WebinarRegistration {
 }
 
 model AgentCertificate {
-  id              String   @id @default(uuid())
-  agentId         String
-  agentDid        String
-  certType        String   @default("agent")
-  certJson        Json
-  pubkeyFp        String
-  digest          String?
-  previousDigest  String?
-  ipfsHash        String?
-  passportUri     String?
-  chain           String?
-  txHash          String?
-  issuedAt        DateTime @default(now())
-  expiresAt       DateTime?
+  id             String    @id @default(uuid())
+  agentId        String
+  agentDid       String
+  certType       String    @default("agent")
+  certJson       Json
+  pubkeyFp       String
+  digest         String?
+  previousDigest String?
+  ipfsHash       String?
+  passportUri    String?
+  chain          String?
+  txHash         String?
+  issuedAt       DateTime  @default(now())
+  expiresAt      DateTime?
 
   agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
@@ -1008,17 +1010,17 @@ model AgentCertificate {
 }
 
 model CrossChainIdentity {
-  id              String   @id @default(uuid())
-  agentId         String   @unique
-  solanaAddress   String?  @unique
-  evmAddress      String?
-  erc8004TokenId  BigInt?
-  erc8004ChainId  Int?
-  metadataUri     String?
-  certificateId   String?
-  lastSyncedAt    DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String    @id @default(uuid())
+  agentId        String    @unique
+  solanaAddress  String?   @unique
+  evmAddress     String?
+  erc8004TokenId BigInt?
+  erc8004ChainId Int?
+  metadataUri    String?
+  certificateId  String?
+  lastSyncedAt   DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
