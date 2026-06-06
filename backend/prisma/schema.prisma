@@ -940,6 +940,52 @@ model WebinarRegistration {
   @@map("webinar_registrations")
 }
 
+model AgentCertificate {
+  id              String   @id @default(uuid())
+  agentId         String
+  agentDid        String
+  certType        String   @default("agent")
+  certJson        Json
+  pubkeyFp        String
+  digest          String?
+  previousDigest  String?
+  ipfsHash        String?
+  passportUri     String?
+  chain           String?
+  txHash          String?
+  issuedAt        DateTime @default(now())
+  expiresAt       DateTime?
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([agentDid])
+  @@index([pubkeyFp])
+  @@index([digest])
+  @@map("agent_certificates")
+}
+
+model CrossChainIdentity {
+  id              String   @id @default(uuid())
+  agentId         String   @unique
+  solanaAddress   String?  @unique
+  evmAddress      String?
+  erc8004TokenId  BigInt?
+  erc8004ChainId  Int?
+  metadataUri     String?
+  certificateId   String?
+  lastSyncedAt    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([solanaAddress])
+  @@index([evmAddress])
+  @@index([erc8004TokenId])
+  @@map("cross_chain_identities")
+}
+
 model ProcessedEvent {
   id              String   @id @default(uuid())
   transactionHash String
