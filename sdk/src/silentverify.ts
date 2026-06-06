@@ -12,6 +12,8 @@ export interface AgentCertIssueRequest {
   reputationHash?: string | null;
   anchor?: Record<string, unknown> | null;
   expiresInDays?: number;
+  previousCertDigest?: string | null;
+  taskContext?: Record<string, unknown> | null;
   metadata?: Record<string, unknown>;
 }
 
@@ -236,6 +238,8 @@ export class SilentVerifyManager {
       agent_did: params.agentDid,
       capabilities: params.capabilities,
       reputation_hash: params.reputationHash ?? null,
+      previous_cert_digest: params.previousCertDigest ?? null,
+      task_context: params.taskContext ?? null,
       anchor: params.anchor ?? null,
       expires_in_days: params.expiresInDays ?? 30,
       metadata: params.metadata,
