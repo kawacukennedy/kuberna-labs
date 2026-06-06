@@ -21,9 +21,7 @@ describe('AipAdapter', () => {
       const identity = await adapter.createIdentity('Test Agent');
       expect(identity.keypair).toBeDefined();
       expect(identity.publicKeyMultibase).toMatch(/^z[a-km-zA-HJ-NP-Z1-9]+$/);
-      expect(identity.identifier).toBe(
-        `aip:key:ed25519:${identity.publicKeyMultibase}`
-      );
+      expect(identity.identifier).toBe(`aip:key:ed25519:${identity.publicKeyMultibase}`);
       expect(identity.name).toBe('Test Agent');
     });
 
@@ -34,10 +32,7 @@ describe('AipAdapter', () => {
     });
 
     it('should create unique keypairs each time', async () => {
-      const [a, b] = await Promise.all([
-        adapter.createIdentity(),
-        adapter.createIdentity(),
-      ]);
+      const [a, b] = await Promise.all([adapter.createIdentity(), adapter.createIdentity()]);
       expect(a.publicKeyMultibase).not.toBe(b.publicKeyMultibase);
     });
   });
@@ -56,9 +51,7 @@ describe('AipAdapter', () => {
       expect(doc.name).toBe('Doc Agent');
       expect(doc.expires).toBe('2027-01-01T00:00:00Z');
       expect(doc.publicKeys).toHaveLength(1);
-      expect(doc.publicKeys[0].public_key_multibase).toBe(
-        identity.publicKeyMultibase
-      );
+      expect(doc.publicKeys[0].public_key_multibase).toBe(identity.publicKeyMultibase);
       expect(doc.documentSignature).toBeTruthy();
     });
 
@@ -142,9 +135,9 @@ describe('AipAdapter', () => {
         '.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
       );
 
-      await expect(
-        adapter.verifyCompactToken(tampered, publicKey)
-      ).rejects.toThrow(AipAdapterError);
+      await expect(adapter.verifyCompactToken(tampered, publicKey)).rejects.toThrow(
+        AipAdapterError
+      );
     });
 
     it('should reject a token signed by a different key', async () => {
@@ -156,9 +149,9 @@ describe('AipAdapter', () => {
       });
 
       const originalPublicKey = KeyPair.decodeMultibase(identity.publicKeyMultibase);
-      await expect(
-        adapter.verifyCompactToken(token, originalPublicKey)
-      ).rejects.toThrow(AipAdapterError);
+      await expect(adapter.verifyCompactToken(token, originalPublicKey)).rejects.toThrow(
+        AipAdapterError
+      );
     });
 
     it('should reject verification with empty key', async () => {
@@ -168,9 +161,9 @@ describe('AipAdapter', () => {
         scopes: ['tool:search'],
       });
 
-      await expect(
-        adapter.verifyCompactToken(token, new Uint8Array(0))
-      ).rejects.toThrow(AipAdapterError);
+      await expect(adapter.verifyCompactToken(token, new Uint8Array(0))).rejects.toThrow(
+        AipAdapterError
+      );
     });
   });
 
@@ -255,10 +248,11 @@ describe('AipAdapter on-chain integration (mocked)', () => {
     it('should reject when no signer provided', async () => {
       const identity = await adapter.createIdentity();
       await expect(
-        (adapter as unknown as { registerOnChain: (identity: unknown, signer: unknown) => Promise<unknown> }).registerOnChain(
-          identity,
-          null
-        )
+        (
+          adapter as unknown as {
+            registerOnChain: (identity: unknown, signer: unknown) => Promise<unknown>;
+          }
+        ).registerOnChain(identity, null)
       ).rejects.toThrow();
     });
   });
@@ -296,9 +290,7 @@ describe('AipAdapter on-chain integration (mocked)', () => {
     });
 
     it('should reject invalid identifier format', async () => {
-      await expect(
-        adapter.resolveIdentifier('not-an-aip-id')
-      ).rejects.toThrow();
+      await expect(adapter.resolveIdentifier('not-an-aip-id')).rejects.toThrow();
     });
   });
 
@@ -311,12 +303,9 @@ describe('AipAdapter on-chain integration (mocked)', () => {
   describe('createIdentityDocumentWithChainLink', () => {
     it('should create a document with ERC-8004 extension', async () => {
       const identity = await adapter.createIdentity();
-      const doc = await adapter.createIdentityDocumentWithChainLink(
-        identity,
-        42n,
-        84532,
-        { name: 'On-chain Agent' }
-      );
+      const doc = await adapter.createIdentityDocumentWithChainLink(identity, 42n, 84532, {
+        name: 'On-chain Agent',
+      });
 
       expect(doc.name).toBe('On-chain Agent');
       expect(doc.extensions).toBeDefined();

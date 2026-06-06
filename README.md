@@ -21,12 +21,12 @@ Every agent operation is logged as a decision trace — inspect what your agent 
 
 ## Core Distinction: Infrastructure vs. Orchestration
 
-| This is NOT just infra tooling | This IS agent orchestration |
-|-------------------------------|------------------------------|
-| Smart contract ABI management | LLM-parsed natural language → structured intents |
-| RPC endpoint configuration | Autonomous strategy evaluation (arbitrage, yield, stop-loss) |
-| Wallet connection helpers | On-chain escrow settlement with SilentVerify certification |
-| Static agent templates | Full decision trace with AI reasoning for every action |
+| This is NOT just infra tooling | This IS agent orchestration                                  |
+| ------------------------------ | ------------------------------------------------------------ |
+| Smart contract ABI management  | LLM-parsed natural language → structured intents             |
+| RPC endpoint configuration     | Autonomous strategy evaluation (arbitrage, yield, stop-loss) |
+| Wallet connection helpers      | On-chain escrow settlement with SilentVerify certification   |
+| Static agent templates         | Full decision trace with AI reasoning for every action       |
 
 ## Prerequisites
 
@@ -296,6 +296,7 @@ Response:
 ### 6. OpenAI Integration (Optional)
 
 When `OPENAI_API_KEY` is set, Kuberna uses GPT-4 for:
+
 - Intent parsing with higher accuracy and broader language understanding
 - Agent code generation (ElizaOS, LangChain, AutoGen, Rig frameworks)
 - Code assistance (explain, debug, optimize, complete)

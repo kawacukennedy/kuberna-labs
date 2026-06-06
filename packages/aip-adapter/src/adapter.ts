@@ -104,7 +104,8 @@ export class AipAdapter {
 
     const doc = await IdentityDocument.create(identity.keypair, { name });
     const docJson = JSON.stringify(doc.toJSON());
-    const metadataURI = options?.metadataURI ?? `data:application/json,${encodeURIComponent(docJson)}`;
+    const metadataURI =
+      options?.metadataURI ?? `data:application/json,${encodeURIComponent(docJson)}`;
 
     const tx = await contract.registerAgent(agentAddress, name, framework, metadataURI);
     const receipt = await tx.wait();
@@ -159,10 +160,7 @@ export class AipAdapter {
     };
   }
 
-  async createCompactToken(
-    identity: AipIdentity,
-    claims: TokenClaimsOptions
-  ): Promise<string> {
+  async createCompactToken(identity: AipIdentity, claims: TokenClaimsOptions): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
     const ttl = claims.ttlSeconds ?? 3600;
 
@@ -186,9 +184,7 @@ export class AipAdapter {
       if (!payload) {
         throw new AipAdapterError('Malformed JWT: no payload', 'TOKEN_MALFORMED');
       }
-      const decoded = JSON.parse(
-        Buffer.from(payload, 'base64url').toString('utf-8')
-      );
+      const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf-8'));
       return {
         header,
         payload: {
@@ -211,10 +207,7 @@ export class AipAdapter {
     }
   }
 
-  async verifyCompactToken(
-    token: string,
-    publicKeyBytes: Uint8Array
-  ): Promise<VerifiedToken> {
+  async verifyCompactToken(token: string, publicKeyBytes: Uint8Array): Promise<VerifiedToken> {
     if (publicKeyBytes.length === 0) {
       throw new AipAdapterError(
         'publicKeyBytes is required for signature verification',
@@ -399,8 +392,7 @@ function parseRegistrationLog(
         data: log.data,
       });
       if (parsed?.name === 'AgentRegistered') {
-        const tokenId: bigint =
-          parsed.args.tokenId ?? parsed.args[0];
+        const tokenId: bigint = parsed.args.tokenId ?? parsed.args[0];
         return { tokenId };
       }
     } catch {
