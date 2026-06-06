@@ -4,6 +4,7 @@ import { connect, NatsConnection, StringCodec } from 'nats';
 import { prisma } from '../utils/prisma.js';
 import { ESCROW_ABI, INTENT_ABI, CERTIFICATE_ABI, ATTESTATION_ABI } from '../utils/abis.js';
 import logger from '../utils/logger.js';
+import { agentService } from './agentService.js';
 
 export interface NatsIntentsFundedData {
   intentId: string;
@@ -514,6 +515,37 @@ export class BlockchainListener {
             chain,
             timestamp: new Date().toISOString(),
           });
+
+          // Issue SilentVerify certificates for the agent
+          try {
+            const assignedAgentId = intent.task?.assignedAgentId;
+            if (assignedAgentId) {
+              const agent = await prisma.agent.findUnique({
+                where: { id: assignedAgentId },
+                include: { owner: { select: { web3Address: true } } },
+              });
+              if (agent) {
+                const agentDid = `did:erc8004:${agent.owner?.web3Address || agent.id}`;
+                const task = intent.task;
+                const txHash = task?.txHash || event.transactionHash;
+                await agentService.issueCertificatesForTaskCompletion(
+                  assignedAgentId,
+                  agentDid,
+                  escrowId.toString(),
+                  chain,
+                  txHash,
+                  {
+                    agent_name: agent.name,
+                    agent_framework: agent.framework,
+                    task_description: intent.description,
+                  }
+                );
+                logger.info(`SilentVerify certs issued for agent ${assignedAgentId} on task completion`);
+              }
+            }
+          } catch (certError) {
+            logger.error('Error issuing SilentVerify certificates:', certError);
+          }
         }
       } catch (dbError) {
         logger.error('Error updating task/reputation from TaskCompleted event:', dbError);
