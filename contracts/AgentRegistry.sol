@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 error AgentRegistry__Invalid();
+error AgentRegistry__NameTaken(string name);
+error AgentRegistry__NotOwner();
+error AgentRegistry__OnlyOwnerOrAgentOwner();
 
 enum AgentStatus {
     None,
@@ -50,10 +53,10 @@ contract KubernaAgentRegistry is ERC721, Ownable {
         string calldata config,
         string[] calldata tools
     ) external returns (uint256) {
-        require(!agentNames[name]);
+        if (agentNames[name]) revert AgentRegistry__NameTaken(name);
 
         uint256 tokenId = _nextTokenId++;
-        _safeMint(owner, tokenId);
+        _mint(owner, tokenId);
 
         Agent storage a = agents[tokenId];
         a.owner = owner;
@@ -85,7 +88,7 @@ contract KubernaAgentRegistry is ERC721, Ownable {
         string calldata config
     ) external {
         Agent storage a = agents[tokenId];
-        require(a.owner == msg.sender || msg.sender == owner());
+        if (a.owner != msg.sender && msg.sender != owner()) revert AgentRegistry__OnlyOwnerOrAgentOwner();
         a.description = description;
         a.model = model;
         a.config = config;
@@ -95,14 +98,14 @@ contract KubernaAgentRegistry is ERC721, Ownable {
 
     function setStatus(uint256 tokenId, AgentStatus status) external {
         Agent storage a = agents[tokenId];
-        require(a.owner == msg.sender || msg.sender == owner());
+        if (a.owner != msg.sender && msg.sender != owner()) revert AgentRegistry__OnlyOwnerOrAgentOwner();
         a.status = status;
         emit AgentStatusChanged(tokenId, status);
     }
 
     function addTool(uint256 tokenId, string calldata tool) external {
         Agent storage a = agents[tokenId];
-        require(a.owner == msg.sender);
+        if (a.owner != msg.sender) revert AgentRegistry__NotOwner();
         a.tools.push(tool);
         ownerHasTool[a.owner][tool] = true;
         emit ToolAdded(tokenId, tool);

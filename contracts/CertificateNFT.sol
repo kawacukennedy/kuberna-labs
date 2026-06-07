@@ -37,7 +37,7 @@ contract KubernaCertificateNFT is ERC721, ERC721URIStorage, Ownable {
     }
 
     modifier onlyMinter() {
-        require(msg.sender == minter || msg.sender == owner());
+        require(msg.sender == minter || msg.sender == owner(), "CertificateNFT: caller is not minter or owner");
         _;
     }
 
@@ -50,7 +50,7 @@ contract KubernaCertificateNFT is ERC721, ERC721URIStorage, Ownable {
         string calldata verificationHash
     ) external onlyMinter returns (uint256) {
         bytes32 certHash = keccak256(abi.encodePacked(recipient, courseId, verificationHash));
-        require(!certificateHashes[certHash]);
+        require(!certificateHashes[certHash], "CertificateNFT: certificate already minted");
 
         uint256 tokenId = _nextTokenId++;
 
@@ -77,22 +77,22 @@ contract KubernaCertificateNFT is ERC721, ERC721URIStorage, Ownable {
     function _generateTokenURI(uint256 tokenId) internal view returns (string memory) {
         CertificateData memory cert = certificateData[tokenId];
         bytes memory json = abi.encodePacked(
-            '{"name":"Kuberna Certificate -',
+            "{\"name\":\"Kuberna Certificate -",
             cert.courseTitle,
-            '","description":"',
+            "\",\"description\":\"",
             cert.recipientName,
             " completed ",
             cert.courseTitle,
-            '","image":"https://kuberna.africa/certificates/',
+            "\",\"image\":\"https://kuberna.africa/certificates/",
             _toString(tokenId),
-            '.svg"}'
+            ".svg\"}"
         );
         return string(abi.encodePacked("data:application/json;base64,", Base64.encode(json)));
     }
 
     function revokeCertificate(uint256 tokenId, string calldata) external onlyOwner {
         CertificateData storage cert = certificateData[tokenId];
-        require(cert.isValid);
+        require(cert.isValid, "CertificateNFT: certificate already revoked");
         cert.isValid = false;
         emit CertificateRevoked(tokenId, "");
     }
