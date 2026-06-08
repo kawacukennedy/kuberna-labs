@@ -33,7 +33,7 @@
     "build:backend": "cd backend && npm ci && npx prisma generate && npm run build",
     "build:frontend": "cd frontend && npm ci && npm run build",
     "build:all": "npm run build:sdk && npm run build:backend && npm run build:frontend",
-    "start:render": "cd backend && if [ -n \"$DIRECT_URL\" ]; then npx prisma migrate deploy; else echo 'Skipping prisma migrate deploy (DIRECT_URL not set)'; fi && cd .. && node backend/dist/index.js",
+    "start:render": "cd backend && rm -rf node_modules/@prisma/client && npx prisma generate && if [ -n \"$DIRECT_URL\" ]; then npx prisma migrate deploy; else echo 'Skipping prisma migrate deploy (DIRECT_URL not set)'; fi && cd .. && node backend/dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy && cd ..",
     "db:generate": "cd backend && npx prisma generate && cd .."
   },

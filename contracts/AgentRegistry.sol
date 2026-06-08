@@ -30,6 +30,7 @@ struct Agent {
     uint256 lastActive;
 }
 
+/// @notice Contract for registering and managing AI agent NFTs with on-chain identity
 contract KubernaAgentRegistry is ERC721, Ownable {
     uint256 private _nextTokenId;
     mapping(uint256 => Agent) public agents;

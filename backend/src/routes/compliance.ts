@@ -169,7 +169,7 @@ router.get(
         }),
       ]);
 
-      const payments_ = payments as { amount: number; currency: string; type: string; createdAt: Date }[];
+      const payments_ = payments as unknown as { amount: number; currency: string; type: string; createdAt: Date }[];
       const totalRevenue = payments_.reduce((sum, p) => sum + Number(p.amount), 0);
       const revenueByCurrency = payments_.reduce(
         (acc, p) => {

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 /**
  * @title Attestation
@@ -21,6 +21,11 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
  * - Revocation capability
  * - Expiration support
  */
+error InvalidRecipient();
+error InvalidSignature();
+error NotAuthorized();
+error AlreadyRevoked();
+
 contract Attestation is Ownable, EIP712 {
     using ECDSA for bytes32;
 
@@ -73,7 +78,7 @@ contract Attestation is Ownable, EIP712 {
         uint64 expirationTime,
         bytes memory data
     ) external returns (bytes32) {
-        require(recipient != address(0), "Invalid recipient");
+        if (recipient == address(0)) revert InvalidRecipient();
 
         bytes32 attestationId = keccak256(abi.encodePacked(schema, recipient, block.timestamp, msg.sender));
 
@@ -119,7 +124,7 @@ contract Attestation is Ownable, EIP712 {
         bytes32 digest = _hashTypedDataV4(structHash);
         address signer = digest.recover(signature);
 
-        require(signer != address(0), "Invalid signature");
+        if (signer == address(0)) revert InvalidSignature();
 
         bytes32 attestationId = keccak256(abi.encodePacked(schema, recipient, block.timestamp, signer));
 
@@ -148,8 +153,8 @@ contract Attestation is Ownable, EIP712 {
      */
     function revoke(bytes32 attestationId) external {
         AttestationData storage attestation = attestations[attestationId];
-        require(attestation.issuer == msg.sender || msg.sender == owner(), "Not authorized");
-        require(!attestation.revoked, "Already revoked");
+        if (attestation.issuer != msg.sender && msg.sender != owner()) revert NotAuthorized();
+        if (attestation.revoked) revert AlreadyRevoked();
 
         attestation.revoked = true;
         revocationHistory[attestationId][msg.sender] = true;
