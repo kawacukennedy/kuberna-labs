@@ -19,7 +19,8 @@ const MODELS = [
   {
     name: 'Xenova/all-MiniLM-L6-v2',
     type: 'embedding',
-    description: 'Lightweight sentence embedding model (384-dim) for intent similarity search and RAG',
+    description:
+      'Lightweight sentence embedding model (384-dim) for intent similarity search and RAG',
     size: '~80MB',
     source: 'https://huggingface.co/Xenova/all-MiniLM-L6-v2',
     files: ['model.onnx', 'tokenizer.json', 'config.json'],
@@ -36,28 +37,30 @@ async function ensureDir(dir) {
 async function downloadFile(url, dest) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
-    https.get(url, (response) => {
-      if (response.statusCode === 302 || response.statusCode === 301) {
+    https
+      .get(url, (response) => {
+        if (response.statusCode === 302 || response.statusCode === 301) {
+          file.close();
+          fs.unlinkSync(dest);
+          return downloadFile(response.headers.location, dest).then(resolve).catch(reject);
+        }
+        if (response.statusCode !== 200) {
+          file.close();
+          fs.unlinkSync(dest);
+          reject(new Error(`HTTP ${response.statusCode} for ${url}`));
+          return;
+        }
+        response.pipe(file);
+        file.on('finish', () => {
+          file.close();
+          resolve();
+        });
+      })
+      .on('error', (err) => {
         file.close();
-        fs.unlinkSync(dest);
-        return downloadFile(response.headers.location, dest).then(resolve).catch(reject);
-      }
-      if (response.statusCode !== 200) {
-        file.close();
-        fs.unlinkSync(dest);
-        reject(new Error(`HTTP ${response.statusCode} for ${url}`));
-        return;
-      }
-      response.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve();
+        fs.unlinkSync(dest, () => {});
+        reject(err);
       });
-    }).on('error', (err) => {
-      file.close();
-      fs.unlinkSync(dest, () => {});
-      reject(err);
-    });
   });
 }
 

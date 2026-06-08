@@ -77,15 +77,15 @@ contract KubernaCertificateNFT is ERC721, ERC721URIStorage, Ownable {
     function _generateTokenURI(uint256 tokenId) internal view returns (string memory) {
         CertificateData memory cert = certificateData[tokenId];
         bytes memory json = abi.encodePacked(
-            "{\"name\":\"Kuberna Certificate -",
+            '{"name":"Kuberna Certificate -',
             cert.courseTitle,
-            "\",\"description\":\"",
+            '","description":"',
             cert.recipientName,
             " completed ",
             cert.courseTitle,
-            "\",\"image\":\"https://kuberna.africa/certificates/",
+            '","image":"https://kuberna.africa/certificates/',
             _toString(tokenId),
-            ".svg\"}"
+            '.svg"}'
         );
         return string(abi.encodePacked("data:application/json;base64,", Base64.encode(json)));
     }
