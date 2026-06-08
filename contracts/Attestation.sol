@@ -21,12 +21,13 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
  * - Revocation capability
  * - Expiration support
  */
-error InvalidRecipient();
-error InvalidSignature();
-error NotAuthorized();
-error AlreadyRevoked();
 
 contract Attestation is Ownable, EIP712 {
+    error InvalidRecipient();
+    error InvalidSignature();
+    error NotAuthorized();
+    error AlreadyRevoked();
+
     using ECDSA for bytes32;
 
     struct AttestationData {
