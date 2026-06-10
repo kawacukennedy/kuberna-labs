@@ -60,6 +60,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     uint256 public bridgeFee;
     uint256 public constant BPS_DENOMINATOR = 10000;
     uint256 public slippageTolerance = 50; // 0.5%
+    mapping(bytes32 => bytes32) public messageDataHash;
 
     event CrossChainTransferInitiated(
         bytes32 indexed messageId,
@@ -107,9 +108,12 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
             IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
         }
 
+        uint256 nonce = nonces[msg.sender]++;
         bytes32 messageId = keccak256(
-            abi.encodePacked(msg.sender, recipient, token, amount, nonces[msg.sender]++, block.timestamp)
+            abi.encodePacked(msg.sender, recipient, token, amount, nonce, block.timestamp)
         );
+
+        messageDataHash[messageId] = keccak256(abi.encodePacked(recipient, token, amount));
 
         messages[messageId] = CrossChainMessage({
             messageId: messageId,
@@ -120,7 +124,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
             token: token,
             amount: amount,
             data: "",
-            nonce: nonces[msg.sender],
+            nonce: nonce,
             executed: false,
             timestamp: block.timestamp
         });
@@ -152,7 +156,9 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         uint256 minReceived
     ) external onlyOwner nonReentrant whenNotPaused {
         CrossChainMessage storage message = messages[messageId];
+        require(message.sender != address(0), "Message does not exist");
         require(!message.executed, "Already executed");
+        require(messageDataHash[messageId] == keccak256(abi.encodePacked(recipient, token, amount)), "Params mismatch");
         require(amount >= minReceived, "Slippage exceeded");
 
         message.executed = true;

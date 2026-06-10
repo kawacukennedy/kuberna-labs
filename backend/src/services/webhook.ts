@@ -53,6 +53,7 @@ export class WebhookService {
   private deliveryAttempts: Map<string, number> = new Map();
   private maxRetries: number = 5;
   private retryDelays: number[] = [1000, 5000, 15000, 60000, 300000];
+  private subscriptions: Map<string, WebhookSubscription> = new Map();
 
   generateSecret(): string {
     return crypto.randomBytes(32).toString("hex");
@@ -68,6 +69,35 @@ export class WebhookService {
       Buffer.from(signature),
       Buffer.from(expected),
     );
+  }
+
+  registerSubscription(subscription: WebhookSubscription): void {
+    this.subscriptions.set(subscription.id, subscription);
+  }
+
+  removeSubscription(subscriptionId: string): boolean {
+    return this.subscriptions.delete(subscriptionId);
+  }
+
+  getEventSubscriptions(event: WebhookEvent): WebhookSubscription[] {
+    const matches: WebhookSubscription[] = [];
+    for (const sub of this.subscriptions.values()) {
+      if (sub.active && sub.events.includes(event)) {
+        matches.push(sub);
+      }
+    }
+    return matches;
+  }
+
+  async deliverToEvent(event: WebhookEvent, data: Record<string, unknown>): Promise<WebhookDelivery[]> {
+    const payload = this.createPayload(event, data);
+    const subscriptions = this.getEventSubscriptions(event);
+    const results: WebhookDelivery[] = [];
+    for (const sub of subscriptions) {
+      const delivery = await this.deliver(sub, payload);
+      results.push(delivery);
+    }
+    return results;
   }
 
   async deliver(
@@ -153,29 +183,29 @@ export class WebhookService {
   }
 
   async notifyIntentCreated(intent: Record<string, unknown>): Promise<void> {
-    const payload = this.createPayload("intent.created", intent);
+    await this.deliverToEvent("intent.created", intent);
   }
 
   async notifyBidReceived(bid: Record<string, unknown>): Promise<void> {
-    const payload = this.createPayload("intent.bid_received", bid);
+    await this.deliverToEvent("intent.bid_received", bid);
   }
 
   async notifyTaskCompleted(task: Record<string, unknown>): Promise<void> {
-    const payload = this.createPayload("task.completed", task);
+    await this.deliverToEvent("task.completed", task);
   }
 
   async notifyPaymentReceived(payment: Record<string, unknown>): Promise<void> {
-    const payload = this.createPayload("payment.received", payment);
+    await this.deliverToEvent("payment.received", payment);
   }
 
   async notifyAgentRegistered(agent: Record<string, unknown>): Promise<void> {
-    const payload = this.createPayload("agent.registered", agent);
+    await this.deliverToEvent("agent.registered", agent);
   }
 
   async notifyCertificateMinted(
     certificate: Record<string, unknown>,
   ): Promise<void> {
-    const payload = this.createPayload("certificate.minted", certificate);
+    await this.deliverToEvent("certificate.minted", certificate);
   }
 }
 

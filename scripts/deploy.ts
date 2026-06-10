@@ -84,7 +84,7 @@ async function main() {
   // Deploy Cross-Chain Router Contract
   console.log('\n📝 Deploying Cross-Chain Router Contract...');
   const CrossChainRouter = await ethers.getContractFactory('CrossChainRouter');
-  const crossChainRouter = await CrossChainRouter.deploy();
+  const crossChainRouter = await CrossChainRouter.deploy(deployer.address);
   await crossChainRouter.waitForDeployment();
   deploymentAddresses.crossChainRouter = await crossChainRouter.getAddress();
   console.log(`✅ Cross-Chain Router deployed to: ${deploymentAddresses.crossChainRouter}`);
@@ -92,7 +92,7 @@ async function main() {
   // Deploy Attestation Contract
   console.log('\n📝 Deploying Attestation Contract...');
   const Attestation = await ethers.getContractFactory('Attestation');
-  const attestation = await Attestation.deploy();
+  const attestation = await Attestation.deploy(deployer.address);
   await attestation.waitForDeployment();
   deploymentAddresses.attestation = await attestation.getAddress();
   console.log(`✅ Attestation deployed to: ${deploymentAddresses.attestation}`);

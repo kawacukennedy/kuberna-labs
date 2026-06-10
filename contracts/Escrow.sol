@@ -207,21 +207,13 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
     function expireAndRefund(bytes32 escrowId) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender, "Only requester can expire");
-        require(e.status == EscrowStatus.Funded || e.status == EscrowStatus.None, "Invalid status for expiration");
+        require(e.status == EscrowStatus.Funded, "Escrow not funded");
         require(block.timestamp > e.deadline, "Deadline not passed");
 
-        // Store the original status before changing it
-        bool wasFunded = (e.status == EscrowStatus.Funded);
         e.status = EscrowStatus.Expired;
 
-        // Refund amount + fee if escrow was funded, only amount if not funded
-        if (wasFunded) {
-            _transferFunds(e.token, e.requester, e.amount + e.fee);
-            emit FundsRefunded(escrowId, e.requester, e.amount + e.fee);
-        } else {
-            _transferFunds(e.token, e.requester, e.amount);
-            emit FundsRefunded(escrowId, e.requester, e.amount);
-        }
+        _transferFunds(e.token, e.requester, e.amount + e.fee);
+        emit FundsRefunded(escrowId, e.requester, e.amount + e.fee);
     }
 
     function getEscrow(bytes32 escrowId) external view returns (EscrowData memory) {

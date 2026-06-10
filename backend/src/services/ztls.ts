@@ -44,6 +44,7 @@ export class ZKTLService {
   private reclaimAppId: string;
   private reclaimAppSecret: string;
   private zkpassApiKey: string;
+  private sessions: Map<string, ZKTLSSession> = new Map();
 
   constructor() {
     this.reclaimAppId = process.env.RECLAIM_APP_ID || "";
@@ -74,6 +75,7 @@ export class ZKTLService {
       expiresAt: new Date(Date.now() + 300000),
     };
 
+    this.sessions.set(sessionId, session);
     return session;
   }
 
@@ -92,25 +94,20 @@ export class ZKTLService {
       expiresAt: new Date(Date.now() + 300000),
     };
 
+    this.sessions.set(sessionId, session);
     return session;
   }
 
   async getSession(sessionId: string): Promise<ZKTLSSession | null> {
-    // In production, this should query an in-memory store or database
-    // The mock below MUST be replaced with real session storage
-    logger.warn('getSession called with mock implementation', { sessionId });
-    return {
-      id: sessionId,
-      provider: "reclaim",
-      userId: "",
-      website: "",
-      status: "verified",
-      proof: "0xproof",
-      claimedData: { balance: 10000 },
-      createdAt: new Date(),
-      expiresAt: new Date(),
-      verifiedAt: new Date(),
-    };
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return null;
+    }
+    if (session.expiresAt < new Date()) {
+      session.status = "expired";
+      return session;
+    }
+    return session;
   }
 
   async verifyProof(sessionId: string, proof: string): Promise<boolean> {
@@ -149,20 +146,21 @@ export class ZKTLService {
     proof: string,
     claimedData: Record<string, unknown>,
   ): Promise<ZKTLSSession | null> {
+    const session = this.sessions.get(sessionId);
+    if (!session) return null;
+
     const isValid = await this.verifyProof(sessionId, proof);
 
-    return {
-      id: sessionId,
-      provider: "reclaim",
-      userId: "",
-      website: "",
+    const updated: ZKTLSSession = {
+      ...session,
       status: isValid ? "verified" : "failed",
       proof,
       claimedData: isValid ? claimedData : undefined,
-      createdAt: new Date(),
-      expiresAt: new Date(),
       verifiedAt: isValid ? new Date() : undefined,
     };
+
+    this.sessions.set(sessionId, updated);
+    return updated;
   }
 
   async saveCredential(
@@ -214,18 +212,25 @@ export class ZKTLService {
   }
 
   async getUserCredentials(userId: string): Promise<ZKTLSCredential[]> {
-    return [
-      {
-        id: "cred-example",
-        userId,
-        type: "bank_balance",
-        provider: "reclaim",
-        proof: "0xproof",
-        data: { balance: 10000 },
-        verified: true,
-        createdAt: new Date(),
-      },
-    ];
+    const credentials: ZKTLSCredential[] = [];
+    for (const session of this.sessions.values()) {
+      if (session.userId === userId && session.status === "verified") {
+        credentials.push({
+          id: `cred-${session.id}`,
+          userId,
+          type: this.getCredentialType(session.website),
+          provider: session.provider,
+          proof: session.proof || "",
+          data: session.claimedData || {},
+          verified: true,
+          createdAt: session.createdAt,
+        });
+      }
+    }
+    if (credentials.length === 0) {
+      return [];
+    }
+    return credentials;
   }
 
   async generateOnChainProof(credentialId: string): Promise<string> {
@@ -234,7 +239,15 @@ export class ZKTLService {
 
   async verifyOnChainProof(proof: string): Promise<boolean> {
     try {
-      return proof.startsWith("0x") && proof.length > 10;
+      if (!proof.startsWith("0x")) return false;
+
+      const decoded = JSON.parse(Buffer.from(proof.slice(2), "hex").toString());
+      if (!decoded.credentialId || !decoded.timestamp) return false;
+
+      const age = Date.now() - decoded.timestamp;
+      if (age < 0 || age > 7 * 24 * 60 * 60 * 1000) return false;
+
+      return true;
     } catch {
       return false;
     }

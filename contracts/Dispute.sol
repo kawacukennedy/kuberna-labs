@@ -69,6 +69,7 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     event DisputeResolved(bytes32, Vote);
     event DisputeAppealed(bytes32);
     event JurorRegistered(address);
+    event JurorUnregistered(address juror, uint256 amount);
 
     constructor() Ownable(msg.sender) {}
 
@@ -83,6 +84,19 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         }
 
         emit JurorRegistered(juror);
+    }
+
+    function unstakeJuror() external nonReentrant {
+        Juror storage j = jurors[msg.sender];
+        require(j.active, "Not an active juror");
+        require(j.stakedAmount > 0, "No stake to withdraw");
+
+        uint256 amount = j.stakedAmount;
+        j.active = false;
+        j.stakedAmount = 0;
+
+        payable(msg.sender).transfer(amount);
+        emit JurorUnregistered(msg.sender, amount);
     }
 
     function openDispute(

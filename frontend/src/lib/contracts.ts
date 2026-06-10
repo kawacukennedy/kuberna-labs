@@ -389,11 +389,7 @@ const FALLBACK_ADDRESSES = {
 };
 
 const readEnv = (key: string): string | undefined => {
-  try {
-    return (import.meta as any).env?.[key];
-  } catch {
-    return undefined;
-  }
+  return process.env[key];
 };
 
 const envAddresses = {

@@ -36,6 +36,7 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         uint256 votesFor;
         uint256 votesAgainst;
         uint256 endTime;
+        uint256 snapshotBlock;
         bool executed;
         bool cancelled;
     }
@@ -62,6 +63,8 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
      * @param _owner The owner address for minting permissions
      */
     constructor(address _owner) ERC20("Kuberna Labs", "KNL") Ownable(_owner) {
+        delegates[_owner] = _owner;
+        _writeCheckpoint(_owner, 0, 100_000_000 * 10 ** 18);
         _mint(_owner, 100_000_000 * 10 ** 18);
     }
 
@@ -141,6 +144,7 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         p.target = target;
         p.callData = callData;
         p.endTime = block.timestamp + PROPOSAL_VOTING_PERIOD;
+        p.snapshotBlock = block.number;
 
         emit ProposalCreated(id, msg.sender, description);
         return id;
@@ -155,8 +159,9 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
         require(block.timestamp < p.endTime, "Voting period ended");
         require(!p.executed && !p.cancelled, "Proposal finalized");
         require(!hasVoted[proposalId][msg.sender], "Already voted");
+        require(p.snapshotBlock > 0 && p.snapshotBlock <= block.number, "Invalid snapshot");
 
-        uint256 weight = getEffectiveVotingPower(msg.sender);
+        uint256 weight = getPastVotes(msg.sender, p.snapshotBlock);
         require(weight > 0, "No voting power");
 
         hasVoted[proposalId][msg.sender] = true;

@@ -41,12 +41,13 @@ contract Attestation is Ownable, EIP712 {
     }
 
     bytes32 public constant ATTESTATION_TYPEHASH =
-        keccak256("Attestation(bytes32 schema,address recipient,uint64 expirationTime,bytes data)");
+        keccak256("Attestation(bytes32 schema,address recipient,uint64 expirationTime,bytes data,uint256 nonce)");
 
     mapping(bytes32 => AttestationData) public attestations;
     mapping(bytes32 => mapping(address => bool)) public revocationHistory;
     mapping(address => bytes32[]) public issuerAttestations;
     mapping(address => bytes32[]) public recipientAttestations;
+    mapping(address => uint256) public sigNonces;
 
     uint256 public attestationCount;
 
@@ -118,8 +119,9 @@ contract Attestation is Ownable, EIP712 {
         bytes memory data,
         bytes calldata signature
     ) external returns (bytes32) {
+        uint256 nonce = sigNonces[msg.sender]++;
         bytes32 structHash = keccak256(
-            abi.encode(ATTESTATION_TYPEHASH, schema, recipient, expirationTime, keccak256(data))
+            abi.encode(ATTESTATION_TYPEHASH, schema, recipient, expirationTime, keccak256(data), nonce)
         );
 
         bytes32 digest = _hashTypedDataV4(structHash);
