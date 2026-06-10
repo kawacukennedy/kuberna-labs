@@ -223,7 +223,7 @@ contract GovernanceToken is ERC20, ERC20Burnable, Ownable {
      * @param blockNumber The block number
      * @return The voting power at that block
      */
-    function getPastVotes(address account, uint256 blockNumber) external view returns (uint256) {
+    function getPastVotes(address account, uint256 blockNumber) public view returns (uint256) {
         Checkpoint[] storage ckpts = checkpoints[account];
         if (ckpts.length == 0) return 0;
 

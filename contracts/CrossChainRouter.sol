@@ -109,9 +109,7 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         }
 
         uint256 nonce = nonces[msg.sender]++;
-        bytes32 messageId = keccak256(
-            abi.encodePacked(msg.sender, recipient, token, amount, nonce, block.timestamp)
-        );
+        bytes32 messageId = keccak256(abi.encodePacked(msg.sender, recipient, token, amount, nonce, block.timestamp));
 
         messageDataHash[messageId] = keccak256(abi.encodePacked(recipient, token, amount));
 
