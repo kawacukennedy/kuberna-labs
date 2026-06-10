@@ -483,9 +483,9 @@ describe('KubernaEscrow', function () {
       expect(escrowData.status).to.equal(7);
     });
 
-    it('should reject if deadline not passed', async function () {
+    it('should reject if escrow not funded', async function () {
       await expect(escrow.connect(requester).expireAndRefund(escrowId)).to.be.revertedWith(
-        'Deadline not passed'
+        'Escrow not funded'
       );
     });
   });
