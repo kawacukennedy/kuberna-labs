@@ -1,5 +1,8 @@
 name: Publish SDK to npm
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: [main]
