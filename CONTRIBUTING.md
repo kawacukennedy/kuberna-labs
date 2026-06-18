@@ -1,179 +1,107 @@
 # Contributing to Kuberna Labs
 
-First off, thank you for considering contributing to Kuberna Labs! It's people like you that make Kuberna a powerful tool for building the Agentic Web3 Enterprise.
+Thank you for considering contributing. This document outlines the development workflow, code standards, and PR process.
 
 ## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
-- [How to Contribute](#how-to-contribute)
-- [Coding Standards](#coding-standards)
-- [Testing Guidelines](#testing-guidelines)
+- [Code Style](#code-style)
+- [Commit Messages](#commit-messages)
 - [Pull Request Process](#pull-request-process)
-- [Community](#community)
+- [Testing](#testing)
+- [Code Review](#code-review)
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
-
-## Getting Started
-
-### 1. Where do I go from here?
-
-If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/kawacukennedy/kuberna-labs/issues) to see if someone else in the community has already created a ticket. If not, go ahead and make one!
-
-### 2. Types of Contributions
-
-We welcome many types of contributions:
-
-- **Bug fixes**: Fix issues in smart contracts, backend services, or frontend
-- **New features**: Add new functionality to any component
-- **Documentation**: Improve or add documentation
-- **Tests**: Add or improve test coverage
-- **Performance**: Optimize gas usage or backend performance
-- **Security**: Identify and fix security vulnerabilities
+This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
 
 ## Development Setup
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm or yarn
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+- PostgreSQL 14+ (or Supabase account for managed DB)
 - Git
-- A code editor (VS Code recommended)
+- WalletConnect Project ID (free at https://cloud.walletconnect.com)
 
-### Installation
+### Setup Steps
 
-1. Fork the repository
-2. Clone your fork:
-
-```sh
+```bash
+# 1. Fork and clone
 git clone https://github.com/YOUR_USERNAME/kuberna-labs.git
 cd kuberna-labs
-```
 
-3. Install dependencies:
-
-```sh
+# 2. Install all dependencies
 npm install
+cd backend && npm install && cd ..
+cd frontend && npm install && cd ..
+cd sdk && npm install && cd ..
+
+# 3. Configure environment
+cp backend/.env.example backend/.env
+# Edit backend/.env: set DATABASE_URL, DIRECT_URL, JWT_SECRET
+
+# 4. Set up database
+cd backend && npx prisma migrate dev && cd ..
+
+# 5. Compile contracts (optional, for contract work)
+npm run compile
+
+# 6. Verify setup
+cd backend && npm test && cd ..
 ```
 
-4. Set up environment variables:
+### Branch Naming
 
-```sh
-cp .env.example .env
-# Edit .env with your configuration
+```
+feat/description     # New features
+fix/description      # Bug fixes
+docs/description     # Documentation
+test/description     # Test additions/changes
+refactor/description # Code refactoring
+perf/description     # Performance improvements
+chore/description    # Build/tooling changes
 ```
 
-5. Compile smart contracts:
+## Code Style
 
-```sh
-npx hardhat compile
-```
+### TypeScript
 
-6. Run tests to verify setup:
-
-```sh
-npm test
-```
-
-## How to Contribute
-
-### 1. Fork & Create a Branch
-
-Fork Kuberna Labs and create a branch with a descriptive name.
-
-A good branch name would be (where issue #325 is the ticket you're working on):
-
-```sh
-git checkout -b 325-add-solana-adapter
-```
-
-Branch naming conventions:
-
-- `feat/description` - New features
-- `fix/description` - Bug fixes
-- `docs/description` - Documentation changes
-- `test/description` - Test additions/changes
-- `refactor/description` - Code refactoring
-- `perf/description` - Performance improvements
-
-### 2. Implement Your Changes
-
-At this point, you're ready to make your changes. Feel free to ask for help; everyone is a beginner at first!
-
-#### Smart Contract Changes
-
-- Follow Solidity best practices
-- Add comprehensive tests
-- Optimize for gas efficiency
-- Include NatSpec comments
-- Run `npx hardhat test` before committing
-
-#### Backend Changes
-
-- Follow TypeScript best practices
-- Add unit tests
-- Update API documentation if needed
-- Run `npm test` in the backend directory
-
-#### Frontend Changes
-
-- Follow React best practices
-- Ensure responsive design
-- Add component tests
-- Run `npm test` in the frontend directory
-
-### 3. Write Tests
-
-All new features and bug fixes must include tests:
-
-- **Smart Contracts**: Write Hardhat tests in `test/`
-- **Backend**: Write Jest tests in `backend/src/**/__tests__/`
-- **Frontend**: Write React Testing Library tests
-
-### 4. Update Documentation
-
-If your changes affect how users interact with Kuberna:
-
-- Update README.md if needed
-- Update API.md for API changes
-- Update ARCHITECTURE.md for architectural changes
-- Add inline code comments
-- Update JSDoc/NatSpec comments
-
-## Coding Standards
-
-### General
-
-- Use meaningful variable and function names
-- Keep functions small and focused
-- Write self-documenting code
-- Add comments for complex logic
-
-### TypeScript/JavaScript
-
-- Use TypeScript for type safety
-- Follow ESLint configuration
-- Use Prettier for formatting
+- Strict mode enabled in all `tsconfig.json` files
+- All files must pass TypeScript compilation (`tsc --noEmit`)
 - Prefer `const` over `let`
-- Use async/await over promises
-- Handle errors appropriately
+- Use `async/await` over raw promises
+- Use explicit return types on public function signatures
+- Use Zod schemas for runtime validation (backend)
+- No `any` — use `unknown` and type narrowing instead
+
+### Formatting
+
+- **Prettier** is enforced via `.prettierrc.json` and CI
+- Run before committing: `npm run format`
+- 100 character print width, single quotes, trailing commas
+- Solidity files formatted with `prettier-plugin-solidity`
+
+### Linting
+
+- ESLint with `@typescript-eslint` rules
+- `solhint` for Solidity files
+- Run: `npm run lint`
 
 ### Solidity
 
-- Follow Solidity style guide
-- Use OpenZeppelin contracts when possible
-- Optimize for gas efficiency
-- Include comprehensive NatSpec comments
-- Use events for state changes
-- Implement access control
+- Solidity ^0.8.20 with optimizer enabled (200 runs)
+- Use OpenZeppelin contracts for standards (ERC20, ERC721, Ownable, Pausable, ReentrancyGuard)
+- Include NatSpec comments (`@title`, `@dev`, `@param`, `@return`)
+- Use custom errors instead of `require` with string messages
 - Add reentrancy protection where needed
+- Emit events for all state-changing operations
 
-### Git Commit Messages
+## Commit Messages
 
-Follow conventional commits:
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 type(scope): subject
@@ -183,110 +111,127 @@ body
 footer
 ```
 
-Types:
+### Types
 
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting)
-- `refactor`: Code refactoring
-- `test`: Test additions/changes
-- `chore`: Build process or auxiliary tool changes
+| Type | Usage |
+|------|-------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `style` | Code style (formatting, semicolons) |
+| `refactor` | Code change that neither fixes nor adds |
+| `perf` | Performance improvement |
+| `test` | Adding or fixing tests |
+| `chore` | Build process, dependencies, tooling |
 
-Example:
+### Scopes
+
+`backend`, `frontend`, `sdk`, `contracts`, `prisma`, `ci`, `deps`, `docs`
+
+### Examples
 
 ```
-feat(contracts): add Pausable functionality to Escrow contract
+feat(contracts): add Pausable to Escrow with emergency pause
 
-- Add emergency pause mechanism
-- Implement whenNotPaused modifier
-- Add tests for pause functionality
+- Add whenNotPaused modifier to all state-changing functions
+- Implement pause/unpause with onlyOwner access
+- Add tests for pause functionality during active escrows
 
 Closes #123
 ```
 
-## Testing Guidelines
-
-### Running Tests
-
-```sh
-# All tests
-npm test
-
-# Smart contract tests
-npx hardhat test
-
-# Backend tests
-cd backend && npm test
-
-# Frontend tests
-cd frontend && npm test
-
-# Coverage
-npm run coverage
 ```
+fix(backend): handle null agent config in orchestrator
 
-### Writing Tests
+Agent orchestrator crashes when config is null after deployment.
+Add null check before accessing config properties.
 
-- Write descriptive test names
-- Test happy paths and edge cases
-- Test error conditions
-- Mock external dependencies
-- Aim for >80% code coverage
+Fixes #456
+```
 
 ## Pull Request Process
 
-### 1. Update Your Branch
+1. **Keep your branch up to date**:
 
-Make sure your branch is up to date with the main branch:
+   ```bash
+   git remote add upstream https://github.com/kawacukennedy/kuberna-labs.git
+   git fetch upstream
+   git rebase upstream/main
+   ```
 
-```sh
-git remote add upstream https://github.com/kawacukennedy/kuberna-labs.git
-git checkout main
-git pull upstream main
-git checkout your-branch-name
-git rebase main
+2. **Run all checks locally** before pushing:
+
+   ```bash
+   npm run format:check
+   npm run lint
+   npm test              # Contract tests
+   cd backend && npm test && cd ..
+   cd frontend && npm test && cd ..
+   cd sdk && npm test && cd ..
+   ```
+
+3. **Push and create a PR** with a descriptive title and body that links related issues.
+
+4. **PR checklist**:
+   - Changes include tests (unit + integration where applicable)
+   - All existing tests pass
+   - Code is formatted (`npm run format`)
+   - No TypeScript errors (`tsc --noEmit` in each package)
+   - API changes are documented (routes, request/response schemas)
+   - Contract changes include gas reports
+
+## Testing
+
+### Requirements
+
+- All new features must include tests
+- Bug fixes must include a regression test
+- Aim for >80% code coverage on changed code
+
+### Running Tests
+
+```bash
+# Hardhat contract tests
+npx hardhat test
+npx hardhat coverage    # Solidity coverage
+
+# Backend (Jest + supertest)
+cd backend && npm test
+cd backend && npm test -- --coverage
+
+# Frontend (Jest + React Testing Library)
+cd frontend && npm test
+
+# SDK (Jest)
+cd sdk && npm test
 ```
 
-### 2. Push Your Changes
+### Test Conventions
 
-```sh
-git push origin your-branch-name
-```
+- Contract tests: `test/*.ts` using Hardhat + chai matchers
+- Backend unit tests: `backend/src/__tests__/` or `backend/src/**/__tests__/`
+- Frontend tests: `frontend/src/__tests__/`
+- Test files mirror source file names with `.test.ts` suffix
+- Mock external services (blockchain RPC, email, Stripe) in backend tests
+- Use `fast-check` for property-based testing where appropriate
 
-### 3. Create Pull Request
+## Code Review
 
-1. Go to GitHub and create a Pull Request
-2. Fill out the PR template completely
-3. Link related issues
-4. Request review from maintainers
+### Reviewer Responsibilities
 
-### 4. Code Review
+- Verify the change solves the described problem
+- Check for security concerns (input validation, access control, reentrancy)
+- Ensure adequate test coverage
+- Confirm documentation is updated
+- Flag performance issues
+- Verify TypeScript strictness is maintained
 
-- Address all review comments
-- Keep discussions focused and professional
-- Update your PR based on feedback
-- Re-request review after making changes
+### Author Responsibilities
 
-### 5. Merge
-
-Once approved, a maintainer will merge your PR. Congratulations! 🎉
-
-## Community
-
-### Getting Help
-
-- **Discord**: Join our [Discord server](https://discord.gg/kuberna)
-- **GitHub Discussions**: Ask questions in [Discussions](https://github.com/kawacukennedy/kuberna-labs/discussions)
-- **Twitter**: Follow [@Arnaud_Kennedy](https://twitter.com/Arnaud_Kennedy)
-
-### Recognition
-
-Contributors will be:
-
-- Listed in our README
-- Mentioned in release notes
-- Eligible for contributor NFTs (coming soon)
+- Respond to all review comments
+- Keep PR scope focused (one feature/fix per PR)
+- Re-request review after addressing feedback
+- Squash commits before merge (the project uses squash merges)
 
 ## License
 
