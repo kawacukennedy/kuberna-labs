@@ -1,5 +1,6 @@
 import { z } from "zod";
 import logger from '../utils/logger.js';
+import { CircuitBreaker } from '../utils/circuitBreaker.js';
 
 const intentSchema = z.object({
   sourceChain: z.string(),
@@ -47,6 +48,24 @@ export interface CodeAssistantRequest {
   task: "explain" | "debug" | "optimize" | "complete";
 }
 
+function shouldCountFailure(error: unknown): boolean {
+  if (error instanceof TypeError) {
+    return true;
+  }
+  if (error instanceof Error && error.message.startsWith('AI API error:')) {
+    const status = parseInt(error.message.split(':')[1]?.trim() || '0', 10);
+    return status >= 500;
+  }
+  return false;
+}
+
+const circuitBreaker = new CircuitBreaker({
+  failureThreshold: 3,
+  resetTimeout: 30_000,
+  name: 'OpenAI',
+  shouldCountFailure,
+});
+
 export class AIService {
   private apiKey: string;
   private baseUrl: string;
@@ -75,50 +94,54 @@ User request: "${description}"
 
 Respond with ONLY JSON, no markdown, no explanation.`;
 
+    const fallback = (): ParsedIntent => ({
+      sourceChain: "ethereum",
+      sourceToken: "ETH",
+      sourceAmount: "0",
+      destChain: "ethereum",
+      destToken: "USDC",
+      minDestAmount: "0",
+      confidence: 0.0,
+      rawDescription: description,
+    });
+
     try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo-preview",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.1,
-          max_tokens: 500,
-        }),
-      });
+      return await circuitBreaker.call(async () => {
+        const response = await fetch(`${this.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo-preview",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.1,
+            max_tokens: 500,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`AI API error: ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`AI API error: ${response.status}`);
+        }
 
-      const data = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      const content = data.choices?.[0]?.message?.content || "{}";
+        const data = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const content = data.choices?.[0]?.message?.content || "{}";
 
-      const cleaned = content.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(cleaned);
+        const cleaned = content.replace(/```json|```/g, "").trim();
+        const parsed = JSON.parse(cleaned);
 
-      return {
-        ...intentSchema.parse(parsed),
-        confidence: 0.85,
-        rawDescription: description,
-      };
+        return {
+          ...intentSchema.parse(parsed),
+          confidence: 0.85,
+          rawDescription: description,
+        };
+      }, fallback);
     } catch (error) {
       logger.error("Intent parsing failed:", error);
-      return {
-        sourceChain: "ethereum",
-        sourceToken: "ETH",
-        sourceAmount: "0",
-        destChain: "ethereum",
-        destToken: "USDC",
-        minDestAmount: "0",
-        confidence: 0.0,
-        rawDescription: description,
-      };
+      return fallback();
     }
   }
 
@@ -174,39 +197,43 @@ Return a JSON object with:
 
 Generate production-quality code with proper error handling, logging, and configuration.`;
 
+    const fallback = (): GeneratedCode => ({
+      code: "// Code generation failed",
+      files: [],
+      dependencies: [],
+    });
+
     try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo-preview",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.2,
-          max_tokens: 4000,
-        }),
-      });
+      return await circuitBreaker.call(async () => {
+        const response = await fetch(`${this.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo-preview",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2,
+            max_tokens: 4000,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`AI API error: ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`AI API error: ${response.status}`);
+        }
 
-      const data = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      const content = data.choices?.[0]?.message?.content || "{}";
+        const data = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const content = data.choices?.[0]?.message?.content || "{}";
 
-      const cleaned = content.replace(/```json|```/g, "").trim();
-      return JSON.parse(cleaned);
+        const cleaned = content.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleaned);
+      }, fallback);
     } catch (error) {
       logger.error("Code generation failed:", error);
-      return {
-        code: "// Code generation failed",
-        files: [],
-        dependencies: [],
-      };
+      return fallback();
     }
   }
 
@@ -220,39 +247,43 @@ Generate production-quality code with proper error handling, logging, and config
 
     const prompt = taskPrompts[request.task] || request.code;
 
+    const fallback = (): string => "Unable to provide assistance at this time";
+
     try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo-preview",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a helpful Web3 development assistant. Provide clear, concise answers.",
-            },
-            { role: "user", content: prompt },
-          ],
-          temperature: 0.3,
-          max_tokens: 2000,
-        }),
-      });
+      return await circuitBreaker.call(async () => {
+        const response = await fetch(`${this.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo-preview",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a helpful Web3 development assistant. Provide clear, concise answers.",
+              },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.3,
+            max_tokens: 2000,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`AI API error: ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`AI API error: ${response.status}`);
+        }
 
-      const data = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      return data.choices?.[0]?.message?.content || "Unable to assist";
+        const data = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        return data.choices?.[0]?.message?.content || "Unable to assist";
+      }, fallback);
     } catch (error) {
       logger.error("AI assistance failed:", error);
-      return "Unable to provide assistance at this time";
+      return fallback();
     }
   }
 
@@ -261,30 +292,38 @@ Generate production-quality code with proper error handling, logging, and config
 
 ${code}`;
 
-    try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo-preview",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.3,
-          max_tokens: 1000,
-        }),
-      });
+    const fallback = (): string[] => [];
 
-      const data = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      const content = data.choices?.[0]?.message?.content || "[]";
-      const cleaned = content.replace(/```json|```/g, "").trim();
-      return JSON.parse(cleaned);
+    try {
+      return await circuitBreaker.call(async () => {
+        const response = await fetch(`${this.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo-preview",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.3,
+            max_tokens: 1000,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`AI API error: ${response.status}`);
+        }
+
+        const data = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const content = data.choices?.[0]?.message?.content || "[]";
+        const cleaned = content.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleaned);
+      }, fallback);
     } catch (error) {
       logger.error("Test generation failed:", error);
-      return [];
+      return fallback();
     }
   }
 
@@ -303,27 +342,43 @@ ${code}`;
 Code:
 ${code}`;
 
-    try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4-turbo-preview",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.1,
-          max_tokens: 1000,
-        }),
-      });
+    const fallback = (): {
+      valid: boolean;
+      errors: Array<{ line: number; message: string }>;
+      warnings: string[];
+    } => ({
+      valid: false,
+      errors: [],
+      warnings: ["Service unavailable"],
+    });
 
-      const data = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      const content = data.choices?.[0]?.message?.content || "{}";
-      const cleaned = content.replace(/```json|```/g, "").trim();
-      return JSON.parse(cleaned);
+    try {
+      return await circuitBreaker.call(async () => {
+        const response = await fetch(`${this.baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4-turbo-preview",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.1,
+            max_tokens: 1000,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`AI API error: ${response.status}`);
+        }
+
+        const data = (await response.json()) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const content = data.choices?.[0]?.message?.content || "{}";
+        const cleaned = content.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleaned);
+      }, fallback);
     } catch (error) {
       return {
         valid: false,

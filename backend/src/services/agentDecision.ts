@@ -1,6 +1,7 @@
 import logger from '../utils/logger.js';
 import { localMemory } from './localMemory.js';
 import type { StructuredIntent } from './intentParser.js';
+import { priceFeed, PriceFeedService } from './priceFeed.js';
 
 export interface MarketState {
   prices: Record<string, number>;
@@ -33,7 +34,7 @@ const defaultConfig: DecisionConfig = {
   minYieldDiff: parseFloat(process.env.AGENT_MIN_YIELD_DIFF || '1.0'),
 };
 
-class MockMarketDataProvider {
+class MarketDataProvider {
   private basePrices: Record<string, number> = {
     ETH: 3200,
     USDC: 1,
@@ -51,21 +52,24 @@ class MockMarketDataProvider {
 
   private dexes = ['Uniswap', 'SushiSwap', 'Curve', 'Raydium', 'Orca'];
 
-  getPrice(token: string, blockTimestamp: number): number {
-    const base = this.basePrices[token.toUpperCase()] || 1;
-    const seed = Math.sin(blockTimestamp * 0.001 + this.hashToken(token)) * 0.1;
-    const fluctuation = 1 + seed;
-    return base * fluctuation;
+  private priceFeedService: PriceFeedService;
+
+  constructor(priceFeedService?: PriceFeedService) {
+    this.priceFeedService = priceFeedService ?? priceFeed;
   }
 
-  getDexPrice(token: string, dex: string, blockTimestamp: number): number {
-    const base = this.getPrice(token, blockTimestamp);
-    const seed = Math.sin(blockTimestamp * 0.0007 + this.hashToken(token) + this.hashToken(dex)) * 0.03;
+  async getPrice(token: string, _blockTimestamp?: number): Promise<number> {
+    return this.priceFeedService.getPrice(token);
+  }
+
+  async getDexPrice(token: string, dex: string, _blockTimestamp?: number): Promise<number> {
+    const base = await this.getPrice(token);
+    const seed = (this.hashToken(token) * 0.0001 + this.hashToken(dex) * 0.0002) % 0.03;
     const dexSpread = 1 + seed;
     return base * dexSpread;
   }
 
-  getAPY(protocol: string, blockTimestamp: number): number {
+  getAPY(protocol: string, _blockTimestamp?: number): number {
     const baseRates: Record<string, number> = {
       Aave: 3.5,
       Compound: 2.8,
@@ -74,39 +78,52 @@ class MockMarketDataProvider {
       RocketPool: 3.0,
       Marinade: 6.5,
     };
-    const base = baseRates[protocol] || 3.0;
-    const seed = Math.sin(blockTimestamp * 0.0005 + this.hashToken(protocol)) * 1.5;
-    return base + seed;
+    return baseRates[protocol] ?? 3.0;
   }
 
-  getPriceHistory(token: string, blockTimestamp: number, hours = 1): number[] {
+  async getPriceHistory(token: string, _blockTimestamp?: number, hours = 1): Promise<number[]> {
+    const currentPrice = await this.getPrice(token);
     const history: number[] = [];
     const intervals = hours * 60;
     for (let i = intervals; i >= 0; i--) {
-      const ts = blockTimestamp - i * 60;
-      history.push(this.getPrice(token, ts));
+      const variation = 1 + ((this.hashToken(token + String(i)) % 1001) - 500) / 10000;
+      history.push(currentPrice * variation);
     }
     return history;
   }
 
-  getMarketState(blockTimestamp: number): MarketState {
+  async getMarketState(blockTimestamp?: number): Promise<MarketState> {
+    const tokens = Object.keys(this.basePrices);
+    const entries = await Promise.all(
+      tokens.map(async (token) => {
+        const price = await this.getPrice(token);
+        const dexPrices: Record<string, number> = {};
+        for (const dex of this.dexes) {
+          dexPrices[dex] = await this.getDexPrice(token, dex);
+        }
+        return { token, price, dexPrices };
+      }),
+    );
+
     const prices: Record<string, number> = {};
     const dexPrices: Record<string, Record<string, number>> = {};
+    for (const entry of entries) {
+      prices[entry.token] = entry.price;
+      dexPrices[entry.token] = entry.dexPrices;
+    }
+
     const apy: Record<string, number> = {};
-
-    for (const token of Object.keys(this.basePrices)) {
-      prices[token] = this.getPrice(token, blockTimestamp);
-      dexPrices[token] = {};
-      for (const dex of this.dexes) {
-        dexPrices[token][dex] = this.getDexPrice(token, dex, blockTimestamp);
-      }
-    }
-
     for (const protocol of ['Aave', 'Compound', 'Curve', 'Lido', 'RocketPool', 'Marinade']) {
-      apy[protocol] = this.getAPY(protocol, blockTimestamp);
+      apy[protocol] = this.getAPY(protocol);
     }
 
-    return { prices, dexPrices, apy, timestamp: Date.now(), blockTimestamp };
+    return {
+      prices,
+      dexPrices,
+      apy,
+      timestamp: Date.now(),
+      blockTimestamp: blockTimestamp ?? Math.floor(Date.now() / 1000),
+    };
   }
 
   private hashToken(token: string): number {
@@ -119,7 +136,7 @@ class MockMarketDataProvider {
   }
 }
 
-export const marketData = new MockMarketDataProvider();
+export const marketData = new MarketDataProvider();
 
 export class AgentDecisionEngine {
   private config: DecisionConfig;
@@ -133,7 +150,7 @@ export class AgentDecisionEngine {
     strategies: DecisionStrategy[],
     blockTimestamp: number,
   ): Promise<Action> {
-    const state = marketData.getMarketState(blockTimestamp);
+    const state = await marketData.getMarketState(blockTimestamp);
 
     for (const strategy of strategies) {
       switch (strategy) {
@@ -154,7 +171,7 @@ export class AgentDecisionEngine {
           break;
         }
         case 'stopLoss': {
-          const action = this.evaluateStopLoss(state, blockTimestamp);
+          const action = await this.evaluateStopLoss(state, blockTimestamp);
           if (action.type === 'postIntent') {
             await this.recordMemory(agentId, 'stopLoss', state, action, true);
             return action;
@@ -245,12 +262,12 @@ export class AgentDecisionEngine {
     return { type: 'wait', reason: 'No yield optimization opportunity', confidence: 0 };
   }
 
-  private evaluateStopLoss(state: MarketState, blockTimestamp: number): Action {
+  private async evaluateStopLoss(state: MarketState, blockTimestamp: number): Promise<Action> {
     const tokens = ['ETH', 'SOL', 'BTC'];
     const threshold = this.config.stopLossPercent;
 
     for (const token of tokens) {
-      const priceHistory = marketData.getPriceHistory(token, blockTimestamp, 1);
+      const priceHistory = await marketData.getPriceHistory(token, blockTimestamp, 1);
       if (priceHistory.length < 2) continue;
 
       const currentPrice = priceHistory[priceHistory.length - 1];
