@@ -32,7 +32,7 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl python3 make g++
 
 COPY package*.json ./
 COPY backend/package*.json ./backend/
@@ -44,6 +44,9 @@ COPY --from=backend-builder /app/contracts ./contracts
 COPY --from=backend-builder /app/artifacts ./artifacts
 COPY --from=backend-builder /app/backend/.env.example ./backend/.env.example
 COPY --from=frontend-builder /app/frontend/out ./frontend/out
+
+# Pre-download Transformers.js model for local intent parsing
+RUN node -e "const { env } = require('@xenova/transformers'); env.cacheDir = '/app/models'; require('@xenova/transformers').pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2').then(m => { console.log('Model downloaded'); process.exit(0); }).catch(e => { console.error(e); process.exit(1); })"
 
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001

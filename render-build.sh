@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # Kuberna Labs - Render Build Script
-# This is a convenience wrapper; Render uses "npm run build:all" directly.
 set -euo pipefail
+
+# Run database migrations (safe for idempotency)
+npx prisma generate
+npx prisma migrate deploy
+
+# Build all packages
 npm run build:all
