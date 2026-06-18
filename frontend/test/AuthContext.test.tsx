@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, act, fireEvent } from '@testing-library/react';
-import { AuthProvider, useAuth } from '../context/AuthContext';
+import { AuthProvider, useAuth } from '../src/context/AuthContext';
 
 const TEST_TOKEN_KEY = 'k.auth.token';
 const TEST_USER_KEY = 'k.auth.user';

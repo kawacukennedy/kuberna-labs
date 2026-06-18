@@ -49,7 +49,15 @@ frontend/coverage/
 # internal docs
 docs/kuberna-bd-research.md
 
-# aip-adapter uses test/ at package root (negate blanket test/ and *.test.ts rules)
+# sub-project test directories (negate blanket test/ and *.test.ts rules)
+!backend/test/
+!backend/**/*.test.ts
+!frontend/test/
+!frontend/**/*.test.ts
+!sdk/test/
+!sdk/**/*.test.ts
+
+# aip-adapter uses test/ at package root
 !packages/aip-adapter/test/
 !packages/aip-adapter/**/*.test.ts
 .env.bak
