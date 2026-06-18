@@ -11,5 +11,6 @@ module.exports = {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  testMatch: ["<rootDir>/test/**/*.test.ts"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/", "\\.d\\.ts$", "tee-usage-example"],
 };
