@@ -123,7 +123,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit EscrowFunded(escrowId, msg.sender, totalRequired);
     }
 
-    function assignExecutor(bytes32 escrowId, address executor) external whenNotPaused {
+    function assignExecutor(bytes32 escrowId, address executor) external nonReentrant whenNotPaused {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender);
         require(e.status == EscrowStatus.Funded);
@@ -177,7 +177,7 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit FundsReleased(escrowId, e.executor, releaseAmount);
     }
 
-    function raiseDispute(bytes32 escrowId, string calldata reason) external {
+    function raiseDispute(bytes32 escrowId, string calldata reason) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(msg.sender == e.requester || msg.sender == e.executor);
         require(e.status == EscrowStatus.Assigned || e.status == EscrowStatus.Completed);
