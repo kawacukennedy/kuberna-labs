@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/layout/Layout';
 import { ChevronLeft, ChevronRight, Play, BookOpen, CheckCircle2, MessageSquare, Download, Share2, HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LearnPage() {
   const router = useRouter();
@@ -12,7 +13,6 @@ export default function LearnPage() {
   return (
     <div className="min-h-screen flex flex-col pt-0">
       <Head><title>{courseId && moduleId ? `Module ${moduleId} — ${courseId} — Kuberna Labs` : 'Learn — Kuberna Labs'}</title></Head>
-      {/* Learn Header */}
       <nav className="glass sticky top-0 z-50 w-full px-6 h-16 flex items-center justify-between border-b border-glass-border">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="p-2 hover:bg-surface rounded-full">
@@ -40,7 +40,6 @@ export default function LearnPage() {
       </nav>
 
       <div className="flex-grow flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-64px)]">
-        {/* Main Content: Video/Reader */}
         <div className="flex-grow flex flex-col overflow-auto bg-[#F8FAFC]">
           <div className="w-full aspect-video bg-black relative group">
             <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover opacity-60" alt="lesson" />
@@ -88,7 +87,6 @@ export default function LearnPage() {
           </div>
         </div>
 
-        {/* Sidebar: Syllabus */}
         <div className="w-full lg:w-96 border-l border-glass-border bg-white flex flex-col shrink-0">
           <div className="p-6 border-b border-glass-border">
              <h3 className="font-bold flex items-center gap-2">
@@ -132,5 +130,3 @@ export default function LearnPage() {
     </div>
   );
 }
-
-import Link from 'next/link';

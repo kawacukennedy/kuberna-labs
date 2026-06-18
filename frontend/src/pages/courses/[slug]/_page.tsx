@@ -30,7 +30,6 @@ export default function CourseDetailPage() {
     <Layout>
       <Head><title>{router.query.slug ? `${router.query.slug} — Kuberna Labs` : 'Course — Kuberna Labs'}</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-8">
           <Link href="/courses" className="hover:text-primary">Courses</Link>
           <ChevronRight size={12} />
@@ -38,7 +37,6 @@ export default function CourseDetailPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               Advanced Multi-Chain Intent Engineering
@@ -121,7 +119,6 @@ export default function CourseDetailPage() {
             </section>
           </div>
 
-          {/* Sidebar: Enrollment Card */}
           <div className="lg:col-span-1">
             <div className="bg-surface-container-low p-8 rounded-xl sticky top-24">
               <div className="w-full h-48 bg-surface rounded-lg mb-6">

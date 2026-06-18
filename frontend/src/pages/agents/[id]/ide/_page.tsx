@@ -25,7 +25,6 @@ export default function AgentIDEPage() {
     <Layout variant="dashboard">
       <Head><title>Agent IDE — Kuberna Labs</title></Head>
       <div className="flex h-screen">
-        {/* IDE Sidebar */}
         <aside className="w-16 lg:w-64 bg-surface border-r border-outline/10 flex flex-col">
           <div className="p-4 border-b border-outline/10">
             <h2 className="text-lg font-bold hidden lg:block">Alpha-Arbitrage-v1</h2>
@@ -49,9 +48,7 @@ export default function AgentIDEPage() {
           </div>
         </aside>
 
-        {/* Main IDE Area */}
         <main className="flex-1 flex flex-col">
-          {/* Top Bar */}
           <header className="h-14 bg-surface border-b border-outline/10 flex items-center justify-between px-4">
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium">main.ts</span>
@@ -67,9 +64,7 @@ export default function AgentIDEPage() {
             </div>
           </header>
 
-          {/* Editor + Logs Split */}
           <div className="flex-1 flex">
-            {/* Code Editor */}
             <div className="flex-1 flex">
               <div className="w-12 bg-surface border-r border-outline/10 flex flex-col items-center py-4 gap-2 text-xs text-secondary">
                 {[...Array(20)].map((_, i) => (
@@ -83,16 +78,14 @@ export default function AgentIDEPage() {
 const agent = new Kuberna.Agent({
   name: 'Alpha-Arbitrage-v1',
   chain: 'arbitrum',
-  // Configure arbitrage parameters
   params: {
-    minProfit: 10, // USD
-    slippage: 0.5, // %
+    minProfit: 10,
+    slippage: 0.5,
     gasLimit: 500000,
   },
 });
 
 agent.on('intent', async (intent) => {
-  // Cross-chain arbitrage logic
   if (intent.type === 'swap') {
     const result = await executeSwap(intent);
     await agent.settle(result);
@@ -108,7 +101,6 @@ export default agent;`}
               />
             </div>
 
-            {/* Terminal Logs */}
             <div className="w-96 bg-black flex flex-col border-l border-outline/10">
               <div className="h-10 bg-surface flex items-center px-4 text-sm font-bold border-b border-outline/10">
                 <Terminal size={16} className="mr-2" /> Terminal

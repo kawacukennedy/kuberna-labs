@@ -16,4 +16,12 @@ const nextConfig = {
   trailingSlash: true,
 };
 
+// Demo mode: when NEXT_PUBLIC_DEMO_MODE=true, enables local intent parsing and mock blockchain
+if (process.env.NEXT_PUBLIC_DEMO_MODE === 'true') {
+  nextConfig.env = {
+    ...nextConfig.env,
+    NEXT_PUBLIC_DEMO_MODE: 'true',
+  };
+}
+
 module.exports = nextConfig;
