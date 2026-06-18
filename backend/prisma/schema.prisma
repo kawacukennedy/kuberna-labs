@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -115,6 +115,17 @@ enum PaymentType {
   WITHDRAWAL
   ESCROW_FUND
   ESCROW_RELEASE
+  KITE_X402
+}
+
+enum KitePaymentStatus {
+  SESSION_CREATED
+  SESSION_APPROVED
+  PAYMENT_AUTHORIZED
+  PAYMENT_SETTLED
+  COMPLETED
+  FAILED
+  EXPIRED
 }
 
 enum TicketStatus {
@@ -172,6 +183,7 @@ model User {
   fullName                String
   avatarUrl               String?
   web3Address             String?    @unique
+  kiteWalletAddress       String?
   authMethod              AuthMethod @default(EMAIL)
   roles                   Role[]     @default([LEARNER])
   mfaEnabled              Boolean    @default(false)
@@ -344,28 +356,31 @@ model ModuleProgress {
 }
 
 model Agent {
-  id              String         @id @default(uuid())
-  ownerId         String
-  name            String
-  description     String
-  framework       AgentFramework
-  model           String
-  codeRepo        String?
-  config          Json
-  tools           String[]
-  status          AgentStatus    @default(DRAFT)
-  deploymentType  DeploymentType @default(CLOUD)
-  deploymentUrl   String?
-  teeAttestation  Json?
-  version         Int            @default(1)
-  lastActive      DateTime?
-  lastPing        DateTime?
-  pricingModel    PricingModel   @default(FIXED)
-  price           Float?
-  ipWhitelist     String[]       @default([])
-  supportedChains String[]       @default(["ethereum"])
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                String         @id @default(uuid())
+  ownerId           String
+  name              String
+  description       String
+  framework         AgentFramework
+  model             String
+  codeRepo          String?
+  config            Json
+  tools             String[]
+  status            AgentStatus    @default(DRAFT)
+  deploymentType    DeploymentType @default(CLOUD)
+  deploymentUrl     String?
+  teeAttestation    Json?
+  version           Int            @default(1)
+  lastActive        DateTime?
+  lastPing          DateTime?
+  pricingModel      PricingModel   @default(FIXED)
+  price             Float?
+  ipWhitelist       String[]       @default([])
+  supportedChains   String[]       @default(["ethereum"])
+  kiteWalletAddress String?
+  kiteAgentDid      String?
+  kiteSessionId     String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   owner              User                @relation(fields: [ownerId], references: [id])
   bids               Bid[]
@@ -749,12 +764,39 @@ model Payment {
   failedAt    DateTime?
   metadata    Json?
 
+  kitePayment KitePayment?
+
   @@index([userId])
   @@index([agentId])
   @@index([status])
   @@index([type])
   @@index([createdAt(sort: Desc)])
   @@map("payments")
+}
+
+model KitePayment {
+  id              String            @id @default(uuid())
+  paymentId       String            @unique
+  sessionId       String?
+  agentKiteDid    String?
+  kiteWalletAddr  String?
+  amount          Decimal           @db.Decimal(20, 8)
+  asset           String?
+  network         String            @default("kite-testnet")
+  status          KitePaymentStatus @default(SESSION_CREATED)
+  authorization   Json?
+  settlementTx    String?
+  facilitatorResp Json?
+  expiresAt       DateTime?
+  createdAt       DateTime          @default(now())
+  settledAt       DateTime?
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("kite_payments")
 }
 
 model Subscription {

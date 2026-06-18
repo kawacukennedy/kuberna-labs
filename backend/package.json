@@ -17,8 +17,8 @@
     "db:seed": "ts-node prisma/seed.ts"
   },
   "prisma": {
-    "schema": "../prisma/schema.prisma",
-    "seed": "ts-node ../prisma/seed.ts"
+    "schema": "prisma/schema.prisma",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.8.0",
@@ -40,6 +40,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "redis": "^4.6.12",
+    "@sentry/node": "^8.0.0",
     "stripe": "^14.12.0",
     "uuid": "^9.0.1",
     "viem": "^2.0.0",
