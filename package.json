@@ -1,8 +1,13 @@
 {
   "name": "kuberna-labs",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "private": true,
   "description": "Decentralized platform connecting AI agents with educational opportunities and work tasks using blockchain and TEE technology",
-  "main": "index.js",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "sdk"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kawacukennedy/kuberna-labs.git"
@@ -13,59 +18,37 @@
   "homepage": "https://github.com/kawacukennedy/kuberna-labs#readme",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test",
+    "test": "npm run test:backend && npm run test:sdk",
+    "test:backend": "cd backend && npm test",
+    "test:sdk": "cd sdk && npm test",
+    "test:contracts": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
-    "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
-    "deploy:polygon": "hardhat run scripts/deploy.ts --network polygon",
-    "deploy:arbitrum": "hardhat run scripts/deploy.ts --network arbitrum",
     "verify": "hardhat run scripts/verify.ts",
-    "setup:local": "hardhat run scripts/setup-local.ts --network localhost",
-    "verify:setup": "ts-node scripts/verify-setup.ts",
     "node": "hardhat node",
     "clean": "hardhat clean",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,sol,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,sol,json,md}\"",
     "dev": "cd frontend && npm run dev",
-    "install:frontend": "cd frontend && npm install",
     "build:sdk": "cd sdk && npm ci && npm run build",
     "build:backend": "cd backend && npm ci && npx prisma generate && npm run build",
     "build:frontend": "cd frontend && npm ci && npm run build",
     "build:all": "npm run build:sdk && npm run build:backend && npm run build:frontend",
-    "start:render": "cd backend && rm -rf node_modules/@prisma/client && npx prisma generate && if [ -n \"$DIRECT_URL\" ]; then npx prisma migrate deploy; else echo 'Skipping prisma migrate deploy (DIRECT_URL not set)'; fi && cd .. && node backend/dist/index.js",
-    "db:deploy": "cd backend && npx prisma migrate deploy && cd ..",
-    "db:generate": "cd backend && npx prisma generate && cd .."
+    "start:render": "cd backend && rm -rf node_modules/@prisma/client && npx prisma generate && npx prisma migrate deploy && node dist/index.js",
+    "db:deploy": "cd backend && npx prisma migrate deploy",
+    "db:generate": "cd backend && npx prisma generate"
   },
   "keywords": [
-    "web3",
-    "blockchain",
-    "ai-agents",
-    "education",
-    "smart-contracts",
-    "defi",
-    "tee",
-    "trusted-execution-environment",
-    "ethereum",
-    "polygon",
-    "base",
-    "nft",
-    "certificates",
-    "decentralized",
-    "marketplace"
+    "web3", "blockchain", "ai-agents", "education", "smart-contracts",
+    "defi", "tee", "ethereum", "polygon", "base", "nft",
+    "certificates", "decentralized", "marketplace"
   ],
   "author": {
     "name": "Kennedy Kawacuk",
     "email": "kennedy@kubernalabs.com",
     "url": "https://github.com/kawacukennedy"
   },
-  "contributors": [
-    {
-      "name": "Kennedy Kawacuk",
-      "email": "kennedy@kubernalabs.com",
-      "url": "https://github.com/kawacukennedy"
-    }
-  ],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0 <26.0.0",
@@ -104,10 +87,6 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^1.4.0",
-    "@kuberna/sdk": "^1.0.1",
-    "@openzeppelin/contracts": "^5.0.2",
-    "@tanstack/react-query": "^5.17.0",
-    "viem": "^2.0.0",
-    "wagmi": "^2.0.0"
+    "@openzeppelin/contracts": "^5.0.2"
   }
 }
