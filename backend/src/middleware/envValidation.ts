@@ -60,5 +60,10 @@ export function validateEnvironment(): void {
     for (const warning of insecureVars) {
       logger.warn(`  - ${warning}`);
     }
+
+    if (process.env.NODE_ENV === 'production') {
+      logger.error('Production environment check failed — exiting');
+      process.exit(1);
+    }
   }
 }

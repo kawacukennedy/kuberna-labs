@@ -29,8 +29,7 @@ services:
         sync: false
       - key: RPC_URL
         sync: false
-      - key: PRIVATE_KEY
-        sync: false
+      # PRIVATE_KEY is set via Render dashboard secrets — do not hardcode
       - key: BASE_SEPOLIA_RPC_URL
         sync: false
       - key: ESCROW_CONTRACT_ADDRESS
