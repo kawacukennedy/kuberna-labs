@@ -41,6 +41,8 @@ router.get('/:id/trace', authenticate, async (req: AuthRequest, res: Response, n
   try {
     const { id } = req.params;
     const limit = req.query.limit ? Number(req.query.limit) : 20;
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const cursor = req.query.cursor as string | undefined;
 
     const agent = await prisma.agent.findUnique({ where: { id } });
     if (!agent) {
@@ -50,9 +52,9 @@ router.get('/:id/trace', authenticate, async (req: AuthRequest, res: Response, n
       throw createError('Not authorized', 403, 'FORBIDDEN');
     }
 
-    const trace = await agentOrchestratorService.getDecisionTrace(id, limit);
+    const result = await agentOrchestratorService.getDecisionTrace(id, { limit, page, cursor });
 
-    res.json({ trace });
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -74,7 +76,7 @@ router.post('/:id/preview', authenticate, async (req: AuthRequest, res: Response
 
     const parsedIntent = await aiService.parseIntentFromNaturalLanguage(task);
     const blockTimestamp = Math.floor(Date.now() / 1000);
-    const state = marketData.getMarketState(blockTimestamp);
+    const state = await marketData.getMarketState(blockTimestamp);
     const strategies = ['arbitrage', 'yield', 'stopLoss'] as const;
     const action = await agentDecisionEngine.evaluate(id, [...strategies], blockTimestamp);
 

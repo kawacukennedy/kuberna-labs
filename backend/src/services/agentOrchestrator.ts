@@ -85,7 +85,7 @@ export class AgentOrchestratorService {
       // Step 3: Evaluate market conditions
       const marketStep = addStep('market_analysis');
       const blockTimestamp = Math.floor(Date.now() / 1000);
-      const state = marketData.getMarketState(blockTimestamp);
+      const state = await marketData.getMarketState(blockTimestamp);
       completeStep(marketStep, {
         prices: state.prices,
         dexPrices: state.dexPrices,
@@ -199,12 +199,33 @@ export class AgentOrchestratorService {
     }
   }
 
-  async getDecisionTrace(agentId: string, limit = 20) {
-    return prisma.agentMemory.findMany({
-      where: { agentId },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-    });
+  async getDecisionTrace(agentId: string, opts: { limit?: number; cursor?: string; page?: number } = {}) {
+    const limit = opts.limit || 20;
+    const page = opts.page || 1;
+
+    const where: Record<string, unknown> = { agentId };
+
+    if (opts.cursor) {
+      const cursorRecord = await prisma.agentMemory.findUnique({
+        where: { id: opts.cursor },
+        select: { createdAt: true },
+      });
+      if (cursorRecord) {
+        where.createdAt = { lt: cursorRecord.createdAt };
+      }
+    }
+
+    const [traces, total] = await Promise.all([
+      prisma.agentMemory.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: opts.cursor ? 0 : (page - 1) * limit,
+      }),
+      prisma.agentMemory.count({ where: { agentId } }),
+    ]);
+
+    return { traces, total, page, limit, pages: Math.ceil(total / limit) };
   }
 }
 

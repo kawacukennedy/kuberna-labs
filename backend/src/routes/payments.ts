@@ -256,8 +256,7 @@ router.post(
       const paymentReq = await kitePaymentService.parseX402Response(body);
 
       if (!paymentReq) {
-        res.status(400).json({ success: false, error: 'Invalid x402 response format' });
-        return;
+        throw createError('Invalid x402 response format', 400, 'INVALID_X402_FORMAT');
       }
 
       res.json({ success: true, data: paymentReq });
@@ -275,8 +274,7 @@ router.post(
       const { sessionId, agentKiteDid, kiteWalletAddr, amount, asset, network, intentId } = req.body;
 
       if (!amount) {
-        res.status(400).json({ success: false, error: 'Amount is required' });
-        return;
+        throw createError('Amount is required', 400, 'MISSING_AMOUNT');
       }
 
       const payment = await prisma.payment.create({
@@ -323,8 +321,7 @@ router.post(
       const { kitePaymentId, authorization, signature, network } = req.body;
 
       if (!kitePaymentId || !authorization || !signature) {
-        res.status(400).json({ success: false, error: 'Missing required fields' });
-        return;
+        throw createError('Missing required fields', 400, 'MISSING_FIELDS');
       }
 
       await kitePaymentService.updatePaymentAuthorization(
@@ -340,8 +337,7 @@ router.post(
       );
 
       if (!result.success) {
-        res.status(502).json({ success: false, error: result.error || 'Settlement failed' });
-        return;
+        throw createError(result.error || 'Settlement failed', 502, 'SETTLEMENT_FAILED');
       }
 
       await kitePaymentService.markSettled(kitePaymentId, result.txHash!);
@@ -376,15 +372,13 @@ router.post(
       const { txHash } = req.body;
 
       if (!txHash) {
-        res.status(400).json({ success: false, error: 'txHash is required' });
-        return;
+        throw createError('txHash is required', 400, 'MISSING_TX_HASH');
       }
 
       const result = await kitePaymentService.verifyPaymentOnChain(txHash);
 
       if (!result) {
-        res.status(404).json({ success: false, error: 'Transaction not found or failed' });
-        return;
+        throw createError('Transaction not found or failed', 404, 'TX_NOT_FOUND');
       }
 
       res.json({ success: true, data: result });
@@ -420,8 +414,7 @@ router.get(
       const payment = await kitePaymentService.getKitePayment(kitePaymentId);
 
       if (!payment) {
-        res.status(404).json({ success: false, error: 'Payment not found' });
-        return;
+        throw createError('Payment not found', 404, 'PAYMENT_NOT_FOUND');
       }
 
       res.json({ success: true, data: payment });
@@ -482,7 +475,10 @@ router.post('/webhook/stripe', async (req: AuthRequest, res: Response, next: Nex
     res.json({ received: true });
   } catch (error) {
     if (error instanceof Stripe.errors.StripeSignatureVerificationError) {
-      return res.status(400).json({ error: 'Invalid signature' });
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_SIGNATURE', message: 'Invalid Stripe signature' },
+      });
     }
     next(error);
   }

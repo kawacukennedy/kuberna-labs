@@ -5,6 +5,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import * as Sentry from '@sentry/node';
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { defaultTimeout } from './middleware/timeout.js';
@@ -35,6 +36,13 @@ import { kiteRouter } from './routes/kite.js';
 import { identityRouter } from './routes/identity.js';
 
 dotenv.config();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN || '',
+  environment: process.env.NODE_ENV || 'development',
+  tracesSampleRate: 0.1,
+  enabled: !!process.env.SENTRY_DSN,
+});
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -70,6 +78,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet({ contentSecurityPolicy: false }));
+app.use(Sentry.Handlers.requestHandler());
 app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
@@ -137,6 +146,7 @@ app.use('*', (req, res, next) => {
   res.sendFile(indexPath);
 });
 
+app.use(Sentry.Handlers.errorHandler());
 app.use(errorHandler);
 
 async function startServer() {
