@@ -29,7 +29,8 @@ services:
         sync: false
       - key: RPC_URL
         sync: false
-      # PRIVATE_KEY is set via Render dashboard secrets — do not hardcode
+      # PRIVATE_KEY is set via Render dashboard secrets — never hardcode or commit
+      # Use a dedicated, low-balance deployer wallet for the backend.
       - key: BASE_SEPOLIA_RPC_URL
         sync: false
       - key: ESCROW_CONTRACT_ADDRESS
