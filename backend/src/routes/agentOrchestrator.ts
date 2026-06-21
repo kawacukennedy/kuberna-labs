@@ -7,15 +7,39 @@ import { agentOrchestratorService } from '../services/agentOrchestrator.js';
 import { aiService } from '../services/ai.js';
 import { agentDecisionEngine, marketData } from '../services/agentDecision.js';
 
+const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
+
+const idempotencyStore = new Map<string, { result: unknown; expiresAt: number }>();
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of idempotencyStore) {
+    if (entry.expiresAt < now) idempotencyStore.delete(key);
+  }
+}, 60_000);
+
 const router = Router();
 
 router.post('/:id/run', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { task } = req.body;
+    const { task, idempotencyKey } = req.body;
 
     if (!task || typeof task !== 'string' || task.trim().length === 0) {
       throw createError('Task description is required', 400, 'VALIDATION_ERROR');
+    }
+
+    if (idempotencyKey) {
+      const cacheKey = `${req.user!.id}:${id}:${idempotencyKey}`;
+      const existing = idempotencyStore.get(cacheKey);
+      if (existing && existing.expiresAt > Date.now()) {
+        res.status(200).json({
+          success: true,
+          data: existing.result,
+          cached: true,
+        });
+        return;
+      }
     }
 
     const agent = await prisma.agent.findUnique({ where: { id } });
@@ -27,6 +51,14 @@ router.post('/:id/run', authenticate, async (req: AuthRequest, res: Response, ne
     }
 
     const result = await agentOrchestratorService.runTask(id, task.trim());
+
+    if (idempotencyKey) {
+      const cacheKey = `${req.user!.id}:${id}:${idempotencyKey}`;
+      idempotencyStore.set(cacheKey, {
+        result,
+        expiresAt: Date.now() + IDEMPOTENCY_TTL_MS,
+      });
+    }
 
     res.json({
       success: result.success,

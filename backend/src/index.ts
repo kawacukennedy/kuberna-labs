@@ -42,13 +42,14 @@ Sentry.init({
   environment: process.env.NODE_ENV || 'development',
   tracesSampleRate: 0.1,
   enabled: !!process.env.SENTRY_DSN,
+  integrations: [Sentry.requestDataIntegration()],
 });
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    if (!origin) {
+    if (!origin && !isProduction) {
       return callback(null, true);
     }
 
@@ -58,10 +59,19 @@ const corsOptions: cors.CorsOptions = {
       .filter(Boolean);
 
     if (allowedOrigins.length === 0) {
+      if (isProduction) {
+        logger.warn('CORS blocked: ALLOWED_ORIGINS not configured in production', { origin });
+        const error = new Error('CORS policy violation: ALLOWED_ORIGINS not configured');
+        return callback(error);
+      }
       return callback(null, true);
     }
 
-    if (allowedOrigins.includes(origin)) {
+    if (origin && allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    if (!origin) {
       return callback(null, true);
     }
 
@@ -78,7 +88,6 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(Sentry.Handlers.requestHandler());
 app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
@@ -146,7 +155,7 @@ app.use('*', (req, res, next) => {
   res.sendFile(indexPath);
 });
 
-app.use(Sentry.Handlers.errorHandler());
+Sentry.setupExpressErrorHandler(app);
 app.use(errorHandler);
 
 async function startServer() {
