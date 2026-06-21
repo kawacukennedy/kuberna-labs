@@ -1,3 +1,7 @@
+/**
+ * @deprecated Import ABI definitions from `typechain-types/contracts` instead.
+ * This file is kept for backward compatibility. New code should use TypeChain-generated types.
+ */
 export const ESCROW_ABI = [
   {
     inputs: [
