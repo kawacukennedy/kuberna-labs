@@ -35,7 +35,7 @@
     "build:backend": "cd backend && npm ci && npx prisma generate && npm run build",
     "build:frontend": "cd frontend && npm ci && npm run build",
     "build:all": "npm run build:sdk && npm run build:backend && npm run build:frontend",
-    "start:render": "cd backend && rm -rf node_modules/@prisma/client && ./node_modules/.bin/prisma generate && ./node_modules/.bin/prisma migrate deploy && node dist/index.js",
+    "start:render": "cd backend && rm -rf node_modules/@prisma/client && npx prisma generate && npx prisma migrate deploy && node dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy",
     "db:generate": "cd backend && npx prisma generate"
   },
