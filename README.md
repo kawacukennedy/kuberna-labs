@@ -19,13 +19,13 @@ User Task ("swap 1 ETH for USDC on Solana")
   -> Reputation Update + Decision Trace
 ```
 
-| Package | Directory | Description |
-|---------|-----------|-------------|
-| Backend API | `backend/` | Express + Prisma + Zod REST API (port 3000) |
-| Frontend | `frontend/` | Next.js 14 dashboard with pages router |
-| SDK | `sdk/` | `@kuberna/sdk` npm package for programmatic access |
+| Package         | Directory    | Description                                         |
+| --------------- | ------------ | --------------------------------------------------- |
+| Backend API     | `backend/`   | Express + Prisma + Zod REST API (port 3000)         |
+| Frontend        | `frontend/`  | Next.js 14 dashboard with pages router              |
+| SDK             | `sdk/`       | `@kuberna/sdk` npm package for programmatic access  |
 | Smart Contracts | `contracts/` | Solidity contracts (Escrow, Intent, Registry, NFTs) |
-| Prisma Schema | `prisma/` | Shared database schema and migrations |
+| Prisma Schema   | `prisma/`    | Shared database schema and migrations               |
 
 ## Quick Start
 
@@ -51,11 +51,11 @@ cd frontend && npm run dev
 
 ### Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | >= 18.0.0 < 26.0.0 |
-| npm | >= 9.0.0 |
-| PostgreSQL | 14+ (or Supabase free tier) |
+| Tool                     | Version                                   |
+| ------------------------ | ----------------------------------------- |
+| Node.js                  | >= 18.0.0 < 26.0.0                        |
+| npm                      | >= 9.0.0                                  |
+| PostgreSQL               | 14+ (or Supabase free tier)               |
 | WalletConnect Project ID | Free from https://cloud.walletconnect.com |
 
 ### Install
@@ -78,6 +78,7 @@ cp backend/.env.example backend/.env
 ```
 
 Required variables:
+
 - `DATABASE_URL` — PostgreSQL connection string (transaction pooler for Supabase)
 - `DIRECT_URL` — Direct database URL (for Prisma Migrate only)
 - `JWT_SECRET` — JWT signing key (`openssl rand -hex 32`)
@@ -152,18 +153,18 @@ kuberna-labs/
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start frontend dev server |
-| `npm test` | Run Hardhat contract tests |
-| `npm run compile` | Compile Solidity contracts |
-| `npm run build:all` | Build SDK, backend, and frontend |
-| `npm run format` | Format code with Prettier |
-| `npm run lint` | Lint TypeScript with ESLint |
-| `npm run db:deploy` | Deploy Prisma migrations |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run deploy:sepolia` | Deploy contracts to Sepolia |
-| `npm run deploy:base` | Deploy contracts to Base Sepolia |
+| Script                   | Description                      |
+| ------------------------ | -------------------------------- |
+| `npm run dev`            | Start frontend dev server        |
+| `npm test`               | Run Hardhat contract tests       |
+| `npm run compile`        | Compile Solidity contracts       |
+| `npm run build:all`      | Build SDK, backend, and frontend |
+| `npm run format`         | Format code with Prettier        |
+| `npm run lint`           | Lint TypeScript with ESLint      |
+| `npm run db:deploy`      | Deploy Prisma migrations         |
+| `npm run db:generate`    | Generate Prisma client           |
+| `npm run deploy:sepolia` | Deploy contracts to Sepolia      |
+| `npm run deploy:base`    | Deploy contracts to Base Sepolia |
 
 ## Deployment
 
@@ -173,14 +174,14 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for full instructions.
 
 Required environment variables in production:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Supabase transaction pooler URL |
-| `DIRECT_URL` | Supabase direct URL for migrations |
-| `JWT_SECRET` | JWT signing key |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID |
-| `RPC_URL` | Blockchain RPC endpoint |
-| `PRIVATE_KEY` | Backend wallet private key |
+| Variable                               | Description                        |
+| -------------------------------------- | ---------------------------------- |
+| `DATABASE_URL`                         | Supabase transaction pooler URL    |
+| `DIRECT_URL`                           | Supabase direct URL for migrations |
+| `JWT_SECRET`                           | JWT signing key                    |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID     |
+| `RPC_URL`                              | Blockchain RPC endpoint            |
+| `PRIVATE_KEY`                          | Backend wallet private key         |
 
 Optional: `REDIS_URL`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `SMTP_*` for extended features.
 

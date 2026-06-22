@@ -16,23 +16,24 @@ However, the project is **not ready for production launch** in its current state
 
 ### Top 3 Critical Risks
 
-| # | Risk | Impact if Unaddressed |
-|---|------|----------------------|
-| 1 | **Production private key hardcoded in .env.example and exposed in deployments** | Total loss of on‑chain funds; irreversible contract state corruption |
-| 2 | **Zero end‑to‑end integration tests for the core agent orchestration flow** | Undiscovered race conditions between AI decision engine, escrow contract, and blockchain listener will cause silent fund loss |
-| 3 | **Intense competitive pressure from ElizaOS (1350+ contributors), Across Protocol ($34B bridged), and Phala Network (production TEE)** | Product‑market fit unclear — Kuberna tries to be everything (education + marketplace + AI agents + TEE + cross‑chain + payments) without a single standout use case |
+| #   | Risk                                                                                                                                   | Impact if Unaddressed                                                                                                                                               |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Production private key hardcoded in .env.example and exposed in deployments**                                                        | Total loss of on‑chain funds; irreversible contract state corruption                                                                                                |
+| 2   | **Zero end‑to‑end integration tests for the core agent orchestration flow**                                                            | Undiscovered race conditions between AI decision engine, escrow contract, and blockchain listener will cause silent fund loss                                       |
+| 3   | **Intense competitive pressure from ElizaOS (1350+ contributors), Across Protocol ($34B bridged), and Phala Network (production TEE)** | Product‑market fit unclear — Kuberna tries to be everything (education + marketplace + AI agents + TEE + cross‑chain + payments) without a single standout use case |
 
 ### Top 3 Opportunities
 
-| # | Opportunity | Why It Matters |
-|---|-------------|----------------|
-| 1 | **Full‑stack vertical integration (intent parser → decision engine → escrow → certificate)** | No competitor offers all four layers in one SDK — this is Kuberna's true moat if executed reliably |
-| 2 | **SilentVerify post‑quantum certification + Kite AI x402 payments** | Genuinely novel — no other platform couples PQ agent certs with agent‑managed spending sessions |
-| 3 | **Educational flywheel (courses → agents → marketplace)** | If the education side produces developers who then deploy agents on the same platform, Kuberna creates a closed loop competitors can't replicate |
+| #   | Opportunity                                                                                  | Why It Matters                                                                                                                                   |
+| --- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **Full‑stack vertical integration (intent parser → decision engine → escrow → certificate)** | No competitor offers all four layers in one SDK — this is Kuberna's true moat if executed reliably                                               |
+| 2   | **SilentVerify post‑quantum certification + Kite AI x402 payments**                          | Genuinely novel — no other platform couples PQ agent certs with agent‑managed spending sessions                                                  |
+| 3   | **Educational flywheel (courses → agents → marketplace)**                                    | If the education side produces developers who then deploy agents on the same platform, Kuberna creates a closed loop competitors can't replicate |
 
 ### Recommendation
 
 **Pause general launch. Ship a v0.1 "developer preview" with these minimums:**
+
 1. Fix the 5 critical security vulnerabilities (see §2.2)
 2. Ship end‑to‑end integration tests for the escrow → decision → intent → task lifecycle
 3. Cut scope — remove the education platform, governance token, vesting, and multisig from the launch MVP
@@ -47,6 +48,7 @@ However, the project is **not ready for production launch** in its current state
 **Overall Score: C+**
 
 #### Strengths
+
 - **TypeScript everywhere** — strong typing reduces runtime errors across the stack
 - **Clean separation of concerns** — routes call services call Prisma; middleware is well‑factored
 - **Zod validation** — consistent request validation on every route (`backend/src/middleware/validation.ts:7`)
@@ -56,6 +58,7 @@ However, the project is **not ready for production launch** in its current state
 - **Smart contract test setup is solid** — chai asserts, Hardhat network helpers, mock ERC20 (`test/Escrow.ts:1-50`)
 
 #### Weaknesses
+
 - **Massive code duplication** — The Prisma schema is duplicated in both `prisma/schema.prisma` (1047 lines) and `backend/prisma/schema.prisma` (1005 lines). They are nearly identical. This is a maintenance nightmare — any migration requires updating both files in lockstep.
 - **Dead code / unused files** — `contracts/GovernanceToken.sol`, `Vesting.sol`, `Multisig.sol` exist but are never referenced in the frontend, backend, or deploy scripts. They appear to be boilerplate from an OpenZeppelin wizard.
 - **Mock data in production path** — `backend/src/services/agentDecision.ts:56-130` contains a `MockMarketDataProvider` that generates deterministic prices from `Math.sin(blockTimestamp)`. This is used by the production `agentDecisionEngine`. In production, this will make fake trading decisions based on fake prices.
@@ -65,14 +68,14 @@ However, the project is **not ready for production launch** in its current state
 
 #### Files Needing Urgent Refactoring
 
-| File | Issue | Line(s) |
-|------|-------|---------|
-| `backend/src/services/agentDecision.ts` | Mock market data in production path | 56-130 |
-| `backend/src/services/ai.ts` | OpenAI API key passed in plaintext in every request; no retry logic | 56-85 |
-| `backend/src/services/agentService.ts` | Hardcoded dev API key | 10 |
-| `prisma/schema.prisma` vs `backend/prisma/schema.prisma` | Duplicate schemas | entire files |
-| `frontend/src/lib/contracts.ts` | 1196 lines with ABI definitions duplicated from TypeChain | entire file |
-| `backend/src/services/blockchainListener.ts` | 1073 lines, highly complex, poor error recovery | entire file |
+| File                                                     | Issue                                                               | Line(s)      |
+| -------------------------------------------------------- | ------------------------------------------------------------------- | ------------ |
+| `backend/src/services/agentDecision.ts`                  | Mock market data in production path                                 | 56-130       |
+| `backend/src/services/ai.ts`                             | OpenAI API key passed in plaintext in every request; no retry logic | 56-85        |
+| `backend/src/services/agentService.ts`                   | Hardcoded dev API key                                               | 10           |
+| `prisma/schema.prisma` vs `backend/prisma/schema.prisma` | Duplicate schemas                                                   | entire files |
+| `frontend/src/lib/contracts.ts`                          | 1196 lines with ABI definitions duplicated from TypeChain           | entire file  |
+| `backend/src/services/blockchainListener.ts`             | 1073 lines, highly complex, poor error recovery                     | entire file  |
 
 ### 2.2 Security
 
@@ -121,16 +124,19 @@ However, the project is **not ready for production launch** in its current state
 ### 2.3 Performance
 
 #### Backend Bottlenecks
+
 - **No caching layer for blockchain RPC calls** — `backend/src/services/blockchain.ts:getBalance()`, `getGasPrice()`, and every contract call hits the RPC provider directly. In production with even 10 agents polling, this will exhaust free-tier RPC limits.
 - **`GET /api/agents/:id/trace` loads ALL memories** — `backend/src/services/agentOrchestrator.ts:203-208` uses `findMany` without pagination from the orchestrator route. As agent memories grow, this endpoint will become unusable.
 - **No connection pooling for Prisma** — The `backend/src/utils/prisma.ts` creates a single Prisma client instance, but the default connection pool size is unknown. Under load, this will queue database requests.
 
 #### Frontend Performance
+
 - **Massive bundle from unused code** — `frontend/src/lib/contracts.ts` is 1196 lines of ABI definitions that are duplicated from the `typechain-types` directory. Tree‑shaking won't help because they're imported as objects.
 - **No lazy loading** — All 25+ pages are eagerly loaded. `dashboard/index.tsx` imports `StatCard`, all services, and the full Wagmi provider tree.
 - **`next.config.js` enables `output: 'export'`** — This means the frontend is a static SPA with no SSR. SEO will suffer, and the app can't use Next.js API routes or middleware.
 
 #### Smart Contract Gas Efficiency
+
 - **Loops in `FeeManager.distributeFees`** — `contracts/FeeManager.sol:84-101`: `for (uint256 i = 0; i < recipients.length; i++)` with external token transfers inside the loop. If there are 50 recipients, this function costs ~2M gas.
 - **`Dispute._rewardJurors` loop** — `contracts/Dispute.sol:183-185`: `for (uint256 i = 0; i < votes.length; i++)` — unbounded loop over juror votes. A dispute with 1000 voters could cost >3M gas.
 - **Storage reads in `CourseNFT.enrollStudent`** — Reads `courses[courseId]` three times.
@@ -142,15 +148,16 @@ However, the project is **not ready for production launch** in its current state
 
 #### What Exists
 
-| Area | Tests | Quality |
-|------|-------|---------|
-| Smart Contracts | 8 test files (`Escrow.ts`, `AgentRegistry.ts`, `Dispute.ts`, etc.) | Good — uses Hardhat, chai, proper setup/teardown |
-| Backend Services | 9 service test files | Minimal — mock‑heavy, test only happy paths |
-| Backend API | 3 test files (`api.test.ts`, `routes.test.ts`, `intentParser.api.test.ts`) | Poor — mostly structural |
-| Frontend | 1 test (`AuthContext.test.tsx`) | Token — not meaningful |
-| SDK | 5 test files | Basic — mock axios, test only creation/error paths |
+| Area             | Tests                                                                      | Quality                                            |
+| ---------------- | -------------------------------------------------------------------------- | -------------------------------------------------- |
+| Smart Contracts  | 8 test files (`Escrow.ts`, `AgentRegistry.ts`, `Dispute.ts`, etc.)         | Good — uses Hardhat, chai, proper setup/teardown   |
+| Backend Services | 9 service test files                                                       | Minimal — mock‑heavy, test only happy paths        |
+| Backend API      | 3 test files (`api.test.ts`, `routes.test.ts`, `intentParser.api.test.ts`) | Poor — mostly structural                           |
+| Frontend         | 1 test (`AuthContext.test.tsx`)                                            | Token — not meaningful                             |
+| SDK              | 5 test files                                                               | Basic — mock axios, test only creation/error paths |
 
 #### What's Missing (Critical)
+
 - **No integration tests** for the core flow: user creates intent → agent bids → agent assigned → escrow funded → task completed → escrow released
 - **No property‑based tests** for the `Intent` contract (e.g., "for any valid intent, submit + accept + execute should always produce the correct state")
 - **No fuzz tests** for the `Escrow` contract (edge cases: zero amounts, same address as requester/executor, reentrancy)
@@ -169,6 +176,7 @@ However, the project is **not ready for production launch** in its current state
 ### 2.5 AI Features
 
 #### Current State
+
 - **Intent Parser** (`backend/src/services/intentParser.ts`): Hybrid rule‑based + `compromise` NLP. Works for simple swap intents ("swap 1 ETH for USDC on Solana") but fails on complex multi‑step tasks.
 - **Agent Decision Engine** (`backend/src/services/agentDecision.ts`): Uses **mock market data** — the prices are generated by `Math.sin()`. This is not production‑ready. In mainnet, this engine would make trading decisions based on a sine wave.
 - **Agent Orchestrator** (`backend/src/services/agentOrchestrator.ts`): 6‑step pipeline that calls GPT‑4 Turbo for intent parsing. No timeout handling (30s default), no fallback if OpenAI is down.
@@ -176,11 +184,13 @@ However, the project is **not ready for production launch** in its current state
 - **Local Memory & RAG** (`backend/src/services/localMemory.ts`, `ragService.ts`): Uses Transformers.js (`all-MiniLM-L6-v2`, ~80MB model) for embeddings. Downloaded on first use. Has a hash‑based fallback if the model download fails.
 
 #### Reliability Issues
+
 1. **GPT‑4 Turbo has no fallback** — if the API call fails, the entire orchestration pipeline returns a generic error
 2. **Mock market data is dangerous** — in staging or demo deployments, the decision engine will create real intents based on fake prices
 3. **Transformers.js model download** — the 80MB model is downloaded at runtime when the server starts. If the download fails (network, disk space), the entire AI service initialization fails silently
 
 #### Recommendations
+
 - **Replace mock market data with a real price feed** — integrate Pyth Network or Chainlink price feeds (both are free for low volume)
 - **Add a circuit breaker** — if OpenAI returns errors for >5% of requests in a window, fall back to the local intent parser
 - **Pre‑download the embedding model during Docker build** — add a build step that downloads `Xenova/all-MiniLM-L6-v2` so it's available at boot
@@ -189,6 +199,7 @@ However, the project is **not ready for production launch** in its current state
 ### 2.6 Deployment Readiness
 
 #### Render.com Deployment
+
 - `render.yaml` exists (83 lines) — defines a single web service with all env vars set to `sync: false`
 - `Dockerfile` exists (58 lines) — builds the monorepo with `npm run build:all` that runs:
   1. `npm ci --legacy-peer-deps`
@@ -198,6 +209,7 @@ However, the project is **not ready for production launch** in its current state
 - `render-build.sh` exists — shell script wrapping the build
 
 #### Issues
+
 1. **Build timeout risk** — `npm run build:all` builds 3 independent packages sequentially. On Render's starter plan (1 CPU, 512MB RAM), this will likely exceed the 15‑minute build timeout
 2. **No database migration automation** — `migrate-database.yml` exists as a GitHub Action but is triggered manually. The Render deploy doesn't run `prisma migrate deploy`
 3. **Multiple contract addresses needed** — 14+ contract environment variables must be set manually in Render dashboard. Any mistake breaks the entire app
@@ -205,6 +217,7 @@ However, the project is **not ready for production launch** in its current state
 5. **Frontend build may fail** — `next.config.js` sets `output: 'export'` for static export, but some pages use `getServerSideProps` patterns
 
 #### Missing Pieces for One‑Click Deploy
+
 - A `prisma migrate deploy` step in the `render-build.sh` or `startCommand`
 - A `postdeploy.sh` script that validates all env vars are set
 - A `docker‑compose.yml` that includes a stub PostgreSQL for local development (the current one is 193 lines but complex)
@@ -217,6 +230,7 @@ However, the project is **not ready for production launch** in its current state
 ### 3.1 Product Completeness
 
 #### Done (Production‑Ready)
+
 - Smart contract suite (18 contracts, deployed to 5 testnets)
 - Backend Express API with 19 route modules, middleware stack (auth, rate limiting, validation, correlation ID)
 - Prisma database schema with 30+ models, 3 migrations applied
@@ -231,6 +245,7 @@ However, the project is **not ready for production launch** in its current state
 - SDK with 12 manager classes
 
 #### Partial (Needs Polish)
+
 - **AI Intent Parser** — works for simple intents, fails on complex ones; no confidence calibration
 - **Agent Orchestrator** — the 6‑step pipeline works but has no idempotency check; duplicate runs could create duplicate intents
 - **Frontend Dashboard** — renders correctly but 90% of the data is static/mock; no real blockchain data or agent logs
@@ -238,6 +253,7 @@ However, the project is **not ready for production launch** in its current state
 - **Documentation** — README is excellent (600+ lines), but API.md, SDK docs, and ARCHITECTURE.md are out of date
 
 #### Missing (Critical for Launch)
+
 - **End‑to‑end agent deployment flow** — the frontend has an "IDE" page for agents (`agents/[id]/ide.tsx`) but the code editor doesn't actually deploy code to any runtime
 - **User onboarding** — no guided tour, no sample agent on first login, no "create your first agent" wizard
 - **Error recovery** — if any service (OpenAI, SilentVerify, Kite) is down, the UI shows generic errors with no retry guidance
@@ -248,6 +264,7 @@ However, the project is **not ready for production launch** in its current state
 ### 3.2 User Experience
 
 #### Frontend
+
 - **Homepage** (`frontend/src/pages/index.tsx`, 202 lines): Clean, professional hero section with product screenshots. Call‑to‑action is clear ("Get Started"). Good.
 - **Auth flow** (`login.tsx`, `register.tsx`): Standard email/password + Web3 wallet option. Login works via JWT. The register page (245 lines) is well‑designed with proper validation.
 - **Dashboard** (`dashboard/index.tsx`, 184 lines): Shows stats cards but no real data binding — the cards display hardcoded numbers.
@@ -256,6 +273,7 @@ However, the project is **not ready for production launch** in its current state
 - **Overall UX score: C+** — The 30 design mockups in `/design/` show the intended UX well, but the actual implementation lags far behind. Error messages are inconsistent — some routes return `{ success: false, error: { message, code } }`, others return raw 500s.
 
 #### SDK
+
 - API surface is clean and modern (`sdk.agent.create()`, `sdk.intent.parse()`, `sdk.kite.createSession()`)
 - TypeScript types are comprehensive (380+ lines of type exports in `sdk/src/index.ts`)
 - **However:** The SDK README (`sdk/README.md`) is basic — it shows one code example and no real‑world usage patterns
@@ -263,6 +281,7 @@ However, the project is **not ready for production launch** in its current state
 - **Missing:** Error handling guide, rate limit handling, WebSocket integration for real‑time agent logs
 
 #### Documentation
+
 - **README.md** (600+ lines): Excellent — covers architecture, quick start, Supabase setup, Render deploy, AI system, SDK, Kite integration. Best file in the repo.
 - **ARCHITECTURE.md**: Good high‑level diagrams but doesn't match the actual code (references components that were renamed)
 - **API.md**: Auto‑generated and incomplete — lists routes but not request/response shapes
@@ -273,25 +292,28 @@ However, the project is **not ready for production launch** in its current state
 
 #### Direct Competitors
 
-| Competitor | Focus | Strengths | Kuberna's Disadvantage |
-|------------|-------|-----------|----------------------|
-| **Across Protocol** | Cross‑chain intent settlement | $34B bridged, ERC‑7683 co‑author, Uniswap integration, 2‑second settlement | Across is hyper‑focused on one thing. Kuberna's intent layer is unproven. |
-| **UniswapX** | Intent‑based swaps | Billions in volume, filler network, Dutch auctions | UniswapX only does swaps, Kuberna tries to do everything. |
-| **ElizaOS** | AI agent framework | 1350+ contributors, 90+ plugins, Cloud beta, Stanford + Chainlink partnerships | ElizaOS is a framework you install; Kuberna is a platform you use. But ElizaOS has way more traction. |
-| **Phala Network** | TEE infrastructure | Intel TDX production, ERC‑8004 agent identity, Phala Cloud, SOC2/ HIPAA | Phala is the TEE layer; Kuberna relies on Phala for TEE. Not a differentiator if Kuberna's TEE wrapper is thin. |
-| **Heurist** | Full‑stack AI agent infrastructure | 100+ tools, ERC‑8004, x402 payments, Mesh marketplace | Very similar positioning to Kuberna. Heurist launched earlier and has more integrations. |
-| **Socket / LI.FI** | Cross‑chain messaging | 30+ chains, production‑tested | Kuberna's `CrossChainRouter.sol` handles 9 chains via `enum` — Socket handles 30+ dynamically. |
+| Competitor          | Focus                              | Strengths                                                                      | Kuberna's Disadvantage                                                                                          |
+| ------------------- | ---------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Across Protocol** | Cross‑chain intent settlement      | $34B bridged, ERC‑7683 co‑author, Uniswap integration, 2‑second settlement     | Across is hyper‑focused on one thing. Kuberna's intent layer is unproven.                                       |
+| **UniswapX**        | Intent‑based swaps                 | Billions in volume, filler network, Dutch auctions                             | UniswapX only does swaps, Kuberna tries to do everything.                                                       |
+| **ElizaOS**         | AI agent framework                 | 1350+ contributors, 90+ plugins, Cloud beta, Stanford + Chainlink partnerships | ElizaOS is a framework you install; Kuberna is a platform you use. But ElizaOS has way more traction.           |
+| **Phala Network**   | TEE infrastructure                 | Intel TDX production, ERC‑8004 agent identity, Phala Cloud, SOC2/ HIPAA        | Phala is the TEE layer; Kuberna relies on Phala for TEE. Not a differentiator if Kuberna's TEE wrapper is thin. |
+| **Heurist**         | Full‑stack AI agent infrastructure | 100+ tools, ERC‑8004, x402 payments, Mesh marketplace                          | Very similar positioning to Kuberna. Heurist launched earlier and has more integrations.                        |
+| **Socket / LI.FI**  | Cross‑chain messaging              | 30+ chains, production‑tested                                                  | Kuberna's `CrossChainRouter.sol` handles 9 chains via `enum` — Socket handles 30+ dynamically.                  |
 
 #### Kuberna's Unique Advantage
+
 The **vertical integration** of: Natural language → structured intent → agent decision engine → on‑chain escrow → post‑quantum certificate → cross‑chain identity. No single competitor offers all six layers.
 
 #### Kuberna's Vulnerabilities
+
 1. **ElizaOS is eating the agent framework space** — developers will install ElizaOS and add a plugin rather than adopt Kuberna
 2. **Across/UniswapX own the intent space** — ERC‑7683 is their standard; Kuberna's intent implementation will be on the outside looking in
 3. **Phala owns TEE** — Kuberna's TEE layer is a thin wrapper around Phala's API. If Phala changes their API, Kuberna breaks
 4. **The "education" layer adds confusion** — courses + certificates + workshops + agents + marketplace is too many products for one launch
 
 #### Messaging Assessment
+
 The README says: "Agent Orchestration Platform — Deploy, run, and certify AI agents that autonomously execute cross‑chain Web3 tasks."
 
 This is good. But the website, docs, and social media don't reinforce this message consistently. The brand oscillates between "education platform" (CourseNFT, CertificateNFT), "agent marketplace" (Intent, Escrow), and "infrastructure" (TEE, CrossChain).
@@ -302,13 +324,13 @@ This is good. But the website, docs, and social media don't reinforce this messa
 
 ### 4.1 Online Presence Audit
 
-| Channel | Current State | Assessment |
-|---------|--------------|------------|
-| **GitHub README** | Excellent, 600+ lines | Best asset — detailed, clear, well‑formatted |
-| **Website** | 30 design mockups but no deployed site | Critical gap — no live demo, no landing page |
-| **X/Twitter** | Not found in audit — no social media presence detected | Zero presence |
-| **Discord** | Referenced but no invite link in README | Not accessible |
-| **NPM** | `@kuberna/sdk` published | Unclear if installable — CI publish workflow exists but may not have run |
+| Channel               | Current State                                                                                              | Assessment                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **GitHub README**     | Excellent, 600+ lines                                                                                      | Best asset — detailed, clear, well‑formatted                                      |
+| **Website**           | 30 design mockups but no deployed site                                                                     | Critical gap — no live demo, no landing page                                      |
+| **X/Twitter**         | Not found in audit — no social media presence detected                                                     | Zero presence                                                                     |
+| **Discord**           | Referenced but no invite link in README                                                                    | Not accessible                                                                    |
+| **NPM**               | `@kuberna/sdk` published                                                                                   | Unclear if installable — CI publish workflow exists but may not have run          |
 | **Brand consistency** | 30 HTML design mockups show a consistent, professional brand (dark theme, purple accent, clean typography) | Good brand guidelines exist but are locked in `/design/` — not on the actual site |
 
 ### Top 3 Improvements for Discoverability
@@ -321,24 +343,25 @@ This is good. But the website, docs, and social media don't reinforce this messa
 
 #### 12‑Week Content Calendar
 
-| Week | Topic | Format | Platform |
-|------|-------|--------|----------|
-| 1 | "Why AI Agents Need On‑Chain Reputation" | Blog post (1,500 words) | Dev.to, Mirror.xyz |
-| 2 | "Build Your First Cross‑Chain Agent in 5 Minutes" | Video tutorial (10 min) | YouTube, X |
-| 3 | "Intent‑Based Architectures: The Third Era of DeFi" | Blog post (2,000 words) | Mirror.xyz, Reddit r/ethdev |
-| 4 | "Post‑Quantum Signatures for AI Agents" | Technical blog with code | Dev.to, Hacker News |
-| 5 | "Kuberna vs ElizaOS vs Phala: When to Use Each" | Comparison guide | Blog, X thread |
-| 6 | "Agent‑to‑Agent Payments with x402" | Tutorial with SDK | Dev.to, YouTube |
-| 7 | "How We Built a Cross‑Chain AI Agent Platform" | Architecture deep‑dive | Blog, Hacker News |
-| 8 | "TEE Attestation: What Every Agent Dev Should Know" | Technical explainer | Dev.to, X |
-| 9 | "Case Study: Automating DeFi Strategies with Kuberna Agents" | Case study | Blog, LinkedIn |
-| 10 | "Open Source Your Agent: A Contributor's Guide" | Guide + good first issues | GitHub Blog, Dev.to |
-| 11 | "The Economics of Autonomous AI Agents" | Thought leadership | Mirror.xyz, LinkedIn |
-| 12 | "Kuberna v0.2: What We Built and What's Next" | Launch post | All channels |
+| Week | Topic                                                        | Format                    | Platform                    |
+| ---- | ------------------------------------------------------------ | ------------------------- | --------------------------- |
+| 1    | "Why AI Agents Need On‑Chain Reputation"                     | Blog post (1,500 words)   | Dev.to, Mirror.xyz          |
+| 2    | "Build Your First Cross‑Chain Agent in 5 Minutes"            | Video tutorial (10 min)   | YouTube, X                  |
+| 3    | "Intent‑Based Architectures: The Third Era of DeFi"          | Blog post (2,000 words)   | Mirror.xyz, Reddit r/ethdev |
+| 4    | "Post‑Quantum Signatures for AI Agents"                      | Technical blog with code  | Dev.to, Hacker News         |
+| 5    | "Kuberna vs ElizaOS vs Phala: When to Use Each"              | Comparison guide          | Blog, X thread              |
+| 6    | "Agent‑to‑Agent Payments with x402"                          | Tutorial with SDK         | Dev.to, YouTube             |
+| 7    | "How We Built a Cross‑Chain AI Agent Platform"               | Architecture deep‑dive    | Blog, Hacker News           |
+| 8    | "TEE Attestation: What Every Agent Dev Should Know"          | Technical explainer       | Dev.to, X                   |
+| 9    | "Case Study: Automating DeFi Strategies with Kuberna Agents" | Case study                | Blog, LinkedIn              |
+| 10   | "Open Source Your Agent: A Contributor's Guide"              | Guide + good first issues | GitHub Blog, Dev.to         |
+| 11   | "The Economics of Autonomous AI Agents"                      | Thought leadership        | Mirror.xyz, LinkedIn        |
+| 12   | "Kuberna v0.2: What We Built and What's Next"                | Launch post               | All channels                |
 
 ### 4.3 Community Building
 
 #### Current State
+
 - GitHub: 1 contributor (@kawacukennedy), 0 forks, 0 stars (private repo?)
 - Discord: No public invite
 - X/Twitter: No presence
@@ -353,17 +376,18 @@ This is good. But the website, docs, and social media don't reinforce this messa
 5. **Day 22‑30:** Host a Twitter Spaces / Discord AMA with early users
 
 #### Turning Early Users Into Advocates
+
 - Create a "Kuberna Contributor" NFT (using the existing CertificateNFT contract) for anyone who ships a PR
 - Give early users a "Founding Agent" badge on their profile
 - Weekly shoutouts on X for the most creative agent built on Kuberna
 
 ### 4.4 Growth Experiments
 
-| Experiment | Cost | Expected Impact | Success Metric |
-|------------|------|----------------|----------------|
-| **ETHGlobal / Hackathon sponsorship** | $500‑$2,000 (prize) | Medium — 50‑200 devs exposed, 3‑5 working agents built | # of agents deployed during hackathon |
-| **"Deploy an agent, get $10 in credits" campaign** | $500 (10 agents × $50) | High — removes the #1 barrier (gas costs) | # of funded escrows, # of completed tasks |
-| **Bounty campaign on Gitcoin/OnlyDust** | $1,000 (5 bounties × $200) | Medium — attracts open‑source contributors | # of merged PRs, # of new GitHub stars |
+| Experiment                                         | Cost                       | Expected Impact                                        | Success Metric                            |
+| -------------------------------------------------- | -------------------------- | ------------------------------------------------------ | ----------------------------------------- |
+| **ETHGlobal / Hackathon sponsorship**              | $500‑$2,000 (prize)        | Medium — 50‑200 devs exposed, 3‑5 working agents built | # of agents deployed during hackathon     |
+| **"Deploy an agent, get $10 in credits" campaign** | $500 (10 agents × $50)     | High — removes the #1 barrier (gas costs)              | # of funded escrows, # of completed tasks |
+| **Bounty campaign on Gitcoin/OnlyDust**            | $1,000 (5 bounties × $200) | Medium — attracts open‑source contributors             | # of merged PRs, # of new GitHub stars    |
 
 ---
 
@@ -371,58 +395,58 @@ This is good. But the website, docs, and social media don't reinforce this messa
 
 ### Critical (Blocking Launch)
 
-| # | Task | Dependencies | Deadline |
-|---|------|-------------|---------|
-| C1 | Fix private key exposure (remove from all `.env.example`, use hardware wallet) | None | Before any mainnet deploy |
-| C2 | Replace `MockMarketDataProvider` with Pyth/Chainlink price feeds | SDK integration | Week 1 |
-| C3 | Add end‑to‑end integration test for escrow → decision → intent → task lifecycle | Hardhat network | Week 2 |
-| C4 | Remove duplicate `backend/prisma/schema.prisma`; unify to single source of truth | None | Week 1 |
-| C5 | Add `process.exit(1)` in `envValidation.ts` for production insecure defaults | None | Week 1 |
-| C6 | Add `nonReentrant` modifier to all fund‑moving functions in `Escrow.sol` | Security review | Week 1 |
-| C7 | Merge the two Prisma schemas into one | None | Week 1 |
-| C8 | Set up monitoring (Sentry or similar) for production errors | Account setup | Week 2 |
+| #   | Task                                                                             | Dependencies    | Deadline                  |
+| --- | -------------------------------------------------------------------------------- | --------------- | ------------------------- |
+| C1  | Fix private key exposure (remove from all `.env.example`, use hardware wallet)   | None            | Before any mainnet deploy |
+| C2  | Replace `MockMarketDataProvider` with Pyth/Chainlink price feeds                 | SDK integration | Week 1                    |
+| C3  | Add end‑to‑end integration test for escrow → decision → intent → task lifecycle  | Hardhat network | Week 2                    |
+| C4  | Remove duplicate `backend/prisma/schema.prisma`; unify to single source of truth | None            | Week 1                    |
+| C5  | Add `process.exit(1)` in `envValidation.ts` for production insecure defaults     | None            | Week 1                    |
+| C6  | Add `nonReentrant` modifier to all fund‑moving functions in `Escrow.sol`         | Security review | Week 1                    |
+| C7  | Merge the two Prisma schemas into one                                            | None            | Week 1                    |
+| C8  | Set up monitoring (Sentry or similar) for production errors                      | Account setup   | Week 2                    |
 
 ### Important (Launch Within 30 Days After)
 
-| # | Task | Dependencies |
-|---|------|-------------|
-| I1 | Deploy frontend to Vercel with demo mode | Live API |
-| I2 | Write SDK README with real‑world examples | SDK stable |
-| I3 | Add pagination to `GET /api/agents/:id/trace` | Database indexing |
-| I4 | Implement agent search/filter on marketplace page | Frontend sprint |
-| I5 | Add circuit breaker for OpenAI API calls | Week 3 |
-| I6 | Pre‑download Transformers.js model in Dockerfile | Build pipeline update |
-| I7 | Add `prisma migrate deploy` to Render build script | Week 2 |
-| I8 | Create 5 "good first issues" on GitHub | Week 2 |
+| #   | Task                                               | Dependencies          |
+| --- | -------------------------------------------------- | --------------------- |
+| I1  | Deploy frontend to Vercel with demo mode           | Live API              |
+| I2  | Write SDK README with real‑world examples          | SDK stable            |
+| I3  | Add pagination to `GET /api/agents/:id/trace`      | Database indexing     |
+| I4  | Implement agent search/filter on marketplace page  | Frontend sprint       |
+| I5  | Add circuit breaker for OpenAI API calls           | Week 3                |
+| I6  | Pre‑download Transformers.js model in Dockerfile   | Build pipeline update |
+| I7  | Add `prisma migrate deploy` to Render build script | Week 2                |
+| I8  | Create 5 "good first issues" on GitHub             | Week 2                |
 
 ### Nice‑to‑Have (Can Wait)
 
-| # | Task |
-|---|------|
-| N1 | GovernanceToken, Vesting, Multisig contracts (remove or finalize) |
-| N2 | Property‑based tests for Intent and Escrow contracts |
-| N3 | Frontend lazy loading and bundle optimization |
-| N4 | Real‑time agent logs via WebSocket |
-| N5 | Mobile‑responsive dashboard |
-| N6 | i18n (internationalization) |
-| N7 | SOC2 / HIPAA compliance documentation |
+| #   | Task                                                              |
+| --- | ----------------------------------------------------------------- |
+| N1  | GovernanceToken, Vesting, Multisig contracts (remove or finalize) |
+| N2  | Property‑based tests for Intent and Escrow contracts              |
+| N3  | Frontend lazy loading and bundle optimization                     |
+| N4  | Real‑time agent logs via WebSocket                                |
+| N5  | Mobile‑responsive dashboard                                       |
+| N6  | i18n (internationalization)                                       |
+| N7  | SOC2 / HIPAA compliance documentation                             |
 
 ---
 
 ## 6. Risk Register
 
-| # | Risk | Probability | Impact | Mitigation | Warning Signs |
-|---|------|-----------|--------|------------|---------------|
-| 1 | **Private key leak** (env file, CI logs, Render dashboard, compromised laptop) | Medium | Critical | Use multisig + hardware wallet for deployer; separate signer from backend; rotate keys weekly | Any `0x...` in logs, `.env` in version control |
-| 2 | **ElizaOS becomes the default agent framework** (developers choose ElizaOS + plugin over Kuberna platform) | High | High | Build a first‑class ElizaOS plugin that surfaces Kuberna's escrow + certification layers | ElizaOS plugin registry growth >1000 plugins |
-| 3 | **Across Protocol / ERC‑7683 makes Kuberna's intent layer obsolete** | Medium | High | Adopt ERC‑7683 standard for cross‑chain intents; become a solver on Across | ERC‑7683 adoption in wallets |
-| 4 | **OpenAI API cost overrun** (each agent orchestration costs $0.05‑0.20 in GPT‑4 tokens) | Medium | Medium | Implement budget caps per user per day; support local models as primary, GPT as upgrade | Monthly API bill >$500 |
-| 5 | **Phala API breaking change** (Kuberna's TEE layer wraps Phala API) | Low | High | Write integration tests for TEE service; maintain fallback Marlin support | Phala API deprecation notices |
-| 6 | **No product‑market fit** (building what the team wants, not what users need) | Medium | Critical | Ship MVP to 10 real developers in first 30 days and iterate based on feedback | <3 active users after 60 days |
-| 7 | **Database migration conflicts** (two Prisma schemas diverge) | High | Medium | Consolidate to one schema; add CI check that `prisma validate` passes on both | CI failing on migration steps |
-| 8 | **Smart contract exploit on mainnet** (despite testnet deployment, undiscovered vuln) | Low | Critical | Third‑party audit before any mainnet launch; bug bounty program | Audit report finding any high‑severity issue |
-| 9 | **Regulatory uncertainty** (MiCA, GENIUS Act — could classify agent platforms differently) | Medium | Medium | Legal review of token model; don't launch a token; keep platform fee‑based | Regulatory guidance on autonomous agent liability |
-| 10 | **Solo founder burnout** (@kawacukennedy is the only code owner) | High | High | Recruit 2‑3 core contributors before launch; open‑source aggressively | Response time to issues >1 week |
+| #   | Risk                                                                                                       | Probability | Impact   | Mitigation                                                                                    | Warning Signs                                     |
+| --- | ---------------------------------------------------------------------------------------------------------- | ----------- | -------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 1   | **Private key leak** (env file, CI logs, Render dashboard, compromised laptop)                             | Medium      | Critical | Use multisig + hardware wallet for deployer; separate signer from backend; rotate keys weekly | Any `0x...` in logs, `.env` in version control    |
+| 2   | **ElizaOS becomes the default agent framework** (developers choose ElizaOS + plugin over Kuberna platform) | High        | High     | Build a first‑class ElizaOS plugin that surfaces Kuberna's escrow + certification layers      | ElizaOS plugin registry growth >1000 plugins      |
+| 3   | **Across Protocol / ERC‑7683 makes Kuberna's intent layer obsolete**                                       | Medium      | High     | Adopt ERC‑7683 standard for cross‑chain intents; become a solver on Across                    | ERC‑7683 adoption in wallets                      |
+| 4   | **OpenAI API cost overrun** (each agent orchestration costs $0.05‑0.20 in GPT‑4 tokens)                    | Medium      | Medium   | Implement budget caps per user per day; support local models as primary, GPT as upgrade       | Monthly API bill >$500                            |
+| 5   | **Phala API breaking change** (Kuberna's TEE layer wraps Phala API)                                        | Low         | High     | Write integration tests for TEE service; maintain fallback Marlin support                     | Phala API deprecation notices                     |
+| 6   | **No product‑market fit** (building what the team wants, not what users need)                              | Medium      | Critical | Ship MVP to 10 real developers in first 30 days and iterate based on feedback                 | <3 active users after 60 days                     |
+| 7   | **Database migration conflicts** (two Prisma schemas diverge)                                              | High        | Medium   | Consolidate to one schema; add CI check that `prisma validate` passes on both                 | CI failing on migration steps                     |
+| 8   | **Smart contract exploit on mainnet** (despite testnet deployment, undiscovered vuln)                      | Low         | Critical | Third‑party audit before any mainnet launch; bug bounty program                               | Audit report finding any high‑severity issue      |
+| 9   | **Regulatory uncertainty** (MiCA, GENIUS Act — could classify agent platforms differently)                 | Medium      | Medium   | Legal review of token model; don't launch a token; keep platform fee‑based                    | Regulatory guidance on autonomous agent liability |
+| 10  | **Solo founder burnout** (@kawacukennedy is the only code owner)                                           | High        | High     | Recruit 2‑3 core contributors before launch; open‑source aggressively                         | Response time to issues >1 week                   |
 
 ---
 
@@ -444,30 +468,30 @@ This is good. But the website, docs, and social media don't reinforce this messa
 
 **Month 1: Foundation (Weeks 1‑4)**
 
-| Week | Focus | Deliverables |
-|------|-------|-------------|
-| 1 | **Security & Stability** | Fix C1‑C6 (private key, mock data, reentrancy, env validation, Prisma merge, sentry) |
-| 2 | **Test Infrastructure** | Write e2e integration test (C3), fuzz tests for Escrow, Intent |
-| 3 | **Live Demo** | Deploy to Vercel (demo mode), fix build pipeline, add DB migration to deploy |
-| 4 | **Developer Onboarding** | Good first issues, Discord server, "Build in 5 min" tutorial, SDK README rewrite |
+| Week | Focus                    | Deliverables                                                                         |
+| ---- | ------------------------ | ------------------------------------------------------------------------------------ |
+| 1    | **Security & Stability** | Fix C1‑C6 (private key, mock data, reentrancy, env validation, Prisma merge, sentry) |
+| 2    | **Test Infrastructure**  | Write e2e integration test (C3), fuzz tests for Escrow, Intent                       |
+| 3    | **Live Demo**            | Deploy to Vercel (demo mode), fix build pipeline, add DB migration to deploy         |
+| 4    | **Developer Onboarding** | Good first issues, Discord server, "Build in 5 min" tutorial, SDK README rewrite     |
 
 **Month 2: Product‑Market Fit (Weeks 5‑8)**
 
-| Week | Focus | Deliverables |
-|------|-------|-------------|
-| 5 | **Recruit 10 Devs** | DM Web3 devs on Farcaster/X, offer 1‑on‑1 onboarding, credit for gas costs |
-| 6 | **Iterate on Feedback** | Fix top 10 developer complaints; add missing SDK methods |
-| 7 | **Content Push** | 3 blog posts, 1 YouTube tutorial, 1 Twitter thread |
-| 8 | **Growth Experiment** | Launch Gitcoin bounty campaign ($1,000) + "deploy an agent, get $50 in credits" |
+| Week | Focus                   | Deliverables                                                                    |
+| ---- | ----------------------- | ------------------------------------------------------------------------------- |
+| 5    | **Recruit 10 Devs**     | DM Web3 devs on Farcaster/X, offer 1‑on‑1 onboarding, credit for gas costs      |
+| 6    | **Iterate on Feedback** | Fix top 10 developer complaints; add missing SDK methods                        |
+| 7    | **Content Push**        | 3 blog posts, 1 YouTube tutorial, 1 Twitter thread                              |
+| 8    | **Growth Experiment**   | Launch Gitcoin bounty campaign ($1,000) + "deploy an agent, get $50 in credits" |
 
 **Month 3: Launch Preparation (Weeks 9‑12)**
 
-| Week | Focus | Deliverables |
-|------|-------|-------------|
-| 9 | **Feature Completion** | Marketplace search, agent IDE save/deploy, real dashboard data |
-| 10 | **Smart Contract Audit** | Hire third‑party for Escrow, Intent, CrossChainRouter audit |
-| 11 | **Documentation Sprint** | Complete API.md, SDK reference, deployment guide, troubleshooting |
-| 12 | **Public Launch** | Launch post on Mirror.xyz + X + Discord AMA; open beta to waitlist |
+| Week | Focus                    | Deliverables                                                       |
+| ---- | ------------------------ | ------------------------------------------------------------------ |
+| 9    | **Feature Completion**   | Marketplace search, agent IDE save/deploy, real dashboard data     |
+| 10   | **Smart Contract Audit** | Hire third‑party for Escrow, Intent, CrossChainRouter audit        |
+| 11   | **Documentation Sprint** | Complete API.md, SDK reference, deployment guide, troubleshooting  |
+| 12   | **Public Launch**        | Launch post on Mirror.xyz + X + Discord AMA; open beta to waitlist |
 
 ### Priority Matrix
 
@@ -495,4 +519,4 @@ This is good. But the website, docs, and social media don't reinforce this messa
 
 ---
 
-*Report generated by comprehensive audit of the Kuberna Labs repository. All file references are relative to `/Volumes/RCA/kubernalabs/`.*
+_Report generated by comprehensive audit of the Kuberna Labs repository. All file references are relative to `/Volumes/RCA/kubernalabs/`._

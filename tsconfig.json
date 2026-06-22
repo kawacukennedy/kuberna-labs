@@ -13,9 +13,5 @@
     "typechain-types/**/*"
   ],
   "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "./backend" },
-    { "path": "./sdk" },
-    { "path": "./frontend" }
-  ]
+  "references": [{ "path": "./backend" }, { "path": "./sdk" }, { "path": "./frontend" }]
 }

@@ -113,16 +113,16 @@ footer
 
 ### Types
 
-| Type | Usage |
-|------|-------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Code style (formatting, semicolons) |
+| Type       | Usage                                   |
+| ---------- | --------------------------------------- |
+| `feat`     | New feature                             |
+| `fix`      | Bug fix                                 |
+| `docs`     | Documentation only                      |
+| `style`    | Code style (formatting, semicolons)     |
 | `refactor` | Code change that neither fixes nor adds |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
-| `chore` | Build process, dependencies, tooling |
+| `perf`     | Performance improvement                 |
+| `test`     | Adding or fixing tests                  |
+| `chore`    | Build process, dependencies, tooling    |
 
 ### Scopes
 

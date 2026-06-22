@@ -40,9 +40,20 @@
     "db:generate": "cd backend && npx prisma generate"
   },
   "keywords": [
-    "web3", "blockchain", "ai-agents", "education", "smart-contracts",
-    "defi", "tee", "ethereum", "polygon", "base", "nft",
-    "certificates", "decentralized", "marketplace"
+    "web3",
+    "blockchain",
+    "ai-agents",
+    "education",
+    "smart-contracts",
+    "defi",
+    "tee",
+    "ethereum",
+    "polygon",
+    "base",
+    "nft",
+    "certificates",
+    "decentralized",
+    "marketplace"
   ],
   "author": {
     "name": "Kennedy Kawacuk",
