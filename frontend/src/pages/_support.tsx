@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
-import { Search, HelpCircle, MessageCircle, ChevronDown, ChevronUp, Mail, ExternalLink } from 'lucide-react';
+import { Search, MessageCircle, ChevronDown, ChevronUp, Mail } from 'lucide-react';
 
 const faqs = [
   { q: 'How do I deploy an agent?', a: 'Navigate to the Agents page and click "Create Agent". Follow the wizard to configure and deploy your agent.' },

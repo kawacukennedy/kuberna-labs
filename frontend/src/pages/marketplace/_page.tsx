@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { IntentCard } from '@/components/marketplace/IntentCard';
-import { Search, Filter, Plus, ChevronDown, Sparkles, Activity, ArrowRight } from 'lucide-react';
+import { Search, Filter, Plus, ChevronDown, Activity } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 

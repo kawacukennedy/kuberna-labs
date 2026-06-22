@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { FileText, ChevronRight, Scale, Shield, Lock, Users } from 'lucide-react';
+import { Scale, Shield, Lock } from 'lucide-react';
 
 export default function LegalPage() {
   return (

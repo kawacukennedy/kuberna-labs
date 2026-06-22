@@ -140,7 +140,7 @@ interface AIAssistantProps {
   onClose: () => void;
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ onApply, onClose }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({ onApply, onClose: _onClose }) => {
   const [input, setInput] = useState('');
   const [isParsing, setIsParsing] = useState(false);
   const [suggestion, setSuggestion] = useState<AgentSuggestion | null>(null);

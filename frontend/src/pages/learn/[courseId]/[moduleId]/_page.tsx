@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Layout } from '@/components/layout/Layout';
-import { ChevronLeft, ChevronRight, Play, BookOpen, CheckCircle2, MessageSquare, Download, Share2, HelpCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, BookOpen, CheckCircle2, MessageSquare, Download, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LearnPage() {

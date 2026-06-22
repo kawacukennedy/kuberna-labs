@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@/hooks/useWallet';
-import { Search, Bell, User, Menu, X, ChevronDown } from 'lucide-react';
+import { Search, Bell, User, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   variant?: 'transparent' | 'glass';
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ variant = 'transparent' }) => {
-  const { address, isConnected, connect, disconnect } = useWallet();
+  const { address, isConnected } = useWallet();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 

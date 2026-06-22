@@ -3,10 +3,9 @@ import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { CourseCard } from '@/components/shared/CourseCard';
-import { Sidebar } from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { apiUrl } from '@/lib/api';
-import { Cpu, BookOpen, DollarSign, Zap, Play, ChevronRight, Activity, Plus, User } from 'lucide-react';
+import { Cpu, BookOpen, DollarSign, Zap, Play, ChevronRight, Activity, Plus } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
 import { KiteWalletConnect } from '@/components/Wallet/KiteWalletConnect';
@@ -14,7 +13,7 @@ import { KiteWalletConnect } from '@/components/Wallet/KiteWalletConnect';
 export default function DashboardPage() {
   const { user, token } = useAuth();
   const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {

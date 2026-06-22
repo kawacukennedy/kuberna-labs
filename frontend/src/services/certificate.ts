@@ -1,5 +1,5 @@
 import { Address, Hash, keccak256, encodePacked } from 'viem';
-import { usePublicClient, useWalletClient, useWriteContract, useReadContract } from 'wagmi';
+import { usePublicClient, useWriteContract } from 'wagmi';
 import { useCallback, useState } from 'react';
 import { CERTIFICATE_ABI, getContractAddress } from '../lib/contracts';
 import { useWallet } from '../hooks/useWallet';

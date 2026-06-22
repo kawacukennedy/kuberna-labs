@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
 import { apiUrl } from '@/lib/api';
-import { User, Mail, Lock, Loader2, Eye, EyeOff, CheckCircle, Sparkles, Wallet, UserPlus } from 'lucide-react';
+import { User, Mail, Lock, Loader2, Sparkles, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
@@ -28,7 +28,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword] = useState(false);
   const [role, setRole] = useState('LEARNER');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

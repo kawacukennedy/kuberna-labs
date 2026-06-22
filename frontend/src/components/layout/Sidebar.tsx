@@ -10,17 +10,9 @@ import {
   Users,
   Shield,
   BarChart3,
-  Layers,
-  CreditCard,
   HelpCircle,
   LogOut,
   ChevronRight,
-  Activity,
-  Home,
-  FileText,
-  Users as UsersIcon,
-  MessageSquare,
-  Briefcase,
   UserCircle
 } from 'lucide-react';
 
@@ -32,7 +24,7 @@ interface SidebarItemProps {
   active?: boolean;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ href, icon, label, badge, active }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ href, icon, label, badge, active: _active }) => {
   const router = useRouter();
   const isActive = router.asPath === href || router.asPath.startsWith(href + '/');
 

@@ -1,4 +1,4 @@
-import { useAccount, useConnect, useDisconnect, useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 import { SUPPORTED_CHAINS, CHAIN_NAMES, getExplorerAddressUrl } from '../lib/chains';

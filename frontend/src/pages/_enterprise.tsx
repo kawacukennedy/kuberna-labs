@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { ArrowRight, Shield, Zap, Globe, Code, CheckCircle, Building2, ChevronRight } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Globe, Code, Building2, ChevronRight } from 'lucide-react';
 
 const features = [
   { icon: Shield, title: 'Enterprise-Grade TEE', description: 'Deploy agents in Intel TDX / AMD SEV enclaves with on-chain remote attestation.' },

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePublicClient, useWalletClient } from 'wagmi';
-import { Address, formatEther, formatUnits, parseEther, parseUnits } from 'viem';
+import { Address, formatEther, formatUnits } from 'viem';
 import { useWallet } from './useWallet';
-import { getSupportedTokens, TokenInfo, formatTokenAmount, parseTokenAmount } from '../lib/adapters';
-import { CHAIN_IDS } from '../lib/chains';
+import { getSupportedTokens, TokenInfo } from '../lib/adapters';
+
 
 interface TokenBalance {
   token: TokenInfo;
@@ -127,12 +127,12 @@ export function useTokenBalance(tokenAddress: Address | null): {
   formatted: string;
   refetch: () => Promise<void>;
 } {
-  const { address, chainId } = useWallet();
+  const { address } = useWallet();
   const publicClient = usePublicClient();
   
   const [balance, setBalance] = useState<bigint>(0n);
   const [formatted, setFormatted] = useState<string>('0');
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   
   const fetchBalance = useCallback(async () => {
     if (!address || !publicClient) return;

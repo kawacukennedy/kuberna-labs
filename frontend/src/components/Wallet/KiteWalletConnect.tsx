@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CreditCard, Wallet, ExternalLink, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { CreditCard, Wallet, ExternalLink, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { apiUrl } from '@/lib/api';
 import axios from 'axios';

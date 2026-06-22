@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
-import { Clock, BookOpen, Award, Globe, Shield, Play, ChevronRight, Check, User, FileText, Code, Cpu } from 'lucide-react';
+import { Clock, BookOpen, Award, Globe, Play, ChevronRight, Check, User, Code } from 'lucide-react';
 
 const curriculum = [
   { title: 'The Evolution of Cross-Chain Systems', duration: '45m', type: 'video' },
@@ -24,7 +24,6 @@ const learningObjectives = [
 
 export default function CourseDetailPage() {
   const router = useRouter();
-  const { slug } = router.query;
 
   return (
     <Layout>

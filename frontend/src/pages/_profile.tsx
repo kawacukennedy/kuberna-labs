@@ -1,9 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
-import { Sidebar } from '@/components/layout/Sidebar';
 import { useAuth } from '@/context/AuthContext';
-import { User, Mail, Lock, Shield, Bell, CreditCard, Key, Settings, LogOut, ChevronRight, BookOpen, Clock, Award } from 'lucide-react';
+import { User, Shield, Bell, Settings, ChevronRight, Clock, Award } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProfilePage() {

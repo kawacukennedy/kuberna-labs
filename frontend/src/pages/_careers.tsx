@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
-import { ArrowRight, Globe, Zap, Code, Briefcase, MapPin } from 'lucide-react';
+import { ArrowRight, Globe, Zap, Code, MapPin } from 'lucide-react';
 
 const jobs = [
   { title: 'Senior Protocol Engineer', type: 'Engineering', location: 'Remote', tags: ['Rust', 'Solidity'] },

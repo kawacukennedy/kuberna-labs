@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Play, Square, Save, Terminal, Settings, Activity, ChevronDown, Copy, Check } from 'lucide-react';
+import { Play, Save, Terminal, Settings, Activity, Copy } from 'lucide-react';
 
 const logs = [
   { time: '10:42:15', level: 'INFO', message: 'Agent initialized successfully' },
@@ -14,12 +13,7 @@ const logs = [
 ];
 
 export default function AgentIDEPage() {
-  const [copied, setCopied] = useState(false);
-
-  const copyCode = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const [copied] = useState(false);
 
   return (
     <Layout variant="dashboard">

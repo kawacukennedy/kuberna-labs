@@ -1,13 +1,11 @@
-import { Address, Hash, keccak256, toHex, encodePacked } from 'viem';
+import { Address, Hash, keccak256, encodePacked } from 'viem';
 import {
   usePublicClient,
   useWalletClient,
   useWriteContract,
-  useReadContract,
-  useWaitForTransactionReceipt,
 } from 'wagmi';
 import { useCallback, useState } from 'react';
-import { ESCROW_ABI, CONTRACT_ADDRESSES } from '../lib/contracts';
+import { ESCROW_ABI } from '../lib/contracts';
 import { useWallet } from '../hooks/useWallet';
 import { getContractAddress } from '../lib/contracts';
 
@@ -82,7 +80,7 @@ export function useEscrow(): UseEscrowReturn {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
 
-  const { writeContractAsync, isPending, error: writeError } = useWriteContract();
+  const { writeContractAsync, isPending } = useWriteContract();
 
   const [error, setError] = useState<Error | null>(null);
 

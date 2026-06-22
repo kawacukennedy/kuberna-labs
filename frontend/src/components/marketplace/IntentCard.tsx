@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hash, MapPin, Clock, DollarSign, ArrowRight, ShieldCheck, Activity, CheckCircle2 } from 'lucide-react';
+import { Clock, DollarSign, ArrowRight, ShieldCheck, Activity, CheckCircle2 } from 'lucide-react';
 
 interface IntentCardProps {
   description: string;
@@ -46,7 +46,6 @@ const getStatusStyles = (status: string) => {
 
 export const IntentCard: React.FC<IntentCardProps> = ({ description, sourceChain, destChain, budget, deadline, status, bidCount }) => {
   const styles = getStatusStyles(status);
-  const Icon = styles.icon;
 
   return (
     <div className="glass glass-card group flex flex-col gap-6">

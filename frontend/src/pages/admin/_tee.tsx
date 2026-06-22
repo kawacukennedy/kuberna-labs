@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
-import { Shield, Server, Activity, CheckCircle, AlertTriangle, RefreshCw, Cpu } from 'lucide-react';
+import { Shield, Server, Activity, RefreshCw } from 'lucide-react';
 
 const nodes = [
   { id: 1, name: 'Phala Network', status: 'valid', cpu: 'Intel TDX', uptime: '99.9%', enclave: '0x7a2...f3', lastAttested: '2m ago' },

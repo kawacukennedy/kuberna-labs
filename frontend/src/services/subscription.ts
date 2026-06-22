@@ -1,5 +1,5 @@
 import { Address, Hash } from "viem";
-import { usePublicClient, useWalletClient, useWriteContract } from "wagmi";
+import { usePublicClient, useWriteContract } from "wagmi";
 import { useCallback, useState } from "react";
 import { useWallet } from "../hooks/useWallet";
 

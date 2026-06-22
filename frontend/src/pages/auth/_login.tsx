@@ -7,13 +7,13 @@ import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
 import { apiUrl } from '@/lib/api';
 import { useWallet } from '@/hooks/useWallet';
-import { Mail, Lock, Loader2, Eye, EyeOff, Wallet } from 'lucide-react';
+import { Mail, Lock, Loader2, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 

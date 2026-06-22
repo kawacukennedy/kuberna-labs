@@ -1,8 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { Users, DollarSign, Bot, BarChart3, Shield, Search, MoreVertical, ChevronDown } from 'lucide-react';
+import { Users, DollarSign, Bot, Shield, Search, MoreVertical, ChevronDown } from 'lucide-react';
 
 const users = [
   { id: 1, name: 'Alice M.', email: 'alice@example.com', role: 'Learner', status: 'Active', joined: 'Jan 2024' },
