@@ -65,7 +65,7 @@ export class ConflictError extends AppError {
   }
 }
 
-export function errorHandler(err: ApiError, req: Request, res: Response, next: NextFunction) {
+export function errorHandler(err: ApiError, req: Request, res: Response, _next: NextFunction) {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal server error';
 

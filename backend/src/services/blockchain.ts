@@ -1,5 +1,4 @@
 import { ethers, Contract, JsonRpcProvider, Wallet, Interface } from 'ethers';
-import { prisma } from '../utils/prisma.js';
 import {
   ESCROW_ABI,
   INTENT_ABI,
@@ -227,8 +226,7 @@ export class BlockchainService {
     return feeData.gasPrice || BigInt(0);
   }
 
-  async estimateGas(fn: () => Promise<any>, chain?: string): Promise<bigint> {
-    const wallet = this.getWallet(chain);
+  async estimateGas(fn: () => Promise<any>, _chain?: string): Promise<bigint> {
     try {
       return await fn();
     } catch (originalError: any) {

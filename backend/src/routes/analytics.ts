@@ -1,6 +1,5 @@
 import { Router, Response, NextFunction } from "express";
 import { prisma } from "../utils/prisma.js";
-import { createError } from "../middleware/errorHandler.js";
 import type { AuthRequest } from "../types/express.d.js";
 import { authenticate, requireRoles } from "../middleware/auth.js";
 

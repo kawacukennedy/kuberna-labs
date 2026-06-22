@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import crypto from 'crypto';
 import { connect, NatsConnection, StringCodec } from 'nats';
 import { prisma } from '../utils/prisma.js';
 import { ESCROW_ABI, INTENT_ABI, CERTIFICATE_ABI, ATTESTATION_ABI } from '../utils/abis.js';
@@ -66,17 +65,6 @@ interface BlockchainListenerConfig {
   pollInterval: number;
   confirmations: number;
   natsUrl: string;
-}
-
-interface ProcessedEvent {
-  id: string;
-  chain: string;
-  contractAddress: string;
-  eventName: string;
-  blockNumber: number;
-  transactionHash: string;
-  processed: boolean;
-  createdAt: Date;
 }
 
 export class BlockchainListener {

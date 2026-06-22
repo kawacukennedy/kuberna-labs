@@ -1,5 +1,4 @@
 import { localMemory } from './localMemory.js';
-import { embeddingService } from './embeddingService.js';
 import logger from '../utils/logger.js';
 import type { StructuredIntent } from './intentParser.js';
 

@@ -179,10 +179,6 @@ router.post(
         throw createError("Invalid API key format", 400, "INVALID_KEY");
       }
 
-      const prefix = `${parts[1]}_${parts[2]}`;
-      const actualKey = parts.slice(3).join("_");
-      const lookupKey = `kn_${prefix}_${crypto.createHash("sha256").update(actualKey).digest("hex").substring(0, 64)}`;
-
       const apiKey = await prisma.apiKey.findFirst({
         where: {
           key: { contains: keyHash.substring(0, 20) },

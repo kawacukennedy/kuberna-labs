@@ -379,7 +379,7 @@ ${code}`;
         const cleaned = content.replace(/```json|```/g, "").trim();
         return JSON.parse(cleaned);
       }, fallback);
-    } catch (error) {
+    } catch {
       return {
         valid: false,
         errors: [],

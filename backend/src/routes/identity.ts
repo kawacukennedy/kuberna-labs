@@ -4,13 +4,12 @@ import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
 import { agentService } from '../services/agentService.js';
-import logger from '../utils/logger.js';
 
 const router = Router();
 
 router.post('/register', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { solanaAddress, evmAddress, agentName, framework } = req.body;
+    const { solanaAddress, evmAddress, agentName } = req.body;
 
     if (!solanaAddress) {
       throw createError('solanaAddress is required', 400, 'VALIDATION_ERROR');

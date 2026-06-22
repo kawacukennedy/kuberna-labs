@@ -254,12 +254,6 @@ router.get(
         prisma.task.count({ where: { status: 'COMPLETED', completedAt: { gte: startDate } } }),
       ]);
 
-      const dailyNewUsers = await prisma.user.groupBy({
-        by: ['createdAt'],
-        where: { createdAt: { gte: startDate } },
-        _count: true,
-      });
-
       res.json({
         period: { start: startDate.toISOString(), end: now.toISOString() },
         users: {

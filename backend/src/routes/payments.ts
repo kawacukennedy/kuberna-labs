@@ -7,7 +7,7 @@ import type { AuthRequest } from '../types/express.d.js';
 import { authenticate } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validation.js';
 import logger from '../utils/logger.js';
-import { kitePassportService, kitePaymentService } from '../services/index.js';
+import { kitePaymentService } from '../services/index.js';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -134,7 +134,7 @@ router.post(
   validateRequest(checkoutSchema),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { planId, paymentMethod, courseId } = req.body;
+      const { planId } = req.body;
 
       const planPrices: Record<string, number> = {
         sdk: 397,
@@ -168,11 +168,6 @@ router.get(
   authenticate,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: req.user!.id },
-        select: { web3Address: true },
-      });
-
       res.json({
         balances: [
           { chain: 'NEAR', amount: '0', usdValue: '0' },
@@ -224,7 +219,7 @@ router.post(
   validateRequest(withdrawSchema),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { amount, address, chain } = req.body;
+      const { amount, chain } = req.body;
 
       const payment = await prisma.payment.create({
         data: {

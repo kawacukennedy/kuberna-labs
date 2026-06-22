@@ -1,7 +1,6 @@
 import { Router, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { randomBytes } from 'crypto';
 import { z } from 'zod';
 import { verifyMessage } from '../utils/viem.js';
 import { prisma } from '../utils/prisma.js';
@@ -135,7 +134,7 @@ router.post('/login', authLimiter, async (req: AuthRequest, res: Response, next:
 router.post(
   '/logout',
   authenticate,
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, _next: NextFunction) => {
     res.json({ message: 'Logged out successfully' });
   }
 );

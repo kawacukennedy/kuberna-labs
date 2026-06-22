@@ -704,7 +704,7 @@ export class TEEService {
    * Task 12.5: Get enclave health
    * Requirements: 18.7
    */
-  async getEnclaveHealth(enclaveId: string): Promise<EnclaveHealth> {
+  async getEnclaveHealth(_enclaveId: string): Promise<EnclaveHealth> {
     // In production, this would query the TEE provider for metrics
     // For now, return simulated data
     return {

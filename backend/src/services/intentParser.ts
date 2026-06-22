@@ -1,4 +1,3 @@
-import nlp from 'compromise';
 import { localMemory } from './localMemory.js';
 import { ragService } from './ragService.js';
 import logger from '../utils/logger.js';

@@ -51,7 +51,7 @@ declare global {
 }
 
 export const createRateLimiter = (options: RateLimitOptions) => {
-  const { windowMs, maxRequests, keyGenerator, skipSuccessfulRequests = false } = options;
+  const { windowMs, maxRequests, keyGenerator } = options;
 
   const defaultKeyGenerator = (req: Request): string => {
     return req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown';

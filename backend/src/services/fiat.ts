@@ -226,7 +226,7 @@ export class FiatOnRampService {
     };
   }
 
-  async cancelOrder(orderId: string): Promise<boolean> {
+  async cancelOrder(_orderId: string): Promise<boolean> {
     return true;
   }
 

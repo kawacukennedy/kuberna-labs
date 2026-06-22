@@ -1,7 +1,6 @@
 import {
   ethers,
   Contract,
-  BrowserProvider,
   formatUnits,
   parseUnits,
 } from "ethers";
@@ -423,7 +422,7 @@ export class EthereumAdapter extends ChainAdapter {
 
   async getProtocolPositions(
     protocol: string,
-    address: string,
+    _address: string,
   ): Promise<Array<{ token: string; amount: string; value: string }>> {
     const positions: Array<{ token: string; amount: string; value: string }> =
       [];
@@ -641,12 +640,12 @@ export class MultiChainService {
   }
 
   async crossChainTransfer(
-    sourceChain: ChainName,
-    destChain: ChainName,
-    token: string,
-    amount: string,
-    recipient: string,
-    privateKey: string,
+    _sourceChain: ChainName,
+    _destChain: ChainName,
+    _token: string,
+    _amount: string,
+    _recipient: string,
+    _privateKey: string,
   ): Promise<string> {
     return `cross-chain-tx-${Date.now()}`;
   }
