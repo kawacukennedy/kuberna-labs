@@ -14,6 +14,13 @@ const nextConfig = {
   },
   transpilePackages: ['@kuberna/sdk'],
   trailingSlash: true,
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      '@react-native-async-storage/async-storage': false,
+    };
+    return config;
+  },
 };
 
 // Demo mode: when NEXT_PUBLIC_DEMO_MODE=true, enables local intent parsing and mock blockchain

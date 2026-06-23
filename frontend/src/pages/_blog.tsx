@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { Layout } from '@/components/layout/Layout';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 
@@ -56,11 +57,12 @@ export default function BlogPage() {
           <div className="mb-16">
             <div className="bg-surface-container-low rounded-2xl overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="aspect-video lg:aspect-auto bg-surface">
-                  <img 
+                <div className="aspect-video lg:aspect-auto bg-surface relative">
+                  <Image 
                     src={posts[0].thumbnail} 
                     alt={posts[0].title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
@@ -83,11 +85,12 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.slice(1).map((post) => (
               <article key={post.id} className="bg-surface-container-low rounded-xl overflow-hidden hover:-translate-y-2 transition-transform">
-                <div className="aspect-video bg-surface">
-                  <img 
+                <div className="aspect-video bg-surface relative">
+                  <Image 
                     src={post.thumbnail} 
                     alt={post.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <div className="p-6">

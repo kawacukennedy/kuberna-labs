@@ -14,9 +14,14 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
-export async function connectDatabase(): Promise<void> {
+export async function connectDatabase(timeoutMs = 5000): Promise<void> {
   try {
-    await prisma.$connect();
+    await Promise.race([
+      prisma.$connect(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Database connection timed out')), timeoutMs),
+      ),
+    ]);
     console.info('Database connected successfully');
   } catch (error) {
     logger.error('Failed to connect to database', error);

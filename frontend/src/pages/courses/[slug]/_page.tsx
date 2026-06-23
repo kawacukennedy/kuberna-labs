@@ -1,6 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { Star, Users, Clock, Award, ChevronRight, CheckCircle, Zap, Shield, Cpu, Globe, BookOpen, Code, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
 import { Clock, BookOpen, Award, Globe, Play, ChevronRight, Check, User, Code } from 'lucide-react';
@@ -120,11 +122,12 @@ export default function CourseDetailPage() {
 
           <div className="lg:col-span-1">
             <div className="bg-surface-container-low p-8 rounded-xl sticky top-24">
-              <div className="w-full h-48 bg-surface rounded-lg mb-6">
-                <img 
+              <div className="w-full h-48 bg-surface rounded-lg mb-6 relative">
+                <Image 
                   src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=600" 
                   alt="Course"
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg"
                 />
               </div>
               

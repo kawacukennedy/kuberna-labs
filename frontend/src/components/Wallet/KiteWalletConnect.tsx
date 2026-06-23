@@ -25,24 +25,23 @@ export function KiteWalletConnect() {
   const [sessionResult, setSessionResult] = useState<SessionData | null>(null);
 
   useEffect(() => {
+    const fetchWalletInfo = async () => {
+      try {
+        const resp = await axios.get(apiUrl('/kite/wallet'), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (resp.data.success) {
+          setWalletInfo(resp.data.data);
+        }
+      } catch {
+        console.warn('Failed to fetch Kite wallet info');
+      } finally {
+        setLoading(false);
+      }
+    };
     if (token) fetchWalletInfo();
     else setLoading(false);
   }, [token]);
-
-  const fetchWalletInfo = async () => {
-    try {
-      const resp = await axios.get(apiUrl('/kite/wallet'), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (resp.data.success) {
-        setWalletInfo(resp.data.data);
-      }
-    } catch {
-      console.warn('Failed to fetch Kite wallet info');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleConnect = async () => {
     const addr = walletAddress.trim();

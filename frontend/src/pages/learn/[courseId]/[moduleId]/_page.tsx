@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ChevronLeft, ChevronRight, Play, BookOpen, CheckCircle2, MessageSquare, Download, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -41,7 +42,7 @@ export default function LearnPage() {
       <div className="flex-grow flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-64px)]">
         <div className="flex-grow flex flex-col overflow-auto bg-[#F8FAFC]">
           <div className="w-full aspect-video bg-black relative group">
-            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover opacity-60" alt="lesson" />
+            <Image src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=1200" fill className="object-cover opacity-60" alt="lesson" />
             <div className="absolute inset-0 flex items-center justify-center">
               <button className="w-20 h-20 bg-primary/90 text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl">
                 <Play size={32} fill="currentColor" />
