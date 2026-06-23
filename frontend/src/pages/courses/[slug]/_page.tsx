@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Star, Users, Clock, Award, ChevronRight, CheckCircle, Zap, Shield, Cpu, Globe, BookOpen, Code, DollarSign, Play, Check } from 'lucide-react';
+import { Star, Users, Clock, Award, ChevronRight, CheckCircle, Zap, Shield, Cpu, Globe, BookOpen, Code, DollarSign, Play, Check, User } from 'lucide-react';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
 

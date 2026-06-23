@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import { Clock, DollarSign, ArrowRight, ShieldCheck, Activity, CheckCircle2 } from 'lucide-react';
 
