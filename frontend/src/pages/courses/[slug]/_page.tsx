@@ -2,10 +2,9 @@ import React from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Star, Users, Clock, Award, ChevronRight, CheckCircle, Zap, Shield, Cpu, Globe, BookOpen, Code, DollarSign } from 'lucide-react';
+import { Star, Users, Clock, Award, ChevronRight, CheckCircle, Zap, Shield, Cpu, Globe, BookOpen, Code, DollarSign, Play, Check } from 'lucide-react';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
-import { Clock, BookOpen, Award, Globe, Play, ChevronRight, Check, User, Code } from 'lucide-react';
 
 const curriculum = [
   { title: 'The Evolution of Cross-Chain Systems', duration: '45m', type: 'video' },
