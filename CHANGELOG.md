@@ -2,44 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
 
-- Web3 Infrastructure implementation with multi-chain support
-- Payment Service with Ethereum, Polygon, and Arbitrum integration
-- TEE Service with Phala Network and Marlin Oyster support
-- Blockchain Listener with WebSocket connections and fallback polling
-- zkTLS proof generation with Reclaim Protocol and zkPass
-- Comprehensive smart contracts (Escrow, Intent, Payment, Attestation, etc.)
-- Multi-chain adapters for cross-chain operations
-- Property-based testing framework
-- Deployment scripts for testnet and mainnet
-- Comprehensive documentation and setup guides
+- Interactive Plotly circuit visualization (PR #1284)
+- `@kuberna/aip-adapter` npm package for AIP protocol integration
+- Cross-chain identity management system (SDK module + backend routes)
+- Agent certificate auto-issuance via SilentVerify on task completion
+- Identity API routes (register, resolve, certs, passport, verify)
+- AgentService for SilentVerify cert issuance and passport composition
+- `AgentCertificate` and `CrossChainIdentity` database models
+- CI workflow with lint, test, security audit, and build stages
+- Render blueprint deployment configuration (`render.yaml`)
+- Docker Compose setup for local development
 
 ### Changed
 
-- Enhanced Escrow contract with Pausable functionality
-- Enhanced Intent contract with Pausable functionality
-- Updated Hardhat configuration for multi-chain deployment
+- CI: Added `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` env var across all workflows for Node.js 24 migration
+- CI: Moved `getPastVotes` visibility from external to public to fix compilation
+- CI: Updated `expireAndRefund` test expectations after CRIT-1 status check change
+- Contracts: Moved custom errors inside contracts to fix Solidity docstring parser
+- Contracts: Audit fixes for CRIT-1 through CRIT-5 and ENV-1, ENV-2
+- Backend: Fixed `web3Address` lookup in identity route
+- Backend: Resolved Prisma runtime error in Render deployment
 
 ### Fixed
 
-- Gas estimation accuracy improvements
-- Event deduplication in Blockchain Listener
+- Smart contract Solidity docstring parser compatibility
+- Prisma migration ordering for new AgentCertificate and CrossChainIdentity models
+- CI lint and build failures across multiple workflows
 
-## [0.1.0] - 2024-01-15
+## [0.1.0] - 2026-05-01
 
 ### Added
 
-- Initial project structure
-- Basic smart contracts (AgentRegistry, CertificateNFT, CourseNFT)
-- Frontend dashboard
-- SDK foundation
-- Documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
-
-[Unreleased]: https://github.com/kuberna-labs/kubernalabs/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/kuberna-labs/kubernalabs/releases/tag/v0.1.0
+- Initial monorepo setup with backend, frontend, SDK, and contracts
+- Solidity smart contracts: Escrow, Intent, AgentRegistry, CertificateNFT, ReputationNFT, CrossChainRouter, Payment, Subscription, Treasury
+- Express + Prisma backend with REST API (19 route modules)
+- Next.js 14 frontend dashboard with WalletConnect integration
+- `@kuberna/sdk` TypeScript SDK for programmatic access
+- Natural language intent parsing with local AI (zero-dependency mode)
+- Agent decision engine for arbitrage, yield optimization, and stop-loss
+- On-chain escrow with dispute resolution
+- Post-quantum SilentVerify certification
+- Intel SGX TEE support
+- Hardhat deployment scripts for Ethereum, Base, Polygon, Arbitrum
+- Kite x402 micro-payment support
+- Comprehensive test suite (smart contracts, backend, frontend, SDK)
+- ESLint + Prettier + Solhint code quality pipeline
+- Security audit workflows (npm audit, Slither)

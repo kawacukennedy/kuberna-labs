@@ -1,35 +1,88 @@
 # Security Policy
 
-## Supported Versions
-
-Currently only the following versions of Kuberna Labs are being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
-
 ## Reporting a Vulnerability
 
-Security is a top priority for Kuberna Labs, especially given our focus on autonomous agents managing cross-chain funds and TEE deployments.
+We take the security of Kuberna Labs seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
-If you discover a security vulnerability in this project, **please do not report it by creating a GitHub issue**. Instead, follow these steps:
+**Please do not report security vulnerabilities through public GitHub issues.**
 
-1. Send an email to [security@kubernalabs.com](mailto:security@kubernalabs.com).
-2. Include a detailed description of the vulnerability, the conditions under which it occurs, and any potential impact.
-3. If possible, provide a proof-of-concept (PoC) or steps to reproduce the issue.
+Instead, please report them via email to **security@kubernalabs.com** (if available) or by opening a [draft security advisory](https://github.com/kawacukennedy/kuberna-labs/security/advisories/new) on GitHub.
 
-### Response Timeline
+You should receive a response within 48 hours. If you don't, please follow up to ensure we received your message.
 
-We take all security reports seriously and commit to the following response timeline:
+### What to Include
 
-- **Acknowledgment**: Within 24 hours of receiving your report.
-- **Initial Assessment**: Within 48 hours, we will confirm the vulnerability and provide an estimated timeline for a fix.
-- **Resolution**: We aim to resolve critical vulnerabilities within 72 hours.
-- **Disclosure**: Once a fix is deployed and verified, we will coordinate public disclosure, giving appropriate credit to the reporter.
+- Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting, etc.)
+- Full paths of source file(s) related to the manifestation of the issue
+- The location of the affected source code (tag/branch/commit or direct URL)
+- Any special configuration required to reproduce the issue
+- Step-by-step instructions to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Impact of the issue, including how an attacker might exploit it
 
-### Bug Bounty
+### What to Expect
 
-At this time, we do not have an official bug bounty program, but we review high-impact reports on a case-by-case basis and may offer rewards for critical findings related to our smart contracts or core intent protocol.
+- **Acknowledgement:** We'll acknowledge receipt within 48 hours
+- **Initial Assessment:** We'll assess the severity and impact
+- **Fix Timeline:** Critical issues are prioritized and typically fixed within 7 days
+- **Disclosure:** We'll coordinate disclosure with you
 
-Thank you for helping keep Kuberna Labs secure!
+## Smart Contract Security
+
+For vulnerabilities in deployed smart contracts, please include:
+
+- Contract address and network
+- Transaction hash if applicable
+- Whether the vulnerability has been exploited
+- Estimated at-risk funds
+
+## Responsible Disclosure
+
+We kindly ask that you:
+
+- Give us a reasonable time to fix the issue before any public disclosure
+- Make a good faith effort to avoid privacy violations, destruction of data, and interruption or degradation of our services
+- Do not exploit the vulnerability beyond what is necessary to demonstrate the issue
+
+## Scope
+
+This security policy covers:
+
+- Smart contracts in `contracts/`
+- Backend API in `backend/`
+- Frontend application in `frontend/`
+- SDK packages in `sdk/` and `packages/`
+- Infrastructure configurations
+
+## Bug Bounty
+
+There is currently no formal bug bounty program. Critical vulnerabilities may be eligible for discretionary rewards on a case-by-case basis.
+
+## Security-Related Configuration
+
+### Production Deployments
+
+- **Environment variables:** Never commit secrets to the repository. Use `.env` files locally and secrets management in production.
+- **Wallet private keys:** Backend wallets should have minimal funds and be rotated regularly.
+- **Database:** Use connection pooling (e.g., Supabase pooler) and enable SSL/TLS.
+- **Smart contracts:** All contracts are audited before mainnet deployment. Use verified Etherscan contracts.
+
+## Known Security Considerations
+
+- Smart contracts use OpenZeppelin's audited base implementations
+- Rate limiting is enforced on all API endpoints
+- JWT tokens have configurable expiry
+- CORS is restricted in production
+- Prisma is configured with parameterized queries to prevent SQL injection
+
+## Version Support
+
+| Version | Supported |
+|---------|-----------|
+| >= 1.0.0 | ✅ |
+| < 1.0.0 (pre-release) | ⚠️ Limited |
+
+## Contact
+
+- **Email:** security@kubernalabs.com
+- **GitHub Security Advisories:** https://github.com/kawacukennedy/kuberna-labs/security/advisories

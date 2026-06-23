@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/kawacukennedy/kuberna-labs/discussions
+    about: Please ask and answer questions here.
+  - name: 🐦 X (Twitter)
+    url: https://x.com/kubernalabs
+    about: Follow for project updates.
+  - name: 🔒 Report a Security Vulnerability
+    url: https://github.com/kawacukennedy/kuberna-labs/security/advisories/new
+    about: Please report security vulnerabilities here.

@@ -22,6 +22,7 @@ A clear and concise description of any alternative solutions or features you've 
 - [ ] Frontend Dashboard
 - [ ] SDK
 - [ ] Documentation
+- [ ] CI/CD
 - [ ] Other (please specify)
 
 **Additional context**
@@ -31,3 +32,6 @@ Add any other context or screenshots about the feature request here.
 
 - [ ] Yes, I'd like to submit a PR
 - [ ] No, just suggesting
+
+**If yes, do you need help getting started?**
+Let us know if you need guidance on the codebase or setup.
