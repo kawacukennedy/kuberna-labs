@@ -89,7 +89,7 @@ Agent ID: 1
 
 - Try the [Intent Bidding Example](../intent-bidding/)
 - Learn about [Escrow Payments](../escrow-payment/)
-- Explore the [API Documentation](../../API.md)
+- Explore the [API Documentation](../../docs/API.md)
 
 ## Troubleshooting
 

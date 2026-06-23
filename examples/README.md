@@ -118,7 +118,7 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 ## Support
 
 - **Documentation**: [Main README](../README.md)
-- **API Reference**: [API.md](../API.md)
+- **API Reference**: [API.md](../docs/API.md)
 - **Issues**: [GitHub Issues](https://github.com/kawacukennedy/kuberna-labs/issues)
 - **Discord**: [Join our community](#)
 

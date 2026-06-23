@@ -1,6 +1,6 @@
 <div align="center">
 
-# Kuberna Labs 🚀
+# Kuberna Labs
 
 **Agent Orchestration Platform** — Deploy, run, and certify autonomous AI agents that execute cross-chain Web3 tasks.
 
@@ -11,7 +11,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-^0.8.20-363636?logo=solidity)](https://soliditylang.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-Latest-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Twitter Follow](https://img.shields.io/twitter/follow/kubernalabs?style=social)](https://x.com/kubernalabs)
+[![Twitter Follow](https://img.shields.io/twitter/follow/Arnaud_Kennedy?style=social)](https://x.com/Arnaud_Kennedy)
 
 <br/>
 
@@ -288,7 +288,8 @@ Have an idea? [Submit a feature request](https://github.com/kawacukennedy/kubern
 
 ## Community
 
-- **🐦 X (Twitter):** [@kubernalabs](https://x.com/kubernalabs)
+- **💬 Discord:** [Join the server](https://discord.gg/MZvNuhpXu) — get help, share agents, meet the community
+- **🐦 X (Twitter):** [@Arnaud_Kennedy](https://x.com/Arnaud_Kennedy)
 - **💬 GitHub Discussions:** [Join the conversation](https://github.com/kawacukennedy/kuberna-labs/discussions)
 - **📚 Documentation:** Coming soon
 - **🛡️ Security:** Report vulnerabilities to [security@kubernalabs.com](mailto:security@kubernalabs.com)
@@ -298,8 +299,9 @@ Have an idea? [Submit a feature request](https://github.com/kawacukennedy/kubern
 If Kuberna Labs helps your project, please consider:
 
 1. ⭐ **Starring the repo** — it helps others discover us
-2. 🐦 **Following us on X** for updates
-3. 💰 **Sponsoring development** via crypto or [GitHub Sponsors](https://github.com/sponsors)
+2. 💬 **Joining the Discord** — connect with other agent builders
+3. 🐦 **Following on X** for updates
+4. 💰 **Sponsoring development** via crypto or [GitHub Sponsors](https://github.com/sponsors)
 
 ---
 

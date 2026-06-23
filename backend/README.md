@@ -110,7 +110,7 @@ Full list in `backend/.env.example` (18 contracts total).
 
 Optional: `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `REDIS_URL`, `SMTP_*`, `SENTRY_DSN`, `NATS_URL`.
 
-See [Architecture Overview](../ARCHITECTURE.md) for AI parser and agent decision engine configuration.
+See [Architecture Overview](../docs/ARCHITECTURE.md) for AI parser and agent decision engine configuration.
 
 ## Scripts
 
