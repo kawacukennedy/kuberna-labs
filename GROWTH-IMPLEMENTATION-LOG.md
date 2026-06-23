@@ -177,6 +177,29 @@
 
 ---
 
+## Category 7: Awesome List Placement
+
+### Already Listed
+
+- **awesome-web3.com** — Kuberna Labs is already listed in the "AI & LLM & MCP" section
+
+### Target Lists (PR needed from fork)
+
+| List | Repo | Stars | How to Submit |
+|------|------|-------|---------------|
+| Awesome AI Agents | `caramaschiHG/awesome-ai-agents-2026` | Growing | Fork → edit README → PR with entry in "Frameworks" section |
+| Awesome AI for Web3 | `gideonfip/awesome-ai-for-web3` | Growing | Fork → edit README → PR with entry in "Frameworks" or "AI Agents" section |
+| Awesome AI Agents (1.5k+ resources) | `jim-schwoebel/awesome_ai_agents` | 1.8k⭐ | Fork → edit README → PR with entry in appropriate category |
+| best-of-crypto | `lukasmasuch/best-of-crypto` | 544⭐ | Update `projects.yaml` via PR |
+
+**Suggested listing entry format:**
+```markdown
+- [Kuberna Labs](https://github.com/kawacukennedy/kuberna-labs) — Agent Orchestration Platform.
+  Deploy, run, and certify autonomous AI agents that execute cross-chain Web3 tasks.
+  TEE-shielded execution, natural language intents, on-chain escrow, post-quantum certificates.
+  TypeScript, Solidity, 10+ smart contracts.
+```
+
 ## Summary
 
 **Total files created:** 5 (SECURITY.md, CHANGELOG.md, stale.yml, config.yml, GROWTH-AUDIT.md)
