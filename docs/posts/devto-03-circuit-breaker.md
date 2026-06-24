@@ -2,7 +2,7 @@
 title: How We Built a Circuit Breaker for AI Agents That Touch Real Money
 published: false
 tags: ai, webdev, tutorial, opensource
-cover_image: https://raw.githubusercontent.com/kawacukennedy/kuberna-labs/main/docs/assets/devto-03-cover.png
+cover_image: https://opengraph.githubassets.com/1/kawacukennedy/kuberna-labs
 description: Our AI agent called a dead OpenAI endpoint 47 times before we noticed. Here's the sliding-window circuit breaker that prevents runaway API costs.
 series: Building an Open-Source Agent Execution Layer
 ---
@@ -16,8 +16,6 @@ The agent didn't know it was failing. It just thought the world was returning em
 This is the problem every production agent faces: an agent with tool access will keep using those tools even when they break. It doesn't know the API is down. It doesn't know it's wasting money. It only knows the response it got doesn't match what it expected, so it retries with slightly different parameters.
 
 Here's how we fixed it.
-
-{% github kawacukennedy/kuberna-labs %}
 
 ---
 

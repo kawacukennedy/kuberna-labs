@@ -2,7 +2,7 @@
 title: Agent Frameworks vs Execution Rails — Why Your Agent Can't Settle a Trade
 published: false
 tags: ai, blockchain, opensource, discuss
-cover_image: https://raw.githubusercontent.com/kawacukennedy/kuberna-labs/main/docs/assets/devto-04-cover.png
+cover_image: https://opengraph.githubassets.com/1/kawacukennedy/kuberna-labs
 description: Every AI agent framework solves decision-making. None solve settlement. Here's why execution rails are the missing layer in the agent stack.
 series: Building an Open-Source Agent Execution Layer
 ---
@@ -16,8 +16,6 @@ An agent that can call an API cannot hold value. Cannot settle a trade. Cannot p
 Frameworks solve "how does the agent decide?" Execution rails solve "how does the decision become reality?"
 
 They are not the same thing.
-
-{% github kawacukennedy/kuberna-labs %}
 
 ---
 

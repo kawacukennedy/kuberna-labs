@@ -3,7 +3,7 @@ title: Why We Don't Let GPT-4 Parse Financial Intents (And What We Use Instead)
 published: false
 tags: ai, typescript, tutorial, beginners
 cover_image: https://raw.githubusercontent.com/kawacukennedy/kuberna-labs/main/docs/assets/devto-02-cover.png
-description: GPT-4 confused "Arbitrum" with "ARB" when parsing a cross-chain intent. Here's the 4-layer fallback system that eliminated hallucinated chains.
+description: 'GPT-4 confused "Arbitrum" with "ARB" when parsing a cross-chain intent. Here''s the 4-layer fallback system that eliminated hallucinated chains.'
 series: Building an Open-Source Agent Execution Layer
 ---
 
@@ -17,7 +17,7 @@ It confused the destination **chain** with the **ARB token**. If an agent execut
 
 This isn't a prompt engineering problem. It's a fundamental issue with using probabilistic models for deterministic financial parsing. Here's the system we built to eliminate it entirely.
 
-{% github kawacukennedy/kuberna-labs %}
+[**Kuberna Labs**](https://github.com/kawacukennedy/kuberna-labs) — MIT licensed, 175 tests, all green. ⭐ star if you find it useful!
 
 ---
 

@@ -34,7 +34,7 @@
     "build:sdk": "cd sdk && npm ci && npm run build",
     "build:backend": "cd backend && npm ci && npx prisma generate && npm run build",
     "build:frontend": "cd frontend && npm ci && npm run build",
-    "build:all": "npm run build:sdk && npm run build:backend && npm run build:frontend",
+    "build:all": "npm ci && npm run build:sdk && npm run build:backend && npm run build:frontend",
     "start:render": "cd backend && node dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy",
     "db:generate": "cd backend && npx prisma generate"

@@ -2,8 +2,8 @@
 title: We Built an Open-Source SDK for Cross-Chain AI Agents — Here's What Broke
 published: false
 tags: ai, blockchain, opensource, discuss
-cover_image: https://raw.githubusercontent.com/kawacukennedy/kuberna-labs/main/docs/assets/devto-01-cover.png
-description: Building an open-source SDK that lets AI agents execute cross-chain transactions autonomously. Intent parsing, on-chain escrow, TEE attestation, and what broke along the way.
+cover_image: https://opengraph.githubassets.com/1/kawacukennedy/kuberna-labs
+description: 'Building an open-source SDK that lets AI agents execute cross-chain transactions autonomously. Intent parsing, on-chain escrow, TEE attestation, and what broke along the way.'
 series: Building an Open-Source Agent Execution Layer
 ---
 
@@ -17,9 +17,9 @@ We built Kuberna Labs — an MIT-licensed SDK that gives AI agents secure execut
 
 Here's what we actually had to build.
 
-{% github kawacukennedy/kuberna-labs %}
-
 ---
+
+
 
 ## What "agent execution" actually means
 

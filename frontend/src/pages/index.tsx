@@ -195,6 +195,12 @@ export default function LandingPage() {
           <Link href="/auth/register" className="btn btn-primary px-12 py-4 text-lg inline-flex items-center gap-2">
             Get Started <ArrowRight size={20} />
           </Link>
+          <div className="mt-6 flex items-center gap-4 justify-center">
+            <a href="https://discord.gg/MZvNuhpXu" target="_blank" rel="noopener noreferrer"
+               className="text-sm text-on-surface-variant hover:text-primary transition-colors inline-flex items-center gap-2">
+              Join our Discord
+            </a>
+          </div>
         </div>
       </section>
     </Layout>
