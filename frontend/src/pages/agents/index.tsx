@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import { PageLoader } from '@/components/ui/PageLoader';
+import { AgentListSkeleton } from '@/components/agents/AgentListSkeleton';
 
 export default dynamic(() => import('./_page'), {
-  loading: () => <PageLoader />,
+  loading: () => <AgentListSkeleton />,
 });

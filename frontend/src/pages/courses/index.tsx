@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import { PageLoader } from '@/components/ui/PageLoader';
+import { CoursesSkeleton } from '@/components/courses/CoursesSkeleton';
 
 export default dynamic(() => import('./_page'), {
-  loading: () => <PageLoader />,
+  loading: () => <CoursesSkeleton />,
 });

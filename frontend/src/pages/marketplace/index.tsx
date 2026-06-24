@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import { PageLoader } from '@/components/ui/PageLoader';
+import { MarketplaceSkeleton } from '@/components/marketplace/MarketplaceSkeleton';
 
 export default dynamic(() => import('./_page'), {
-  loading: () => <PageLoader />,
+  loading: () => <MarketplaceSkeleton />,
 });

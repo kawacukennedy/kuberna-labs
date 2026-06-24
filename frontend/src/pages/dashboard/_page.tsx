@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
 import { StatCard } from '@/components/dashboard/StatCard';
+import { DashboardStatsSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { CourseCard } from '@/components/shared/CourseCard';
 import { useAuth } from '@/context/AuthContext';
 import { apiUrl } from '@/lib/api';
@@ -13,10 +14,16 @@ import { KiteWalletConnect } from '@/components/Wallet/KiteWalletConnect';
 export default function DashboardPage() {
   const { user, token } = useAuth();
   const [stats, setStats] = useState<any>(null);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     const fetchStats = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(apiUrl('/auth/me'));
         setStats(response.data.stats);
@@ -27,7 +34,7 @@ export default function DashboardPage() {
       }
     };
 
-    if (token) fetchStats();
+    fetchStats();
   }, [token]);
 
   return (
@@ -44,34 +51,38 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <StatCard 
-            label="Active Agents" 
-            value={stats?.agentsCount || 2} 
-            icon={<Cpu className="text-primary" size={24} />} 
-            trend="+2"
-            trendPositive={true}
-          />
-          <StatCard 
-            label="Courses Enrolled" 
-            value={stats?.coursesEnrolled || 0} 
-            icon={<BookOpen className="text-secondary" size={24} />} 
-          />
-          <StatCard 
-            label="Intents Posted" 
-            value={stats?.intentsPosted || 0} 
-            icon={<DollarSign className="text-secondary" size={24} />} 
-            trend="-1"
-            trendPositive={false}
-          />
-          <StatCard 
-            label="Reputation Score" 
-            value="1,250" 
-            icon={<Activity className="text-primary" size={24} />} 
-            trend="+120"
-            trendPositive={true}
-          />
-        </div>
+        {loading ? (
+          <DashboardStatsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <StatCard
+              label="Active Agents"
+              value={stats?.agentsCount || 2}
+              icon={<Cpu className="text-primary" size={24} />}
+              trend="+2"
+              trendPositive={true}
+            />
+            <StatCard
+              label="Courses Enrolled"
+              value={stats?.coursesEnrolled || 0}
+              icon={<BookOpen className="text-secondary" size={24} />}
+            />
+            <StatCard
+              label="Intents Posted"
+              value={stats?.intentsPosted || 0}
+              icon={<DollarSign className="text-secondary" size={24} />}
+              trend="-1"
+              trendPositive={false}
+            />
+            <StatCard
+              label="Reputation Score"
+              value="1,250"
+              icon={<Activity className="text-primary" size={24} />}
+              trend="+120"
+              trendPositive={true}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">
