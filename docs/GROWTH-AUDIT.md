@@ -20,39 +20,39 @@ Kuberna Labs is a pre-launch monorepo with solid technical foundations but signi
 
 ### 1. README Quality — ⚠️ Average (was Poor)
 
-| Criterion | Before | After |
-|-----------|--------|-------|
-| Star CTA | ❌ None | ✅ Prominent at top + footer |
-| Badges (CI, npm, license) | ❌ None | ✅ 8 badges |
-| Social proof (stars, contributors) | ❌ None | ✅ Star history chart + contrib.rocks |
-| Demo/GIF | ❌ None | ✅ Section with SDK code example |
-| Quickstart timing | ⚠️ 5+ minutes | ✅ "2 minutes" with docker hint |
-| Comparison table | ❌ None | ✅ "Kuberna vs Others" table |
-| SEO keywords in description | ❌ "education platform" | ✅ "agent orchestration, cross-chain, AI agents" |
+| Criterion                          | Before                  | After                                            |
+| ---------------------------------- | ----------------------- | ------------------------------------------------ |
+| Star CTA                           | ❌ None                 | ✅ Prominent at top + footer                     |
+| Badges (CI, npm, license)          | ❌ None                 | ✅ 8 badges                                      |
+| Social proof (stars, contributors) | ❌ None                 | ✅ Star history chart + contrib.rocks            |
+| Demo/GIF                           | ❌ None                 | ✅ Section with SDK code example                 |
+| Quickstart timing                  | ⚠️ 5+ minutes           | ✅ "2 minutes" with docker hint                  |
+| Comparison table                   | ❌ None                 | ✅ "Kuberna vs Others" table                     |
+| SEO keywords in description        | ❌ "education platform" | ✅ "agent orchestration, cross-chain, AI agents" |
 
 **Files audited:** `README.md`
 
 ### 2. Documentation Completeness — ⚠️ Gaps
 
-| Document | Status | Notes |
-|----------|--------|-------|
-| `README.md` | ✅ Present | Rewritten |
-| `CONTRIBUTING.md` | ✅ Present | Comprehensive (238 lines) — no changes needed |
-| `CODE_OF_CONDUCT.md` | ✅ Present | Standard Contributor Covenant |
-| `SECURITY.md` | ❌ Missing → ✅ Created | Vulnerability reporting process, smart contract section |
-| `CHANGELOG.md` | ❌ Missing → ✅ Created | Keep a Changelog format, all releases back to v0.1.0 |
-| `LICENSE` | ✅ Present | MIT |
+| Document             | Status                  | Notes                                                   |
+| -------------------- | ----------------------- | ------------------------------------------------------- |
+| `README.md`          | ✅ Present              | Rewritten                                               |
+| `CONTRIBUTING.md`    | ✅ Present              | Comprehensive (238 lines) — no changes needed           |
+| `CODE_OF_CONDUCT.md` | ✅ Present              | Standard Contributor Covenant                           |
+| `SECURITY.md`        | ❌ Missing → ✅ Created | Vulnerability reporting process, smart contract section |
+| `CHANGELOG.md`       | ❌ Missing → ✅ Created | Keep a Changelog format, all releases back to v0.1.0    |
+| `LICENSE`            | ✅ Present              | MIT                                                     |
 
 ### 3. Issue & PR Workflow — ⚠️ Functional but Minimal
 
-| Criterion | Before | After |
-|-----------|--------|-------|
-| Bug report template | ✅ Present | Improved with structured fields |
-| Feature request template | ✅ Present | Added component checklist + "need help" question |
-| PR template | ✅ Present | Comprehensive checklist |
-| Config.yml | ❌ Missing | ✅ Links to Discussions + Security Advisories |
-| Open issues | ❌ 0 | ✅ 5 good first issues |
-| Labels beyond defaults | ❌ 0 | ✅ 7 new labels (test, sdk, examples, backend, frontend, contracts, ci) |
+| Criterion                | Before     | After                                                                   |
+| ------------------------ | ---------- | ----------------------------------------------------------------------- |
+| Bug report template      | ✅ Present | Improved with structured fields                                         |
+| Feature request template | ✅ Present | Added component checklist + "need help" question                        |
+| PR template              | ✅ Present | Comprehensive checklist                                                 |
+| Config.yml               | ❌ Missing | ✅ Links to Discussions + Security Advisories                           |
+| Open issues              | ❌ 0       | ✅ 5 good first issues                                                  |
+| Labels beyond defaults   | ❌ 0       | ✅ 7 new labels (test, sdk, examples, backend, frontend, contracts, ci) |
 
 ### 4. CI/CD Quality — ✅ Good
 
@@ -62,23 +62,23 @@ Kuberna Labs is a pre-launch monorepo with solid technical foundations but signi
 
 ### 5. Community Infrastructure — ❌ Minimal
 
-| Criterion | Before | After |
-|-----------|--------|-------|
-| GitHub Discussions | ❌ Disabled | ✅ Enabled |
-| Stale bot | ❌ Missing | ✅ Configured (60 day stale, 14 day close) |
-| `good first issue` label | ✅ Existed | ✅ 5 issues labeled |
-| `help wanted` label | ✅ Existed | ✅ Added to all GFIs |
-| `FUNDING.yml` | ✅ Present | ✅ Updated (wallet addrs + GitHub Sponsors stub) |
-| Discord link | ❌ Missing | ❌ Not applicable (no server yet) |
+| Criterion                | Before      | After                                            |
+| ------------------------ | ----------- | ------------------------------------------------ |
+| GitHub Discussions       | ❌ Disabled | ✅ Enabled                                       |
+| Stale bot                | ❌ Missing  | ✅ Configured (60 day stale, 14 day close)       |
+| `good first issue` label | ✅ Existed  | ✅ 5 issues labeled                              |
+| `help wanted` label      | ✅ Existed  | ✅ Added to all GFIs                             |
+| `FUNDING.yml`            | ✅ Present  | ✅ Updated (wallet addrs + GitHub Sponsors stub) |
+| Discord link             | ❌ Missing  | ❌ Not applicable (no server yet)                |
 
 ### 6. SEO & Discoverability — ⚠️ Poor
 
-| Criterion | Before | After |
-|-----------|--------|-------|
-| Topics | 10 topics | ✅ 19 topics (added agent-orchestration, ethereum, solidity, intents, etc.) |
-| Description | "education platform" | ✅ "Agent Orchestration Platform" |
-| Package.json keywords | 14 keywords | ✅ 22 keywords |
-| Homepage | render.com URL | ✅ Kept as-is |
+| Criterion             | Before               | After                                                                       |
+| --------------------- | -------------------- | --------------------------------------------------------------------------- |
+| Topics                | 10 topics            | ✅ 19 topics (added agent-orchestration, ethereum, solidity, intents, etc.) |
+| Description           | "education platform" | ✅ "Agent Orchestration Platform"                                           |
+| Package.json keywords | 14 keywords          | ✅ 22 keywords                                                              |
+| Homepage              | render.com URL       | ✅ Kept as-is                                                               |
 
 ### 7. Open Issues Analysis
 
@@ -86,26 +86,26 @@ Kuberna Labs is a pre-launch monorepo with solid technical foundations but signi
 
 **After:** 5 well-structured `good first issue` + `help wanted` issues:
 
-| # | Title | Est. Effort | Area |
-|---|-------|-------------|------|
-| 7 | Add unit tests for Vesting.sol | 2-3 hrs | Contracts |
-| 8 | Add JSDoc comments to SDK | 1-2 hrs | SDK |
-| 9 | Loading skeleton components | 3-4 hrs | Frontend |
-| 10 | E2E quickstart example | 3-4 hrs | Examples |
-| 11 | Improve Zod error messages | 2-3 hrs | Backend |
+| #   | Title                          | Est. Effort | Area      |
+| --- | ------------------------------ | ----------- | --------- |
+| 7   | Add unit tests for Vesting.sol | 2-3 hrs     | Contracts |
+| 8   | Add JSDoc comments to SDK      | 1-2 hrs     | SDK       |
+| 9   | Loading skeleton components    | 3-4 hrs     | Frontend  |
+| 10  | E2E quickstart example         | 3-4 hrs     | Examples  |
+| 11  | Improve Zod error messages     | 2-3 hrs     | Backend   |
 
 ---
 
 ## Growth Readiness Score: 72/100
 
-| Category | Score | Notes |
-|----------|-------|-------|
-| Documentation | 16/20 | README improved; API docs still needed |
-| Community Infrastructure | 14/20 | Discussions enabled; no Discord/mailing list |
-| Developer Experience | 18/20 | Strong; quickstart works, tests pass |
-| SEO & Discoverability | 12/20 | Topics updated; needs Awesome List placement |
-| CI/CD & Automation | 12/20 | Solid CI; needs release automation |
-| **Total** | **72/100** | **Good baseline for growth push** |
+| Category                 | Score      | Notes                                        |
+| ------------------------ | ---------- | -------------------------------------------- |
+| Documentation            | 16/20      | README improved; API docs still needed       |
+| Community Infrastructure | 14/20      | Discussions enabled; no Discord/mailing list |
+| Developer Experience     | 18/20      | Strong; quickstart works, tests pass         |
+| SEO & Discoverability    | 12/20      | Topics updated; needs Awesome List placement |
+| CI/CD & Automation       | 12/20      | Solid CI; needs release automation           |
+| **Total**                | **72/100** | **Good baseline for growth push**            |
 
 ---
 

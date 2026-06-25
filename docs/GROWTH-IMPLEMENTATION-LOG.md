@@ -24,6 +24,7 @@
 ### 1.3 Updated package.json keywords
 
 **Changes:**
+
 - Added: `agent-orchestration`, `cross-chain`, `intents`, `autonomous-agents`, `arbitrum`, `solana`, `solidity`, `hardhat`, `prisma`, `nextjs`, `zero-knowledge`, `silent-verify`, `post-quantum`
 - Removed: `education`, `certificates`, `marketplace`, `decentralized`
 - Total: 14 → 22 keywords
@@ -39,6 +40,7 @@
 **Files changed:** `README.md` (211 lines → ~350 lines)
 
 **Changes made:**
+
 1. **Added header banner** with project name, tagline, and 8 status badges (CI, stars, npm version, license, TypeScript, Solidity, Prisma, Twitter)
 2. **Added "Star This Repo" CTA** at the top of the content area, with embedded Star History chart image
 3. **Added comparison table** ("Kuberna vs Others") showing differentiators: NL→on-chain, post-quantum certs, cross-chain, TEE, local AI
@@ -55,6 +57,7 @@
 14. **Added Support Us section** suggesting star, follow, sponsor
 
 **Design principles:**
+
 - Badges before content (establish credibility immediately)
 - CTA before scroll (star button in first visible area)
 - Social proof mid-page (contributors, star history)
@@ -70,6 +73,7 @@
 **Status:** Created (95 lines)
 
 **Content includes:**
+
 - Vulnerability reporting process (email + GitHub Security Advisories)
 - What to include in a report
 - Expected response timeline (48 hours)
@@ -94,6 +98,7 @@
 **Status:** Created (38 lines)
 
 **Configuration:**
+
 - Stale after: 60 days of inactivity
 - Close after: 14 more days
 - Exempt labels: `pinned`, `security`, `discussion`, `enhancement`, `good first issue`, `help wanted`
@@ -106,6 +111,7 @@
 **Status:** Created: `.github/ISSUE_TEMPLATE/config.yml`
 
 **Links:**
+
 - GitHub Discussions (for Q&A)
 - X/Twitter (for updates)
 - Security Advisories (for vulnerability reports)
@@ -138,15 +144,16 @@
 
 **All labeled:** `good first issue` + `help wanted`
 
-| # | Title | Est. Effort | Skills | Why This Issue Good For Newcomers |
-|---|-------|-------------|--------|-----------------------------------|
-| 7 | Add unit tests for Vesting.sol | 2-3 hrs | Hardhat, Solidity, testing | Following existing test patterns, good intro to Hardhat |
-| 8 | Add JSDoc comments to SDK | 1-2 hrs | TypeScript, documentation | Zero risk of breaking anything, pure documentation |
-| 9 | Loading skeleton components | 3-4 hrs | React, Tailwind CSS | Visual feedback, isolated component work |
-| 10 | E2E quickstart example | 3-4 hrs | Hardhat, TypeScript, SDK | See full flow end-to-end, writing examples |
-| 11 | Improve Zod error messages | 2-3 hrs | TypeScript, Zod | Understands validation layer, adds tests |
+| #   | Title                          | Est. Effort | Skills                     | Why This Issue Good For Newcomers                       |
+| --- | ------------------------------ | ----------- | -------------------------- | ------------------------------------------------------- |
+| 7   | Add unit tests for Vesting.sol | 2-3 hrs     | Hardhat, Solidity, testing | Following existing test patterns, good intro to Hardhat |
+| 8   | Add JSDoc comments to SDK      | 1-2 hrs     | TypeScript, documentation  | Zero risk of breaking anything, pure documentation      |
+| 9   | Loading skeleton components    | 3-4 hrs     | React, Tailwind CSS        | Visual feedback, isolated component work                |
+| 10  | E2E quickstart example         | 3-4 hrs     | Hardhat, TypeScript, SDK   | See full flow end-to-end, writing examples              |
+| 11  | Improve Zod error messages     | 2-3 hrs     | TypeScript, Zod            | Understands validation layer, adds tests                |
 
 **Issue structure:**
+
 - Description of the problem
 - Background context
 - Concrete acceptance criteria checklist
@@ -165,15 +172,15 @@
 
 ### 6.1 Created new labels
 
-| Label | Color | Purpose |
-|-------|-------|---------|
-| `test` | bfdadc | Test-related issues |
-| `sdk` | bfdadc | SDK package |
-| `examples` | bfdadc | Example code |
-| `backend` | bfdadc | Backend services |
-| `frontend` | bfdadc | Frontend dashboard |
-| `contracts` | bfdadc | Smart contracts |
-| `ci` | bfdadc | CI/CD workflows |
+| Label       | Color  | Purpose             |
+| ----------- | ------ | ------------------- |
+| `test`      | bfdadc | Test-related issues |
+| `sdk`       | bfdadc | SDK package         |
+| `examples`  | bfdadc | Example code        |
+| `backend`   | bfdadc | Backend services    |
+| `frontend`  | bfdadc | Frontend dashboard  |
+| `contracts` | bfdadc | Smart contracts     |
+| `ci`        | bfdadc | CI/CD workflows     |
 
 ---
 
@@ -185,14 +192,15 @@
 
 ### Target Lists (PR needed from fork)
 
-| List | Repo | Stars | How to Submit |
-|------|------|-------|---------------|
-| Awesome AI Agents | `caramaschiHG/awesome-ai-agents-2026` | Growing | Fork → edit README → PR with entry in "Frameworks" section |
-| Awesome AI for Web3 | `gideonfip/awesome-ai-for-web3` | Growing | Fork → edit README → PR with entry in "Frameworks" or "AI Agents" section |
-| Awesome AI Agents (1.5k+ resources) | `jim-schwoebel/awesome_ai_agents` | 1.8k⭐ | Fork → edit README → PR with entry in appropriate category |
-| best-of-crypto | `lukasmasuch/best-of-crypto` | 544⭐ | Update `projects.yaml` via PR |
+| List                                | Repo                                  | Stars   | How to Submit                                                             |
+| ----------------------------------- | ------------------------------------- | ------- | ------------------------------------------------------------------------- |
+| Awesome AI Agents                   | `caramaschiHG/awesome-ai-agents-2026` | Growing | Fork → edit README → PR with entry in "Frameworks" section                |
+| Awesome AI for Web3                 | `gideonfip/awesome-ai-for-web3`       | Growing | Fork → edit README → PR with entry in "Frameworks" or "AI Agents" section |
+| Awesome AI Agents (1.5k+ resources) | `jim-schwoebel/awesome_ai_agents`     | 1.8k⭐  | Fork → edit README → PR with entry in appropriate category                |
+| best-of-crypto                      | `lukasmasuch/best-of-crypto`          | 544⭐   | Update `projects.yaml` via PR                                             |
 
 **Suggested listing entry format:**
+
 ```markdown
 - [Kuberna Labs](https://github.com/kawacukennedy/kuberna-labs) — Agent Orchestration Platform.
   Deploy, run, and certify autonomous AI agents that execute cross-chain Web3 tasks.

@@ -77,9 +77,9 @@ There is currently no formal bug bounty program. Critical vulnerabilities may be
 
 ## Version Support
 
-| Version | Supported |
-|---------|-----------|
-| >= 1.0.0 | ✅ |
+| Version               | Supported  |
+| --------------------- | ---------- |
+| >= 1.0.0              | ✅         |
 | < 1.0.0 (pre-release) | ⚠️ Limited |
 
 ## Contact
