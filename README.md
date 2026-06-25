@@ -17,7 +17,7 @@
 
 ### ⭐️ **If you find this project useful, please star it on GitHub!** ⭐️
 
-*It helps others discover the project and motivates contributors.*
+_It helps others discover the project and motivates contributors._
 
 [![Star History Chart](https://api.star-history.com/svg?repos=kawacukennedy/kuberna-labs&type=Date)](https://star-history.com/#kawacukennedy/kuberna-labs&Date)
 
@@ -48,13 +48,13 @@ Kuberna Labs gives AI agents secure execution rails across any blockchain: agent
 
 ### ✨ What Makes Kuberna Different?
 
-| Feature | Kuberna | Others |
-|---------|---------|--------|
+| Feature                                | Kuberna                                                                  | Others                         |
+| -------------------------------------- | ------------------------------------------------------------------------ | ------------------------------ |
 | **Natural Language → On-Chain Action** | Parse "swap 1 ETH for USDC on Solana" → escrow → execution → certificate | Require manual intent encoding |
-| **Post-Quantum Certificates** | SilentVerify certification for agents | No verifiable reputation |
-| **Cross-Chain by Default** | Ethereum, Base, Polygon, Arbitrum, Solana | Usually single-chain |
-| **TEE Execution** | Intel SGX enclave provisioning | No hardware-grade security |
-| **Local AI Mode** | Zero-dependency intent parser, no API key needed | Require OpenAI/Gemini |
+| **Post-Quantum Certificates**          | SilentVerify certification for agents                                    | No verifiable reputation       |
+| **Cross-Chain by Default**             | Ethereum, Base, Polygon, Arbitrum, Solana                                | Usually single-chain           |
+| **TEE Execution**                      | Intel SGX enclave provisioning                                           | No hardware-grade security     |
+| **Local AI Mode**                      | Zero-dependency intent parser, no API key needed                         | Require OpenAI/Gemini          |
 
 ---
 
@@ -69,13 +69,13 @@ User Task ("swap 1 ETH for USDC on Solana")
   -> Reputation Update + Decision Trace
 ```
 
-| Package | Directory | Description |
-|---------|-----------|-------------|
-| Backend API | `backend/` | Express + Prisma + Zod REST API (port 3000) |
-| Frontend | `frontend/` | Next.js 14 dashboard with pages router |
-| SDK | `sdk/` | `@kuberna/sdk` npm package for programmatic access |
+| Package         | Directory    | Description                                         |
+| --------------- | ------------ | --------------------------------------------------- |
+| Backend API     | `backend/`   | Express + Prisma + Zod REST API (port 3000)         |
+| Frontend        | `frontend/`  | Next.js 14 dashboard with pages router              |
+| SDK             | `sdk/`       | `@kuberna/sdk` npm package for programmatic access  |
 | Smart Contracts | `contracts/` | Solidity contracts (Escrow, Intent, Registry, NFTs) |
-| Prisma Schema | `prisma/` | Shared database schema and migrations |
+| Prisma Schema   | `prisma/`    | Shared database schema and migrations               |
 
 ---
 
@@ -83,11 +83,11 @@ User Task ("swap 1 ETH for USDC on Solana")
 
 ### Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | >= 18.0.0 < 26.0.0 |
-| npm | >= 9.0.0 |
-| PostgreSQL | 14+ (or Supabase free tier) |
+| Tool             | Version                                                              |
+| ---------------- | -------------------------------------------------------------------- |
+| Node.js          | >= 18.0.0 < 26.0.0                                                   |
+| npm              | >= 9.0.0                                                             |
+| PostgreSQL       | 14+ (or Supabase free tier)                                          |
 | WalletConnect ID | Free from [cloud.walletconnect.com](https://cloud.walletconnect.com) |
 
 ### Setup in 2 Minutes
@@ -141,21 +141,21 @@ cd sdk && npm test
 ### Try the SDK
 
 ```typescript
-import { KubernaClient } from '@kuberna/sdk';
+import { KubernaClient } from "@kuberna/sdk";
 
 const client = new KubernaClient({
-  apiKey: 'your-api-key',
+  apiKey: "your-api-key",
 });
 
 // Create an agent with a natural language task
 const task = await client.agents.createTask({
-  intent: 'swap 1 ETH for USDC on Base when price > 3200',
-  strategy: 'limit_order',
+  intent: "swap 1 ETH for USDC on Base when price > 3200",
+  strategy: "limit_order",
 });
 
 // Monitor execution
 const result = await client.agents.waitForCompletion(task.id);
-console.log('Task completed:', result.certificate);
+console.log("Task completed:", result.certificate);
 ```
 
 ---
@@ -222,18 +222,18 @@ kuberna-labs/
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start frontend dev server |
-| `npm test` | Run Hardhat contract tests |
-| `npm run compile` | Compile Solidity contracts |
-| `npm run build:all` | Build SDK, backend, and frontend |
-| `npm run format` | Format code with Prettier |
-| `npm run lint` | Lint TypeScript with ESLint |
-| `npm run db:deploy` | Deploy Prisma migrations |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run deploy:sepolia` | Deploy contracts to Sepolia |
-| `npm run deploy:base` | Deploy contracts to Base Sepolia |
+| Script                   | Description                      |
+| ------------------------ | -------------------------------- |
+| `npm run dev`            | Start frontend dev server        |
+| `npm test`               | Run Hardhat contract tests       |
+| `npm run compile`        | Compile Solidity contracts       |
+| `npm run build:all`      | Build SDK, backend, and frontend |
+| `npm run format`         | Format code with Prettier        |
+| `npm run lint`           | Lint TypeScript with ESLint      |
+| `npm run db:deploy`      | Deploy Prisma migrations         |
+| `npm run db:generate`    | Generate Prisma client           |
+| `npm run deploy:sepolia` | Deploy contracts to Sepolia      |
+| `npm run deploy:base`    | Deploy contracts to Base Sepolia |
 
 ---
 
@@ -245,14 +245,14 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for full instructions.
 
 ### Production Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Supabase transaction pooler URL |
-| `DIRECT_URL` | Supabase direct URL for migrations |
-| `JWT_SECRET` | JWT signing key |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID |
-| `RPC_URL` | Blockchain RPC endpoint |
-| `PRIVATE_KEY` | Backend wallet private key |
+| Variable                               | Description                        |
+| -------------------------------------- | ---------------------------------- |
+| `DATABASE_URL`                         | Supabase transaction pooler URL    |
+| `DIRECT_URL`                           | Supabase direct URL for migrations |
+| `JWT_SECRET`                           | JWT signing key                    |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID     |
+| `RPC_URL`                              | Blockchain RPC endpoint            |
+| `PRIVATE_KEY`                          | Backend wallet private key         |
 
 Optional: `REDIS_URL`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `SMTP_*` for extended features.
 

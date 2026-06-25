@@ -7,11 +7,14 @@
 ## Phase 1: Identity & Structure (Day 1) — ✅ COMPLETE
 
 ### 1.1 Rename Server
+
 **→ DONE** — `/dev/chat` → **Kuberna Labs**
-- Set description: *"Open-source execution rails for AI agents. Cross-chain intents, TEE attestation, on-chain escrow. MIT."*
+
+- Set description: _"Open-source execution rails for AI agents. Cross-chain intents, TEE attestation, on-chain escrow. MIT."_
 - API: `PATCH /guilds/{id}` with `{"name":"Kuberna Labs","description":"..."}`
 
 ### 1.2 Create Categories
+
 **→ DONE** — 6 categories created:
 | Category | Channels | Purpose |
 |---|---|---|
@@ -23,6 +26,7 @@
 | 🗃 ARCHIVE | roles, career-advice, frontend, backend, mobile-dev, ai-ml, devops, project-ideas, web3 | Preserved but hidden |
 
 **Commands used:**
+
 ```bash
 # Create category
 curl -X POST -H "Authorization: Bot $TOKEN" \
@@ -31,13 +35,17 @@ curl -X POST -H "Authorization: Bot $TOKEN" \
 ```
 
 ### 1.3 Set Channel Topics
+
 **→ DONE** — Every active channel now has a descriptive `topic` field.
 
 ### 1.4 Read-Only Announcement Channels
+
 **→ DONE** — Permission overwrite on welcome, rules, announcements, github-updates, star-feed, events-announcements, ama-archive:
+
 - `@everyone`: ALLOW = VIEW_CHANNEL + CREATE_INSTANT_INVITE, DENY = SEND_MESSAGES + all write perms
 
 **Command:**
+
 ```bash
 curl -X PUT -H "Authorization: Bot $TOKEN" \
   -d '{"allow":"1025","deny":"8515703330568272","type":0}' \
@@ -49,14 +57,18 @@ curl -X PUT -H "Authorization: Bot $TOKEN" \
 ## Phase 2: Onboarding & Roles (Day 1) — ✅ COMPLETE
 
 ### 2.1 Send Welcome Embed
+
 **→ DONE** — Rich embed in `#welcome` with:
+
 - 5 numbered steps (Rules → Introduce → Chat → Roles → Stay Updated)
 - Links to GitHub, Docs, X/Twitter
 - Footer: "175 tests · All green · MIT"
 - **Pinned** to channel top
 
 ### 2.2 Send Rules Embed
+
 **→ DONE** — 7 rules in embed format covering:
+
 1. Be Respectful
 2. Stay On Topic
 3. No Spam or Self-Promotion
@@ -64,19 +76,22 @@ curl -X PUT -H "Authorization: Bot $TOKEN" \
 5. Use Channels Correctly
 6. Respect Privacy
 7. Follow Discord ToS
+
 - **Pinned** to channel top
 
 ### 2.3 Create Roles
+
 **→ DONE** — 4 roles created:
 
-| Role | ID | Color | Hoisted | Permissions |
-|---|---|---|---|---|
-| **Kuberna Team** | 1519006604937400451 | #FF6600 | Yes | None (manual) |
-| **Contributor** | 1519006611946082394 | #57F287 | Yes | None |
-| **Builder** | 1519006619265011804 | #3498DB | Yes | None |
-| **Developer** | 1519006633945075882 | #2ECC71 | No | None |
+| Role             | ID                  | Color   | Hoisted | Permissions   |
+| ---------------- | ------------------- | ------- | ------- | ------------- |
+| **Kuberna Team** | 1519006604937400451 | #FF6600 | Yes     | None (manual) |
+| **Contributor**  | 1519006611946082394 | #57F287 | Yes     | None          |
+| **Builder**      | 1519006619265011804 | #3498DB | Yes     | None          |
+| **Developer**    | 1519006633945075882 | #2ECC71 | No      | None          |
 
 **API commands:**
+
 ```bash
 curl -X POST -H "Authorization: Bot $TOKEN" \
   -d '{"name":"Kuberna Team","color":16737536,"hoist":true,"mentionable":true}' \
@@ -86,7 +101,9 @@ curl -X POST -H "Authorization: Bot $TOKEN" \
 **→ Also DONE:** Deleted old `new role` placeholder.
 
 ### 2.4 Update Onboarding Prompts
+
 **→ DONE** — Updated Discord Server Onboarding:
+
 - **Prompt 1** (required, single-select): "What describes you best?"
   - "I build with Kuberna Labs" → **@Developer** role
   - "I want to contribute" → **@Contributor** role
@@ -97,6 +114,7 @@ curl -X POST -H "Authorization: Bot $TOKEN" \
   - Learn, Build projects, Get help, Network
 
 **API:**
+
 ```bash
 curl -X PUT -H "Authorization: Bot $TOKEN" \
   -d '{"prompts":[...],"default_channel_ids":[...],"enabled":true}' \
@@ -108,11 +126,14 @@ curl -X PUT -H "Authorization: Bot $TOKEN" \
 ## Phase 3: Moderation & Safety (Day 1) — ✅ COMPLETE
 
 ### 3.1 Slow Mode
+
 **→ DONE** — Set rate limits:
+
 - `#general`: **5 seconds** between messages
 - `#questions-help`: **10 seconds** between messages
 
 **Command:**
+
 ```bash
 curl -X PATCH -H "Authorization: Bot $TOKEN" \
   -d '{"rate_limit_per_user":5}' \
@@ -120,16 +141,19 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ```
 
 ### 3.2 Auto-Mod Rules
+
 **→ DONE** — 3 rules active:
 
-| # | Rule | Trigger | Action | Exempt |
-|---|---|---|---|---|
-| 1 | Block Words in Profile Names | Keyword: "dih ass" | Block member profile | — |
-| 2 | Block Mention Spam | 20 mentions + raid protection | Timeout (none) | — |
-| 3 | **Crypto Scam Protection** | 11 keywords (free eth, airdrop, seed phrase, etc.) | 7-day timeout | @Kuberna Team |
+| #   | Rule                         | Trigger                                            | Action               | Exempt        |
+| --- | ---------------------------- | -------------------------------------------------- | -------------------- | ------------- |
+| 1   | Block Words in Profile Names | Keyword: "dih ass"                                 | Block member profile | —             |
+| 2   | Block Mention Spam           | 20 mentions + raid protection                      | Timeout (none)       | —             |
+| 3   | **Crypto Scam Protection**   | 11 keywords (free eth, airdrop, seed phrase, etc.) | 7-day timeout        | @Kuberna Team |
 
 ### 3.3 System Settings
+
 **→ DONE:**
+
 - `system_channel_id` → `#general` (welcome messages for new joins/leaves)
 - `public_updates_channel_id` → `#announcements`
 - `explicit_content_filter` → SCAN_ALL_MEDIA (level 2)
@@ -139,8 +163,10 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ## Phase 4: Automation (Day 1–2) — ⏳ PARTIALLY DONE
 
 ### 4.1 GitHub Webhook — `#github-updates`
+
 **Status:** Channel created, **webhook not configured yet**
 **Manual steps:**
+
 ```
 1. Go to https://github.com/kawacukennedy/kuberna-labs/settings/hooks
 2. Click "Add webhook"
@@ -152,24 +178,30 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ```
 
 ### 4.2 Star Webhook — `#star-feed`
+
 **Status:** Channel created, **webhook not configured yet**
 **Options:**
+
 - **Option A:** Use [zEpticon](https://zepticon.com/) (free star tracking bot)
 - **Option B:** Use [GitHub Star Webhook](https://github.com/apps/github-star-webhook) GitHub App
 - **Option C:** Manual — pipe GitHub API to Discord via GitHub Actions
 
 ### 4.3 Welcome Message Bot
+
 **Status:** ✅ Our bot handles the welcome message (already sent as embed).
 **Note:** Discord's own onboarding system handles the prompts and role assignment. No separate bot needed.
 
 ### 4.4 Leveling / XP Bot (Recommended)
+
 **Status:** ❌ Not installed yet
 **Priority:** Medium
 **Recommended:** **Arcane** (free, reliable, good developer community integration)
+
 - Alternative: **MEE6** (more features but paywalled)
 - Alternative: **Tatsu** (gaming-focused, good free tier)
 
 **Install steps for Arcane:**
+
 ```
 1. Go to https://arcane.bot/invite
 2. Authorize on Kuberna Labs server
@@ -187,8 +219,10 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ## Phase 5: Engagement (Week 1–4)
 
 ### 5.1 Welcome Screen (500+ members)
+
 **Priority:** Low (requires 500 members)
 **Steps when eligible:**
+
 ```
 1. Server Settings → Community → Welcome Screen
 2. Enable Welcome Screen
@@ -197,6 +231,7 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ```
 
 ### 5.2 Scheduled Events
+
 **Priority:** Medium
 **Recurring events to create:**
 | Event | Frequency | Format | Channel |
@@ -208,8 +243,10 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 | Friday Off-Topic | Weekly | Casual voice | Casual Voice |
 
 ### 5.3 Feedback Loop
+
 **→ DONE:** `#feedback-suggestions` channel created.
 **Ongoing process:**
+
 ```
 1. Users post in #feedback-suggestions
 2. Team reviews weekly
@@ -221,7 +258,9 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ```
 
 ### 5.4 Content Calendar Integration
+
 **Link** the dev.to content series (`docs/posts/`) to Discord:
+
 - New post published → cross-post to `#announcements`
 - Start a thread for discussion under each cross-post
 - Ask: "What would you add? What have we missed?"
@@ -231,17 +270,20 @@ curl -X PATCH -H "Authorization: Bot $TOKEN" \
 ## Phase 6: Growth (Month 1–3)
 
 ### 6.1 Membership Goals
-| Milestone | Target | Strategy |
-|---|---|---|
-| 10 members | Week 1 | Invite existing GitHub watchers and X followers |
-| 25 members | Week 2 | dev.to Post 1 → embed server link in CTA |
-| 50 members | Week 3 | dev.to Post 2 + GitHub repo mention |
-| 100 members | Week 6 | dev.to Post 3 + 4, cross-post to Hacker News |
+
+| Milestone   | Target  | Strategy                                              |
+| ----------- | ------- | ----------------------------------------------------- |
+| 10 members  | Week 1  | Invite existing GitHub watchers and X followers       |
+| 25 members  | Week 2  | dev.to Post 1 → embed server link in CTA              |
+| 50 members  | Week 3  | dev.to Post 2 + GitHub repo mention                   |
+| 100 members | Week 6  | dev.to Post 3 + 4, cross-post to Hacker News          |
 | 250 members | Month 3 | Disboard listing (bump every 2h) + Reddit communities |
-| 500 members | Month 6 | Server Insights unlocked + Welcome Screen |
+| 500 members | Month 6 | Server Insights unlocked + Welcome Screen             |
 
 ### 6.2 Promotion Points
+
 Every place the Discord invite should live:
+
 - **GitHub repo README** — add `[Join our Discord](invite-link)` badge
 - **dev.to posts** — link to Discord in CTA and bio
 - **X/Twitter profile** — add Discord link in bio
@@ -249,7 +291,9 @@ Every place the Discord invite should live:
 - **Website** — add Discord widget or link
 
 ### 6.3 Discord Listing
+
 When members reach 50+:
+
 ```
 1. List on https://disboard.org
 2. List on https://discord.me
@@ -262,12 +306,14 @@ When members reach 50+:
 ## Remaining Setup Checklist
 
 ### High Priority
+
 - [ ] Configure GitHub webhook → `#github-updates`
 - [ ] Configure star webhook → `#star-feed`
 - [ ] Add Discord invite link to GitHub repo README
 - [ ] Cross-post first dev.to article to `#announcements`
 
 ### Medium Priority
+
 - [ ] Install Arcane or MEE6 for XP/leveling
 - [ ] Schedule first recurring event (Dev Office Hours)
 - [ ] Recruit 1-2 moderators from active members
@@ -275,6 +321,7 @@ When members reach 50+:
 - [ ] List on Disboard (when 50+ members)
 
 ### Low Priority
+
 - [ ] Add Collab.Land for token-gated channels
 - [ ] Create custom emoji (Kuberna Labs logo, key symbols)
 - [ ] Set up server vanity URL (Level 1 boost or 500+ members)
@@ -286,6 +333,7 @@ When members reach 50+:
 ## Commands Reference
 
 ### Quick Discord API Reference for Future Changes
+
 ```bash
 # Get guild info
 curl -H "Authorization: Bot $TOKEN" \
