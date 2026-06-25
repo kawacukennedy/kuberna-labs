@@ -139,6 +139,7 @@ Services encapsulate business logic and interact with:
 ### Contract Interactions
 
 1. **Intent Flow**:
+
    - User creates intent → KubernaIntent contract
    - Solvers submit bids
    - Requester accepts bid

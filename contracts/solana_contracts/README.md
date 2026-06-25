@@ -25,16 +25,19 @@ CONTRACTS
 ================================================================================
 
 1. ESCROW (escrow.rs)
+
    - Secure payment holding for tasks
    - Functions: create_escrow, assign_executor, complete_task, release_funds, raise_dispute
    - PDA-based vault for tokens
 
 2. INTENT (intent.rs)
+
    - Task posting and marketplace
    - Functions: create_intent, submit_bid, accept_bid, execute_intent
    - Bid management system
 
 3. CERTIFICATE (certificate.rs)
+
    - NFT certificates for course completion
    - Functions: mint_certificate, verify_certificate
    - Part of payment module
@@ -114,30 +117,37 @@ CONVERSION NOTES
 Key Differences (Solidity → Anchor):
 
 1. State Storage:
+
    - Solidity: contract storage
    - Anchor: #[account] structs with PDA seeds
 
 2. Function Visibility:
+
    - Solidity: public/private/external
    - Anchor: Context-based with accounts
 
 3. Access Control:
+
    - Solidity: require() statements
    - Anchor: require!() macros
 
 4. Tokens:
+
    - Solidity: ERC-20
    - Anchor: SPL Token with associated tokens
 
 5. Native Transfers:
+
    - Solidity: address(this).call{value: x}()
    - Anchor: program.send()
 
 6. Events:
+
    - Solidity: emit Event(...)
    - Anchor: #[event] pub struct
 
 7. Errors:
+
    - Solidity: require(...,"message")
    - Anchor: #[error_code] enum
 

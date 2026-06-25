@@ -141,21 +141,21 @@ cd sdk && npm test
 ### Try the SDK
 
 ```typescript
-import { KubernaClient } from "@kuberna/sdk";
+import { KubernaClient } from '@kuberna/sdk';
 
 const client = new KubernaClient({
-  apiKey: "your-api-key",
+  apiKey: 'your-api-key',
 });
 
 // Create an agent with a natural language task
 const task = await client.agents.createTask({
-  intent: "swap 1 ETH for USDC on Base when price > 3200",
-  strategy: "limit_order",
+  intent: 'swap 1 ETH for USDC on Base when price > 3200',
+  strategy: 'limit_order',
 });
 
 // Monitor execution
 const result = await client.agents.waitForCompletion(task.id);
-console.log("Task completed:", result.certificate);
+console.log('Task completed:', result.certificate);
 ```
 
 ---

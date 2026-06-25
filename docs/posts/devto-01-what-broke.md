@@ -19,8 +19,6 @@ Here's what we actually had to build.
 
 ---
 
-
-
 ## What "agent execution" actually means
 
 Most people think "AI agent" means a chatbot with tool access. That's not what we're building.

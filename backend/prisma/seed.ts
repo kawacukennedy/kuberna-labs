@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { PrismaClient, Role, CourseLevel, ContentType, AgentFramework, PricingModel } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 

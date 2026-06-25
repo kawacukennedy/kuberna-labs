@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * TEE Service Usage Examples
  * 

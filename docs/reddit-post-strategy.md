@@ -74,6 +74,7 @@ All 18 contracts compile and 175 tests pass. What doesn't exist yet: zkTLS integ
 > The `nonReentrant` modifiers are on lines 42 and 78. The dispute window logic starts at line 103. Happy to explain the design rationale in the comments.
 
 **Reply strategy (first 2 hours — critical window):**
+
 - Reply to every comment within 15 minutes
 - Ask follow-up questions to extend threads
 - Never argue — if someone criticizes, agree with the valid part and explain the tradeoff
@@ -116,12 +117,12 @@ All 18 contracts compile and 175 tests pass. What doesn't exist yet: zkTLS integ
 
 ## Success Metrics
 
-| Tier | Upvotes at 60 min | Outcome |
-|---|---|---|
-| ✅ Strong | 50–200 | Top of r/ethdev, Discord influx expected |
-| 🚀 Viral | 200+ | r/all potential, significant growth |
-| ⚠️ Alive | 10–50 | Needs acceleration — reply faster, share in relevant threads |
-| ❌ Dead | <10 | Time decay has buried it. Analyze why, wait 2 weeks, retry with different angle |
+| Tier      | Upvotes at 60 min | Outcome                                                                         |
+| --------- | ----------------- | ------------------------------------------------------------------------------- |
+| ✅ Strong | 50–200            | Top of r/ethdev, Discord influx expected                                        |
+| 🚀 Viral  | 200+              | r/all potential, significant growth                                             |
+| ⚠️ Alive  | 10–50             | Needs acceleration — reply faster, share in relevant threads                    |
+| ❌ Dead   | <10               | Time decay has buried it. Analyze why, wait 2 weeks, retry with different angle |
 
 **Discord conversion expectation:** At 50+ upvotes on r/ethdev, expect 10–30 Discord joins. At 200+, expect 50–150. Higher if the post generates controversy or debate.
 
@@ -129,9 +130,9 @@ All 18 contracts compile and 175 tests pass. What doesn't exist yet: zkTLS integ
 
 ## If Post Flops — Diagnose
 
-| Symptom | Likely Cause | Fix |
-|---|---|---|
-| Removed by mods | Rule violation or spam filter | Check removal reason, wait 24h, send polite modmail |
-| 0–5 upvotes after 2h | Wrong title, wrong sub, or dead time | Retitle with specific number, retarget sub, repost at correct time |
-| 5–20 upvotes but no comments | Title got click but body lacked depth | Add more technical specifics, share a failure story, ask a better question |
-| 20+ upvotes but no Discord joins | Post didn't lead anywhere actionable | Make sure links are visible in first comment, not buried |
+| Symptom                          | Likely Cause                          | Fix                                                                        |
+| -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
+| Removed by mods                  | Rule violation or spam filter         | Check removal reason, wait 24h, send polite modmail                        |
+| 0–5 upvotes after 2h             | Wrong title, wrong sub, or dead time  | Retitle with specific number, retarget sub, repost at correct time         |
+| 5–20 upvotes but no comments     | Title got click but body lacked depth | Add more technical specifics, share a failure story, ask a better question |
+| 20+ upvotes but no Discord joins | Post didn't lead anywhere actionable  | Make sure links are visible in first comment, not buried                   |
