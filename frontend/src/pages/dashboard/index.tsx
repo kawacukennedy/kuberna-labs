@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import { PageLoader } from '@/components/ui/PageLoader';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 
 export default dynamic(() => import('./_page'), {
-  loading: () => <PageLoader />,
+  loading: () => <DashboardSkeleton />,
 });
