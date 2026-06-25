@@ -13,3 +13,5 @@ out
 specs.json
 *.env
 .env.*
+contracts/solana_contracts/
+docs/
