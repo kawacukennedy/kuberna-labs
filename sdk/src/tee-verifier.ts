@@ -170,17 +170,14 @@ export function evaluateConfirmation(
   }
 
   if (request.policy.allowedMeasurements && !request.policy.allowSelfAttestation) {
-    const tec = request.envelope.witness.technology;
-    const allowed = request.policy.allowedMeasurements[tec];
-    if (allowed) {
-      for (const [key, values] of Object.entries(receipt.measurements)) {
-        if (allowed[key] && !allowed[key].includes(receipt.measurements[key])) {
-          return {
-            approved: false,
-            verificationReceipt: receipt,
-            rejectionReason: `measurement ${key}=${receipt.measurements[key]} not in allowed set`,
-          };
-        }
+    const allowed = request.policy.allowedMeasurements;
+    for (const [key] of Object.entries(receipt.measurements)) {
+      if (Object.prototype.hasOwnProperty.call(allowed, key) && !allowed[key].includes(receipt.measurements[key])) {
+        return {
+          approved: false,
+          verificationReceipt: receipt,
+          rejectionReason: `measurement ${key}=${receipt.measurements[key]} not in allowed set`,
+        };
       }
     }
   }

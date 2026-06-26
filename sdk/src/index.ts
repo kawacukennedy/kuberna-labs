@@ -211,8 +211,6 @@ export type {
   IntentValidationResult,
   ConfirmationPolicy,
   ConfirmationCheck,
-  ConfirmationGateRequest,
-  ConfirmationGateResponse,
 } from './intent-types.js';
 export type {
   AttestationWitness,
