@@ -81,3 +81,5 @@ services:
         sync: false
       - key: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
         sync: false
+      - key: DISCORD_WEBHOOK_URL
+        sync: false

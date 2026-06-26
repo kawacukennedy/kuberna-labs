@@ -194,3 +194,51 @@ export type {
   X402SettleResult,
   X402VerifyResult,
 } from './kite.js';
+export type {
+  CrossChainOrder,
+  ResolvedCrossChainOrder,
+  SignedCrossChainOrder,
+  FillInstruction,
+  FillRequest,
+  FillResponse,
+  Output,
+  OutputReceipt,
+  NearIntent,
+  SignedNearIntent,
+  NearIntentProof,
+  KubernaNormalizedIntent,
+  IntentStandard,
+  IntentValidationResult,
+  ConfirmationPolicy,
+  ConfirmationCheck,
+  ConfirmationGateRequest,
+  ConfirmationGateResponse,
+} from './intent-types.js';
+export type {
+  AttestationWitness,
+  SgxWitness,
+  TdxWitness,
+  SevSnpWitness,
+  NitroWitness,
+  PhalaWitness,
+  AttestationEnvelope,
+  AttestationVerifier,
+  VerificationReceipt,
+  VerifierRegistry,
+  KeyBinding,
+  TeeTechnology,
+  ConfirmationPolicy as TeeConfirmationPolicy,
+  ConfirmationRequest,
+  ConfirmationResponse,
+} from './tee-verifier.js';
+export {
+  normalizeErc7683,
+  normalizeNearIntent,
+  normalizeKubernaIntent,
+  validateIntent,
+  checkConfirmationPolicy,
+} from './intent-types.js';
+export {
+  evaluateConfirmation,
+  createVerifierRegistry,
+} from './tee-verifier.js';
