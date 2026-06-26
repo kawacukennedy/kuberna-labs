@@ -176,17 +176,61 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Send Discord notification (main only)
+      - name: Collect git stats
+        id: git-stats
+        run: |
+          echo "commit_msg=$(git log -1 --format='%s' HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_author=$(git log -1 --format='%an' HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_timestamp=$(git log -1 --format='%aI' HEAD)" >> $GITHUB_OUTPUT
+          echo "files_changed=$(git diff --stat HEAD~1..HEAD 2>/dev/null | tail -1 | awk '{print $1}')" >> $GITHUB_OUTPUT
+          echo "insertions=$(git diff --stat HEAD~1..HEAD 2>/dev/null | tail -1 | awk '{print $4}')" >> $GITHUB_OUTPUT
+          echo "deletions=$(git diff --stat HEAD~1..HEAD 2>/dev/null | tail -1 | awk '{print $6}')" >> $GITHUB_OUTPUT
+
+      - name: Send Discord notification — build failed
+        if: github.ref == 'refs/heads/main' && failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          NOTIFY_TITLE: "❌ Build Failed"
+          NOTIFY_DESC: "CI pipeline failed for [${{ github.repository }}@${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})"
+          NOTIFY_COMMIT_SHA: ${{ github.sha }}
+          NOTIFY_COMMIT_MSG: ${{ steps.git-stats.outputs.commit_msg }}
+          NOTIFY_COMMIT_AUTHOR: ${{ steps.git-stats.outputs.commit_author }}
+          NOTIFY_BRANCH: ${{ github.ref_name }}
+          NOTIFY_FILES_CHANGED: ${{ steps.git-stats.outputs.files_changed }}
+          NOTIFY_INSERTIONS: ${{ steps.git-stats.outputs.insertions }}
+          NOTIFY_DELETIONS: ${{ steps.git-stats.outputs.deletions }}
+          NOTIFY_JOBS: '[]'
+          NOTIFY_ENV: "production"
+          NOTIFY_VERSION: "1.0.2"
+          NOTIFY_CI_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NOTIFY_DEPLOY_URL: "https://dashboard.render.com/web/srv-d80v019kh4rs73e6072g"
+        run: |
+          npx ts-node scripts/notify-discord.ts
+
+      - name: Send Discord notification — build succeeded
         if: github.ref == 'refs/heads/main' && success()
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           NOTIFY_TITLE: "Build Succeeded"
-          NOTIFY_DESC: "CI pipeline passed for commit ${{ github.sha }}"
-          NOTIFY_FEATURES: '[{"name":"Automated CI/CD","description":"Build, test, and deploy pipeline running on every push"}]'
-          NOTIFY_IMPROVEMENTS: "[]"
-          NOTIFY_FIXES: "[]"
-          NOTIFY_ENV: "staging"
-          NOTIFY_VERSION: "1.0.0"
+          NOTIFY_DESC: "CI pipeline passed for [${{ github.repository }}@${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})"
+          NOTIFY_COMMIT_SHA: ${{ github.sha }}
+          NOTIFY_COMMIT_MSG: ${{ steps.git-stats.outputs.commit_msg }}
+          NOTIFY_COMMIT_AUTHOR: ${{ steps.git-stats.outputs.commit_author }}
+          NOTIFY_COMMIT_TIMESTAMP: ${{ steps.git-stats.outputs.commit_timestamp }}
+          NOTIFY_BRANCH: ${{ github.ref_name }}
+          NOTIFY_FILES_CHANGED: ${{ steps.git-stats.outputs.files_changed }}
+          NOTIFY_INSERTIONS: ${{ steps.git-stats.outputs.insertions }}
+          NOTIFY_DELETIONS: ${{ steps.git-stats.outputs.deletions }}
+          NOTIFY_FEATURES: ${{ vars.NOTIFY_FEATURES || '[]' }}
+          NOTIFY_IMPROVEMENTS: ${{ vars.NOTIFY_IMPROVEMENTS || '[]' }}
+          NOTIFY_FIXES: ${{ vars.NOTIFY_FIXES || '[]' }}
+          NOTIFY_JOBS: '[{"name":"Lint","status":"success"},{"name":"Contracts","status":"success"},{"name":"Backend","status":"success"},{"name":"SDK","status":"success"},{"name":"Security","status":"success"},{"name":"Frontend","status":"success"},{"name":"Build","status":"success"}]'
+          NOTIFY_ENV: "production"
+          NOTIFY_VERSION: "1.0.2"
+          NOTIFY_APP_URL: "https://kuberna-labs.onrender.com"
+          NOTIFY_CI_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NOTIFY_DEPLOY_URL: "https://dashboard.render.com/web/srv-d80v019kh4rs73e6072g"
+          NOTIFY_DURATION: "${{ github.run_duration }}"
         run: |
           npx ts-node scripts/notify-discord.ts
 
