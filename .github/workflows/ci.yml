@@ -176,6 +176,20 @@ jobs:
           cd frontend
           npm run build
 
+      - name: Send Discord notification (main only)
+        if: github.ref == 'refs/heads/main' && success()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          NOTIFY_TITLE: "Build Succeeded"
+          NOTIFY_DESC: "CI pipeline passed for commit ${{ github.sha }}"
+          NOTIFY_FEATURES: '[{"name":"Automated CI/CD","description":"Build, test, and deploy pipeline running on every push"}]'
+          NOTIFY_IMPROVEMENTS: "[]"
+          NOTIFY_FIXES: "[]"
+          NOTIFY_ENV: "staging"
+          NOTIFY_VERSION: "1.0.0"
+        run: |
+          npx ts-node scripts/notify-discord.ts
+
   test-frontend:
     name: Test Frontend
     runs-on: ubuntu-latest

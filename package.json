@@ -40,7 +40,8 @@
     "build:frontend:noci": "cd frontend && npm run build",
     "start:render": "cd backend && node dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy",
-    "db:generate": "cd backend && npx prisma generate"
+    "db:generate": "cd backend && npx prisma generate",
+    "notify:deploy": "ts-node scripts/notify-discord.ts"
   },
   "keywords": [
     "web3",

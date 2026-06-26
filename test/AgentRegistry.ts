@@ -14,7 +14,7 @@ describe('KubernaAgentRegistry', function () {
     [owner, agentOwner, other] = await ethers.getSigners();
 
     const Registry = await ethers.getContractFactory('KubernaAgentRegistry');
-    registry = await Registry.deploy();
+    registry = (await Registry.deploy()) as unknown as KubernaAgentRegistry;
     await registry.waitForDeployment();
   });
 
@@ -188,7 +188,7 @@ describe('KubernaAgentRegistry', function () {
           '{"temp": 0.5}',
           tools
         );
-      tokenId = 0;
+      tokenId = 0n;
     });
 
     it('should update agent by owner', async function () {
@@ -243,7 +243,7 @@ describe('KubernaAgentRegistry', function () {
           '{}',
           tools
         );
-      tokenId = 0;
+      tokenId = 0n;
     });
 
     it('should set status to Active by owner', async function () {
@@ -294,7 +294,7 @@ describe('KubernaAgentRegistry', function () {
           '{}',
           tools
         );
-      tokenId = 0;
+      tokenId = 0n;
     });
 
     it('should add tool to agent', async function () {

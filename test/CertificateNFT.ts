@@ -14,7 +14,7 @@ describe('KubernaCertificateNFT', function () {
     [owner, minter, recipient, other] = await ethers.getSigners();
 
     const Certificate = await ethers.getContractFactory('KubernaCertificateNFT');
-    certificate = await Certificate.deploy();
+    certificate = (await Certificate.deploy()) as unknown as KubernaCertificateNFT;
     await certificate.waitForDeployment();
 
     await certificate.connect(owner).setMinter(minter.address);

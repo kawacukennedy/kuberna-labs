@@ -17,7 +17,7 @@ describe('KubernaDispute', function () {
     [owner, requester, executor, juror1, juror2, other] = await ethers.getSigners();
 
     const Dispute = await ethers.getContractFactory('KubernaDispute');
-    dispute = await Dispute.deploy();
+    dispute = (await Dispute.deploy()) as unknown as KubernaDispute;
     await dispute.waitForDeployment();
   });
 
@@ -87,7 +87,7 @@ describe('KubernaDispute', function () {
       const receipt = await tx.wait();
 
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      const disputeId = event?.args[0];
+      const disputeId = (event as any)?.args[0];
 
       expect(disputeId).to.not.be.undefined;
 
@@ -115,7 +115,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      disputeId = event?.args[0];
+      disputeId = (event as any)?.args[0];
     });
 
     it('should submit evidence by requester', async function () {
@@ -163,7 +163,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      disputeId = event?.args[0];
+      disputeId = (event as any)?.args[0];
     });
 
     it('should allow juror to vote for requester', async function () {
@@ -214,7 +214,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      disputeId = event?.args[0];
+      disputeId = (event as any)?.args[0];
     });
 
     it('should resolve with requester winning', async function () {
@@ -262,7 +262,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      disputeId = event?.args[0];
+      disputeId = (event as any)?.args[0];
 
       await dispute.connect(juror1).vote(disputeId, 1);
       await time.increase(7 * 24 * 60 * 60 + 1);
@@ -300,7 +300,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      const disputeId = event?.args[0];
+      const disputeId = (event as any)?.args[0];
 
       const data = await dispute.getDispute(disputeId);
       expect(data.escrowId).to.equal(escrowId);
@@ -315,7 +315,7 @@ describe('KubernaDispute', function () {
         .openDispute(escrowId, requester.address, executor.address, 'reason');
       const receipt = await tx.wait();
       const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
-      const disputeId = event?.args[0];
+      const disputeId = (event as any)?.args[0];
 
       const count = await dispute.getVoteCount(disputeId);
       expect(count).to.equal(0);
