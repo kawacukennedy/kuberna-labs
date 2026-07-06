@@ -18,10 +18,11 @@
   "homepage": "https://github.com/kawacukennedy/kuberna-labs#readme",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "npm run test:backend && npm run test:sdk",
+    "test": "npm run test:backend && npm run test:sdk && npm run test:contracts && npm run test:frontend",
     "test:backend": "cd backend && npm test",
     "test:sdk": "cd sdk && npm test",
     "test:contracts": "hardhat test",
+    "test:frontend": "cd frontend && npm test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
     "verify": "hardhat run scripts/verify.ts",
