@@ -263,17 +263,17 @@ Optional: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `REDIS_URL`, `SMTP_*` fo
 
 ### Sponsor Integrations
 
-| Sponsor | Status | What It Powers |
-|---------|--------|----------------|
-| **Virtuals** | ✅ Live | LLM backend (Claude Opus 4 via ACP) |
-| **Pyth Network** | ✅ Live | Price oracle (ETH, BTC, USDC) |
-| **Discord** | ✅ Live | CI notifications + GitHub star alerts |
-| **Stripe** | 🔧 Code ready | Fiat payments + subscriptions (needs API key) |
-| **Kite AI** | 🔧 Code ready | Agent payments (x402 protocol) |
-| **SilentVerify** | 🔧 Code ready | Post-quantum agent PKI |
-| **Infura / Alchemy** | ✅ Local | RPC providers for contract deployment |
+| Sponsor              | Status        | What It Powers                                |
+| -------------------- | ------------- | --------------------------------------------- |
+| **Virtuals**         | ✅ Live       | LLM backend (Claude Opus 4 via ACP)           |
+| **Pyth Network**     | ✅ Live       | Price oracle (ETH, BTC, USDC)                 |
+| **Discord**          | ✅ Live       | CI notifications + GitHub star alerts         |
+| **Stripe**           | 🔧 Code ready | Fiat payments + subscriptions (needs API key) |
+| **Kite AI**          | 🔧 Code ready | Agent payments (x402 protocol)                |
+| **SilentVerify**     | 🔧 Code ready | Post-quantum agent PKI                        |
+| **Infura / Alchemy** | ✅ Local      | RPC providers for contract deployment         |
 
-*See [docs/FUNDING-REPORT.md](./docs/FUNDING-REPORT.md) for a full list of 78+ funding opportunities across 7 categories.*
+_See [docs/FUNDING-REPORT.md](./docs/FUNDING-REPORT.md) for a full list of 78+ funding opportunities across 7 categories._
 
 ---
 

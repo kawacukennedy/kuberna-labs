@@ -347,6 +347,7 @@ git checkout -b fix/my-bugfix
 ```
 
 Branch naming:
+
 - `feat/` — new features
 - `fix/` — bug fixes
 - `docs/` — documentation only
@@ -400,14 +401,14 @@ test: add unit tests for VirtualsManager
 
 ### Areas to Contribute
 
-| Area | Description | Location |
-|---|---|---|
-| **SDK** | TypeScript client library | `sdk/` |
-| **Smart Contracts** | Solidity contracts (Escrow, Dispute, Router, etc.) | `contracts/` |
-| **Backend** | Node.js API server | `backend/` |
-| **Frontend** | Next.js dashboard | (root `pages/`, `components/`) |
-| **Documentation** | README, guides, JSDoc, NatSpec | `.md` files, inline docs |
-| **DevOps** | CI/CD, Docker, Render config | `.github/`, `render.yaml`, `Dockerfile` |
+| Area                | Description                                        | Location                                |
+| ------------------- | -------------------------------------------------- | --------------------------------------- |
+| **SDK**             | TypeScript client library                          | `sdk/`                                  |
+| **Smart Contracts** | Solidity contracts (Escrow, Dispute, Router, etc.) | `contracts/`                            |
+| **Backend**         | Node.js API server                                 | `backend/`                              |
+| **Frontend**        | Next.js dashboard                                  | (root `pages/`, `components/`)          |
+| **Documentation**   | README, guides, JSDoc, NatSpec                     | `.md` files, inline docs                |
+| **DevOps**          | CI/CD, Docker, Render config                       | `.github/`, `render.yaml`, `Dockerfile` |
 
 ## Getting Help
 

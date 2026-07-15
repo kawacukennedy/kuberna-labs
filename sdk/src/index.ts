@@ -12,8 +12,6 @@ import { AiManager } from './ai.js';
 import { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 import { SilentVerifyManager } from './silentverify.js';
 import { KiteManager } from './kite.js';
-import { DubstrataManager } from './dubstrata.js';
-import { VirtualsManager } from './virtuals.js';
 
 export interface KubernaConfig {
   apiKey?: string;

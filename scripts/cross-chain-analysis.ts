@@ -1,9 +1,9 @@
-import { config } from "dotenv";
+import { config } from 'dotenv';
 config({ path: `${__dirname}/../.env` });
 
-const API_KEY = process.env.AI_API_KEY || "";
-const BASE_URL = process.env.AI_BASE_URL || "https://compute.virtuals.io/v1";
-const MODEL = process.env.AI_MODEL || "anthropic-claude-opus-4-7";
+const API_KEY = process.env.AI_API_KEY || '';
+const BASE_URL = process.env.AI_BASE_URL || 'https://compute.virtuals.io/v1';
+const MODEL = process.env.AI_MODEL || 'anthropic-claude-opus-4-7';
 const VIRTUAL_API_KEY = process.env.VIRTUAL_API_KEY || API_KEY;
 
 interface ChainAnalysis {
@@ -30,16 +30,16 @@ async function callVirtuals(
   maxTokens = 2000
 ): Promise<{ content: string; cost: number }> {
   const response = await fetch(`${BASE_URL}/chat/completions`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
       model: MODEL,
       messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
       temperature: 0.3,
       max_tokens: maxTokens,
@@ -56,7 +56,7 @@ async function callVirtuals(
     cost?: { usd?: number };
   };
 
-  const content = data.choices?.[0]?.message?.content || "";
+  const content = data.choices?.[0]?.message?.content || '';
   const cost = data.cost?.usd || 0;
 
   return { content, cost };
@@ -103,12 +103,12 @@ Include 4-6 chains and 2-3 best opportunities.`;
 
   let report: CrossChainReport;
   try {
-    const cleaned = content.replace(/```json|```/g, "").trim();
+    const cleaned = content.replace(/```json|```/g, '').trim();
     report = JSON.parse(cleaned);
   } catch {
     report = {
       timestamp: new Date().toISOString(),
-      marketOverview: "Failed to parse structured analysis",
+      marketOverview: 'Failed to parse structured analysis',
       chains: [],
       bestOpportunities: [],
       agentRecommendation: content.substring(0, 500),
@@ -133,7 +133,7 @@ if (require.main === module) {
       console.log(`Model: ${MODEL}`);
     })
     .catch((err) => {
-      console.error("Analysis failed:", err);
+      console.error('Analysis failed:', err);
       process.exit(1);
     });
 }
