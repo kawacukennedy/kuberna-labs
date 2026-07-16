@@ -77,7 +77,13 @@ jest.mock('../src/services/index', () => ({
 
 jest.mock('../src/utils/logger', () => ({
   __esModule: true,
-  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), child: jest.fn() },
+  default: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    child: jest.fn(),
+  },
 }));
 
 jest.mock('../src/services/priceFeed', () => ({

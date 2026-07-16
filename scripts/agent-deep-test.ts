@@ -54,7 +54,7 @@ async function testDubstrata() {
       const claims = result.structured_result?.claims || [];
       console.log(
         `  [${result.status}] $${result.remaining_balance.toFixed(3)} | ` +
-        `${pa.length} prices, ${claims.length} claims | Cost: $${(result.execution_cost || 0).toFixed(4)}`
+          `${pa.length} prices, ${claims.length} claims | Cost: $${(result.execution_cost || 0).toFixed(4)}`
       );
     } catch (err) {
       console.log(`  ❌ Query failed: ${err instanceof Error ? err.message : 'unknown error'}`);
@@ -94,8 +94,8 @@ async function testAgentPipeline() {
 
       console.log(
         `  [${result.success ? '✅' : '❌'}] "${task.slice(0, 40)}" | ` +
-        `${failed.length}/${steps.length} failed | ` +
-        `Decision: ${action.type}`
+          `${failed.length}/${steps.length} failed | ` +
+          `Decision: ${action.type}`
       );
     } catch (err) {
       console.log(`  ❌ Run failed: ${err instanceof Error ? err.message : 'unknown error'}`);
