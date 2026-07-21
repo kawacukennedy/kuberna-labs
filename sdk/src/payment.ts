@@ -1,4 +1,6 @@
 import { KubernaSDK } from './index.js';
+import { ethers } from 'ethers';
+import { validateEthAddress } from './utils/address.js';
 
 export interface CreatePaymentIntentParams {
   amount: string;
@@ -46,6 +48,12 @@ export class PaymentManager {
   constructor(private sdk: KubernaSDK) {}
 
   async createIntent(params: CreatePaymentIntentParams): Promise<PaymentIntent> {
+    // validate token address when it's an EVM address (allow native ETH via ethers.ZeroAddress)
+    if (params.token && params.token !== ethers.ZeroAddress && params.token.toUpperCase() !== 'ETH') {
+      // ensure token is checksummed and valid
+      params.token = validateEthAddress(params.token, 'token');
+    }
+
     const response = await this.sdk.request({
       method: 'POST',
       path: '/payments/intents',
