@@ -15,7 +15,7 @@ const createMockModel = () => {
 
 jest.mock('../src/utils/prisma', () => {
   const explicit: Record<string, unknown> = {
-    $transaction: jest.fn((cb: () => unknown) => cb()),
+    $transaction: jest.fn((cb: any) => Array.isArray(cb) ? Promise.all(cb) : cb()),
   };
 
   const modelCache: Record<string, Record<string, jest.Mock>> = {};
@@ -33,28 +33,26 @@ jest.mock('../src/utils/prisma', () => {
   };
 });
 
-jest.mock('../src/middleware/auth', () => {
-  const actual = jest.requireActual('../src/middleware/auth');
-  return {
-    ...actual,
-    authenticate: (req: any, _res: any, next: any) => {
-      req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
-      next();
-    },
-    optionalAuth: (req: any, _res: any, next: any) => {
-      req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
-      next();
-    },
-    requireRoles: (...roles: string[]) => {
-      return (req: any, _res: any, next: any) => {
-        if (req.user!.roles.some((r: string) => roles.includes(r))) {
-          return next();
-        }
-        return _res.status(403).json({ success: false, error: { message: 'Forbidden', code: 'FORBIDDEN' } });
-      };
-    },
-  };
-});
+jest.mock('../src/middleware/auth', () => ({
+  authenticate: (req: any, _res: any, next: any) => {
+    req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
+    next();
+  },
+  optionalAuth: (req: any, _res: any, next: any) => {
+    req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
+    next();
+  },
+  requireRoles: (...roles: string[]) => {
+    return (req: any, _res: any, next: any) => {
+      if (req.user!.roles.some((r: string) => roles.includes(r))) {
+        return next();
+      }
+      return _res.status(403).json({ success: false, error: { message: 'Forbidden', code: 'FORBIDDEN' } });
+    };
+  },
+  generateToken: jest.fn().mockReturnValue('mock-token'),
+  generateRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
+}));
 
 jest.mock('../src/middleware/rateLimiter', () => ({
   authLimiter: (_req: any, _res: any, next: any) => next(),
@@ -75,6 +73,28 @@ jest.mock('bcryptjs', () => {
 
 jest.mock('viem', () => ({
   verifyMessage: jest.fn().mockResolvedValue(true),
+}));
+
+jest.mock('../src/utils/viem', () => ({
+  verifyMessage: jest.fn().mockResolvedValue(true),
+}));
+
+jest.mock('../src/services/index', () => ({
+  kitePassportService: {
+    registerKiteAgent: jest.fn().mockRejectedValue(new Error('mock')),
+    updateAgentKiteInfo: jest.fn().mockResolvedValue(undefined),
+    createSpendingSession: jest.fn().mockResolvedValue({ sessionId: 'mock', approvalUrl: 'mock' }),
+  },
+}));
+
+jest.mock('../src/utils/logger', () => ({
+  __esModule: true,
+  default: { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn(), child: jest.fn() },
+}));
+
+jest.mock('../src/services/priceFeed', () => ({
+  PriceFeedService: jest.fn(),
+  priceFeed: { getPrice: jest.fn(), clearCache: jest.fn() },
 }));
 
 // We read the prisma mock after jest.mock hoisting

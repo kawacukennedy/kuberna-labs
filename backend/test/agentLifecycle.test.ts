@@ -15,7 +15,7 @@ const createMockModel = () => {
 
 jest.mock('../src/utils/prisma', () => {
   const explicit: Record<string, unknown> = {
-    $transaction: jest.fn((cb: () => unknown) => cb()),
+    $transaction: jest.fn((cb: any) => Array.isArray(cb) ? Promise.all(cb) : cb()),
   };
   const modelCache: Record<string, Record<string, jest.Mock>> = {};
   return {
@@ -37,26 +37,24 @@ jest.mock('../src/services/ai', () => ({
   },
 }));
 
-jest.mock('../src/middleware/auth', () => {
-  const actual = jest.requireActual('../src/middleware/auth');
-  return {
-    ...actual,
-    authenticate: (req: any, _res: any, next: any) => {
-      req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
-      next();
-    },
-    optionalAuth: (req: any, _res: any, next: any) => {
-      req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
-      next();
-    },
-    requireRoles: (...roles: string[]) => {
-      return (req: any, _res: any, next: any) => {
-        if (req.user!.roles.some((r: string) => roles.includes(r))) return next();
-        return _res.status(403).json({ success: false, error: { message: 'Forbidden', code: 'FORBIDDEN' } });
-      };
-    },
-  };
-});
+jest.mock('../src/middleware/auth', () => ({
+  authenticate: (req: any, _res: any, next: any) => {
+    req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
+    next();
+  },
+  optionalAuth: (req: any, _res: any, next: any) => {
+    req.user = { id: 'test-user-id', email: 'test@test.com', roles: ['LEARNER'] };
+    next();
+  },
+  requireRoles: (...roles: string[]) => {
+    return (req: any, _res: any, next: any) => {
+      if (req.user!.roles.some((r: string) => roles.includes(r))) return next();
+      return _res.status(403).json({ success: false, error: { message: 'Forbidden', code: 'FORBIDDEN' } });
+    };
+  },
+  generateToken: jest.fn().mockReturnValue('mock-token'),
+  generateRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
+}));
 
 jest.mock('../src/middleware/rateLimiter', () => ({
   authLimiter: (_req: any, _res: any, next: any) => next(),
@@ -65,6 +63,10 @@ jest.mock('../src/middleware/rateLimiter', () => ({
 }));
 
 jest.mock('viem', () => ({
+  verifyMessage: jest.fn().mockResolvedValue(true),
+}));
+
+jest.mock('../src/utils/viem', () => ({
   verifyMessage: jest.fn().mockResolvedValue(true),
 }));
 

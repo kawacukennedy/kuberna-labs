@@ -11,12 +11,13 @@ const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000;
 
 const idempotencyStore = new Map<string, { result: unknown; expiresAt: number }>();
 
-setInterval(() => {
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of idempotencyStore) {
     if (entry.expiresAt < now) idempotencyStore.delete(key);
   }
 }, 60_000);
+if (cleanupInterval.unref) cleanupInterval.unref();
 
 const router = Router();
 
