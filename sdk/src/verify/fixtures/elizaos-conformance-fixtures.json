@@ -1,0 +1,67 @@
+{
+  "bundle_version": "kuberna-elizaos-conformance-v1",
+  "description": "Kuberna-side executable interoperability fixtures for the elizaOS agent certification discussion (#9810). Synthetic schema/conformance vectors only — not certification of execution quality, not an adoption claim.",
+  "pinned": {
+    "author": "kawacukennedy/kuberna-labs",
+    "commit": "fada367f122adf10dcd0b8c63dba98df7d06a2d6",
+    "canonical_receipt": "sdk/src/verify/fixtures/authority-receipt.json",
+    "canonical_preimage": "sdk/src/verify/fixtures/authority-preimage.json"
+  },
+  "cases": [
+    {
+      "id": "positive-authority-work-link",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "derivation": "jcs-sha256 over authority-preimage.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad"
+      },
+      "assertion": "authority.factId === work.preActionFactId; trust-model boundary (chain_derivable vs issuer_asserted) preserved"
+    },
+    {
+      "id": "negative-factlink-drift",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        }
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0xdeadbeef0000000000000000000000000000000000000000000000000000000000"
+      },
+      "assertion": "work.preActionFactId must equal authority.fact_id; mismatch fails closed before subject/version checks"
+    },
+    {
+      "id": "negative-chain-derivable-with-issuer-fields",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "collectorSignature": "0x0badc0de00",
+        "collectorKeyId": "aipou-collector-001"
+      },
+      "assertion": "chain_derivable authority carrying issuer_asserted fields (collectorSignature, collectorKeyId) fails closed — trust-model downgrade detection"
+    }
+  ]
+}

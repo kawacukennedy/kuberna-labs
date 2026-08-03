@@ -51,4 +51,34 @@ describe('jcsCanonicalize', () => {
     expect(computedFactId).toBe(receipt.fact_id);
     expect(computedFactId).toBe(receipt.fact_id_derivation.bytes32);
   });
+
+  it('elizaOS conformance bundle has pinned canonical fact_id', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    expect(bundle.bundle_version).toBe('kuberna-elizaos-conformance-v1');
+    expect(bundle.pinned.commit).toBe('fada367f122adf10dcd0b8c63dba98df7d06a2d6');
+
+    const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
+    expect(positive.expected).toBe('pass');
+    expect(positive.authority.fact_id).toBe('0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad');
+    expect(positive.work.preActionFactId).toBe(positive.authority.fact_id);
+  });
+
+  it('elizaOS conformance bundle has both fail-closed negatives', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const negativeDrift = bundle.cases.find((c: any) => c.id === 'negative-factlink-drift');
+    const negativeIssuer = bundle.cases.find((c: any) => c.id === 'negative-chain-derivable-with-issuer-fields');
+
+    expect(negativeDrift.expected).toBe('fail');
+    expect(negativeDrift.work.preActionFactId).not.toBe(negativeDrift.authority.fact_id);
+
+    expect(negativeIssuer.expected).toBe('fail');
+    expect(negativeIssuer.authority.collectorSignature).toBeDefined();
+    expect(negativeIssuer.authority.receipt_type).toBe('chain_derivable');
+  });
 });
