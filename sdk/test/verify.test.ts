@@ -81,4 +81,21 @@ describe('jcsCanonicalize', () => {
     expect(negativeIssuer.authority.collectorSignature).toBeDefined();
     expect(negativeIssuer.authority.receipt_type).toBe('chain_derivable');
   });
+
+  it('failure-histogram commitment digest includes decay window_end (hash(histogram, window_end))', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const commitmentPath = resolve(fixturesDir, 'failure-histogram.json');
+    const preimagePath = resolve(fixturesDir, 'failure-histogram-preimage.json');
+
+    const commitment = JSON.parse(readFileSync(commitmentPath, 'utf8'));
+    const preimage = JSON.parse(readFileSync(preimagePath, 'utf8'));
+
+    const canonicalized = jcsCanonicalize(preimage);
+    const hash = createHash('sha256').update(canonicalized, 'utf8').digest('hex');
+    const computedFactId = `0x${hash}`;
+
+    expect(computedFactId).toBe(commitment.fact_id);
+    expect(computedFactId).toBe(commitment.commitment_derivation.bytes32);
+    expect(preimage.window_end).toBe(commitment.window_end);
+  });
 });

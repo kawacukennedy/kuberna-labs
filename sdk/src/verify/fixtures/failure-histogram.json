@@ -1,0 +1,58 @@
+{
+  "$schema": "kuberna-failure-histogram-commitment-v1",
+  "commitment_type": "off_chain_compute_on_chain_commit",
+
+  "fact_id": "0xd3408386f8715ea11dc362e4018317edd0d3b64d24ac34e1b853e841ad4d0817",
+
+  "subject": {
+    "erc8004_token_id": "10042",
+    "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+  },
+
+  "commitment_derivation": {
+    "scheme": "jcs-sha256",
+    "description": "SHA-256 of the JCS-canonicalized failure histogram INCLUDING the decay window_end, per the hash(histogram, window_end) convention agreed in autogen#7888",
+    "preimage_schema": "kuberna-failure-histogram-v1",
+    "preimage_fields": [
+      "$schema", "subject", "decay", "buckets", "window_end"
+    ],
+    "window_commitment": "hash(histogram, window_end)",
+    "storage": "single bytes32 per (agent, scope); full decayed history stays off-chain",
+    "bytes32": "0xd3408386f8715ea11dc362e4018317edd0d3b64d24ac34e1b853e841ad4d0817"
+  },
+
+  "decay": {
+    "scheme": "exponential",
+    "half_life_events": 1.94,
+    "half_life_seconds": 604800
+  },
+
+  "buckets": [
+    {
+      "chain_id": 84532,
+      "tool_id": "bridge_adapter",
+      "failures": 3,
+      "decayed_weight": 1.75,
+      "last_failure_at": "2026-08-04T00:13:00Z",
+      "error_types": { "revert": 2, "timeout": 1 }
+    },
+    {
+      "chain_id": 137,
+      "tool_id": "liquidity_router",
+      "failures": 1,
+      "decayed_weight": 0.5,
+      "last_failure_at": "2026-08-02T10:05:00Z",
+      "error_types": { "slippage": 1 }
+    }
+  ],
+
+  "window_end": "2026-08-09T00:00:00Z",
+
+  "usage": {
+    "counter_answers_bool": "revoke predicate - has this (chain, tool) combination failed past threshold",
+    "histogram_answers_distribution": "routing/escalation pricing - decayed weight feeds accelerate/heal/turn ladder off-chain",
+    "thresholds_scaled_by": "half_life_seconds, so 5 failures in an hour outranks 5 over a month"
+  },
+
+  "synthetic": true
+}
