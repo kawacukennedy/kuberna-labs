@@ -114,27 +114,10 @@
     }
   ],
   "metrics": {
-    "submissionLatencyMs": [
-      9626,
-      10001,
-      10085,
-      10391
-    ],
-    "sponsorLatencyMs": [
-      5711,
-      7408,
-      6857,
-      5942
-    ],
-    "sendLatencyMs": [
-      2331,
-      1834,
-      1623,
-      2737
-    ],
-    "inclusionLatencyMs": [
-      936
-    ],
+    "submissionLatencyMs": [9626, 10001, 10085, 10391],
+    "sponsorLatencyMs": [5711, 7408, 6857, 5942],
+    "sendLatencyMs": [2331, 1834, 1623, 2737],
+    "inclusionLatencyMs": [936],
     "percentiles": {
       "submissionP50": 10001,
       "submissionP95": 10391,

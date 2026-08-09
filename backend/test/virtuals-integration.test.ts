@@ -5,10 +5,21 @@ process.env.JWT_SECRET = 'test-secret-key-for-testing';
 process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-for-testing';
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
 
-import { aiService } from '../src/services/ai';
-import { agentDecisionEngine, marketData } from '../src/services/agentDecision';
+const RUN_PAID_TESTS = process.env.RUN_PAID_TESTS === '1';
+const maybeDescribe = RUN_PAID_TESTS ? describe : describe.skip;
 
 let totalCost = 0;
+import type { AIService } from '../src/services/ai';
+import type { AgentDecisionEngine, MarketDataProvider } from '../src/services/agentDecision';
+let aiService: AIService;
+let agentDecisionEngine: AgentDecisionEngine;
+let marketData: MarketDataProvider;
+
+beforeAll(async () => {
+  if (!RUN_PAID_TESTS) return;
+  ({ aiService } = await import('../src/services/ai'));
+  ({ agentDecisionEngine, marketData } = await import('../src/services/agentDecision'));
+});
 
 function trackCost(cost: number, label: string) {
   totalCost += cost;
@@ -34,7 +45,8 @@ beforeAll(() => {
   jest.setTimeout(600000);
 });
 
-describe('Virtuals API Integration - AI Service', () => {
+describe('Virtuals API Integration (paid, RUN_PAID_TESTS=1)', () => {
+  maybeDescribe('Virtuals API Integration - AI Service', () => {
   test('1-3. Intent parsing (simple swap, bridge, multi-hop)', async () => {
     const r1 = await aiService.parseIntentFromNaturalLanguage('swap 1 ETH for USDC on Polygon');
     console.log(`  ETH->USDC/Polygon: ${r1.sourceAmount} ${r1.sourceToken} -> ${r1.destChain} ${r1.destToken} (confidence: ${r1.confidence})`);
@@ -123,9 +135,9 @@ describe('Virtuals API Integration - AI Service', () => {
       }`);
     console.log(`  Valid: ${validation.valid}, errors: ${validation.errors.length}`);
   });
-});
+  });
 
-describe('Virtuals API - Agent Decision Pipeline', () => {
+  maybeDescribe('Virtuals API - Agent Decision Pipeline', () => {
   test('11. Real market data', async () => {
     const ts = Math.floor(Date.now() / 1000);
     const eth = await marketData.getPrice('ETH', ts);
@@ -156,9 +168,9 @@ describe('Virtuals API - Agent Decision Pipeline', () => {
     const all = await agentDecisionEngine.evaluate('t-agent4', ['arbitrage', 'yield', 'stopLoss'], ts);
     console.log(`  Multi: ${all.type} | ${all.reason} | conf=${all.confidence}`);
   });
-});
+  });
 
-describe('Virtuals API - Token-Intensive $40 Burn', () => {
+  maybeDescribe('Virtuals API - Token-Intensive $40 Burn', () => {
   test('16. Large code gen - full ElizaOS trading bot', async () => {
     const r = await aiService.generateAgentCode({
       framework: 'elizaos', template: 'trading-bot',
@@ -321,6 +333,7 @@ export class ArbBot {
       });
       console.log(`  ${templates[i]}(${frameworks[i]}): ${r.code.length} chars`);
     }
+  });
   });
 });
 

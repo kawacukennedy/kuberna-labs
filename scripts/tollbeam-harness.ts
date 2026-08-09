@@ -96,7 +96,11 @@ function summaryLatencies(values: number[]): string {
   return `p50=${percentile(sorted, 50)}ms p95=${percentile(sorted, 95)}ms p99=${percentile(sorted, 99)}ms (n=${values.length})`;
 }
 
-async function tollbeamRpc(route: Route, method: string, params: unknown[]): Promise<{ result?: unknown; error?: { code: number; message: string; data?: unknown } }> {
+async function tollbeamRpc(
+  route: Route,
+  method: string,
+  params: unknown[]
+): Promise<{ result?: unknown; error?: { code: number; message: string; data?: unknown } }> {
   const url = `${TOLLBEAM_BASE}/v1/${route}/rpc`;
   const res = await fetch(url, {
     method: 'POST',
@@ -113,7 +117,11 @@ async function tollbeamRpc(route: Route, method: string, params: unknown[]): Pro
   return body as { result?: unknown; error?: { code: number; message: string; data?: unknown } };
 }
 
-async function getEntryPointNonce(client: PublicClient, account: Address, key = 0n): Promise<bigint> {
+async function getEntryPointNonce(
+  client: PublicClient,
+  account: Address,
+  key = 0n
+): Promise<bigint> {
   const abi = [
     {
       name: 'getNonce',
@@ -141,7 +149,9 @@ const DUMMY_SIGNATURE: Hex = `0x${'11'.repeat(65)}`;
 const GAS_FLOOR_MAX_FEE = 8_050_000n;
 const GAS_FLOOR_MAX_PRIORITY_FEE = 1_000_000n;
 
-async function fetchGasPrices(client: PublicClient): Promise<{ maxFeePerGas: bigint; maxPriorityFeePerGas: bigint }> {
+async function fetchGasPrices(
+  client: PublicClient
+): Promise<{ maxFeePerGas: bigint; maxPriorityFeePerGas: bigint }> {
   const gasPrice = await client.getGasPrice();
   const priorityRaw = await client.request({
     method: 'eth_maxPriorityFeePerGas',
@@ -152,7 +162,8 @@ async function fetchGasPrices(client: PublicClient): Promise<{ maxFeePerGas: big
   const maxFee = base + priority;
   return {
     maxFeePerGas: maxFee < GAS_FLOOR_MAX_FEE ? GAS_FLOOR_MAX_FEE : maxFee,
-    maxPriorityFeePerGas: priority < GAS_FLOOR_MAX_PRIORITY_FEE ? GAS_FLOOR_MAX_PRIORITY_FEE : priority,
+    maxPriorityFeePerGas:
+      priority < GAS_FLOOR_MAX_PRIORITY_FEE ? GAS_FLOOR_MAX_PRIORITY_FEE : priority,
   };
 }
 
@@ -168,7 +179,11 @@ function buildExecuteCall(value: bigint = 0n): Hex {
     ],
     outputs: [],
   } as const;
-  return encodeFunctionData({ abi: [iface], functionName: 'execute', args: [BURN_ADDRESS, value, '0x'] });
+  return encodeFunctionData({
+    abi: [iface],
+    functionName: 'execute',
+    args: [BURN_ADDRESS, value, '0x'],
+  });
 }
 
 async function sponsor(
@@ -238,9 +253,7 @@ async function runBatch(args: {
   }
   const owner = privateKeyToAccount(ownerKey as Hex);
   if (owner.address.toLowerCase() !== SIMPLE_ACCOUNT_OWNER.toLowerCase()) {
-    throw new Error(
-      `Owner key mismatch: expected ${SIMPLE_ACCOUNT_OWNER}, got ${owner.address}`
-    );
+    throw new Error(`Owner key mismatch: expected ${SIMPLE_ACCOUNT_OWNER}, got ${owner.address}`);
   }
 
   const client = createPublicClient({ transport: http(RPC_URL), chain: baseSepolia });
@@ -321,7 +334,9 @@ async function runBatch(args: {
 
     const maxFee = sponsorRes.maxFeePerGas === 0n ? gas.maxFeePerGas : sponsorRes.maxFeePerGas;
     const maxPriorityFee =
-      sponsorRes.maxPriorityFeePerGas === 0n ? gas.maxPriorityFeePerGas : sponsorRes.maxPriorityFeePerGas;
+      sponsorRes.maxPriorityFeePerGas === 0n
+        ? gas.maxPriorityFeePerGas
+        : sponsorRes.maxPriorityFeePerGas;
 
     Object.assign(userOp, {
       callGasLimit: `0x${sponsorRes.callGasLimit.toString(16)}`,

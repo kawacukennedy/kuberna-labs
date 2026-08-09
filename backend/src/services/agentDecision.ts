@@ -35,7 +35,7 @@ const defaultConfig: DecisionConfig = {
   minYieldDiff: parseFloat(process.env.AGENT_MIN_YIELD_DIFF || '1.0'),
 };
 
-class MarketDataProvider {
+export class MarketDataProvider {
   private basePrices: Record<string, number> = {
     ETH: 3200,
     USDC: 1,
