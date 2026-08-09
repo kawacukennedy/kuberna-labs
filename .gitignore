@@ -61,3 +61,9 @@ docs/kuberna-bd-research.md
 !packages/aip-adapter/test/
 !packages/aip-adapter/**/*.test.ts
 .env.bak
+
+# build artifacts
+.harness-dist/
+
+# nested project repo (om-world tracks its own git history)
+om-world/
