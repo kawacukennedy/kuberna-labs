@@ -26,7 +26,7 @@
 
 ## Verification
 
-- Virtuals API key `acp-1eb86f6fe48a0af6118d` working with HTTP 201
+- Virtuals API key working with HTTP 201
 - Credits being consumed and tracked via `cost.usd` field in response
 - Burn scripts work in background with nohup
 

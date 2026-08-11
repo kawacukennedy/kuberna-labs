@@ -57,7 +57,7 @@ Complete Kuberna Labs deployment across target chains, submit to BNB hackathons,
 
 ### Sponsorship Status
 
-- **Virtuals ($200/wk)**: Free inference credits active (Tier 1: Spark, week 2/4). API key `acp-1eb86f6fe48a0af6118d` confirmed working (HTTP 201, Jul 16). Console enabled with Hermes runtime + Druckenmiller Trader template. Auto-billing authorized on chain 8453 (Base) — $210 balance confirmed ($200 free + $10 top-up). $40 burn test completed — 505 successful calls, $40.01 spent, $170 remaining.
+- **Virtuals ($200/wk)**: Free inference credits active (Tier 1: Spark, week 2/4). API key confirmed working (HTTP 201, Jul 16). Console enabled with Hermes runtime + Druckenmiller Trader template. Auto-billing authorized on chain 8453 (Base) — $210 balance confirmed ($200 free + $10 top-up). $40 burn test completed — 505 successful calls, $40.01 spent, $170 remaining.
 - **Dubstrata ($100)**: API working, $99.79 remaining. Integration built (`DubstrataIntelligenceService`) but testing stopped per instruction. Intelligence report endpoint still returning 404.
 
 ### GitHub Growth
@@ -73,7 +73,7 @@ Complete Kuberna Labs deployment across target chains, submit to BNB hackathons,
 - Sepolia: faucet empty
 - Polygon Amoy: RPC issues, no ETH
 - Arbitrum Sepolia: no ETH
-- Supabase project paused — needs manual unpause
+- ~~Supabase project paused — needs manual unpause~~ **RESOLVED** — verified live and writable (Aug 9)
 - ~~**Virtuals compute**: Key authenticates but "Insufficient credits" — needs free inference credits claimed via GitHub linking on Credits page (auto-billing now authorized on 8453/Base, $210 balance)~~ **RESOLVED** — API confirmed working Jul 16, $40 burn test completed
 - **Virtuals API bug**: High concurrency (>15 for Opus 4.8, >30 for Fast) causes timeouts. Fixed in `scripts/burn-fixed.mjs` with 300s timeout, 10/30 concurrency, retry logic.
 - Tollbeam staging key returning `unauthorized`
@@ -112,12 +112,26 @@ Complete Kuberna Labs deployment across target chains, submit to BNB hackathons,
 - Owner: `0x90b37Cf2A756D0DcD2F69A2De78e5CA443eD7d60`
 - Block: 43938074
 
-## Deployed Addresses (all deterministic via CREATE2)
+## Deployed Addresses
 
-- MLRWA Token (Eth Sepolia): `0x4d06b1d10f41cf68cd7cd7b9c5be9d7b92c7a62b`
-- MLRWA Token (Base Sepolia): `0x4d06b1d10f41cf68cd7cd7b9c5be9d7b92c7a62b`
-- Governance (Base Sepolia): `0x4d059e5bfc5a5f6d19e0d32d6157ef0d16b7aedb`
-- Registry (Base Sepolia): `0x4d059e5bfc5a5f6d19e0d32d6157ef0d16b7aedb`
+Source of truth: `deployments/<network>-latest.json` (Hardhat). 14-contract Kuberna suite deployed on **Base Sepolia (84532)** and **Mantle Sepolia (5003)**. Production Render env (`srv-d80v019kh4rs73e6072g`) is wired to the **Base Sepolia** deployment.
+
+| Contract | Base Sepolia | Mantle Sepolia |
+| -------- | ------------ | -------------- |
+| escrow | `0xab28501BC5736f56D1Fd909ffD8EB98407EB049E` | `0x22dF9cBdf45F7874602d3Bf950A2B7EB51314ad1` |
+| intent | `0xF9c36107F943C9eECAa88B20C05Bd090322fC56f` | `0xb663f2A79Fcc64eD1CB6c6adD7625b443aB1D19C` |
+| certificateNFT | `0x6CBeE1F98DBd05d5B05A18062B5029c5618D340F` | `0x8f21D43d50266580e21dbCB0BcEa7E073FefA7c0` |
+| payment | `0xc0679cdB6E30291De974635cBaFa572e083e6564` | `0x360ec009ba6967F5f7C53a88FAD0452C6140493d` |
+| crossChainRouter | `0xf13Efb8885F11B6E81dE47DF74CC1849a5855edb` | `0x5DA30BDE4A774dcccE6099717d6b41A6329fDe34` |
+| attestation | `0x68d0a647E4a1F68CbDA62Ce31273D1d0298C1a02` | `0x8bcc424C07afCf231046F58B15d3677b8E842023` |
+| reputationNFT | `0x10aC2c7cAA2d7C5fC8a561F8654d289eeb2E29F4` | `0x5e42c329Ef517B495261f57054d5844EAabD3dbf` |
+| subscription | `0x32b0298eF0e0e438A45965Ed26d9EfA2A7Cf9061` | `0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a` |
+| agentRegistry | `0x563193BeD72b2b1F284EE0e80b29dADc4D9bEC91` | `0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A` |
+| courseNFT | `0x2b80B538cCC8846AFb3c6cb901A819178c2E805f` | `0x9be7afE1793ad14F9026d7579cf7c2313184a7E0` |
+| workshop | `0xe48844e98A6760cd561f025aeD575f44DF5aABa3` | `0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35` |
+| dispute | `0x9d5A959CA6C6c6D1304beBF293387c4208163071` | `0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324` |
+| treasury | `0xA5BDFFfA521C2234F74Dd03B1529797068C8A717` | `0x9b0D1d05A6EBafE6364648d9e7109E2C37e331BF` |
+| feeManager | `0x039C4456CB9C195C2dFD1F370a4891b0857F4aa0` | `0x1Fa14FfB410EfA65b3aADBB9B65e2426A1fB0F66` |
 
 ## Production Agents (Base Sepolia)
 
@@ -158,9 +172,10 @@ node .harness-dist/tollbeam-harness.js --count=8 --mode=steady --poll=true
 
 ## Next Steps
 
-1. Publish ERC-8004 adapter as npm release
-2. Monitor v0.2 freeze from @flyoung588
-3. Resume Sepolia/Polygon/Arb deployments when faucets recover
-4. SVP Chain FutureStack submission before Jul 30 ($250K AI Agent track)
-5. Grant applications: Solana Superteam, Microsoft Founders Hub, Google Cloud
-6. BRD Hanga Venture Ignite+ — $110K Rwanda grant
+1. **Rotate Supabase DB password** (SECURITY): the password is exposed in plaintext via the Render env-vars API and is weak. Manual step — needs Supabase access token (`supabase login` or `SUPABASE_ACCESS_TOKEN`). Steps: reset password in Supabase dashboard (project `rjlnyyqanqhvikhjfmvk`) → update `DATABASE_URL` + `DIRECT_URL` on Render (`srv-d80v019kh4rs73e6072g`) → redeploy.
+2. Publish ERC-8004 adapter as npm release
+3. Monitor v0.2 freeze from @flyoung588
+4. Resume Sepolia/Polygon/Arb deployments when faucets recover
+5. SVP Chain FutureStack submission before Jul 30 ($250K AI Agent track)
+6. Grant applications: Solana Superteam, Microsoft Founders Hub, Google Cloud
+7. BRD Hanga Venture Ignite+ — $110K Rwanda grant
