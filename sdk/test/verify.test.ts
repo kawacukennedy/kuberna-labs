@@ -1,6 +1,6 @@
 import { jcsCanonicalize } from '../src/verify/jcs.js';
 import { createHash } from 'crypto';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 describe('jcsCanonicalize', () => {
@@ -97,5 +97,54 @@ describe('jcsCanonicalize', () => {
     expect(computedFactId).toBe(commitment.fact_id);
     expect(computedFactId).toBe(commitment.commitment_derivation.bytes32);
     expect(preimage.window_end).toBe(commitment.window_end);
+  });
+
+  it('straddling-window turn splits into per-window receipts instead of rejecting the whole turn', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const fixturePath = resolve(fixturesDir, 'straddling-window-receipt.json');
+    const fixture = JSON.parse(readFileSync(fixturePath, 'utf8'));
+
+    expect(fixture.turn.straddles_boundary).toBe(true);
+    expect(fixture.turn.steps_in_window_N).toBeGreaterThan(0);
+    expect(fixture.turn.steps_in_window_N_plus_1).toBeGreaterThan(0);
+
+    const n = fixture.receipts.find((r: any) => r.window === 'N');
+    const nPlus1 = fixture.receipts.find((r: any) => r.window === 'N+1');
+
+    expect(n).toBeDefined();
+    expect(nPlus1).toBeDefined();
+
+    expect(n!.turn_id).toBe(fixture.turn.turn_id);
+    expect(nPlus1!.turn_id).toBe(fixture.turn.turn_id);
+
+    expect(n!.window_end).toBe(fixture.turn.boundary);
+    expect(n!.receipt_type).toBe('window_attribution');
+    expect(nPlus1!.receipt_type).toBe('window_attribution');
+
+    const nIndices = n!.step_indices;
+    const nPlus1Indices = nPlus1!.step_indices;
+    expect(Math.max(...nIndices)).toBeLessThan(Math.min(...nPlus1Indices));
+    expect(nIndices.length).toBe(fixture.turn.steps_in_window_N);
+    expect(nPlus1Indices.length).toBe(fixture.turn.steps_in_window_N_plus_1);
+
+    expect(fixture.handling.correct_handling).toContain('split at the boundary');
+    expect(fixture.handling.overlap_exposed).toContain('turn_id');
+  });
+
+  it('straddling-window N receipt commits to the pinned failure-histogram digest', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const straddle = JSON.parse(
+      readFileSync(resolve(fixturesDir, 'straddling-window-receipt.json'), 'utf8')
+    );
+    const commitment = JSON.parse(
+      readFileSync(resolve(fixturesDir, 'failure-histogram.json'), 'utf8')
+    );
+
+    const windowN = straddle.receipts.find((r: any) => r.window === 'N');
+
+    expect(straddle.commitment.window).toBe('N');
+    expect(straddle.commitment.window_end).toBe(commitment.window_end);
+    expect(windowN.commitment_fact_id).toBe(commitment.fact_id);
+    expect(straddle.commitment.derivation).toContain('window_end');
   });
 });
