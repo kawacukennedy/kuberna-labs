@@ -62,7 +62,9 @@ describe('jcsCanonicalize', () => {
 
     const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
     expect(positive.expected).toBe('pass');
-    expect(positive.authority.fact_id).toBe('0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad');
+    expect(positive.authority.fact_id).toBe(
+      '0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad'
+    );
     expect(positive.work.preActionFactId).toBe(positive.authority.fact_id);
   });
 
@@ -72,7 +74,9 @@ describe('jcsCanonicalize', () => {
     const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
 
     const negativeDrift = bundle.cases.find((c: any) => c.id === 'negative-factlink-drift');
-    const negativeIssuer = bundle.cases.find((c: any) => c.id === 'negative-chain-derivable-with-issuer-fields');
+    const negativeIssuer = bundle.cases.find(
+      (c: any) => c.id === 'negative-chain-derivable-with-issuer-fields'
+    );
 
     expect(negativeDrift.expected).toBe('fail');
     expect(negativeDrift.work.preActionFactId).not.toBe(negativeDrift.authority.fact_id);
@@ -127,8 +131,20 @@ describe('jcsCanonicalize', () => {
     expect(nIndices.length).toBe(fixture.turn.steps_in_window_N);
     expect(nPlus1Indices.length).toBe(fixture.turn.steps_in_window_N_plus_1);
 
+    expect(n!.window_start).toBe('2026-08-02T00:00:00Z');
+    expect(nPlus1!.window_start).toBe(fixture.turn.boundary);
+    expect(n!.outcome).toBe('completed');
+    expect(nPlus1!.outcome).toBe('partial');
+    expect(n!.effective).toBe('N');
+    expect(nPlus1!.effective).toBe('N');
+    expect(n!.is_straddling).toBe(true);
+    expect(nPlus1!.is_straddling).toBe(true);
+    expect(n!.straddle.overlap_exposure).toBe(true);
+    expect(nPlus1!.straddle.overlap_exposure).toBe(true);
+
     expect(fixture.handling.correct_handling).toContain('split at the boundary');
     expect(fixture.handling.overlap_exposed).toContain('turn_id');
+    expect(fixture.handling.effective_attribution).toContain('window the turn started in');
   });
 
   it('straddling-window N receipt commits to the pinned failure-histogram digest', () => {

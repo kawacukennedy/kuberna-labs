@@ -1,6 +1,6 @@
 {
   "$schema": "kuberna-straddling-window-receipt-v1",
-  "description": "Single agent turn that straddles a histogram commitment window boundary. The commitment is made for window N (window_end included in digest), but the long turn spans N and N+1. Per autogen#7888: the digest is honest — it commits to window_end — so a naive verifier must NOT reject the whole turn; the correct handling keeps one receipt per window and exposes the overlap explicitly.",
+  "description": "Single agent turn that straddles a histogram commitment window boundary. The commitment is made for window N (window_end included in digest), but the long turn spans N and N+1. Per autogen#7888: the digest is honest — it commits to window_end — so a naive verifier must NOT reject the whole turn; the correct handling keeps one receipt per window and exposes the overlap explicitly. Receipt field shape (window_start / outcome / effective) aligns with HeartFlow's WindowAttributionReceipt v0.1.0: effective = the window the turn started in, never post-hoc attribution.",
   "subject": {
     "erc8004_token_id": "10042",
     "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
@@ -26,26 +26,45 @@
   "handling": {
     "naive_verifier": "rejects the whole turn — sees steps with timestamps after window_end and assumes forgery",
     "correct_handling": "split at the boundary: emit one receipt for window N (steps 0-2) and one for window N+1 (steps 3-4), each against its own commitment digest",
-    "overlap_exposed": "both receipts carry the same turn_id and boundary timestamp, so a verifier can reconstruct the straddle explicitly instead of forcing a single attribution"
+    "overlap_exposed": "both receipts carry the same turn_id and boundary timestamp, so a verifier can reconstruct the straddle explicitly instead of forcing a single attribution",
+    "effective_attribution": "effective = N for both receipts — the window the turn started in; the overlap window N+1 is exposed but never claims attribution"
   },
   "receipts": [
     {
       "window": "N",
+      "window_start": "2026-08-02T00:00:00Z",
       "window_end": "2026-08-09T00:00:00Z",
       "turn_id": "turn-0x7f3a",
       "commitment_fact_id": "0xd3408386f8715ea11dc362e4018317edd0d3b64d24ac34e1b853e841ad4d0817",
       "step_indices": [0, 1, 2],
       "last_step_at": "2026-08-08T23:58:00Z",
-      "receipt_type": "window_attribution"
+      "receipt_type": "window_attribution",
+      "outcome": "completed",
+      "effective": "N",
+      "is_straddling": true,
+      "straddle": {
+        "second_window_start": "2026-08-09T00:00:00Z",
+        "second_window_end": "2026-08-16T00:00:00Z",
+        "overlap_exposure": true
+      }
     },
     {
       "window": "N+1",
+      "window_start": "2026-08-09T00:00:00Z",
       "window_end": "2026-08-16T00:00:00Z",
       "turn_id": "turn-0x7f3a",
       "commitment_fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
       "step_indices": [3, 4],
       "first_step_at": "2026-08-09T00:05:00Z",
-      "receipt_type": "window_attribution"
+      "receipt_type": "window_attribution",
+      "outcome": "partial",
+      "effective": "N",
+      "is_straddling": true,
+      "straddle": {
+        "second_window_start": "2026-08-02T00:00:00Z",
+        "second_window_end": "2026-08-09T00:00:00Z",
+        "overlap_exposure": true
+      }
     }
   ],
   "synthetic": true
