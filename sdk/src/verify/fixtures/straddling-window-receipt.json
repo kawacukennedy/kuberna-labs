@@ -23,6 +23,12 @@
     "preimage_schema": "kuberna-failure-histogram-v1",
     "derivation": "hash(histogram, window_end) — window_end is inside the canonicalized preimage, per autogen#7888"
   },
+  "cross_implementation": {
+    "marker": "kuberna-x-heartflow-straddle-v1",
+    "validated_by": ["kuberna", "heartflow-window-attribution-receipt-v0.1.0"],
+    "note": "Same JSON is validated by Kuberna's verifier and HeartFlow's verifyReceipt() (mark-heartflow-skill, window-attribution-receipt v0.1.0) so both implementations stay honest against each other. effective = start window is a hard invariant on both sides.",
+    "heartflow_commit": "21e45b76"
+  },
   "handling": {
     "naive_verifier": "rejects the whole turn — sees steps with timestamps after window_end and assumes forgery",
     "correct_handling": "split at the boundary: emit one receipt for window N (steps 0-2) and one for window N+1 (steps 3-4), each against its own commitment digest",

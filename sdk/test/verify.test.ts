@@ -147,6 +147,21 @@ describe('jcsCanonicalize', () => {
     expect(fixture.handling.effective_attribution).toContain('window the turn started in');
   });
 
+  it('straddling-window fixture carries the cross-implementation marker (Kuberna × HeartFlow)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const straddle = JSON.parse(
+      readFileSync(resolve(fixturesDir, 'straddling-window-receipt.json'), 'utf8')
+    );
+
+    expect(straddle.cross_implementation).toBeDefined();
+    expect(straddle.cross_implementation.marker).toBe('kuberna-x-heartflow-straddle-v1');
+    expect(straddle.cross_implementation.validated_by).toContain('kuberna');
+    expect(straddle.cross_implementation.validated_by).toContain(
+      'heartflow-window-attribution-receipt-v0.1.0'
+    );
+    expect(straddle.cross_implementation.heartflow_commit).toBe('21e45b76');
+  });
+
   it('straddling-window N receipt commits to the pinned failure-histogram digest', () => {
     const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
     const straddle = JSON.parse(
