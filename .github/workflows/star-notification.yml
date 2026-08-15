@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Send star notification to Discord
         env:
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_STAR_WEBHOOK_URL }}
         run: |
           STARGAZER="${{ github.actor }}"
           REPO="${{ github.repository }}"
