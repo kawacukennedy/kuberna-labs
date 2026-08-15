@@ -126,16 +126,16 @@ async function rose() {
 }
 
 async function compliment() {
-  const members = await api(`/guilds/${GUILD_ID}/members?limit=100`);
-  const humans = members
-    .filter((m) => !(m.user && m.user.bot))
-    .map((m) => m.user && m.user.id)
-    .filter(Boolean);
-  if (humans.length === 0) {
-    console.log('no human members found; skipping compliment');
+  const messages = await api(`/channels/${CHANNEL_ID}/messages?limit=30`);
+  const humans = messages
+    .filter((m) => !(m.author && m.author.bot))
+    .map((m) => m.author && m.author.id)
+    .filter((id, i, arr) => id && arr.indexOf(id) === i);
+  const target = pick(humans);
+  if (!target) {
+    console.log('no recent human messages found; skipping compliment');
     return;
   }
-  const target = pick(humans);
   await post(`🎁 **COMPLIMENT CANNON** fires at <@${target}>!\n\nHey <@${target}> — ${pick(COMPLIMENTS)}\n\n_Enjoy your random daily dose of recognition._`);
 }
 
