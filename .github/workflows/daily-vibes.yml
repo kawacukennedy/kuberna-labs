@@ -1,0 +1,53 @@
+name: Daily Deploy of Joy
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+    - cron: '30 10 * * *'
+    - cron: '0 16 * * *'
+    - cron: '15 8,13,17 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Which vibe to send'
+        required: true
+        default: 'vibes'
+        type: choice
+        options:
+          - vibes
+          - joke
+          - rose
+          - compliment
+
+concurrency:
+  group: daily-vibes
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              '0 7 * * *')   echo "mode=vibes" >> "$GITHUB_OUTPUT" ;;
+              '30 10 * * *') echo "mode=joke" >> "$GITHUB_OUTPUT" ;;
+              '0 16 * * *')  echo "mode=rose" >> "$GITHUB_OUTPUT" ;;
+              *)             echo "mode=compliment" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
+
+      - name: Send ${{ steps.mode.outputs.mode }}
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: '1458685093945147582'
+          GUILD_ID: '1458685092728668200'
+        run: |
+          node scripts/daily-vibes.mjs "${{ steps.mode.outputs.mode }}"
