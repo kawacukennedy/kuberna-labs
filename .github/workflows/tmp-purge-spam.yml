@@ -1,0 +1,33 @@
+name: TEMP Purge Star Feed Spam
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Purge spam messages in #star-feed
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: '1519005329462132992'
+        run: |
+          BODY=$(curl -s \
+            -H "Authorization: Bot ${BOT_TOKEN}" \
+            "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages?limit=50")
+          echo "messages returned: $(printf '%s' "$BODY" | jq 'if type=="array" then length else "ERROR: \(.)" end' 2>/dev/null || echo 'parse-fail')"
+          ids=$(printf '%s' "$BODY" | jq -r 'if type=="array" then (.[] | select((.content // "") | test("insanityz|femboy kaskar|eating-cats"; "i")) | .id) else empty end' 2>/dev/null)
+          if [ -z "$ids" ]; then
+            echo "no spam messages matched in last 50"
+          else
+            while IFS= read -r mid; do
+              [ -z "$mid" ] && continue
+              code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+                -H "Authorization: Bot ${BOT_TOKEN}" \
+                "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages/${mid}")
+              echo "deleted ${mid} -> ${code}"
+            done <<< "$ids"
+          fi
