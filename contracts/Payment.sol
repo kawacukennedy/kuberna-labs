@@ -14,6 +14,10 @@ struct TokenConfig {
     address oracle;
 }
 
+/**
+ * @title KubernaPayment
+ * @dev Handles user payments, balance tracking, and withdrawals for multiple tokens.
+ */
 contract KubernaPayment is Ownable, ReentrancyGuard {
     uint256 public immutable MIN_WITHDRAWAL = 10 ether;
 
@@ -40,6 +44,12 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         });
     }
 
+    /**
+     * @dev Adds a new supported payment token.
+     * @param token The token address (address(0) for ETH).
+     * @param minAmount The minimum payment amount.
+     * @param maxAmount The maximum payment amount.
+     */
     function addToken(address token, uint256 minAmount, uint256 maxAmount) external onlyOwner {
         require(!tokenConfigs[token].enabled, "Token already enabled");
 
@@ -54,12 +64,21 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         emit TokenAdded(token, minAmount, maxAmount);
     }
 
+    /**
+     * @dev Removes a token from supported payments.
+     * @param token The token address to remove.
+     */
     function removeToken(address token) external onlyOwner {
         require(tokenConfigs[token].enabled, "Token not enabled");
         tokenConfigs[token].enabled = false;
         emit TokenRemoved(token);
     }
 
+    /**
+     * @dev Processes a single payment and credits user balance.
+     * @param token The payment token address (address(0) for ETH).
+     * @param amount The payment amount.
+     */
     function processPayment(address token, uint256 amount) external payable nonReentrant {
         TokenConfig memory c = tokenConfigs[token];
         require(c.enabled, "Token not supported");
@@ -78,6 +97,11 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         emit PaymentReceived(msg.sender, token, amount);
     }
 
+    /**
+     * @dev Processes multiple payments in a single transaction.
+     * @param tokens Array of token addresses.
+     * @param amounts Array of payment amounts.
+     */
     function batchProcessPayment(address[] calldata tokens, uint256[] calldata amounts) external payable nonReentrant {
         require(tokens.length == amounts.length, "Array length mismatch");
 
@@ -104,6 +128,11 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         require(msg.value == totalNativeAmount, "Incorrect total ETH amount");
     }
 
+    /**
+     * @dev Withdraws user balance to their wallet.
+     * @param token The token address to withdraw (address(0) for ETH).
+     * @param amount The withdrawal amount.
+     */
     function withdraw(address token, uint256 amount) external nonReentrant {
         require(amount >= MIN_WITHDRAWAL, "Below minimum withdrawal");
         require(userBalances[msg.sender][token] >= amount, "Insufficient balance");
@@ -115,6 +144,11 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         emit Withdrawal(msg.sender, token, amount);
     }
 
+    /**
+     * @dev Withdraws accumulated platform fees.
+     * @param token The token address to withdraw.
+     * @param amount The withdrawal amount.
+     */
     function withdrawFees(address token, uint256 amount) external onlyOwner nonReentrant {
         require(amount <= platformBalances[token], "Insufficient platform balance");
 
@@ -135,9 +169,20 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         }
     }
 
+    /**
+     * @dev Gets a user's balance for a specific token.
+     * @param user The user address.
+     * @param token The token address.
+     * @return The user's balance.
+     */
     function getBalance(address user, address token) external view returns (uint256) {
         return userBalances[user][token];
     }
+
+    /**
+     * @dev Gets the list of all supported tokens.
+     * @return Array of supported token addresses.
+     */
     function getSupportedTokens() external view returns (address[] memory) {
         return supportedTokens;
     }

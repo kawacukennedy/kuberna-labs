@@ -17,6 +17,10 @@ struct Recipient {
     bool active;
 }
 
+/**
+ * @title KubernaFeeManager
+ * @dev Manages platform fees, fee tiers, and fee distribution to recipients.
+ */
 contract KubernaFeeManager is Ownable {
     uint256 public platformFee = 250;
     FeeTier[] public tiers;
@@ -37,12 +41,21 @@ contract KubernaFeeManager is Ownable {
     event TierAdded(uint256 threshold, uint256 percentage);
     event TierRemoved(uint256 index);
 
+    /**
+     * @dev Sets the platform fee rate.
+     * @param fee The new platform fee in BPS (max 1000 = 10%).
+     */
     function setPlatformFee(uint256 fee) external onlyOwner {
         require(fee <= 1000);
         platformFee = fee;
         emit FeeUpdated(fee);
     }
 
+    /**
+     * @dev Adds a new fee recipient with a share allocation.
+     * @param account The recipient address.
+     * @param share The recipient's share in BPS (total active shares must not exceed 10000).
+     */
     function addRecipient(address account, uint256 share) external onlyOwner {
         require(!isRecipient[account]);
         require(_totalActiveShares() + share <= 10000, "Total shares exceed 10000 BPS");
@@ -54,6 +67,10 @@ contract KubernaFeeManager is Ownable {
         emit RecipientAdded(account, share);
     }
 
+    /**
+     * @dev Removes a recipient by setting their active status to false.
+     * @param account The recipient address to remove.
+     */
     function removeRecipient(address account) external onlyOwner {
         require(isRecipient[account]);
 
@@ -68,6 +85,11 @@ contract KubernaFeeManager is Ownable {
         emit RecipientRemoved(account);
     }
 
+    /**
+     * @dev Distributes fees to all active recipients.
+     * @param token The token address (address(0) for ETH).
+     * @param amount The total amount to distribute.
+     */
     function distributeFees(address token, uint256 amount) external {
         require(amount > 0);
 
@@ -92,6 +114,11 @@ contract KubernaFeeManager is Ownable {
         }
     }
 
+    /**
+     * @dev Gets the applicable fee tier for a given volume.
+     * @param volume The transaction volume to check.
+     * @return The fee percentage in BPS for the applicable tier.
+     */
     function getTierFee(uint256 volume) public view returns (uint256) {
         for (uint256 i = tiers.length; i > 0; i--) {
             if (volume >= tiers[i - 1].threshold) {
@@ -101,12 +128,18 @@ contract KubernaFeeManager is Ownable {
         return platformFee;
     }
 
+    /**
+     * @dev Returns all registered recipients.
+     * @return Array of all Recipient structs.
+     */
     function getRecipients() external view returns (Recipient[] memory) {
         return recipients;
     }
 
     /**
      * @dev Add a new fee tier.
+     * @param threshold The volume threshold for this tier.
+     * @param percentage The fee percentage in BPS (max 1000).
      */
     function addTier(uint256 threshold, uint256 percentage) external onlyOwner {
         require(percentage <= 1000, "Fee too high");
@@ -116,6 +149,7 @@ contract KubernaFeeManager is Ownable {
 
     /**
      * @dev Remove a fee tier by index.
+     * @param index The index of the tier to remove.
      */
     function removeTier(uint256 index) external onlyOwner {
         require(index < tiers.length, "Invalid index");
