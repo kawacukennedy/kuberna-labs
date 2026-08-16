@@ -1,0 +1,69 @@
+name: TEMP Rotate Star Webhook
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create new #star-feed webhook
+        id: create
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: '1519005329462132992'
+        run: |
+          RESP=$(curl -s -X POST \
+            -H "Authorization: Bot ${BOT_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"GitHub Stars"}' \
+            "https://discord.com/api/v10/channels/${CHANNEL_ID}/webhooks")
+          URL=$(printf '%s' "$RESP" | jq -r '.url // empty')
+          ID=$(printf '%s' "$RESP" | jq -r '.id // empty')
+          if [ -z "$URL" ]; then
+            echo "::error::webhook creation failed"
+            printf '%s' "$RESP" | jq . >&2
+            exit 1
+          fi
+          echo "WEBHOOK_URL=${URL}" >> "$GITHUB_ENV"
+          echo "WEBHOOK_ID=${ID}" >> "$GITHUB_ENV"
+          echo "created webhook id ${ID}"
+      - name: Encrypt new URL into log (never printed in cleartext)
+        env:
+          KEY: ${{ secrets.ROTATE_TMP_KEY }}
+          URL: ${{ env.WEBHOOK_URL }}
+        run: |
+          printf '%s' "$URL" | openssl enc -aes-256-cbc -pbkdf2 -a -A -salt -pass env:KEY
+          echo ""
+      - name: Post test embed via new webhook
+        env:
+          URL: ${{ env.WEBHOOK_URL }}
+        run: |
+          curl -s -X POST -H "Content-Type: application/json" \
+            -d '{"content":"⭐ Star feed reconnected (webhook rotated 2026-08-16)"}' \
+            "$URL"
+      - name: Purge spam messages in #star-feed
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: '1519005329462132992'
+        run: |
+          GONE=0
+          for page in 1 2 3; do
+            MSGS=$(curl -s \
+              -H "Authorization: Bot ${BOT_TOKEN}" \
+              "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages?limit=100")
+            ids=$(printf '%s' "$MSGS" | jq -r '.[] | select(.content | test("insanityz|femboy kaskar|eating-cats"; "i")) | .id')
+            if [ -z "$ids" ]; then break; fi
+            while IFS= read -r mid; do
+              [ -z "$mid" ] && continue
+              code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+                -H "Authorization: Bot ${BOT_TOKEN}" \
+                "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages/${mid}")
+              echo "deleted message ${mid} -> ${code}"
+              GONE=$((GONE+1))
+            done <<< "$ids"
+          done
+          echo "purged ${GONE} spam messages"
