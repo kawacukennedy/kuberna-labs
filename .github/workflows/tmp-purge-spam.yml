@@ -1,4 +1,4 @@
-name: TEMP Purge Star Feed Spam
+name: TEMP Purge Star Feed Spam v2
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ jobs:
   purge:
     runs-on: ubuntu-latest
     steps:
-      - name: Purge spam messages in #star-feed
+      - name: Purge Femboy Kaskar spam messages
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHANNEL_ID: '1519005329462132992'
@@ -18,16 +18,22 @@ jobs:
           BODY=$(curl -s \
             -H "Authorization: Bot ${BOT_TOKEN}" \
             "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages?limit=50")
-          echo "messages returned: $(printf '%s' "$BODY" | jq 'if type=="array" then length else "ERROR: \(.)" end' 2>/dev/null || echo 'parse-fail')"
-          ids=$(printf '%s' "$BODY" | jq -r 'if type=="array" then (.[] | select((.content // "") | test("insanityz|femboy kaskar|eating-cats"; "i")) | .id) else empty end' 2>/dev/null)
+          ids=$(printf '%s' "$BODY" | jq -r '
+            if type=="array" then
+              (.[] | select(
+                (.author.username | test("femboy"; "i"))
+                or (.content // "" | test("insanityz|femboy kaskar|eating-cats"; "i"))
+                or (([.embeds[]?.description // ""] | join(" ")) | test("insanityz|femboy kaskar|eating-cats"; "i"))
+              ) | .id)
+            else empty end' 2>/dev/null)
           if [ -z "$ids" ]; then
-            echo "no spam messages matched in last 50"
-          else
-            while IFS= read -r mid; do
-              [ -z "$mid" ] && continue
-              code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
-                -H "Authorization: Bot ${BOT_TOKEN}" \
-                "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages/${mid}")
-              echo "deleted ${mid} -> ${code}"
-            done <<< "$ids"
+            echo "no femboy/spam messages found"
+            exit 0
           fi
+          while IFS= read -r mid; do
+            [ -z "$mid" ] && continue
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+              -H "Authorization: Bot ${BOT_TOKEN}" \
+              "https://discord.com/api/v10/channels/${CHANNEL_ID}/messages/${mid}")
+            echo "deleted ${mid} -> ${code}"
+          done <<< "$ids"
