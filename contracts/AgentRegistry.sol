@@ -30,6 +30,7 @@ struct Agent {
     uint256 lastActive;
 }
 
+/// @notice Contract for registering and managing AI agent NFTs with on-chain identity
 /**
  * @title KubernaAgentRegistry
  * @dev Registry for AI agent NFTs with on-chain identity, metadata, and tool management.
