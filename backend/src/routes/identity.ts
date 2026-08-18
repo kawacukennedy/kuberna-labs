@@ -83,7 +83,7 @@ router.get('/:agentId/certificates', optionalAuth, async (req: AuthRequest, res:
 router.post('/:agentId/issue-certificates', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { agentId } = req.params;
-    const { escrowId, chain, txHash } = req.body;
+    const { escrowId, chain, txHash, crossChainBindings } = req.body;
 
     if (!escrowId || !chain || !txHash) {
       throw createError('escrowId, chain, and txHash are required', 400, 'VALIDATION_ERROR');
@@ -110,7 +110,8 @@ router.post('/:agentId/issue-certificates', authenticate, async (req: AuthReques
       {
         agent_name: agent.name,
         agent_framework: agent.framework,
-      }
+      },
+      crossChainBindings
     );
 
     res.json(result);
@@ -143,6 +144,106 @@ router.get('/:agentId/passport', optionalAuth, async (req: AuthRequest, res: Res
       throw createError('No passport found for this agent', 404, 'PASSPORT_NOT_FOUND');
     }
     res.json({ uri: cert.passportUri });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/:agentId/endorse-cross-chain', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { agentId } = req.params;
+    const { boundKeys } = req.body;
+
+    if (!boundKeys?.length) {
+      throw createError('boundKeys array is required', 400, 'VALIDATION_ERROR');
+    }
+
+    const agent = await prisma.agent.findUnique({
+      where: { id: agentId },
+      include: { owner: { select: { web3Address: true } } },
+    });
+    if (!agent) {
+      throw createError('Agent not found', 404, 'AGENT_NOT_FOUND');
+    }
+    if (agent.ownerId !== req.user!.id) {
+      throw createError('Not authorized', 403, 'FORBIDDEN');
+    }
+
+    const agentDid = `did:erc8004:${agent.owner.web3Address || agentId}`;
+    const latestCert = await prisma.agentCertificate.findFirst({
+      where: { agentId, certType: 'endorsement' },
+      orderBy: { issuedAt: 'desc' },
+    });
+
+    const endorsement = await agentService.issueCrossChainEndorsement(
+      agentDid,
+      boundKeys,
+      {
+        previousCertDigest: latestCert?.digest ?? undefined,
+        metadata: { agent_id: agentId },
+      }
+    );
+
+    await prisma.agentCertificate.create({
+      data: {
+        agentId,
+        agentDid,
+        certType: 'endorsement',
+        certJson: endorsement.cert as object,
+        pubkeyFp: endorsement.pubkeyFp,
+        digest: (endorsement.cert as Record<string, unknown>)?.messageSha256Hex as string | null ?? null,
+        previousDigest: latestCert?.digest ?? null,
+      },
+    });
+
+    res.status(201).json(endorsement);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/:agentId/push-metadata-uri', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { agentId } = req.params;
+    const { rpcUrl } = req.body;
+
+    const agent = await prisma.agent.findUnique({
+      where: { id: agentId },
+    });
+    if (!agent) {
+      throw createError('Agent not found', 404, 'AGENT_NOT_FOUND');
+    }
+    if (agent.ownerId !== req.user!.id) {
+      throw createError('Not authorized', 403, 'FORBIDDEN');
+    }
+
+    const identity = await prisma.crossChainIdentity.findUnique({
+      where: { agentId },
+    });
+    if (!identity?.erc8004TokenId) {
+      throw createError('No on-chain identity found — register first', 404, 'NO_CHAIN_IDENTITY');
+    }
+
+    const latestPassport = await prisma.agentCertificate.findFirst({
+      where: { agentId, passportUri: { not: null } },
+      orderBy: { issuedAt: 'desc' },
+    });
+    if (!latestPassport?.passportUri) {
+      throw createError('No passport URI found — issue certificates first', 404, 'NO_PASSPORT');
+    }
+
+    const result = await agentService.pushMetadataUriToChain(
+      identity.erc8004TokenId,
+      latestPassport.passportUri,
+      rpcUrl
+    );
+
+    await prisma.crossChainIdentity.update({
+      where: { agentId },
+      data: { metadataUri: latestPassport.passportUri, lastSyncedAt: new Date() },
+    });
+
+    res.json(result);
   } catch (error) {
     next(error);
   }

@@ -4,6 +4,18 @@ import { ethers } from 'ethers';
 
 const SILENTVERIFY_BASE_URL = process.env.SILENTVERIFY_BASE_URL || 'https://silentverify.up.railway.app';
 const SILENTVERIFY_API_KEY = process.env.SILENTVERIFY_API_KEY || 'sv_dev_test_key';
+const REPUTATION_NFT_OWNER_KEY = process.env.REPUTATION_NFT_OWNER_KEY || '';
+
+const REPUTATION_NFT_ABI = [
+  'function setAgentMetadataURI(uint256 tokenId, string metadataURI)',
+  'function agentAddressToTokenId(address) view returns (uint256)',
+  'function agentIdentities(uint256) view returns (address agentAddress, string name, string framework, uint256 registeredAt, uint256 lastActiveAt, uint256 totalEarnings, string metadataURI)',
+];
+
+const REPUTATION_NFT_ADDRESSES: Record<number, string> = {
+  84532: '0x10aC2c7cAA2d7C5fC8a561F8654d289eeb2E29F4',  // Base Sepolia
+  5003: '0x5e42c329Ef517B495261f57054d5844EAabD3dbf',   // Mantle Sepolia
+};
 
 interface CertIssueResponse {
   status: string;
@@ -18,6 +30,19 @@ interface ChainBindingResponse extends CertIssueResponse {
 interface ComposePassportResponse {
   passport: Record<string, unknown>;
   uri: string;
+}
+
+interface CrossChainBinding {
+  chain: string;
+  chain_id: string;
+  address: string;
+  fingerprint?: string;
+}
+
+interface CrossChainEndorsementResponse {
+  status: string;
+  cert: Record<string, unknown>;
+  pubkeyFp: string;
 }
 
 class AgentService {
@@ -82,21 +107,62 @@ class AgentService {
     return resp.json() as Promise<ChainBindingResponse>;
   }
 
-  async composePassport(
-    agentWire: Record<string, unknown>,
-    stateWire: Record<string, unknown>,
-    options?: { name?: string; description?: string; image?: string }
-  ): Promise<ComposePassportResponse> {
-    const resp = await fetch(`${SILENTVERIFY_BASE_URL}/api/v1/certs/compose/passport`, {
+  async issueCrossChainEndorsement(
+    subjectDid: string,
+    boundKeys: CrossChainBinding[],
+    options?: { previousCertDigest?: string; expiresInDays?: number; metadata?: Record<string, unknown> }
+  ): Promise<CrossChainEndorsementResponse> {
+    const resp = await fetch(`${SILENTVERIFY_BASE_URL}/api/v1/certs/endorsement/issue`, {
       method: 'POST',
       headers: this.svHeaders(),
       body: JSON.stringify({
-        agent_wire: agentWire,
-        state_wire: stateWire,
-        name: options?.name ?? null,
-        description: options?.description ?? null,
-        image: options?.image ?? null,
+        subject: { did: subjectDid },
+        bound_keys: boundKeys.map(k => ({
+          chain: k.chain,
+          chain_id: k.chain_id,
+          address: k.address,
+          fingerprint: k.fingerprint ?? null,
+        })),
+        previous_cert_digest: options?.previousCertDigest ?? null,
+        expires_in_days: options?.expiresInDays ?? 90,
+        metadata: options?.metadata ?? {},
       }),
+    });
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`SilentVerify issueCrossChainEndorsement failed: ${err}`);
+    }
+    return resp.json() as Promise<CrossChainEndorsementResponse>;
+  }
+
+  async composePassport(
+    agentWire: Record<string, unknown>,
+    stateWire: Record<string, unknown>,
+    options?: {
+      name?: string;
+      description?: string;
+      image?: string;
+      crossChainBindings?: CrossChainBinding[];
+      endorsementCert?: Record<string, unknown>;
+    }
+  ): Promise<ComposePassportResponse> {
+    const body: Record<string, unknown> = {
+      agent_cert: agentWire,
+      state_cert: stateWire,
+      name: options?.name ?? null,
+      description: options?.description ?? null,
+      image: options?.image ?? null,
+    };
+    if (options?.crossChainBindings?.length) {
+      body.cross_chain_bindings = options.crossChainBindings;
+    }
+    if (options?.endorsementCert) {
+      body.endorsement_cert = options.endorsementCert;
+    }
+    const resp = await fetch(`${SILENTVERIFY_BASE_URL}/api/v1/certs/compose/passport`, {
+      method: 'POST',
+      headers: this.svHeaders(),
+      body: JSON.stringify(body),
     });
     if (!resp.ok) {
       const err = await resp.text();
@@ -124,10 +190,12 @@ class AgentService {
     escrowId: string,
     chain: string,
     txHash: string,
-    taskContext?: Record<string, unknown>
+    taskContext?: Record<string, unknown>,
+    crossChainBindings?: CrossChainBinding[]
   ): Promise<{
     agentCert: CertIssueResponse;
     evmAnchor: ChainBindingResponse;
+    endorsementCert?: CrossChainEndorsementResponse;
     passportUri?: string;
   }> {
     const latestCert = await prisma.agentCertificate.findFirst({
@@ -189,11 +257,40 @@ class AgentService {
     });
 
     let passportUri: string | undefined;
+    let endorsementCert: CrossChainEndorsementResponse | undefined;
     try {
+      if (crossChainBindings?.length) {
+        endorsementCert = await this.issueCrossChainEndorsement(agentDid, crossChainBindings, {
+          previousCertDigest: latestCert?.digest ?? undefined,
+          metadata: {
+            agent_id: agentId,
+            escrow_id: escrowId,
+            chain,
+            tx_hash: txHash,
+          },
+        });
+
+        await prisma.agentCertificate.create({
+          data: {
+            agentId,
+            agentDid,
+            certType: 'endorsement',
+            certJson: endorsementCert.cert as object,
+            pubkeyFp: endorsementCert.pubkeyFp,
+            chain,
+            txHash,
+          },
+        });
+      }
+
       const passport = await this.composePassport(
         agentCert.cert,
         evmAnchor.cert,
-        { name: `Agent ${agentDid} Passport` }
+        {
+          name: `Agent ${agentDid} Passport`,
+          crossChainBindings,
+          endorsementCert: endorsementCert?.cert,
+        }
       );
 
       await prisma.agentCertificate.update({
@@ -206,7 +303,7 @@ class AgentService {
       logger.warn('Passport composition skipped', { agentId, error: String(composeErr) });
     }
 
-    return { agentCert, evmAnchor, passportUri };
+    return { agentCert, evmAnchor, endorsementCert, passportUri };
   }
 
   async getAgentCertificates(agentId: string) {
@@ -264,6 +361,39 @@ class AgentService {
       where: { solanaAddress },
       include: { agent: true },
     });
+  }
+
+  async pushMetadataUriToChain(
+    tokenId: bigint,
+    metadataUri: string,
+    rpcUrl?: string
+  ): Promise<{ txHash: string; chainId: number; tokenId: string }> {
+    if (!REPUTATION_NFT_OWNER_KEY) {
+      throw new Error('REPUTATION_NFT_OWNER_KEY env var not set');
+    }
+
+    const chainId = rpcUrl?.includes('mantle') ? 5003 : 84532;
+    const contractAddress = REPUTATION_NFT_ADDRESSES[chainId];
+    if (!contractAddress) {
+      throw new Error(`No ReputationNFT deployed on chain ${chainId}`);
+    }
+
+    const url = rpcUrl || (chainId === 5003
+      ? 'https://rpc.sepolia.mantle.xyz'
+      : 'https://sepolia.base.org');
+
+    const provider = new ethers.JsonRpcProvider(url);
+    const wallet = new ethers.Wallet(REPUTATION_NFT_OWNER_KEY, provider);
+    const contract = new ethers.Contract(contractAddress, REPUTATION_NFT_ABI, wallet);
+
+    const tx = await contract.setAgentMetadataURI(tokenId, metadataUri);
+    const receipt = await tx.wait();
+
+    return {
+      txHash: receipt.hash,
+      chainId,
+      tokenId: tokenId.toString(),
+    };
   }
 }
 

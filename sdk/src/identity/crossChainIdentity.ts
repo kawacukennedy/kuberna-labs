@@ -52,7 +52,27 @@ export interface RegisterIdentityParams {
 export interface CertIssueResult {
   agentCert: Record<string, unknown>;
   evmAnchor: Record<string, unknown>;
+  endorsementCert?: Record<string, unknown>;
   passportUri?: string;
+}
+
+export interface CrossChainBinding {
+  chain: string;
+  chain_id: string;
+  address: string;
+  fingerprint?: string;
+}
+
+export interface EndorsementResult {
+  status: string;
+  cert: Record<string, unknown>;
+  pubkeyFp: string;
+}
+
+export interface PushMetadataResult {
+  txHash: string;
+  chainId: number;
+  tokenId: string;
 }
 
 export class CrossChainIdentityManager {
@@ -101,10 +121,24 @@ export class CrossChainIdentityManager {
     return this.request<AgentCertificateRecord[]>(`/identity/${agentId}/certificates`);
   }
 
-  async issueCertificates(agentId: string, escrowId: string, chain: string, txHash: string): Promise<CertIssueResult> {
+  async issueCertificates(agentId: string, escrowId: string, chain: string, txHash: string, crossChainBindings?: CrossChainBinding[]): Promise<CertIssueResult> {
     return this.request<CertIssueResult>(`/identity/${agentId}/issue-certificates`, {
       method: 'POST',
-      body: { escrowId, chain, txHash },
+      body: { escrowId, chain, txHash, crossChainBindings },
+    });
+  }
+
+  async endorseCrossChain(agentId: string, boundKeys: CrossChainBinding[]): Promise<EndorsementResult> {
+    return this.request<EndorsementResult>(`/identity/${agentId}/endorse-cross-chain`, {
+      method: 'POST',
+      body: { boundKeys },
+    });
+  }
+
+  async pushMetadataUri(agentId: string, rpcUrl?: string): Promise<PushMetadataResult> {
+    return this.request<PushMetadataResult>(`/identity/${agentId}/push-metadata-uri`, {
+      method: 'POST',
+      body: { rpcUrl },
     });
   }
 

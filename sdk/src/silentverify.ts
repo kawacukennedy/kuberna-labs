@@ -93,6 +93,27 @@ export interface ChainVerifyResult {
   result: ChainVerifyBinding;
 }
 
+export interface CrossChainBinding {
+  chain: string;
+  chain_id: string;
+  address: string;
+  fingerprint?: string;
+}
+
+export interface CrossChainEndorsementRequest {
+  subjectDid: string;
+  boundKeys: CrossChainBinding[];
+  previousCertDigest?: string | null;
+  expiresInDays?: number;
+  metadata?: Record<string, unknown>;
+}
+
+export interface CrossChainEndorsementResponse {
+  status: string;
+  cert: StateCertWire;
+  pubkeyFp: string;
+}
+
 export interface EvmChainRequest {
   rpcUrl?: string;
   block?: number | string;
@@ -267,6 +288,21 @@ export class SilentVerifyManager {
 
   async verifyStateCert(cert: Record<string, unknown>): Promise<CertVerifyResponse> {
     return this.post<CertVerifyResponse>('/api/v1/certs/state/verify', { cert });
+  }
+
+  async issueCrossChainEndorsement(params: CrossChainEndorsementRequest): Promise<CrossChainEndorsementResponse> {
+    return this.post<CrossChainEndorsementResponse>('/api/v1/certs/endorsement/issue', {
+      subject: { did: params.subjectDid },
+      bound_keys: params.boundKeys.map(k => ({
+        chain: k.chain,
+        chain_id: k.chain_id,
+        address: k.address,
+        fingerprint: k.fingerprint ?? null,
+      })),
+      previous_cert_digest: params.previousCertDigest ?? null,
+      expires_in_days: params.expiresInDays ?? 90,
+      metadata: params.metadata ?? {},
+    });
   }
 
   async issueEvmAnchor(params: EvmChainRequest): Promise<ChainBindingResponse> {

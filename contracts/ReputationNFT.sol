@@ -150,10 +150,21 @@ contract ReputationNFT is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Update agent metadata URI.
+     * @dev Update agent metadata URI (owner-only, for backend/pusher wallets).
      */
     function setAgentMetadataURI(uint256 tokenId, string calldata metadataURI) external onlyOwner {
         require(_ownerOf(tokenId) != address(0), "Invalid token");
+        agentIdentities[tokenId].metadataURI = metadataURI;
+        _setTokenURI(tokenId, metadataURI);
+        emit AgentMetadataUpdated(tokenId, metadataURI);
+    }
+
+    /**
+     * @dev Update own agent metadata URI (callable by the token holder).
+     * Used by the backend passport push pipeline.
+     */
+    function updateMyMetadataURI(uint256 tokenId, string calldata metadataURI) external {
+        require(msg.sender == ownerOf(tokenId), "Not token owner");
         agentIdentities[tokenId].metadataURI = metadataURI;
         _setTokenURI(tokenId, metadataURI);
         emit AgentMetadataUpdated(tokenId, metadataURI);
