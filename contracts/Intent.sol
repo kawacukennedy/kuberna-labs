@@ -19,6 +19,7 @@ enum IntentStatus {
     Expired,
     Disputed
 }
+
 enum BidStatus {
     Pending,
     Accepted,
@@ -49,6 +50,10 @@ struct BidData {
     uint256 createdAt;
 }
 
+/**
+ * @title KubernaIntent
+ * @dev Intent marketplace for AI agent tasks with bidding and solver assignment.
+ */
 contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
     uint256 public intentCount;
     uint256 public immutable MIN_DEADLINE = 300;
@@ -71,15 +76,34 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
 
     constructor() Ownable(msg.sender) Pausable() {}
 
+    /**
+     * @dev Pauses all intent operations.
+     */
     // Emergency pause functions
     function pause() external onlyOwner {
         _pause();
     }
 
+    /**
+     * @dev Resumes intent operations after pause.
+     */
     function unpause() external onlyOwner {
         _unpause();
     }
 
+    /**
+     * @dev Creates a new intent for solvers to bid on.
+     * @param intentId The unique intent identifier.
+     * @param description The intent description.
+     * @param structuredData The structured intent data.
+     * @param sourceToken The source token address.
+     * @param sourceAmount The source token amount.
+     * @param destToken The destination token address.
+     * @param minDestAmount The minimum acceptable destination amount.
+     * @param budget The maximum budget for the task.
+     * @param durationSeconds The intent duration in seconds.
+     * @return The intent identifier.
+     */
     function createIntent(
         bytes32 intentId,
         string calldata description,
@@ -120,6 +144,13 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         return intentId;
     }
 
+    /**
+     * @dev Submits a bid on an open intent.
+     * @param intentId The intent identifier.
+     * @param price The bid price.
+     * @param estimatedTime The estimated completion time.
+     * @param routeDetails The execution route details.
+     */
     function submitBid(
         bytes32 intentId,
         uint256 price,
@@ -143,6 +174,11 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit BidSubmitted(intentId, msg.sender, price);
     }
 
+    /**
+     * @dev Accepts a bid and assigns the intent to the selected solver.
+     * @param intentId The intent identifier.
+     * @param solverIndex The index of the bid to accept.
+     */
     function acceptBid(bytes32 intentId, uint256 solverIndex) external {
         IntentData storage i = intents[intentId];
         require(i.requester == msg.sender);
@@ -168,6 +204,11 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit IntentAssigned(intentId, bid.solver);
     }
 
+    /**
+     * @dev Rejects a pending bid.
+     * @param intentId The intent identifier.
+     * @param solverIndex The index of the bid to reject.
+     */
     function rejectBid(bytes32 intentId, uint256 solverIndex) external {
         IntentData storage i = intents[intentId];
         require(i.requester == msg.sender);
@@ -221,6 +262,11 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit IntentCancelled(intentId);
     }
 
+    /**
+     * @dev Links an escrow to an assigned intent.
+     * @param intentId The intent identifier.
+     * @param escrowId The escrow identifier.
+     */
     function setEscrow(bytes32 intentId, bytes32 escrowId) external {
         IntentData storage i = intents[intentId];
         require(i.requester == msg.sender || i.selectedSolver == msg.sender);
@@ -230,6 +276,10 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         i.status = IntentStatus.Executing;
     }
 
+    /**
+     * @dev Marks an intent as completed.
+     * @param intentId The intent identifier.
+     */
     function completeIntent(bytes32 intentId) external {
         IntentData storage i = intents[intentId];
         require(i.selectedSolver == msg.sender || i.requester == msg.sender);
@@ -239,6 +289,10 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit IntentCompleted(intentId);
     }
 
+    /**
+     * @dev Expires an intent past its deadline.
+     * @param intentId The intent identifier.
+     */
     function expireIntent(bytes32 intentId) external {
         IntentData storage i = intents[intentId];
         require(block.timestamp >= i.deadline);
@@ -248,15 +302,39 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         emit IntentExpired(intentId);
     }
 
+    /**
+     * @dev Gets intent details.
+     * @param intentId The intent identifier.
+     * @return The intent data struct.
+     */
     function getIntent(bytes32 intentId) external view returns (IntentData memory) {
         return intents[intentId];
     }
+
+    /**
+     * @dev Gets the number of bids for an intent.
+     * @param intentId The intent identifier.
+     * @return The bid count.
+     */
     function getBidCount(bytes32 intentId) external view returns (uint256) {
         return bids[intentId].length;
     }
+
+    /**
+     * @dev Gets a specific bid for an intent.
+     * @param intentId The intent identifier.
+     * @param index The bid index.
+     * @return The bid data struct.
+     */
     function getBid(bytes32 intentId, uint256 index) external view returns (BidData memory) {
         return bids[intentId][index];
     }
+
+    /**
+     * @dev Gets all intent IDs for a solver.
+     * @param solver The solver address.
+     * @return Array of intent IDs.
+     */
     function getSolverIntents(address solver) external view returns (bytes32[] memory) {
         return solverIntents[solver];
     }

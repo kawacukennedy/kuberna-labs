@@ -42,6 +42,11 @@ struct EscrowData {
     string intentId;
 }
 
+/**
+ * @title KubernaEscrow
+ * @dev Escrow contract for task-based payments with dispute resolution.
+ * Handles funding, assignment, completion, release, dispute, and refund flows.
+ */
 contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
     uint256 public constant FEE_BASIS_POINTS = 250;
     uint256 public constant MIN_DEADLINE = 300; // 5 minutes
@@ -65,15 +70,29 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
 
     constructor() Ownable(msg.sender) Pausable() {}
 
+    /**
+     * @dev Pauses all escrow operations.
+     */
     // Emergency pause functions
     function pause() external onlyOwner {
         _pause();
     }
 
+    /**
+     * @dev Resumes escrow operations after pause.
+     */
     function unpause() external onlyOwner {
         _unpause();
     }
 
+    /**
+     * @dev Creates a new escrow for a task.
+     * @param intentId The intent identifier for the task.
+     * @param token The payment token address (address(0) for ETH).
+     * @param amount The task payment amount.
+     * @param durationSeconds The task deadline duration in seconds (minimum 5 minutes).
+     * @return escrowId The unique identifier for the created escrow.
+     */
     function createEscrow(
         string calldata intentId,
         address token,
@@ -105,6 +124,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         return escrowId;
     }
 
+    /**
+     * @dev Funds an existing escrow with the required amount plus fee.
+     * @param escrowId The escrow identifier.
+     */
     function fundEscrow(bytes32 escrowId) external payable nonReentrant whenNotPaused {
         EscrowData storage e = escrows[escrowId];
         require(e.requester != address(0), "Escrow does not exist");
@@ -123,6 +146,11 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit EscrowFunded(escrowId, msg.sender, totalRequired);
     }
 
+    /**
+     * @dev Assigns an executor to a funded escrow.
+     * @param escrowId The escrow identifier.
+     * @param executor The executor address.
+     */
     function assignExecutor(bytes32 escrowId, address executor) external nonReentrant whenNotPaused {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender);
@@ -134,6 +162,11 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit EscrowAssigned(escrowId, executor);
     }
 
+    /**
+     * @dev Submits task completion proof by the assigned executor.
+     * @param escrowId The escrow identifier.
+     * @param proofHash The completion proof hash.
+     */
     function submitCompletion(
         bytes32 escrowId,
         bytes32 proofHash
@@ -147,6 +180,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit TaskCompleted(escrowId, proofHash);
     }
 
+    /**
+     * @dev Releases funds to the executor after task completion.
+     * @param escrowId The escrow identifier.
+     */
     function releaseFunds(bytes32 escrowId) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender, "Only requester can release");
@@ -162,6 +199,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit FundsReleased(escrowId, e.executor, releaseAmount);
     }
 
+    /**
+     * @dev Auto-releases funds to executor 24 hours after completion.
+     * @param escrowId The escrow identifier.
+     */
     function autoRelease(bytes32 escrowId) external onlyAssignedExecutor(escrowId) nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.status == EscrowStatus.Completed, "Task not completed");
@@ -177,6 +218,11 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit FundsReleased(escrowId, e.executor, releaseAmount);
     }
 
+    /**
+     * @dev Raises a dispute on an assigned or completed escrow.
+     * @param escrowId The escrow identifier.
+     * @param reason The dispute reason.
+     */
     function raiseDispute(bytes32 escrowId, string calldata reason) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(msg.sender == e.requester || msg.sender == e.executor);
@@ -186,6 +232,11 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit DisputeRaised(escrowId, msg.sender, reason);
     }
 
+    /**
+     * @dev Resolves a dispute by the owner.
+     * @param escrowId The escrow identifier.
+     * @param refundToRequester True to refund requester, false to release to executor.
+     */
     function resolveDispute(bytes32 escrowId, bool refundToRequester) external onlyOwner nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.status == EscrowStatus.Disputed);
@@ -204,6 +255,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit DisputeResolved(escrowId, refundToRequester);
     }
 
+    /**
+     * @dev Refunds expired escrow funds to the requester.
+     * @param escrowId The escrow identifier.
+     */
     function expireAndRefund(bytes32 escrowId) external nonReentrant {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender, "Only requester can expire");
@@ -216,9 +271,20 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         emit FundsRefunded(escrowId, e.requester, e.amount + e.fee);
     }
 
+    /**
+     * @dev Gets escrow details.
+     * @param escrowId The escrow identifier.
+     * @return The escrow data struct.
+     */
     function getEscrow(bytes32 escrowId) external view returns (EscrowData memory) {
         return escrows[escrowId];
     }
+
+    /**
+     * @dev Gets the current status of an escrow.
+     * @param escrowId The escrow identifier.
+     * @return The current escrow status.
+     */
     function getEscrowStatus(bytes32 escrowId) external view returns (EscrowStatus) {
         return escrows[escrowId].status;
     }

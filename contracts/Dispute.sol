@@ -48,6 +48,11 @@ struct VoteRecord {
     uint256 timestamp;
 }
 
+/**
+ * @title KubernaDispute
+ * @dev Decentralized dispute resolution with juror staking and voting.
+ * Handles evidence submission, jury voting, appeals, and reward distribution.
+ */
 contract KubernaDispute is Ownable, ReentrancyGuard {
     uint256 public disputeCount;
     uint256 public immutable VOTING_PERIOD = 7 days;
@@ -73,6 +78,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
 
     constructor() Ownable(msg.sender) {}
 
+    /**
+     * @dev Registers a new juror by staking the minimum required amount.
+     * @param juror The juror address to register.
+     */
     function registerJuror(address juror) external payable {
         require(msg.value >= MIN_JUROR_STAKE);
         require(!jurors[juror].active);
@@ -86,6 +95,9 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit JurorRegistered(juror);
     }
 
+    /**
+     * @dev Unstakes and withdraws the juror's deposited amount.
+     */
     function unstakeJuror() external nonReentrant {
         Juror storage j = jurors[msg.sender];
         require(j.active, "Not an active juror");
@@ -99,6 +111,14 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit JurorUnregistered(msg.sender, amount);
     }
 
+    /**
+     * @dev Opens a new dispute for an escrow.
+     * @param escrowId The associated escrow identifier.
+     * @param requester The escrow requester address.
+     * @param executor The escrow executor address.
+     * @param reason The dispute reason.
+     * @return disputeId The unique dispute identifier.
+     */
     function openDispute(
         bytes32 escrowId,
         address requester,
@@ -129,6 +149,12 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         return disputeId;
     }
 
+    /**
+     * @dev Submits evidence for a dispute.
+     * @param disputeId The dispute identifier.
+     * @param evidence The evidence text (max 1000 characters).
+     * @param isRequester True if submitted by requester, false if by executor.
+     */
     function submitEvidence(bytes32 disputeId, string calldata evidence, bool isRequester) external {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
@@ -144,6 +170,11 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         }
     }
 
+    /**
+     * @dev Casts a vote on an active dispute.
+     * @param disputeId The dispute identifier.
+     * @param support The vote option (RequesterWins, ExecutorWins, or Split).
+     */
     function vote(bytes32 disputeId, Vote support) external {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
@@ -168,6 +199,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit VoteCast(disputeId, msg.sender, support);
     }
 
+    /**
+     * @dev Resolves a dispute after the voting period ends.
+     * @param disputeId The dispute identifier.
+     */
     function resolveDispute(bytes32 disputeId) external nonReentrant {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
@@ -184,6 +219,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit DisputeResolved(disputeId, d.result);
     }
 
+    /**
+     * @dev Appeals a resolved dispute to trigger a new voting round.
+     * @param disputeId The dispute identifier.
+     */
     function appealDispute(bytes32 disputeId) external payable {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
@@ -209,6 +248,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         }
     }
 
+    /**
+     * @dev Claims juror reward for a resolved dispute.
+     * @param disputeId The dispute identifier.
+     */
     function claimReward(bytes32 disputeId) external nonReentrant {
         uint256 reward = pendingRewards[disputeId][msg.sender];
         require(reward > 0, "No pending reward");
@@ -217,12 +260,28 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         emit RewardClaimed(msg.sender, reward);
     }
 
+    /**
+     * @dev Gets dispute details.
+     * @param disputeId The dispute identifier.
+     * @return The dispute data struct.
+     */
     function getDispute(bytes32 disputeId) external view returns (DisputeData memory) {
         return disputes[disputeId];
     }
+
+    /**
+     * @dev Gets the total vote count for a dispute.
+     * @param disputeId The dispute identifier.
+     * @return The number of votes cast.
+     */
     function getVoteCount(bytes32 disputeId) external view returns (uint256) {
         return disputeVotes[disputeId].length;
     }
+
+    /**
+     * @dev Gets the list of all registered jurors.
+     * @return Array of juror addresses.
+     */
     function getJurors() external view returns (address[] memory) {
         return jurorList;
     }
