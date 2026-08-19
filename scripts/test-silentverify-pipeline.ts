@@ -28,7 +28,7 @@ async function post<T>(path: string, body: Record<string, unknown>): Promise<T> 
     const err = await resp.text();
     throw new Error(`POST ${path} → ${resp.status} (${elapsed}ms): ${err}`);
   }
-  const data = await resp.json() as T;
+  const data = (await resp.json()) as T;
   console.log(`  ✓ ${path} (${elapsed}ms)`);
   return data;
 }
@@ -45,10 +45,20 @@ async function run(): Promise<TestResult[]> {
     try {
       const resp = await fetch(`${SV_BASE}/api/v1/health`, { signal: AbortSignal.timeout(10000) });
       const ok = resp.ok;
-      results.push({ name: 'health', ok, detail: `${resp.status}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'health',
+        ok,
+        detail: `${resp.status}`,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✓ health → ${resp.status} (${Date.now() - start}ms)`);
     } catch (e: any) {
-      results.push({ name: 'health', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'health',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ health: ${e.message}`);
       return results;
     }
@@ -68,9 +78,19 @@ async function run(): Promise<TestResult[]> {
         expires_in_days: 30,
         metadata: { pipeline_test: true },
       });
-      results.push({ name: 'issue-agent-cert', ok: true, detail: `fp=${agentCert.pubkeyFp}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-agent-cert',
+        ok: true,
+        detail: `fp=${agentCert.pubkeyFp}`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'issue-agent-cert', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-agent-cert',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ issue-agent-cert: ${e.message}`);
       return results;
     }
@@ -88,9 +108,19 @@ async function run(): Promise<TestResult[]> {
         metadata: { agent_did: agentDid, pipeline_test: true },
         timeout: 30,
       });
-      results.push({ name: 'issue-evm-anchor', ok: true, detail: `fp=${evmAnchor.pubkeyFp}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-evm-anchor',
+        ok: true,
+        detail: `fp=${evmAnchor.pubkeyFp}`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'issue-evm-anchor', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-evm-anchor',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ issue-evm-anchor: ${e.message}`);
     }
   }
@@ -103,16 +133,34 @@ async function run(): Promise<TestResult[]> {
       endorsementCert = await post<any>('/api/v1/certs/endorsement/issue', {
         subject: { did: agentDid },
         bound_keys: [
-          { chain: 'solana', chain_id: 'solana:mainnet-genesis', address: 'So11111111111111111111111111111111111111112' },
-          { chain: 'evm', chain_id: 'eip155:84532', address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18' },
+          {
+            chain: 'solana',
+            chain_id: 'solana:mainnet-genesis',
+            address: 'So11111111111111111111111111111111111111112',
+          },
+          {
+            chain: 'evm',
+            chain_id: 'eip155:84532',
+            address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18',
+          },
         ],
         previous_cert_digest: null,
         expires_in_days: 90,
         metadata: { pipeline_test: true },
       });
-      results.push({ name: 'issue-endorsement', ok: true, detail: `fp=${endorsementCert.pubkeyFp}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-endorsement',
+        ok: true,
+        detail: `fp=${endorsementCert.pubkeyFp}`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'issue-endorsement', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'issue-endorsement',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ issue-endorsement: ${e.message}`);
     }
   }
@@ -131,15 +179,33 @@ async function run(): Promise<TestResult[]> {
       };
       if (endorsementCert) {
         body.cross_chain_bindings = [
-          { chain: 'solana', chain_id: 'solana:mainnet-genesis', address: 'So11111111111111111111111111111111111111112' },
-          { chain: 'evm', chain_id: 'eip155:84532', address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18' },
+          {
+            chain: 'solana',
+            chain_id: 'solana:mainnet-genesis',
+            address: 'So11111111111111111111111111111111111111112',
+          },
+          {
+            chain: 'evm',
+            chain_id: 'eip155:84532',
+            address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18',
+          },
         ];
         body.endorsement_cert = endorsementCert.cert;
       }
       passport = await post<any>('/api/v1/certs/compose/passport', body);
-      results.push({ name: 'compose-passport', ok: true, detail: `uri=${passport.uri?.slice(0, 60)}...`, durationMs: Date.now() - start });
+      results.push({
+        name: 'compose-passport',
+        ok: true,
+        detail: `uri=${passport.uri?.slice(0, 60)}...`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'compose-passport', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'compose-passport',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ compose-passport: ${e.message}`);
     }
   }
@@ -149,9 +215,19 @@ async function run(): Promise<TestResult[]> {
     const start = Date.now();
     try {
       const v = await post<any>('/api/v1/certs/verify', { cert: agentCert.cert });
-      results.push({ name: 'verify-agent-cert', ok: v.valid, detail: `valid=${v.valid} fp=${v.pubkeyFp}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'verify-agent-cert',
+        ok: v.valid,
+        detail: `valid=${v.valid} fp=${v.pubkeyFp}`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'verify-agent-cert', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'verify-agent-cert',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ verify-agent-cert: ${e.message}`);
     }
   }
@@ -161,9 +237,19 @@ async function run(): Promise<TestResult[]> {
     const start = Date.now();
     try {
       const v = await post<any>('/api/v1/certs/verify', { cert: endorsementCert.cert });
-      results.push({ name: 'verify-endorsement', ok: v.valid, detail: `valid=${v.valid} fp=${v.pubkeyFp}`, durationMs: Date.now() - start });
+      results.push({
+        name: 'verify-endorsement',
+        ok: v.valid,
+        detail: `valid=${v.valid} fp=${v.pubkeyFp}`,
+        durationMs: Date.now() - start,
+      });
     } catch (e: any) {
-      results.push({ name: 'verify-endorsement', ok: false, detail: e.message, durationMs: Date.now() - start });
+      results.push({
+        name: 'verify-endorsement',
+        ok: false,
+        detail: e.message,
+        durationMs: Date.now() - start,
+      });
       console.log(`  ✗ verify-endorsement: ${e.message}`);
     }
   }
@@ -179,8 +265,8 @@ async function main() {
   const results = await run();
 
   console.log('\n=== Results ===\n');
-  const passed = results.filter(r => r.ok).length;
-  const failed = results.filter(r => !r.ok).length;
+  const passed = results.filter((r) => r.ok).length;
+  const failed = results.filter((r) => !r.ok).length;
 
   for (const r of results) {
     const icon = r.ok ? '✓' : '✗';
