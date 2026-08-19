@@ -69,7 +69,20 @@ router.get(
 
       const user = await prisma.user.findUnique({
         where: { id },
-        include: {
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+          avatarUrl: true,
+          web3Address: true,
+          roles: true,
+          mfaEnabled: true,
+          authMethod: true,
+          emailVerified: true,
+          lastLogin: true,
+          loginCount: true,
+          createdAt: true,
+          updatedAt: true,
           profile: true,
           agents: {
             select: {
