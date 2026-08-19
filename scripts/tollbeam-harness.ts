@@ -278,11 +278,16 @@ async function runBatch(args: {
     },
   };
 
+  let sharedGas: { maxFeePerGas: bigint; maxPriorityFeePerGas: bigint } | null = null;
+  if (mode === 'burst') {
+    sharedGas = await fetchGasPrices(client);
+  }
+
   const run = async (index: number) => {
     const submittedAt = Date.now();
     const rawErrors: string[] = [];
 
-    const gas = await fetchGasPrices(client);
+    const gas = sharedGas ?? await fetchGasPrices(client);
     const nonceKey = mode === 'burst' ? BigInt(index + 1) : 0n;
     const nonce = await getEntryPointNonce(client, SIMPLE_ACCOUNT, nonceKey);
     const userOp: Partial<UserOperation> = {
@@ -452,7 +457,7 @@ async function main() {
   const timeoutArg = args.find((a) => a.startsWith('--timeout='))?.split('=')[1];
 
   const mode = modeArg === 'burst' ? 'burst' : 'steady';
-  const count = Math.min(parseInt(countArg ?? '5', 10) || 5, 50);
+  const count = Math.min(parseInt(countArg ?? '5', 10) || 5, 200);
   const route = (ROUTES as readonly string[]).includes(routeArg ?? '')
     ? (routeArg as Route)
     : ('base-sepolia' as Route);
