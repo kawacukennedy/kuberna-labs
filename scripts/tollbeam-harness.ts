@@ -287,7 +287,7 @@ async function runBatch(args: {
     const submittedAt = Date.now();
     const rawErrors: string[] = [];
 
-    const gas = sharedGas ?? await fetchGasPrices(client);
+    const gas = sharedGas ?? (await fetchGasPrices(client));
     const nonceKey = mode === 'burst' ? BigInt(index + 1) : 0n;
     const nonce = await getEntryPointNonce(client, SIMPLE_ACCOUNT, nonceKey);
     const userOp: Partial<UserOperation> = {
