@@ -46,8 +46,28 @@ lerna-debug.log*
 .nyc_output/
 frontend/coverage/
 
-# internal docs
+# internal ops docs (contain wallet addresses, financial data, personal info)
+AGENTS.md
 docs/kuberna-bd-research.md
+docs/FUNDING-REPORT.md
+docs/GRANT_RESEARCH.md
+docs/ACCELERATOR_RESEARCH.md
+docs/talent_scout_report.md
+docs/x-contributor-research.md
+docs/kuberna-labs-customer-discovery.md
+docs/outreach_drafts.md
+docs/discord-server-audit-report.md
+docs/GROWTH-AUDIT.md
+docs/GROWTH-IMPLEMENTATION-LOG.md
+docs/reddit-post-strategy.md
+docs/plans/growth-and-fundraising-plan.md
+docs/discord-growth-ux-implementation-plan.md
+
+# render env template
+.env.render
+
+# business-sensitive reports & benchmarks
+reports/
 
 # sub-project test directories (negate blanket test/ and *.test.ts rules)
 !backend/test/
