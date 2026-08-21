@@ -106,6 +106,7 @@ async function post(content) {
 }
 
 function pick(arr) {
+  if (!arr.length) return undefined;
   return arr[randomInt(0, arr.length)];
 }
 
