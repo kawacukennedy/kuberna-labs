@@ -86,6 +86,99 @@ describe('jcsCanonicalize', () => {
     expect(negativeIssuer.authority.receipt_type).toBe('chain_derivable');
   });
 
+  it('elizaOS conformance: unknown-scheme claim fails closed (allow-list invariant)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
+    const negativeUnknown = bundle.cases.find(
+      (c: any) => c.id === 'negative-unknown-scheme'
+    );
+
+    // control: the positive vector passes
+    expect(positive.expected).toBe('pass');
+    expect(positive.work.scheme).toBe('aipou-receipt-v1');
+
+    // mutation: only work.scheme changed to unregistered value
+    expect(negativeUnknown).toBeDefined();
+    expect(negativeUnknown.expected).toBe('fail');
+    expect(negativeUnknown.mutation_of).toBe('positive-authority-work-link');
+    expect(negativeUnknown.mutated_field).toBe('work.scheme');
+    expect(negativeUnknown.work.scheme).not.toBe('aipou-receipt-v1');
+    // everything else matches the positive vector
+    expect(negativeUnknown.authority.fact_id).toBe(positive.authority.fact_id);
+    expect(negativeUnknown.work.preActionFactId).toBe(positive.work.preActionFactId);
+    expect(negativeUnknown.work.receipt_type).toBe(positive.work.receipt_type);
+    expect(negativeUnknown.assertion).toContain('one-edit mutation');
+  });
+
+  it('elizaOS conformance: positive claim declares coverage (scope + denominator)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
+
+    expect(positive.work.coverage).toBeDefined();
+    expect(positive.work.coverage.scope).toBe('agent-intent-executions');
+    expect(typeof positive.work.coverage.observed_n).toBe('number');
+    expect(positive.work.coverage.observed_n).toBeGreaterThan(0);
+    expect(positive.work.coverage.as_of).toBeDefined();
+    expect(positive.work.coverage.complete).toBe('enumerated');
+  });
+
+  it('elizaOS conformance: degraded-coverage claim passes with complete:unknown, observed_n:0', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const degraded = bundle.cases.find(
+      (c: any) => c.id === 'positive-degraded-coverage'
+    );
+
+    expect(degraded).toBeDefined();
+    expect(degraded.expected).toBe('pass');
+    expect(degraded.work.coverage.complete).toBe('unknown');
+    expect(degraded.work.coverage.observed_n).toBe(0);
+    // same authority and work structure as positive — only coverage differs
+    const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
+    expect(degraded.authority.fact_id).toBe(positive.authority.fact_id);
+    expect(degraded.work.scheme).toBe(positive.work.scheme);
+    expect(degraded.work.preActionFactId).toBe(positive.work.preActionFactId);
+  });
+
+  it('elizaOS conformance: resealed-chain claim fails closed (paired with passing original)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const original = bundle.cases.find(
+      (c: any) => c.id === 'positive-chain-integrity'
+    );
+    const resealed = bundle.cases.find(
+      (c: any) => c.id === 'negative-resealed-chain'
+    );
+
+    // control: the original chain passes
+    expect(original).toBeDefined();
+    expect(original.expected).toBe('pass');
+    expect(original.authority.chain_integrity).toBe('valid');
+    expect(original.authority.link_signatures).toBe('valid');
+
+    // mutation: only link_signatures changed from valid to invalid
+    expect(resealed).toBeDefined();
+    expect(resealed.expected).toBe('fail');
+    expect(resealed.mutation_of).toBe('positive-chain-integrity');
+    expect(resealed.mutated_field).toBe('authority.link_signatures');
+    expect(resealed.authority.link_signatures).toBe('invalid');
+    expect(resealed.authority.chain_integrity).toBe('valid');
+    // everything else matches the original
+    expect(resealed.authority.fact_id).toBe(original.authority.fact_id);
+    expect(resealed.authority.subject).toEqual(original.authority.subject);
+    expect(resealed.assertion).toContain('one-edit mutation');
+  });
+
   it('failure-histogram commitment digest includes decay window_end (hash(histogram, window_end))', () => {
     const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
     const commitmentPath = resolve(fixturesDir, 'failure-histogram.json');
