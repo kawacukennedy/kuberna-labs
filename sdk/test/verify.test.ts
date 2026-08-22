@@ -86,6 +86,53 @@ describe('jcsCanonicalize', () => {
     expect(negativeIssuer.authority.receipt_type).toBe('chain_derivable');
   });
 
+  it('elizaOS conformance: unknown-scheme claim fails closed (allow-list invariant)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const negativeUnknown = bundle.cases.find(
+      (c: any) => c.id === 'negative-unknown-scheme'
+    );
+
+    expect(negativeUnknown).toBeDefined();
+    expect(negativeUnknown.expected).toBe('fail');
+    expect(negativeUnknown.work.scheme).not.toBe('aipou-receipt-v1');
+    expect(negativeUnknown.work.preActionFactId).toBe(negativeUnknown.authority.fact_id);
+    expect(negativeUnknown.assertion).toContain('allow-list invariant');
+  });
+
+  it('elizaOS conformance: positive claim declares coverage (scope + denominator)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
+
+    expect(positive.work.coverage).toBeDefined();
+    expect(positive.work.coverage.scope).toBe('agent-intent-executions');
+    expect(typeof positive.work.coverage.observed_n).toBe('number');
+    expect(positive.work.coverage.observed_n).toBeGreaterThan(0);
+    expect(positive.work.coverage.as_of).toBeDefined();
+    expect(['enumerated', 'sampled', 'unknown']).toContain(positive.work.coverage.complete);
+  });
+
+  it('elizaOS conformance: resealed-chain claim fails closed (per-link signature required)', () => {
+    const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
+    const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
+    const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+
+    const negativeResealed = bundle.cases.find(
+      (c: any) => c.id === 'negative-resealed-chain'
+    );
+
+    expect(negativeResealed).toBeDefined();
+    expect(negativeResealed.expected).toBe('fail');
+    expect(negativeResealed.authority.chain_integrity).toBe('valid');
+    expect(negativeResealed.authority.link_signatures).toBe('invalid');
+    expect(negativeResealed.assertion).toContain('resealed chain rejected');
+  });
+
   it('failure-histogram commitment digest includes decay window_end (hash(histogram, window_end))', () => {
     const fixturesDir = resolve(process.cwd(), 'src/verify/fixtures');
     const commitmentPath = resolve(fixturesDir, 'failure-histogram.json');
