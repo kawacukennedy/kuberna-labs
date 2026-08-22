@@ -38,6 +38,26 @@ describe('KubernaDispute', function () {
     });
   });
 
+  describe('jurorCount and disputeCount', function () {
+    it('should increment jurorCount, not disputeCount, on registerJuror', async function () {
+      await dispute
+        .connect(juror1)
+        .registerJuror(juror1.address, { value: ethers.parseEther('100') });
+
+      expect(await dispute.jurorCount()).to.equal(1);
+      expect(await dispute.disputeCount()).to.equal(0);
+    });
+
+    it('should increment disputeCount on openDispute', async function () {
+      const escrowId = ethers.keccak256(ethers.toUtf8Bytes('escrow-count'));
+      await dispute
+        .connect(owner)
+        .openDispute(escrowId, requester.address, executor.address, 'reason');
+
+      expect(await dispute.disputeCount()).to.equal(1);
+    });
+  });
+
   describe('registerJuror', function () {
     it('should register a juror successfully', async function () {
       const stakeAmount = ethers.parseEther('100');
@@ -198,6 +218,22 @@ describe('KubernaDispute', function () {
       const voteCount = await dispute.getVoteCount(disputeId);
       expect(voteCount).to.equal(2);
     });
+
+    it('should reject vote from requester on their own dispute', async function () {
+      await dispute
+        .connect(requester)
+        .registerJuror(requester.address, { value: ethers.parseEther('100') });
+
+      await expect(dispute.connect(requester).vote(disputeId, 1)).to.be.reverted;
+    });
+
+    it('should reject vote from executor on their own dispute', async function () {
+      await dispute
+        .connect(executor)
+        .registerJuror(executor.address, { value: ethers.parseEther('100') });
+
+      await expect(dispute.connect(executor).vote(disputeId, 1)).to.be.reverted;
+    });
   });
 
   describe('resolveDispute', function () {
@@ -221,7 +257,7 @@ describe('KubernaDispute', function () {
       await dispute.connect(juror1).vote(disputeId, 1);
       await time.increase(7 * 24 * 60 * 60 + 1);
 
-      await expect(dispute.connect(other).resolveDispute(disputeId)).to.emit(
+      await expect(dispute.connect(owner).resolveDispute(disputeId)).to.emit(
         dispute,
         'DisputeResolved'
       );
@@ -235,7 +271,7 @@ describe('KubernaDispute', function () {
       await dispute.connect(juror1).vote(disputeId, 2);
       await time.increase(7 * 24 * 60 * 60 + 1);
 
-      await dispute.connect(other).resolveDispute(disputeId);
+      await dispute.connect(owner).resolveDispute(disputeId);
 
       const data = await dispute.getDispute(disputeId);
       expect(data.result).to.equal(2);
@@ -245,6 +281,45 @@ describe('KubernaDispute', function () {
       await dispute.connect(juror1).vote(disputeId, 1);
 
       await expect(dispute.connect(other).resolveDispute(disputeId)).to.be.reverted;
+    });
+
+    it('should reject resolveDispute from non-owner', async function () {
+      await dispute.connect(juror1).vote(disputeId, 1);
+      await time.increase(7 * 24 * 60 * 60 + 1);
+
+      await expect(dispute.connect(other).resolveDispute(disputeId)).to.be.reverted;
+    });
+  });
+
+  describe('activeDisputeDuties', function () {
+    let disputeId: string;
+
+    beforeEach(async function () {
+      await dispute
+        .connect(juror1)
+        .registerJuror(juror1.address, { value: ethers.parseEther('100') });
+
+      const escrowId = ethers.keccak256(ethers.toUtf8Bytes('escrow-duty'));
+      const tx = await dispute
+        .connect(owner)
+        .openDispute(escrowId, requester.address, executor.address, 'reason');
+      const receipt = await tx.wait();
+      const event = receipt?.logs.find((log: any) => log.fragment?.name === 'DisputeOpened');
+      disputeId = (event as any)?.args[0];
+    });
+
+    it('should reject unstake while juror has active dispute duties', async function () {
+      await dispute.connect(juror1).vote(disputeId, 1);
+
+      await expect(dispute.connect(juror1).unstakeJuror()).to.be.reverted;
+    });
+
+    it('should allow unstake after dispute is resolved', async function () {
+      await dispute.connect(juror1).vote(disputeId, 1);
+      await time.increase(7 * 24 * 60 * 60 + 1);
+      await dispute.connect(owner).resolveDispute(disputeId);
+
+      await expect(dispute.connect(juror1).unstakeJuror()).to.not.be.reverted;
     });
   });
 
@@ -266,7 +341,7 @@ describe('KubernaDispute', function () {
 
       await dispute.connect(juror1).vote(disputeId, 1);
       await time.increase(7 * 24 * 60 * 60 + 1);
-      await dispute.connect(other).resolveDispute(disputeId);
+      await dispute.connect(owner).resolveDispute(disputeId);
     });
 
     it('should allow appeal by requester', async function () {
