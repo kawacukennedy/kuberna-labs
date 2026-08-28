@@ -14,7 +14,11 @@ import { TollbeamClient, TollbeamRefusalError, isRefusal } from '@tollbeam/sdk';
 const API_KEY = process.env.TOLLBEAM_PROD_API_KEY ?? '';
 const BASE_URL = 'https://api.tollbeam.com';
 
-const RESOURCE_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd';
+// chainray.online publishes an x402 manifest priced at $0.01 (1 minor) — the
+// same resource the 5 settled mainnet payments used. CoinGecko is treated as a
+// FREE resource on this rail (paid:false, nothing spent), so it cannot trigger
+// a per-transaction refusal.
+const RESOURCE_URL = 'https://chainray.online/oracle/price-feed/ETH';
 
 async function checkBudget(client: TollbeamClient) {
   console.log('=== Budget Check ===');
@@ -42,7 +46,7 @@ async function checkBudget(client: TollbeamClient) {
 async function testRefusal(client: TollbeamClient) {
   console.log('\n=== Refusal Test ===');
   console.log(`Resource: ${RESOURCE_URL}`);
-  console.log(`Price: $0.01 (CoinGecko free tier)\n`);
+  console.log(`Price: $0.01 (chainray.online x402 manifest)\n`);
 
   const start = Date.now();
   try {
