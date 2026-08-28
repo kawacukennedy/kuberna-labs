@@ -8,12 +8,12 @@ Kuberna Labs publishes **synthetic interoperability evidence** — not certifica
 
 ## Verification Suite Status
 
-| Artifact | Location | Status |
-| -------- | -------- | ------ |
+| Artifact                                 | Location                                                                                                                 | Status                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
 | **Conformance fixture bundle** (7 cases) | [`sdk/src/verify/fixtures/elizaos-conformance-fixtures.json`](sdk/src/verify/fixtures/elizaos-conformance-fixtures.json) | ✅ 20/20 tests passing |
-| **Verification test suite** | [`sdk/test/verify.test.ts`](sdk/test/verify.test.ts) | ✅ All CI green |
-| **JCS canonicalization** | [`sdk/src/verify/jcs.ts`](sdk/src/verify/jcs.ts) | ✅ Tested |
-| **SilentVerify E2E pipeline** | [`scripts/test-silentverify-pipeline.ts`](scripts/test-silentverify-pipeline.ts) | ✅ 7/7 stages passing |
+| **Verification test suite**              | [`sdk/test/verify.test.ts`](sdk/test/verify.test.ts)                                                                     | ✅ All CI green        |
+| **JCS canonicalization**                 | [`sdk/src/verify/jcs.ts`](sdk/src/verify/jcs.ts)                                                                         | ✅ Tested              |
+| **SilentVerify E2E pipeline**            | [`scripts/test-silentverify-pipeline.ts`](scripts/test-silentverify-pipeline.ts)                                         | ✅ 7/7 stages passing  |
 
 The fixture bundle is **pinned at commit `9bd508e`** on the conformance PR branch. Every negative vector carries `mutation_of` + `mutated_field` provenance, so a failing test proves the invariant was exercised — not that a test ran against nothing.
 

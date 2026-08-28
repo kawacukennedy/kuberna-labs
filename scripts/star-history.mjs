@@ -13,8 +13,7 @@
 
 const OWNER = process.argv[2] || 'kawacukennedy';
 const REPO = process.argv[3] || 'kuberna-labs';
-const OUT =
-  process.argv[4] || 'docs/assets/star-history.svg';
+const OUT = process.argv[4] || 'docs/assets/star-history.svg';
 
 const TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 
@@ -108,7 +107,9 @@ function renderSvg({ points, total }) {
   const x = (d) => PAD.l + ((d.getTime() - t0) / span) * (W - PAD.l - PAD.r);
   const y = (c) => H - PAD.b - (c / maxY) * (H - PAD.t - PAD.b);
 
-  const linePoints = points.map((p) => `${x(p.date).toFixed(1)},${y(p.count).toFixed(1)}`).join(' ');
+  const linePoints = points
+    .map((p) => `${x(p.date).toFixed(1)},${y(p.count).toFixed(1)}`)
+    .join(' ');
 
   const fmtDate = (ms) =>
     new Date(ms)
@@ -148,7 +149,9 @@ async function main() {
   console.log(`Fetching stargazers for ${OWNER}/${REPO}...`);
   const stars = await fetchStargazers();
   const { points, total } = buildTimeline(stars);
-  console.log(`Fetched ${stars.length} star records → ${points.length} timeline points (${total} total)`);
+  console.log(
+    `Fetched ${stars.length} star records → ${points.length} timeline points (${total} total)`
+  );
   const svg = renderSvg({ points, total });
   const fs = await import('fs');
   const path = await import('path');

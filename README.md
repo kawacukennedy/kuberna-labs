@@ -62,14 +62,14 @@ Kuberna Labs gives AI agents secure execution rails across any blockchain: agent
 
 This repo is **build in public**. Numbers below are measured, not aspirational.
 
-| Milestone | Result | Evidence |
-| --------- | ------ | -------- |
-| **x402 payments** | 5 payments settled on Base mainnet ($0.01 each, real money) | `reports/`, settlement hashes on BaseScan |
-| **Burst load test** | 128/128 UserOps submitted, 0 failures | `reports/tollbeam-base-sepolia-burst-*.json` |
-| **Conformance** | 20/20 verification vectors pass | [`CONFORMANCE.md`](./CONFORMANCE.md) |
-| **SilentVerify E2E** | 7/7 pipeline stages passing | `scripts/test-silentverify-pipeline.ts` |
-| **Contract tests** | 33+ Dispute contract edge-case guards | `test/Dispute.ts` |
-| **Discord ops** | CI + star alerts live, 4 scheduled broadcasts | `.github/workflows/` |
+| Milestone            | Result                                                      | Evidence                                     |
+| -------------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| **x402 payments**    | 5 payments settled on Base mainnet ($0.01 each, real money) | `reports/`, settlement hashes on BaseScan    |
+| **Burst load test**  | 128/128 UserOps submitted, 0 failures                       | `reports/tollbeam-base-sepolia-burst-*.json` |
+| **Conformance**      | 20/20 verification vectors pass                             | [`CONFORMANCE.md`](./CONFORMANCE.md)         |
+| **SilentVerify E2E** | 7/7 pipeline stages passing                                 | `scripts/test-silentverify-pipeline.ts`      |
+| **Contract tests**   | 33+ Dispute contract edge-case guards                       | `test/Dispute.ts`                            |
+| **Discord ops**      | CI + star alerts live, 4 scheduled broadcasts               | `.github/workflows/`                         |
 
 ---
 
@@ -77,16 +77,16 @@ This repo is **build in public**. Numbers below are measured, not aspirational.
 
 Kuberna is load-bearing for other projects. See [`CONFORMANCE.md`](./CONFORMANCE.md) for pinned cross-repo citations.
 
-| Partner / Project | Relationship | Status |
-| ----------------- | ------------ | ------ |
-| **elizaOS/eliza** | Agent Certification Framework discussion `#9810` — Kuberna conformance vector set adopted | Active |
-| **0xddneto/AI-Proof-of-Us** | Reciprocal pinned conformance fixtures, mutual citations | Live |
-| **awesome-erc8004** | ERC-8004 certification implementation reference | Listed |
-| **Tollbeam** | x402 payment rail — first external team to put real payments through it | Live |
-| **Rooster Agents** | Founding Agent #1 (KubernaAgent) — full sandbox lifecycle traced on-chain | Live |
-| **Virtuals** | Sponsored compute — Claude Opus 4 via ACP | Live |
-| **Pyth Network** | Price oracle (ETH, BTC, USDC) | Live |
-| **Discord** | CI notifications + GitHub star alerts | Live |
+| Partner / Project           | Relationship                                                                              | Status |
+| --------------------------- | ----------------------------------------------------------------------------------------- | ------ |
+| **elizaOS/eliza**           | Agent Certification Framework discussion `#9810` — Kuberna conformance vector set adopted | Active |
+| **0xddneto/AI-Proof-of-Us** | Reciprocal pinned conformance fixtures, mutual citations                                  | Live   |
+| **awesome-erc8004**         | ERC-8004 certification implementation reference                                           | Listed |
+| **Tollbeam**                | x402 payment rail — first external team to put real payments through it                   | Live   |
+| **Rooster Agents**          | Founding Agent #1 (KubernaAgent) — full sandbox lifecycle traced on-chain                 | Live   |
+| **Virtuals**                | Sponsored compute — Claude Opus 4 via ACP                                                 | Live   |
+| **Pyth Network**            | Price oracle (ETH, BTC, USDC)                                                             | Live   |
+| **Discord**                 | CI notifications + GitHub star alerts                                                     | Live   |
 
 ---
 
