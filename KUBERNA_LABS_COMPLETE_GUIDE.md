@@ -835,7 +835,7 @@ import { KubernaSDK } from '@kuberna/sdk';
 const sdk = new KubernaSDK({
   apiKey: 'your-api-key',
   privateKey: '0x...', // optional, for on-chain operations
-  baseUrl: 'https://api.kuberna.africa/api'
+  baseUrl: 'https://api.kuberna.africa/api',
 });
 ```
 
@@ -1316,5 +1316,5 @@ L2 scaling, zero-knowledge proofs, decentralized storage, privacy features, DAO 
 
 ---
 
-*Last updated: August 2026*
-*Kuberna Labs — Building the Execution Layer for AI Agents*
+_Last updated: August 2026_
+_Kuberna Labs — Building the Execution Layer for AI Agents_
