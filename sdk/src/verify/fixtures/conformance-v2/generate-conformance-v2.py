@@ -248,5 +248,7 @@ open(out + ".shas", "w").write(
     "labelled " + sha(out + "elizaos-conformance-v2-fixtures.json") + "\n"
     "blind    " + sha(out + "elizaos-conformance-v2-blind.json") + "\n"
     "mapping  " + sha(out + "elizaos-conformance-v2-mapping.json") + "\n"
-    "salt     " + salt + "\n"
 )
+# The mapping salt is the join key; it is withheld until the mapping opens,
+# kept only in the gitignored .salt.local so it can be revealed later.
+open(out + ".salt.local", "w").write(salt + "\n")
