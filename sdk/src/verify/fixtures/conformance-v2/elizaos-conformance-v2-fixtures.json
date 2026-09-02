@@ -1,0 +1,257 @@
+{
+  "bundle_version": "kuberna-elizaos-conformance-v2",
+  "description": "Kuberna-side executable conformance vectors for the elizaOS agent certification discussion (#9810), protocol-1..6 compliant. Freshly generated payloads; non-self-announcing negatives; one-edit mutations. Synthetic schema/conformance vectors only - not certification of execution quality, not an adoption claim.",
+  "cases": [
+    {
+      "id": "positive-authority-work-link",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "enumerated"
+        }
+      },
+      "assertion": "control: chain_derivable authority links to issuer_asserted work whose preActionFactId equals authority.fact_id; registered scheme; enumerated coverage declared."
+    },
+    {
+      "id": "positive-degraded-coverage",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 0,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "unknown"
+        }
+      },
+      "assertion": "coverage.complete 'unknown' with observed_n 0 is reachable and not the default; a consumer sees scope declared but no observation count. Pass: the claim does not falsely assert completed observation. Control for negative-enumerated-zero."
+    },
+    {
+      "id": "positive-chain-integrity",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "chain_integrity": "verified",
+        "link_signatures": [
+          "0x0554803bbb27bfc9d65bdc38c0da4b7fdfc35ab353161c928c1fa753a8362ca7807177b8ced39b03e97632cde25dcea5ca6cc378dc97fc6652deadd8023d8b27",
+          "0xccf85220f147ad3958532d14842c6d9d75130f8e60d4ce2f9b5449b0fd2fc9050e41701c4cbe8a3e17e97f8360199d9cfd6e5613b1508bb858560b1931d9bdbb",
+          "0xd2febdfc4d25ea5c2e061ec57a2d36cbbf93e6a3c0a2048ec478533ab323f418e4241cd57b8ee7726402b129c0903917d6577c697f45c2f70a0b00bba3814f0f"
+        ]
+      },
+      "assertion": "control: chain_integrity verified and every per-link signature verifies. Control for negative-resealed-chain."
+    },
+    {
+      "id": "positive-foreign-authority",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "attested_point_in_time",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0xa7d15fc0b2f45e616f4965df9af08d84542101fa6cba6b5c96c554c6ec934aec",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x9da671ae8975aadcdafa54ab18016e6112487ce9"
+        }
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "enumerated"
+        }
+      },
+      "assertion": "registry for this bundle includes 'aipou-receipt-v1'; a different authority threat-model (attested_point_in_time) with a registered scheme and matching fact link passes. Authority.fact_id is not a bundle-wide constant."
+    },
+    {
+      "id": "positive-sampled-coverage",
+      "expected": "pass",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 37,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "sampled"
+        }
+      },
+      "assertion": "coverage.complete 'sampled' is a third reachable enum member with a positive observed_n; all three completes (enumerated/unknown/sampled) are emitted across this bundle."
+    },
+    {
+      "id": "negative-factlink-drift",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0xc6621cc7aeb1ea6f5edacc131647771c1215ddb5008e7ce98f56392cdf976a6b",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "enumerated"
+        }
+      },
+      "assertion": "one-edit mutation of positive-authority-work-link: work.preActionFactId only (same 32-byte length, well-formed value, simply the wrong one). Equality-invariant rejection with no length confound and no sentinel value.",
+      "mutation_of": "positive-authority-work-link",
+      "mutated_field": "work.preActionFactId"
+    },
+    {
+      "id": "negative-chain-derivable-with-issuer-fields",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)",
+        "link_signatures": [
+          "0x0554803bbb27bfc9d65bdc38c0da4b7fdfc35ab353161c928c1fa753a8362ca7807177b8ced39b03e97632cde25dcea5ca6cc378dc97fc6652deadd8023d8b27",
+          "0xccf85220f147ad3958532d14842c6d9d75130f8e60d4ce2f9b5449b0fd2fc9050e41701c4cbe8a3e17e97f8360199d9cfd6e5613b1508bb858560b1931d9bdbb",
+          "0xd2febdfc4d25ea5c2e061ec57a2d36cbbf93e6a3c0a2048ec478533ab323f418e4241cd57b8ee7726402b129c0903917d6577c697f45c2f70a0b00bba3814f0f"
+        ],
+        "collectorSignature": "0x63eadfe6383dba0a9a339f511f0fe5d95704fe39130ff4efb6902aaa5fb247a558d3e16dd89922c3c06cb0225629c75bcc4469370c0ff90889231af8db8bc347",
+        "collectorKeyId": "aipou-collector-002"
+      },
+      "assertion": "chain_derivable authority carrying issuer_asserted fields (collectorSignature, collectorKeyId) fails closed - trust-model downgrade detection; the values are well-formed, only their placement on a chain_derivable body is the violation."
+    },
+    {
+      "id": "negative-unknown-scheme",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v2",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "enumerated"
+        }
+      },
+      "assertion": "one-edit mutation of positive-authority-work-link: work.scheme only. 'aipou-receipt-v2' is a plausible in-domain value that is simply not registered; allow-list accept path is KNOWN.has(tag), everything else rejects. No sentinel in the value.",
+      "mutation_of": "positive-authority-work-link",
+      "mutated_field": "work.scheme"
+    },
+    {
+      "id": "negative-resealed-chain",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "chain_integrity": "verified",
+        "link_signatures": [
+          "0xa9f11b7c25cf1d9dd58cad7a7bbb1d26d1ca99304ef690a02d4ae6ca726cf775f1e19c40b77c5234488a0ef347b9ef64bf7803a4af6fe9123fab2c691212fcc7",
+          "0x6f5ceea7743b8f67f2ef1d7791b4414cd1ca5c5412b2ea04b554f9601a10222edeb30095a71c27e5ecd2e0515f1f0ab779399595391aa6895a461ecd477d5a39",
+          "0xac3a62b502cbfa089fa5c6b2c301935f3505d0adf4a61fcaf9dcd54e089ee5d2ccec3e98f29ef650950b9e31bcc0851fec5503663f5216ace3c6d8d53f5b6b70"
+        ]
+      },
+      "assertion": "one-edit mutation of positive-chain-integrity: authority.link_signatures only. Hashes were recomputed after content adjustment, so chain_integrity reads verified, but signatures are well-formed and of correct length while failing per-link verification - resealed chain rejected.",
+      "mutation_of": "positive-chain-integrity",
+      "mutated_field": "authority.link_signatures"
+    },
+    {
+      "id": "negative-enumerated-zero",
+      "expected": "fail",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v2",
+        "fact_id": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "subject": {
+          "erc8004_token_id": "1337",
+          "agent_address": "0x0785a0c61f8f5f6a2e26ca43dc4ff7fb6c24dd29"
+        },
+        "derivation": "jcs-sha256 over authority-preimage-v2.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x3606954a491ca78e0b4e4d398353c39badffeef9d664ae76ea986fa5e6d2141f",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 0,
+          "as_of": "2026-09-01T00:00:00Z",
+          "complete": "enumerated"
+        }
+      },
+      "assertion": "one-edit mutation of positive-degraded-coverage: coverage.complete only ('unknown' -> 'enumerated') with observed_n still 0. 'Enumerated' with zero observations is an audited-nothing contradiction; fail. The tell is the pair, not a sentinel value.",
+      "mutation_of": "positive-degraded-coverage",
+      "mutated_field": "work.coverage.complete"
+    }
+  ]
+}
