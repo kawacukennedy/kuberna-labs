@@ -48,8 +48,13 @@ describe('WalletManager', () => {
     expect(count).toBe(5);
   });
 
-  it('getBalanceInUsd returns ETH balance', async () => {
+  it('getBalanceInUsd converts ETH balance to USD using fallback price', async () => {
     const usd = await walletManager.getBalanceInUsd();
-    expect(usd).toBe('1.5');
+    expect(usd).toBe('4800');
+  });
+
+  it('getBalanceInUsd accepts an optional ETH/USD price', async () => {
+    const usd = await walletManager.getBalanceInUsd(undefined, 4000);
+    expect(usd).toBe('6000');
   });
 });

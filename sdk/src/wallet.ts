@@ -55,8 +55,13 @@ export class WalletManager {
     return this.sdk.getProvider().getTransactionCount(addr);
   }
 
-  async getBalanceInUsd(address?: string): Promise<string> {
+  async getBalanceInUsd(
+    address?: string,
+    ethUsdPrice: number = 3200
+  ): Promise<string> {
     const ethBalance = await this.getBalance(address);
-    return ethBalance; // would multiply by ETH/USD price in production
+    const usdBalance = Number(ethBalance) * ethUsdPrice;
+
+    return usdBalance.toString();
   }
 }
