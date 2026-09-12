@@ -16,9 +16,11 @@ router.post('/parse', async (req: Request, res: Response, next: NextFunction) =>
       return;
     }
 
+    const sanitized = description.replace(/<[^>]*>/g, '').trim();
+
     await localMemory.initialize();
 
-    const result = await intentParserService.parse(description.trim());
+    const result = await intentParserService.parse(sanitized);
 
     res.json({
       success: true,

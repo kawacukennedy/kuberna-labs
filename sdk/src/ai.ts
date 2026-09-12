@@ -1,4 +1,5 @@
 import { KubernaSDK } from './index.js';
+import { KubernaError } from './errors.js';
 
 export interface ParseIntentResult {
   sourceChain: string;
@@ -55,12 +56,7 @@ export class AiManager {
     return response.data as AgentDecision;
   }
 
-  async analyze(params: AnalyzeParams): Promise<AnalysisResult> {
-    const response = await this.sdk.request({
-      method: 'POST',
-      path: '/ai/analyze',
-      data: params as unknown as Record<string, unknown>,
-    });
-    return response.data as AnalysisResult;
+  async analyze(_params: AnalyzeParams): Promise<AnalysisResult> {
+    throw new KubernaError('The /ai/analyze endpoint is not mounted on the backend. Use intent.parseIntent() for intent parsing instead.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 }

@@ -78,8 +78,8 @@ export interface PushMetadataResult {
 export class CrossChainIdentityManager {
   private baseURL: string;
 
-  constructor(_sdk: KubernaSDK, config?: CrossChainIdentityConfig) {
-    this.baseURL = config?.baseUrl || process.env.KUBERNA_API_URL || 'https://api.kuberna.africa/api';
+  constructor(sdk: KubernaSDK, config?: CrossChainIdentityConfig) {
+    this.baseURL = config?.baseUrl || sdk.getBaseUrl();
   }
 
   private async request<T>(path: string, options?: {

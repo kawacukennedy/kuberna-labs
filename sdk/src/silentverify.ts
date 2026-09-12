@@ -174,7 +174,7 @@ export class SilentVerifyManager {
   private baseURL: string;
 
   constructor(_sdk: KubernaSDK, config?: SilentVerifyConfig) {
-    this.apiKey = config?.apiKey || process.env.SILENTVERIFY_API_KEY || 'sv_dev_test_key';
+    this.apiKey = config?.apiKey || process.env.SILENTVERIFY_API_KEY || '';
     this.baseURL = config?.baseUrl || process.env.SILENTVERIFY_BASE_URL || 'https://silentverify.up.railway.app';
   }
 

@@ -26,7 +26,7 @@ try {
     logger.info('Redis connected for rate limiting');
   });
 } catch (error) {
-  logger.warn('Redis not available, rate limiting disabled', { error: String(error) });
+  logger.warn('Redis not available, falling back to in-memory rate limiting', { error: String(error) });
 }
 
 interface RateLimitOptions {
@@ -50,6 +50,30 @@ declare global {
   }
 }
 
+const memoryStore = new Map<string, { timestamps: number[] }>();
+
+function memoryRateCheck(key: string, windowMs: number, maxRequests: number): { total: number; blocked: boolean } {
+  const now = Date.now();
+  const windowStart = now - windowMs;
+  const entry = memoryStore.get(key) || { timestamps: [] };
+  entry.timestamps = entry.timestamps.filter(t => t > windowStart);
+  if (entry.timestamps.length >= maxRequests) {
+    memoryStore.set(key, entry);
+    return { total: entry.timestamps.length, blocked: true };
+  }
+  entry.timestamps.push(now);
+  memoryStore.set(key, entry);
+  return { total: entry.timestamps.length, blocked: false };
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of memoryStore) {
+    entry.timestamps = entry.timestamps.filter(t => t > now - 60_000);
+    if (entry.timestamps.length === 0) memoryStore.delete(key);
+  }
+}, 120_000).unref();
+
 export const createRateLimiter = (options: RateLimitOptions) => {
   const { windowMs, maxRequests, keyGenerator } = options;
 
@@ -60,20 +84,35 @@ export const createRateLimiter = (options: RateLimitOptions) => {
   const getKey = keyGenerator || defaultKeyGenerator;
 
   return async (req: Request, res: Response, next: NextFunction) => {
+    const key = getKey(req);
+
     if (!redis || !redisAvailable) {
+      const { total, blocked } = memoryRateCheck(`ratelimit:${key}`, windowMs, maxRequests);
+      const resetTime = new Date(Date.now() + windowMs);
+      req.rateLimit = { total, remaining: Math.max(0, maxRequests - total), resetTime };
+      res.setHeader('X-RateLimit-Limit', maxRequests.toString());
+      res.setHeader('X-RateLimit-Remaining', req.rateLimit.remaining.toString());
+      res.setHeader('X-RateLimit-Reset', resetTime.toISOString());
+      if (blocked) {
+        res.status(429).json({
+          success: false,
+          error: { message: 'Too many requests, please try again later', code: 'RATE_LIMIT_EXCEEDED', retryAfter: Math.ceil(windowMs / 1000) },
+        });
+        return;
+      }
       return next();
     }
 
-    const key = `ratelimit:${getKey(req)}`;
+    const redisKey = `ratelimit:${key}`;
     const now = Date.now();
     const windowStart = now - windowMs;
 
     try {
       const pipeline = redis.pipeline();
-      pipeline.zremrangebyscore(key, 0, windowStart);
-      pipeline.zadd(key, now.toString(), `${now}-${crypto.randomUUID()}`);
-      pipeline.zcard(key);
-      pipeline.pexpire(key, windowMs);
+      pipeline.zremrangebyscore(redisKey, 0, windowStart);
+      pipeline.zadd(redisKey, now.toString(), `${now}-${crypto.randomUUID()}`);
+      pipeline.zcard(redisKey);
+      pipeline.pexpire(redisKey, windowMs);
       const results = await pipeline.exec();
 
       if (!results) {

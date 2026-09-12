@@ -16,8 +16,6 @@ const featureFlagSchema = z.object({
 
 router.get(
   '/feature-flags',
-  authenticate,
-  requireRoles('ADMIN'),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const flags = await prisma.featureFlag.findMany({

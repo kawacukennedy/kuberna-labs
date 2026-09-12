@@ -7,7 +7,7 @@ import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, generateToken } from '../middleware/auth.js';
-import { authLimiter } from '../middleware/rateLimiter.js';
+import { authLimiter, strictLimiter } from '../middleware/rateLimiter.js';
 import logger from '../utils/logger.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -18,18 +18,18 @@ if (!JWT_SECRET) {
 const router = Router();
 
 const registerSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().max(320),
   password: z.string().min(8),
-  fullName: z.string().min(1),
+  fullName: z.string().min(1).max(200),
   web3Address: z.string().optional(),
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().max(320),
   password: z.string(),
 });
 
-router.post('/register', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/register', strictLimiter, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const data = registerSchema.parse(req.body);
 
@@ -180,7 +180,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response, next: Ne
   }
 });
 
-router.post('/forgot-password', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/forgot-password', strictLimiter, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
