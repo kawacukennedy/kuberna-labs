@@ -47,7 +47,10 @@ async function api<T>(method: string, pathname: string, body?: unknown): Promise
   } catch {
     throw new Error(`non-JSON response (HTTP ${res.status}): ${raw.slice(0, 300)}`);
   }
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${method} ${pathname}: ${JSON.stringify(data).slice(0, 400)}`);
+  if (!res.ok)
+    throw new Error(
+      `HTTP ${res.status} ${method} ${pathname}: ${JSON.stringify(data).slice(0, 400)}`
+    );
   return data as T;
 }
 
@@ -78,7 +81,9 @@ async function main(): Promise<void> {
     created?.secret ?? created?.signing_secret ?? created?.webhook_secret ?? created?.data?.secret;
   if (maybeSecret) {
     console.log('\nSigning secret found in response — set it in backend/.env as');
-    console.log('CRYPTOPULSE_WEBHOOK_SECRET=<secret> and in this repo\u2019s .env for the smoke tester.');
+    console.log(
+      'CRYPTOPULSE_WEBHOOK_SECRET=<secret> and in this repo\u2019s .env for the smoke tester.'
+    );
   } else {
     console.log('\nNo signing secret in the registration response — see docs for where it lives.');
   }

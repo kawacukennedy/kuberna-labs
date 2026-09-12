@@ -62,7 +62,10 @@ async function run(): Promise<void> {
     .update(`${timestamp}.${signedRaw}`)
     .digest('hex');
 
-  const headers: Record<string, string> = { 'Content-Type': 'application/json', 'X-CryptoPulse-Timestamp': timestamp };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-CryptoPulse-Timestamp': timestamp,
+  };
   if (!nosign) headers['X-CryptoPulse-Signature'] = `v1=${digest}`;
 
   const expectStatus = tamper || replay ? 401 : nosign ? 400 : 200;
