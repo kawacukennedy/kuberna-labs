@@ -28,7 +28,7 @@ const registration = await adapter.registerOnChain(identity, signer);
 const doc = await adapter.createIdentityDocumentWithChainLink(
   identity,
   registration.tokenId,
-  84532
+  84532,
 );
 
 // Create and verify AIP compact tokens
@@ -42,6 +42,29 @@ const verified = await adapter.verifyCompactToken(token, publicKeyBytes);
 // Verify an AIP token against on-chain reputation
 const chainVerification = await adapter.verifyTokenWithChain(token, registration.tokenId, provider);
 ```
+
+## AIPOU fixture interoperability
+
+The adapter includes a small offline helper for the public AIPOU/Kuberna
+conformance fixtures. It verifies the closed-world boundary between a
+`chain_derivable + delegation-scope-v1` authority and an
+`issuer_asserted + aipou-receipt-v1` work reference.
+
+```typescript
+import { deriveAipouAuthorityFactId, verifyAipouAuthorityWorkCase } from '@kuberna/aip-adapter';
+
+const factId = deriveAipouAuthorityFactId(delegationScope);
+const verdict = verifyAipouAuthorityWorkCase(conformanceCase);
+```
+
+`deriveAipouAuthorityFactId` derives the fixture's JCS/SHA-256 fact ID after
+excluding its envelope-only `version` field. The verifier accepts the pinned
+positive fixture and rejects a changed fact link or issuer-asserted collector
+fields placed on a chain-derived authority.
+
+This is structural conformance evidence only. It does not verify the fixture's
+synthetic signature, resolve a registry, prove that an external action happened,
+or create authority, payment, claim, reward, or token-settlement rights.
 
 ## API
 
@@ -63,6 +86,8 @@ const chainVerification = await adapter.verifyTokenWithChain(token, registration
 | `getReputation(tokenId, provider)`                                          | Query on-chain reputation (score, badges, rating) |
 | `resolveIdentifier(identifier)`                                             | Resolve an AIP identifier to an identity document |
 | `clearCache()`                                                              | Clear the identity resolver cache                 |
+| `deriveAipouAuthorityFactId(scope)`                                         | Derive a fixture delegation-scope fact ID         |
+| `verifyAipouAuthorityWorkCase(case)`                                        | Verify the AIPOU authority/work boundary          |
 
 ## License
 
