@@ -413,13 +413,13 @@ This runs the backend, SDK, smart-contract, frontend, and AIP adapter test suite
 
 For individual subprojects:
 
-| Subproject | Command |
-| --- | --- |
-| Backend | `npm run test:backend` |
-| SDK | `npm run test:sdk` |
-| Smart contracts | `npm run test:contracts` |
-| Frontend | `npm run test:frontend` |
-| AIP adapter | `npm run test:aip-adapter` |
+| Subproject      | Command                    |
+| --------------- | -------------------------- |
+| Backend         | `npm run test:backend`     |
+| SDK             | `npm run test:sdk`         |
+| Smart contracts | `npm run test:contracts`   |
+| Frontend        | `npm run test:frontend`    |
+| AIP adapter     | `npm run test:aip-adapter` |
 
 Equivalent direct commands are:
 
