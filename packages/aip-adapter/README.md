@@ -28,7 +28,7 @@ const registration = await adapter.registerOnChain(identity, signer);
 const doc = await adapter.createIdentityDocumentWithChainLink(
   identity,
   registration.tokenId,
-  84532,
+  84532
 );
 
 // Create and verify AIP compact tokens
