@@ -399,6 +399,42 @@ test: add unit tests for VirtualsManager
 - Keep the description clear and focused
 - Ensure all CI checks pass
 
+### Repository-wide test commands
+
+The repository provides root-level commands for running the test suites:
+
+```bash
+npm run test:all
+```
+
+This runs the backend, SDK, smart-contract, frontend, and AIP adapter test suites in sequence and exits with a non-zero status if a suite fails.
+
+`npm test` is an alias for `npm run test:all`.
+
+For individual subprojects:
+
+| Subproject | Command |
+| --- | --- |
+| Backend | `npm run test:backend` |
+| SDK | `npm run test:sdk` |
+| Smart contracts | `npm run test:contracts` |
+| Frontend | `npm run test:frontend` |
+| AIP adapter | `npm run test:aip-adapter` |
+
+Equivalent direct commands are:
+
+```bash
+cd backend && npm test
+cd sdk && npm test
+npx hardhat test
+cd frontend && npm test
+cd packages/aip-adapter && npm test
+```
+
+Issue #69 referenced an earlier backend test status of 176 passing tests and 13 timeout failures attributed to live Virtuals API calls. This is historical context and should not be interpreted as the current test status.
+
+When changing backend tests, prefer mocked external services for unit tests. Integration tests requiring external services should be explicitly scoped and documented.
+
 ### Areas to Contribute
 
 | Area                | Description                                        | Location                                |

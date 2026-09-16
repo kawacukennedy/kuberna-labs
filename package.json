@@ -18,7 +18,7 @@
   "homepage": "https://github.com/kawacukennedy/kuberna-labs#readme",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "npm run test:backend && npm run test:sdk && npm run test:contracts && npm run test:frontend",
+    "test": "npm run test:all",
     "test:backend": "cd backend && npm test",
     "test:sdk": "cd sdk && npm test",
     "test:contracts": "hardhat test",
@@ -42,7 +42,9 @@
     "start:render": "cd backend && node dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy",
     "db:generate": "cd backend && npx prisma generate",
-    "notify:deploy": "ts-node scripts/notify-discord.ts"
+    "notify:deploy": "ts-node scripts/notify-discord.ts",
+    "test:all": "npm run test:backend && npm run test:sdk && npm run test:contracts && npm run test:frontend && npm run test:aip-adapter",
+    "test:aip-adapter": "cd packages/aip-adapter && npm test"
   },
   "keywords": [
     "web3",
