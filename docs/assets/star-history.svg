@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="260" viewBox="0 0 720 260">
+  <rect width="720" height="260" fill="#fff"/>
+  <text x="60" y="16" font-family="monospace" font-size="14" font-weight="bold" fill="#111">★ 51 stars · kawacukennedy/kuberna-labs</text>
+  <line x1="60" y1="182.7450980392157" x2="700" y2="182.7450980392157" stroke="#eee" stroke-dasharray="3,3"/>
+  <text x="52" y="186.7450980392157" font-family="monospace" font-size="11" fill="#888" text-anchor="end">10</text>
+<line x1="60" y1="145.49019607843138" x2="700" y2="145.49019607843138" stroke="#eee" stroke-dasharray="3,3"/>
+  <text x="52" y="149.49019607843138" font-family="monospace" font-size="11" fill="#888" text-anchor="end">20</text>
+<line x1="60" y1="104.50980392156863" x2="700" y2="104.50980392156863" stroke="#eee" stroke-dasharray="3,3"/>
+  <text x="52" y="108.50980392156863" font-family="monospace" font-size="11" fill="#888" text-anchor="end">31</text>
+<line x1="60" y1="67.25490196078431" x2="700" y2="67.25490196078431" stroke="#eee" stroke-dasharray="3,3"/>
+  <text x="52" y="71.25490196078431" font-family="monospace" font-size="11" fill="#888" text-anchor="end">41</text>
+<line x1="60" y1="30" x2="700" y2="30" stroke="#eee" stroke-dasharray="3,3"/>
+  <text x="52" y="34" font-family="monospace" font-size="11" fill="#888" text-anchor="end">51</text>
+<text x="60" y="238" font-family="monospace" font-size="11" fill="#888" text-anchor="middle">03/2026</text>
+<text x="380" y="238" font-family="monospace" font-size="11" fill="#888" text-anchor="middle">05/2026</text>
+<text x="700" y="238" font-family="monospace" font-size="11" fill="#888" text-anchor="middle">08/2026</text>
+
+  <polyline fill="none" stroke="#f0ad4e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="60.0,216.3 60.4,212.5 62.2,208.8 62.3,205.1 63.3,201.4 63.9,197.6 64.3,193.9 65.9,190.2 67.2,186.5 67.9,182.7 71.2,179.0 71.6,175.3 107.0,171.6 107.3,167.8 110.3,164.1 111.4,160.4 111.4,156.7 111.4,152.9 111.5,149.2 111.5,145.5 111.6,141.8 112.0,138.0 112.0,134.3 112.0,130.6 112.8,126.9 112.9,123.1 112.9,119.4 113.0,115.7 114.6,112.0 122.1,108.2 127.6,104.5 130.9,100.8 139.3,97.1 164.2,93.3 189.5,89.6 201.9,85.9 247.4,82.2 261.7,78.4 340.3,74.7 346.9,71.0 401.2,67.3 441.1,63.5 475.6,59.8 478.3,56.1 484.0,52.4 531.7,48.6 581.4,44.9 584.3,41.2 651.5,37.5 687.1,33.7 700.0,30.0"/>
+  <circle cx="700.0" cy="30.0" r="4" fill="#e89217"/>
+</svg>

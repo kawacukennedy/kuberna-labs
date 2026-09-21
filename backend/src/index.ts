@@ -34,6 +34,7 @@ import { agentDecisionRouter } from './routes/agentDecision.js';
 import { agentOrchestratorRouter } from './routes/agentOrchestrator.js';
 import { kiteRouter } from './routes/kite.js';
 import { identityRouter } from './routes/identity.js';
+import { cryptopulseRouter } from './routes/cryptopulse.js';
 
 dotenv.config();
 
@@ -92,6 +93,9 @@ app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
+// /hooks consumers verify HMAC over the exact request bytes, so their router
+// mounts BEFORE global express.json() and owns its own raw body parsing.
+app.use('/hooks', cryptopulseRouter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
