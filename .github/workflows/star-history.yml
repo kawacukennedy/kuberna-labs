@@ -1,0 +1,35 @@
+name: Update Star History Chart
+
+on:
+  schedule:
+    # daily at 06:15 UTC — keep the committed chart fresh
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-star-chart:
+    name: Generate and commit star history SVG
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate star history SVG
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/star-history.mjs
+
+      - name: Commit chart if changed
+        run: |
+          if git status --porcelain | grep -q 'docs/assets/star-history.svg'; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/assets/star-history.svg
+            git commit -m "chore: refresh star history chart"
+            git push
+            echo "chart updated"
+          else
+            echo "chart unchanged"
+          fi

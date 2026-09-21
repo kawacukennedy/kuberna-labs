@@ -58,7 +58,7 @@ export class KubernaSDK {
 
   constructor(config: KubernaConfig = {}) {
     this.config = {
-      baseUrl: config.baseUrl || 'https://api.kuberna.africa/api',
+      baseUrl: config.baseUrl || 'https://kuberna-labs.onrender.com/api',
       rpcUrl: config.rpcUrl || 'https://rpc.ankr.com/eth',
       timeout: config.timeout || 30000,
       ...config,
@@ -132,7 +132,11 @@ export class KubernaSDK {
 
     try {
       const response = await axios(requestConfig);
-      return response.data as ApiResponse<T>;
+      const body = response.data;
+      if (body && typeof body === 'object' && !Array.isArray(body) && typeof body.success === 'boolean') {
+        return body as ApiResponse<T>;
+      }
+      return { success: true, data: body } as ApiResponse<T>;
     } catch (error: unknown) {
       const axiosError = error as { response?: { data?: { message?: string; code?: string } }; isAxiosError?: boolean; message?: string };
       if (axiosError?.isAxiosError || axiosError?.response) {
@@ -152,7 +156,7 @@ export class KubernaSDK {
 export type { CreateAgentParams, Agent } from './agent.js';
 export type { CreateIntentParams, StructuredIntent, Intent } from './intent.js';
 export type { LoginParams, RegisterParams, AuthTokens, UserProfile } from './auth.js';
-export type { CreatePaymentIntentParams, PaymentIntent, PaymentStatus, TokenInfo } from './payment.js';
+export type { CreatePaymentIntentParams, PaymentCheckout, PlanInfo, PaymentTransaction } from './payment.js';
 export type { CreateEnclaveParams, Enclave, AttestationReport } from './tee.js';
 export type { MintCertificateParams, Certificate, CertificateVerification } from './certificate.js';
 export type { WalletInfo, TransactionResult } from './wallet.js';

@@ -1,5 +1,6 @@
 import { KubernaSDK } from './index.js';
 import { ethers } from 'ethers';
+import { KubernaError } from './errors.js';
 
 export interface WalletInfo {
   address: string;
@@ -57,6 +58,10 @@ export class WalletManager {
 
   async getBalanceInUsd(address?: string): Promise<string> {
     const ethBalance = await this.getBalance(address);
-    return ethBalance; // would multiply by ETH/USD price in production
+    throw new KubernaError(
+      `getBalanceInUsd() requires an ETH/USD price oracle. Raw ETH balance: ${ethBalance}. Provide a price feed or use getBalance() for the raw amount.`,
+      'NOT_IMPLEMENTED',
+      501
+    );
   }
 }

@@ -109,20 +109,20 @@ describe("DATABASE_URL configuration validation", () => {
 
   it("should use transaction pooler URL (port 6543) for runtime", () => {
     const url =
-      "postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
+      "postgresql://postgres.USER:PASSWORD@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
     expect(url).toContain(":6543/");
     expect(url).toContain("pgbouncer=true");
   });
 
   it("should use direct URL (port 5432) for migrations", () => {
     const url =
-      "postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:5432/postgres";
+      "postgresql://postgres.USER:PASSWORD@aws-1-eu-north-1.pooler.supabase.com:5432/postgres";
     expect(url).toContain(":5432/");
   });
 
   it("should enable PgBouncer mode when pgbouncer=true is present", () => {
     const url =
-      "postgresql://postgres.rjlnyyqanqhvikhjfmvk:InkomokoArchive2026@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
+      "postgresql://postgres.USER:PASSWORD@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
     expect(url.includes("pgbouncer=true")).toBe(true);
   });
 });

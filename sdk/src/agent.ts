@@ -1,12 +1,12 @@
 import { KubernaSDK } from './index.js';
 import { z } from 'zod';
 
-export const frameworkSchema = z.enum(['ElizaOS', 'LangChain', 'AutoGen', 'Rig']);
+export const frameworkSchema = z.enum(['ElizaOS', 'elizaos', 'LangChain', 'AutoGen', 'Rig']);
 
 export interface CreateAgentParams {
   name: string;
   description?: string;
-  framework: 'ElizaOS' | 'LangChain' | 'AutoGen' | 'Rig';
+  framework: 'ElizaOS' | 'elizaos' | 'LangChain' | 'AutoGen' | 'Rig';
   model?: string;
   config?: Record<string, unknown>;
   tools?: string[];
@@ -36,7 +36,8 @@ export class AgentManager {
   }
 
   async list(ownerId?: string): Promise<Agent[]> {
-    const response = await this.sdk.request({ method: 'GET', path: '/agents', data: ownerId ? { ownerId } : undefined });
+    const qs = ownerId ? `?ownerId=${encodeURIComponent(ownerId)}` : '';
+    const response = await this.sdk.request({ method: 'GET', path: `/agents${qs}` });
     return (response.data as { agents: Agent[] }).agents;
   }
 

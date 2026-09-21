@@ -1,84 +1,66 @@
 import { KubernaSDK } from './index.js';
 
 export interface CreatePaymentIntentParams {
-  amount: string;
-  currency: string;
-  token: string;
-  chain: string;
-  description?: string;
-  metadata?: Record<string, unknown>;
+  planId: 'sdk' | 'accelerator' | 'enterprise';
+  paymentMethod?: string;
+  courseId?: string;
 }
 
-export interface PaymentIntent {
-  intentId: string;
-  escrowId: string;
-  status: string;
-  requiredApproval: {
-    token: string;
-    spender: string;
-    amount: string;
-  };
+export interface PaymentCheckout {
+  paymentId: string;
+  checkoutUrl: string;
 }
 
-export interface PaymentStatus {
-  intentId: string;
-  escrowId: string;
-  status: string;
-  amount: string;
-  token: string;
-  chain: string;
-  requester: string;
-  executor?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TokenInfo {
-  address: string;
-  symbol: string;
+export interface PlanInfo {
+  id: string;
   name: string;
-  decimals: number;
-  minAmount: string;
-  maxAmount: string;
+  price: number;
+  currency: string;
+  interval: string | null;
+  features: string[];
+}
+
+export interface PaymentTransaction {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  type: string;
+  createdAt: string;
 }
 
 export class PaymentManager {
   constructor(private sdk: KubernaSDK) {}
 
-  async createIntent(params: CreatePaymentIntentParams): Promise<PaymentIntent> {
+  async getPlans(): Promise<PlanInfo[]> {
+    const response = await this.sdk.request({ method: 'GET', path: '/payments/plans' });
+    return response.data as PlanInfo[];
+  }
+
+  async checkout(params: CreatePaymentIntentParams): Promise<PaymentCheckout> {
     const response = await this.sdk.request({
       method: 'POST',
-      path: '/payments/intents',
+      path: '/payments/checkout',
       data: params as unknown as Record<string, unknown>,
     });
-    return response.data as PaymentIntent;
+    return response.data as PaymentCheckout;
   }
 
-  async getStatus(intentId: string): Promise<PaymentStatus> {
-    const response = await this.sdk.request({ method: 'GET', path: `/payments/intents/${intentId}` });
-    return response.data as PaymentStatus;
+  async getTransactions(page = 1, limit = 20): Promise<{ payments: PaymentTransaction[]; pagination: { page: number; limit: number; total: number; pages: number } }> {
+    const response = await this.sdk.request({
+      method: 'GET',
+      path: `/payments/transactions?page=${page}&limit=${limit}`,
+    });
+    return response.data as { payments: PaymentTransaction[]; pagination: { page: number; limit: number; total: number; pages: number } };
   }
 
-  async getSupportedTokens(chain: string): Promise<TokenInfo[]> {
-    const response = await this.sdk.request({ method: 'GET', path: '/payments/tokens', data: { chain } });
-    return (response.data as { tokens: TokenInfo[] }).tokens;
-  }
-
-  async release(escrowId: string, chain: string): Promise<string> {
+  async withdraw(amount: number, address: string, chain: string): Promise<{ withdrawalId: string; status: string }> {
     const response = await this.sdk.request({
       method: 'POST',
-      path: '/payments/release',
-      data: { escrowId, chain },
+      path: '/payments/withdraw',
+      data: { amount, address, chain } as Record<string, unknown>,
     });
-    return (response.data as { txHash: string }).txHash;
-  }
-
-  async refund(escrowId: string, reason: string, chain: string): Promise<string> {
-    const response = await this.sdk.request({
-      method: 'POST',
-      path: '/payments/refund',
-      data: { escrowId, reason, chain },
-    });
-    return (response.data as { txHash: string }).txHash;
+    return response.data as { withdrawalId: string; status: string };
   }
 }

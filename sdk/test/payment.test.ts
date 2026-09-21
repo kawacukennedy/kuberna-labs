@@ -15,25 +15,42 @@ describe('PaymentManager', () => {
     mockedAxios.mockClear();
   });
 
-  it('should create payment intent', async () => {
+  it('should checkout a plan', async () => {
     mockedAxios.mockResolvedValueOnce({
-      data: {
-        success: true,
-        data: { intentId: 'i1', escrowId: 'e1', status: 'created', requiredApproval: { token: '0x...', spender: '0x...', amount: '100' } },
-      },
+      data: { success: true, data: { paymentId: 'p1', checkoutUrl: 'https://checkout.kuberna.africa/p1' } },
     });
 
-    const result = await sdk.payment.createIntent({ amount: '100', currency: 'USD', token: '0x...', chain: 'ethereum' });
-    expect(result.intentId).toBe('i1');
-    expect(result.status).toBe('created');
+    const result = await sdk.payment.checkout({ planId: 'sdk' });
+    expect(result.paymentId).toBe('p1');
+    expect(mockedAxios.mock.calls[0][0].url).toBe('https://api.test.com/api/payments/checkout');
   });
 
-  it('should get payment status', async () => {
+  it('should list plans', async () => {
     mockedAxios.mockResolvedValueOnce({
-      data: { success: true, data: { intentId: 'i1', status: 'COMPLETED', amount: '100', token: 'ETH', chain: 'ethereum' } },
+      data: [{ id: 'sdk', name: 'SDK', price: 397, currency: 'USD', interval: null, features: [] }],
     });
 
-    const result = await sdk.payment.getStatus('i1');
-    expect(result.status).toBe('COMPLETED');
+    const result = await sdk.payment.getPlans();
+    expect(result[0].id).toBe('sdk');
+    expect(mockedAxios.mock.calls[0][0].url).toBe('https://api.test.com/api/payments/plans');
+  });
+
+  it('should get transactions with page params', async () => {
+    mockedAxios.mockResolvedValueOnce({
+      data: { payments: [], pagination: { page: 1, limit: 20, total: 0, pages: 0 } },
+    });
+
+    const result = await sdk.payment.getTransactions(1, 20);
+    expect(result.pagination.page).toBe(1);
+    expect(mockedAxios.mock.calls[0][0].url).toBe('https://api.test.com/api/payments/transactions?page=1&limit=20');
+  });
+
+  it('should withdraw', async () => {
+    mockedAxios.mockResolvedValueOnce({
+      data: { success: true, data: { withdrawalId: 'w1', status: 'processing' } },
+    });
+
+    const result = await sdk.payment.withdraw(100, '0x0000000000000000000000000000000000000000', 'ethereum');
+    expect(result.status).toBe('processing');
   });
 });

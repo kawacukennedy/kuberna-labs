@@ -48,8 +48,9 @@ describe('WalletManager', () => {
     expect(count).toBe(5);
   });
 
-  it('getBalanceInUsd returns ETH balance', async () => {
-    const usd = await walletManager.getBalanceInUsd();
-    expect(usd).toBe('1.5');
+  it('getBalanceInUsd throws NotImplementedError with guidance', async () => {
+    await expect(walletManager.getBalanceInUsd()).rejects.toMatchObject({
+      code: 'NOT_IMPLEMENTED',
+    });
   });
 });

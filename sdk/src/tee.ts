@@ -1,4 +1,5 @@
 import { KubernaSDK } from './index.js';
+import { KubernaError } from './errors.js';
 
 export interface CreateEnclaveParams {
   name: string;
@@ -35,35 +36,23 @@ export interface AttestationReport {
 export class TeeManager {
   constructor(private sdk: KubernaSDK) {}
 
-  async createEnclave(params: CreateEnclaveParams): Promise<Enclave> {
-    const response = await this.sdk.request({
-      method: 'POST',
-      path: '/tee/enclaves',
-      data: params as unknown as Record<string, unknown>,
-    });
-    return response.data as Enclave;
+  async createEnclave(_params: CreateEnclaveParams): Promise<Enclave> {
+    throw new KubernaError('TEE enclaves are not yet exposed via the API. The TEE service exists server-side but no public route is mounted.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 
-  async getEnclave(id: string): Promise<Enclave> {
-    const response = await this.sdk.request({ method: 'GET', path: `/tee/enclaves/${id}` });
-    return response.data as Enclave;
+  async getEnclave(_id: string): Promise<Enclave> {
+    throw new KubernaError('TEE enclaves are not yet exposed via the API.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 
   async listEnclaves(): Promise<Enclave[]> {
-    const response = await this.sdk.request({ method: 'GET', path: '/tee/enclaves' });
-    return (response.data as { enclaves: Enclave[] }).enclaves;
+    throw new KubernaError('TEE enclaves are not yet exposed via the API.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 
-  async verifyAttestation(enclaveId: string): Promise<AttestationReport> {
-    const response = await this.sdk.request({
-      method: 'POST',
-      path: `/tee/enclaves/${enclaveId}/verify`,
-      data: {},
-    });
-    return response.data as AttestationReport;
+  async verifyAttestation(_enclaveId: string): Promise<AttestationReport> {
+    throw new KubernaError('TEE enclaves are not yet exposed via the API.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 
-  async destroyEnclave(id: string): Promise<void> {
-    await this.sdk.request({ method: 'DELETE', path: `/tee/enclaves/${id}` });
+  async destroyEnclave(_id: string): Promise<void> {
+    throw new KubernaError('TEE enclaves are not yet exposed via the API.', 'FEATURE_NOT_AVAILABLE', 501);
   }
 }

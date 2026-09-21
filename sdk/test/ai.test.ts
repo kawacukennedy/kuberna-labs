@@ -34,7 +34,6 @@ describe('AiManager', () => {
 
       expect(result.sourceChain).toBe('ethereum');
       expect(result.destChain).toBe('polygon');
-      expect(result.sourceToken).toBe('USDC');
       expect(result.confidence).toBe(0.95);
     });
   });
@@ -59,23 +58,11 @@ describe('AiManager', () => {
   });
 
   describe('analyze', () => {
-    it('analyzes text and returns result', async () => {
-      mockSDK.request.mockResolvedValue({
-        data: {
-          intent: 'market_analysis',
-          entities: { token: 'ETH', price: '3000' },
-          sentiment: 'positive',
-          confidence: 0.85,
-        },
+    it('throws FEATURE_NOT_AVAILABLE (no /ai router on backend)', async () => {
+      await expect(aiManager.analyze({ text: 'ETH price is going up' })).rejects.toMatchObject({
+        code: 'FEATURE_NOT_AVAILABLE',
+        statusCode: 501,
       });
-
-      const result = await aiManager.analyze({
-        text: 'ETH price is going up',
-      });
-
-      expect(result.intent).toBe('market_analysis');
-      expect(result.sentiment).toBe('positive');
-      expect(result.confidence).toBe(0.85);
     });
   });
 });

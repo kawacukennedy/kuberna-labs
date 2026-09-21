@@ -53,31 +53,17 @@ const corsOptions: cors.CorsOptions = {
       return callback(null, true);
     }
 
-    const allowedOrigins = (process.env.ALLOWED_ORIGINS || (isProduction ? '' : 'http://localhost:3000,http://localhost:3001'))
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || (isProduction ? 'https://kuberna-labs.onrender.com' : 'http://localhost:3000,http://localhost:3001'))
       .split(',')
       .map(s => s.trim())
       .filter(Boolean);
-
-    if (allowedOrigins.length === 0) {
-      if (isProduction) {
-        logger.warn('CORS blocked: ALLOWED_ORIGINS not configured in production', { origin });
-        const error = new Error('CORS policy violation: ALLOWED_ORIGINS not configured');
-        return callback(error);
-      }
-      return callback(null, true);
-    }
 
     if (origin && allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
-    if (!origin) {
-      return callback(null, true);
-    }
-
     logger.warn('CORS blocked', { origin });
-    const error = new Error('CORS policy violation: Origin not allowed');
-    return callback(error);
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -87,13 +73,25 @@ const corsOptions: cors.CorsOptions = {
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://kuberna-labs.onrender.com", "https://api.stripe.com"],
+      frameSrc: ["'self'", "https://js.stripe.com"],
+    },
+  },
+}));
 app.use(correlationId);
 app.use(defaultTimeout);
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 app.get('/health', async (req, res) => {
   res.json({
@@ -123,6 +121,35 @@ app.use('/api/agents', agentOrchestratorRouter);
 app.use('/api/kite', kiteRouter);
 app.use('/api/identity', identityRouter);
 
+const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kuberna-labs.onrender.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/docs</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/courses</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/marketplace</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/careers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/enterprise</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kuberna-labs.onrender.com/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>`;
+
+app.get('/robots.txt', (_req, res) => {
+  res.type('text/plain').send('User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: https://kuberna-labs.onrender.com/sitemap.xml\n');
+});
+
+app.get('/sitemap.xml', (_req, res) => {
+  res.type('application/xml').send(SITEMAP_XML);
+});
+
+app.get('/favicon.ico', (_req, res) => {
+  const faviconPath = path.join(__dirname, '../../frontend/public/favicon.ico');
+  if (fs.existsSync(faviconPath)) {
+    res.sendFile(faviconPath);
+  } else {
+    res.status(204).end();
+  }
+});
+
 const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_PATH || path.join(__dirname, '../../frontend/out'));
 if (!fs.existsSync(frontendDistPath)) {
   logger.warn(`Frontend dist path not found: ${frontendDistPath}`);
@@ -143,6 +170,13 @@ app.use('*', (req, res, next) => {
   }
   if (req.method !== 'GET') {
     return next();
+  }
+  if (/\.[a-z0-9]{2,6}$/i.test(req.path)) {
+    res.status(404).json({
+      success: false,
+      error: { message: 'Not found', code: 'NOT_FOUND' },
+    });
+    return;
   }
   const indexPath = path.resolve(frontendDistPath, 'index.html');
   if (!fs.existsSync(indexPath)) {

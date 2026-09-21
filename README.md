@@ -1,8 +1,8 @@
 <div align="center">
 
-# Kuberna Labs
+# ⚡ Kuberna Labs
 
-**Agent Orchestration Platform** — Deploy, run, and certify autonomous AI agents that execute cross-chain Web3 tasks.
+**The Full-Stack Platform for Agentic Web3.** Build, deploy, certify, and monetize autonomous AI agents that execute real work across decentralized networks.
 
 [![CI Status](https://img.shields.io/github/actions/workflow/status/kawacukennedy/kuberna-labs/ci.yml?branch=main&label=CI&logo=github)](https://github.com/kawacukennedy/kuberna-labs/actions)
 [![GitHub Stars](https://img.shields.io/github/stars/kawacukennedy/kuberna-labs?style=flat&logo=github)](https://github.com/kawacukennedy/kuberna-labs/stargazers)
@@ -10,16 +10,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-^0.8.20-363636?logo=solidity)](https://soliditylang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-Latest-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Twitter Follow](https://img.shields.io/twitter/follow/Arnaud_Kennedy?style=social)](https://x.com/Arnaud_Kennedy)
+[![Conformance](https://img.shields.io/badge/Conformance-20%2F20-6f42c1)](./CONFORMANCE.md)
 
 <br/>
 
-### ⭐️ **If you find this project useful, please star it on GitHub!** ⭐️
+> ### ⭐ Star us — we ship proof, not promises. Every star funds the next public milestone.
+>
+> Live benchmark: **128/128 x402 payments settled · 20/20 conformance vectors passing · 7/7 SilentVerify E2E**
 
-_It helps others discover the project and motivates contributors._
-
-[![Star History Chart](https://api.star-history.com/svg?repos=kawacukennedy/kuberna-labs&type=Date)](https://star-history.com/#kawacukennedy/kuberna-labs&Date)
+[![Star History](/docs/assets/star-history.svg)](https://star-history.com/#kawacukennedy/kuberna-labs&Date)
 
 </div>
 
@@ -27,69 +26,71 @@ _It helps others discover the project and motivates contributors._
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Architecture](#architecture)
+- [Why Kuberna](#why-kuberna)
+- [Live Proof](#live-proof)
+- [Partners & Citations](#partners--citations)
 - [Quick Start](#quick-start)
-- [Key Features](#key-features)
+- [Try the SDK](#try-the-sdk)
+- [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Available Scripts](#available-scripts)
+- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Community](#community)
-- [Contributors](#contributors)
-- [Roadmap](#roadmap)
 - [License](#license)
 
 ---
 
-## Overview
+## Why Kuberna
 
-Kuberna Labs gives AI agents secure execution rails across any blockchain: agents parse natural language intents, make autonomous trading decisions, settle via on-chain escrow, and get post-quantum certified for verifiable reputation.
-
-**Target users:** Web3 developers and teams who want to deploy autonomous AI agents that can trade, monitor, and execute on any chain without managing LLM infrastructure, blockchain RPCs, or certification pipelines.
-
-### ✨ What Makes Kuberna Different?
+Kuberna Labs gives AI agents secure execution rails across any blockchain: agents parse natural language intents, make autonomous decisions, settle via on-chain escrow, pay through the **x402 rail**, and get **post-quantum certified** for verifiable reputation.
 
 | Feature                                | Kuberna                                                                  | Others                         |
 | -------------------------------------- | ------------------------------------------------------------------------ | ------------------------------ |
 | **Natural Language → On-Chain Action** | Parse "swap 1 ETH for USDC on Solana" → escrow → execution → certificate | Require manual intent encoding |
 | **Post-Quantum Certificates**          | SilentVerify certification for agents                                    | No verifiable reputation       |
+| **x402 Agent Payments**                | Agents pay for resources via EIP-3009, real money on Base mainnet        | Single-rail or signer-only     |
 | **Cross-Chain by Default**             | Ethereum, Base, Polygon, Arbitrum, Solana                                | Usually single-chain           |
 | **TEE Execution**                      | Intel SGX enclave provisioning                                           | No hardware-grade security     |
 | **Local AI Mode**                      | Zero-dependency intent parser, no API key needed                         | Require OpenAI/Gemini          |
 
+**Target users:** Web3 developers and teams deploying autonomous AI agents that trade, monitor, and execute on any chain — without managing LLM infrastructure, blockchain RPCs, or certification pipelines.
+
 ---
 
-## Architecture
+## Live Proof
 
-```
-User Task ("swap 1 ETH for USDC on Solana")
-  -> LLM Intent Parser (GPT-4 or local)
-  -> Agent Decision Engine (arbitrage/yield/stop-loss)
-  -> Intent Creation & On-Chain Escrow
-  -> Task Completion -> SilentVerify Cert
-  -> Reputation Update + Decision Trace
-```
+This repo is **build in public**. Numbers below are measured, not aspirational.
 
-| Package         | Directory    | Description                                         |
-| --------------- | ------------ | --------------------------------------------------- |
-| Backend API     | `backend/`   | Express + Prisma + Zod REST API (port 3000)         |
-| Frontend        | `frontend/`  | Next.js 14 dashboard with pages router              |
-| SDK             | `sdk/`       | `@kuberna/sdk` npm package for programmatic access  |
-| Smart Contracts | `contracts/` | Solidity contracts (Escrow, Intent, Registry, NFTs) |
-| Prisma Schema   | `prisma/`    | Shared database schema and migrations               |
+| Milestone            | Result                                                      | Evidence                                     |
+| -------------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| **x402 payments**    | 5 payments settled on Base mainnet ($0.01 each, real money) | `reports/`, settlement hashes on BaseScan    |
+| **Burst load test**  | 128/128 UserOps submitted, 0 failures                       | `reports/tollbeam-base-sepolia-burst-*.json` |
+| **Conformance**      | 20/20 verification vectors pass                             | [`CONFORMANCE.md`](./CONFORMANCE.md)         |
+| **SilentVerify E2E** | 7/7 pipeline stages passing                                 | `scripts/test-silentverify-pipeline.ts`      |
+| **Contract tests**   | 33+ Dispute contract edge-case guards                       | `test/Dispute.ts`                            |
+| **Discord ops**      | CI + star alerts live, 4 scheduled broadcasts               | `.github/workflows/`                         |
+
+---
+
+## Partners & Citations
+
+Kuberna is load-bearing for other projects. See [`CONFORMANCE.md`](./CONFORMANCE.md) for pinned cross-repo citations.
+
+| Partner / Project           | Relationship                                                                              | Status |
+| --------------------------- | ----------------------------------------------------------------------------------------- | ------ |
+| **elizaOS/eliza**           | Agent Certification Framework discussion `#9810` — Kuberna conformance vector set adopted | Active |
+| **0xddneto/AI-Proof-of-Us** | Reciprocal pinned conformance fixtures, mutual citations                                  | Live   |
+| **awesome-erc8004**         | ERC-8004 certification implementation reference                                           | Listed |
+| **Tollbeam**                | x402 payment rail — first external team to put real payments through it                   | Live   |
+| **Rooster Agents**          | Founding Agent #1 (KubernaAgent) — full sandbox lifecycle traced on-chain                 | Live   |
+| **Virtuals**                | Sponsored compute — Claude Opus 4 via ACP                                                 | Live   |
+| **Pyth Network**            | Price oracle (ETH, BTC, USDC)                                                             | Live   |
+| **Discord**                 | CI notifications + GitHub star alerts                                                     | Live   |
 
 ---
 
 ## Quick Start
-
-### Prerequisites
-
-| Tool             | Version                                                              |
-| ---------------- | -------------------------------------------------------------------- |
-| Node.js          | >= 18.0.0 < 26.0.0                                                   |
-| npm              | >= 9.0.0                                                             |
-| PostgreSQL       | 14+ (or Supabase free tier)                                          |
-| WalletConnect ID | Free from [cloud.walletconnect.com](https://cloud.walletconnect.com) |
 
 ### Setup in 2 Minutes
 
@@ -129,24 +130,22 @@ cd frontend && npm run dev
 # All contract tests
 npx hardhat test
 
-# Backend tests
+# Backend / Frontend / SDK tests
 cd backend && npm test
-
-# Frontend tests
 cd frontend && npm test
-
-# SDK tests
 cd sdk && npm test
 ```
 
-### Try the SDK
+---
+
+## Try the SDK
+
+Install from npm: `npm install @kuberna/sdk` (v1.0.5 live).
 
 ```typescript
 import { KubernaClient } from '@kuberna/sdk';
 
-const client = new KubernaClient({
-  apiKey: 'your-api-key',
-});
+const client = new KubernaClient({ apiKey: 'your-api-key' });
 
 // Create an agent with a natural language task
 const task = await client.agents.createTask({
@@ -161,6 +160,28 @@ console.log('Task completed:', result.certificate);
 
 ---
 
+## Architecture
+
+```
+User Task ("swap 1 ETH for USDC on Solana")
+  -> LLM Intent Parser (GPT-4 / Claude Opus 4 / local)
+  -> Agent Decision Engine (arbitrage/yield/stop-loss)
+  -> Intent Creation & On-Chain Escrow
+  -> x402 Payment Rail (Tollbeam) — agent buys resources w/ USDC
+  -> Task Completion -> SilentVerify Cert
+  -> Reputation Update + Decision Trace
+```
+
+| Package         | Directory    | Description                                         |
+| --------------- | ------------ | --------------------------------------------------- |
+| Backend API     | `backend/`   | Express + Prisma + Zod REST API (port 3000)         |
+| Frontend        | `frontend/`  | Next.js 14 dashboard with pages router              |
+| SDK             | `sdk/`       | `@kuberna/sdk` npm package for programmatic access  |
+| Smart Contracts | `contracts/` | Solidity contracts (Escrow, Intent, Registry, NFTs) |
+| Prisma Schema   | `prisma/`    | Shared database schema and migrations               |
+
+---
+
 ## Key Features
 
 - **🤖 Autonomous Agent Orchestration** — LLM-powered task execution with full decision tracing
@@ -168,7 +189,7 @@ console.log('Task completed:', result.certificate);
 - **📊 Agent Decision Engine** — Arbitrage, yield optimization, and stop-loss strategies
 - **🔒 On-Chain Escrow** — Secure settlement with dispute resolution
 - **🌉 Cross-Chain Intents** — Multi-chain task creation and bidding marketplace
-- **💸 Kite x402 Payments** — Agent-controlled micro-payments via Kite protocol
+- **💸 x402 Payments** — Agent-controlled micro-payments via Tollbeam rail (EIP-3009)
 - **🛡️ SilentVerify** — Post-quantum certificate issuance for agents and chain state
 - **🖥️ TEE Support** — Intel SGX enclave provisioning for secure execution
 - **⭐ Reputation System** — On-chain agent reputation with ERC-8004 alignment
@@ -185,19 +206,11 @@ kuberna-labs/
 │   │   ├── index.ts         # Express entry point
 │   │   ├── routes/          # REST API route handlers (19 modules)
 │   │   ├── services/        # Business logic (agent, AI, payments, blockchain)
-│   │   ├── middleware/       # Auth, validation, rate limiting, error handling
+│   │   ├── middleware/      # Auth, validation, rate limiting, error handling
 │   │   ├── validations/     # Zod schemas for request validation
 │   │   └── utils/           # Prisma client, logger, ABIs
 │   └── prisma/              # Schema reference
 ├── frontend/                # Next.js 14 dashboard
-│   └── src/
-│       ├── pages/           # App pages (agents, dashboard, courses, marketplace)
-│       ├── components/      # Reusable UI (dashboard, layout, shared, Wallet)
-│       ├── context/         # AuthContext provider
-│       ├── hooks/           # Custom React hooks
-│       ├── lib/             # Wagmi, viem, contract config
-│       ├── services/        # Contract interaction services
-│       └── styles/          # Tailwind CSS configuration
 ├── sdk/                     # @kuberna/sdk TypeScript SDK
 ├── contracts/               # Solidity smart contracts
 │   ├── Escrow.sol           # Escrow with dispute resolution
@@ -238,109 +251,6 @@ kuberna-labs/
 
 ---
 
-## Deployment
-
-**Production URL:** [https://kuberna-labs.onrender.com](https://kuberna-labs.onrender.com)
-
-Kuberna is deployed on **Render** (starter plan, Oregon) via `render.yaml` (Blueprint). Auto-deploys on push to `main`. Health check: `GET /health`.
-
-### Production Environment Variables
-
-| Variable                               | Description                        |
-| -------------------------------------- | ---------------------------------- |
-| `DATABASE_URL`                         | Supabase transaction pooler URL    |
-| `DIRECT_URL`                           | Supabase direct URL for migrations |
-| `JWT_SECRET`                           | JWT signing key                    |
-| `JWT_REFRESH_SECRET`                   | JWT refresh key                    |
-| `ALLOWED_ORIGINS`                      | CORS allowlist                     |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID     |
-| `RPC_URL`                              | Blockchain RPC endpoint            |
-| `PRIVATE_KEY`                          | Backend wallet private key         |
-| `AI_API_KEY`                           | Virtuals ACP API key (AI backend)  |
-| `AI_BASE_URL`                          | Virtuals compute endpoint          |
-| `AI_MODEL`                             | LLM model (Claude Opus 4)          |
-
-Optional: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `REDIS_URL`, `SMTP_*` for extended features.
-
-### Sponsor Integrations
-
-| Sponsor              | Status        | What It Powers                                |
-| -------------------- | ------------- | --------------------------------------------- |
-| **Virtuals**         | ✅ Live       | LLM backend (Claude Opus 4 via ACP)           |
-| **Pyth Network**     | ✅ Live       | Price oracle (ETH, BTC, USDC)                 |
-| **Discord**          | ✅ Live       | CI notifications + GitHub star alerts         |
-| **Stripe**           | 🔧 Code ready | Fiat payments + subscriptions (needs API key) |
-| **Kite AI**          | 🔧 Code ready | Agent payments (x402 protocol)                |
-| **SilentVerify**     | 🔧 Code ready | Post-quantum agent PKI                        |
-| **Infura / Alchemy** | ✅ Local      | RPC providers for contract deployment         |
-
-_See [docs/FUNDING-REPORT.md](./docs/FUNDING-REPORT.md) for a full list of 78+ funding opportunities across 7 categories._
-
----
-
-## Sub-Projects
-
-- [Backend README](./backend/README.md) — Express API, Prisma, Zod
-- [Frontend README](./frontend/README.md) — Next.js dashboard
-- [SDK README](./sdk/README.md) — `@kuberna/sdk` npm package
-- [Contracts README](./contracts/README.md) — Smart contract suite
-- [Examples](./examples/README.md) — Agent template examples
-
----
-
-## Contributing
-
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to get started.
-
-### 🎯 Good First Issues
-
-Check out issues labeled [`good first issue`](https://github.com/kawacukennedy/kuberna-labs/labels/good%20first%20issue) for starter tasks.
-
-### 🐛 Report a Bug
-
-Found something wrong? [Open an issue](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=bug&template=bug_report.md).
-
-### 💡 Suggest a Feature
-
-Have an idea? [Submit a feature request](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=enhancement&template=feature_request.md).
-
----
-
-## Community
-
-- **💬 Discord:** [Join the server](https://discord.gg/MZvNuhpXu) — get help, share agents, meet the community
-- **🐦 X (Twitter):** [@Arnaud_Kennedy](https://x.com/Arnaud_Kennedy)
-- **💬 GitHub Discussions:** [Join the conversation](https://github.com/kawacukennedy/kuberna-labs/discussions)
-- **📚 Documentation:** Coming soon
-- **🛡️ Security:** Report vulnerabilities to [security@kubernalabs.com](mailto:security@kubernalabs.com)
-
-### Contributors
-
-Thanks to everyone who has contributed to Kuberna Labs!
-
-[![Contributors](https://img.shields.io/github/contributors/kawacukennedy/kuberna-labs?logo=github)](https://github.com/kawacukennedy/kuberna-labs/graphs/contributors)
-[![All Contributors](https://img.shields.io/github/all-contributors/kawacukennedy/kuberna-labs?color=ee8449&style=flat)](#contributors)
-
-|                                                                                                 | Contributor                                       | Role           |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------- |
-| <img src="https://avatars.githubusercontent.com/u/105758154?v=4" width="32" height="32" alt=""> | [kawacukennedy](https://github.com/kawacukennedy) | Creator & Lead |
-| <img src="https://avatars.githubusercontent.com/u/66347959?v=4" width="32" height="32" alt="">  | [lovewave02](https://github.com/lovewave02)       | Contributor    |
-| <img src="https://avatars.githubusercontent.com/u/154255646?v=4" width="32" height="32" alt=""> | [KaustAbhinand](https://github.com/KaustAbhinand) | Contributor    |
-| <img src="https://avatars.githubusercontent.com/u/149085611?v=4" width="32" height="32" alt=""> | [TiagooopNOC](https://github.com/TiagooopNOC)     | Contributor    |
-
-See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
-
-### Support Us
-
-If Kuberna Labs helps your project, please consider:
-
-1. ⭐ **Starring the repo** — it helps others discover us
-2. 💬 **Joining the Discord** — connect with other agent builders
-3. 🐦 **Following on X** for updates
-4. 💰 **Sponsoring development** via crypto or [GitHub Sponsors](https://github.com/sponsors)
-
----
-
 ## Roadmap
 
 - **Q3 2026:** v1.0 Release — Mainnet contracts, production SDK, dashboard GA
@@ -350,25 +260,33 @@ If Kuberna Labs helps your project, please consider:
 
 ---
 
-## Built With
+## Contributing
 
-<p align="center">
-  <img src="https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Solidity-^0.8.20-363636?logo=solidity&logoColor=white" alt="Solidity" />
-  <img src="https://img.shields.io/badge/Next.js-14-000000?logo=next.js&logoColor=white" alt="Next.js" />
-  <img src="https://img.shields.io/badge/Hardhat-Latest-FFCB1E?logo=ethereum&logoColor=black" alt="Hardhat" />
-  <img src="https://img.shields.io/badge/Prisma-Latest-2D3748?logo=prisma&logoColor=white" alt="Prisma" />
-  <img src="https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white" alt="Express" />
-  <img src="https://img.shields.io/badge/OpenZeppelin-5.x-4E5EE4?logo=openzeppelin&logoColor=white" alt="OpenZeppelin" />
-</p>
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to get started.
+
+- 🎯 **Good first issues:** [`good first issue`](https://github.com/kawacukennedy/kuberna-labs/labels/good%20first%20issue)
+- 🐛 **Report a bug:** [Open an issue](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=bug&template=bug_report.md)
+- 💡 **Suggest a feature:** [Submit a feature request](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=enhancement&template=feature_request.md)
 
 ---
 
-## Contributors
+## Community
 
-<a href="https://github.com/kawacukennedy/kuberna-labs/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=kawacukennedy/kuberna-labs" alt="Contributors" />
-</a>
+- **💬 Discord:** [Join the server](https://discord.gg/MZvNuhpXu)
+- **🐦 X (Twitter):** [@Arnaud_Kennedy](https://x.com/Arnaud_Kennedy)
+- **💬 GitHub Discussions:** [Join the conversation](https://github.com/kawacukennedy/kuberna-labs/discussions)
+- **🛡️ Security:** Report vulnerabilities to [security@kubernalabs.com](mailto:security@kubernalabs.com)
+
+### Contributors
+
+[![Contributors](https://img.shields.io/github/contributors/kawacukennedy/kuberna-labs?logo=github)](https://github.com/kawacukennedy/kuberna-labs/graphs/contributors)
+
+|                                                                                                 | Contributor                                       | Role           |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------- |
+| <img src="https://avatars.githubusercontent.com/u/105758154?v=4" width="32" height="32" alt=""> | [kawacukennedy](https://github.com/kawacukennedy) | Creator & Lead |
+| <img src="https://avatars.githubusercontent.com/u/66347959?v=4" width="32" height="32" alt="">  | [lovewave02](https://github.com/lovewave02)       | Contributor    |
+| <img src="https://avatars.githubusercontent.com/u/154255646?v=4" width="32" height="32" alt=""> | [KaustAbhinand](https://github.com/KaustAbhinand) | Contributor    |
+| <img src="https://avatars.githubusercontent.com/u/149085611?v=4" width="32" height="32" alt=""> | [TiagooopNOC](https://github.com/TiagooopNOC)     | Contributor    |
 
 ---
 
@@ -379,9 +297,7 @@ MIT — see [LICENSE](./LICENSE).
 <p align="center">
   <strong>Made with ❤️ by the Kuberna Labs team</strong>
   <br/>
-  <sub>If you like this project, </sub>
-  <a href="https://github.com/kawacukennedy/kuberna-labs">
-    <sub>⭐ star it on GitHub</sub>
-  </a>
-  <sub>!</sub>
+  <a href="https://github.com/kawacukennedy/kuberna-labs">⭐ star it on GitHub</a> ·
+  <a href="https://www.npmjs.com/package/@kuberna/sdk">install the SDK</a> ·
+  <a href="./CONFORMANCE.md">read the conformance evidence</a>
 </p>
