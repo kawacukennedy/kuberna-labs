@@ -1,11 +1,11 @@
 /**
  * CryptoPulse Receiver Smoke Test
  *
- * Signs a whale_move payload the way CryptoPulse does (HMAC-SHA256 over
- * `<timestamp>.<body>`, hex digest, sent as `v1=<hex>` with the timestamp in
- * `X-CryptoPulse-Timestamp`) and POSTs it to our receiver. Used to validate
- * the signature path BEFORE real events fire — including that tampered and
- * replayed payloads are rejected.
+ * Signs the real CryptoPulse envelope the way CryptoPulse does (HMAC-SHA256
+ * over `<timestamp>.<raw body>`, hex digest, sent as `sha256=<hex>` with the
+ * timestamp in `X-CryptoPulse-Timestamp`) and POSTs it to our receiver. Used to
+ * validate the signature path BEFORE real events fire — including that tampered
+ * and replayed payloads are rejected.
  *
  * Env:
  *   CRYPTOPULSE_WEBHOOK_SECRET   the shared signing secret (must match
@@ -31,19 +31,22 @@ const nosign = args.includes('--nosign');
 
 const payload = {
   event: 'whale_move',
-  eventId: 'smoke-test-' + Date.now(),
-  timestamp: String(Math.floor(Date.now() / 1000)),
-  txHash: '0x' + 'ab'.repeat(32),
-  block: 22000000,
-  chain: 'base',
-  direction: 'in',
-  from: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
-  fromLabel: 'uniswap-router',
-  to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-  toLabel: 'vitalik.eth',
-  token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  amountRaw: '1500000000000000000000',
-  amountUsd: 1450.25,
+  timestamp: Math.floor(Date.now() / 1000),
+  data: {
+    alertId: 'smoke-test-' + Date.now(),
+    alertType: 'whale_move',
+    chain: 'base',
+    chainName: 'Base',
+    token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    tokenSymbol: 'USDC',
+    amount: 1500.0,
+    usdValue: 1450.25,
+    wallet: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+    walletLabel: 'Wintermute',
+    counterparty: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    hash: '0x' + 'ab'.repeat(32),
+    explorerUrl: 'https://etherscan.io/tx/0x' + 'ab'.repeat(32),
+  },
 };
 
 async function run(): Promise<void> {
@@ -56,7 +59,9 @@ async function run(): Promise<void> {
     ? String(Math.floor(Date.now() / 1000) - 6 * 60)
     : String(Math.floor(Date.now() / 1000));
   const signedRaw = JSON.stringify(payload);
-  const sentRaw = tamper ? JSON.stringify({ ...payload, amountUsd: 999999 }) : signedRaw;
+  const sentRaw = tamper
+    ? JSON.stringify({ ...payload, data: { ...payload.data, usdValue: 999999 } })
+    : signedRaw;
   const digest = crypto
     .createHmac('sha256', SECRET)
     .update(`${timestamp}.${signedRaw}`)
@@ -65,8 +70,10 @@ async function run(): Promise<void> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'X-CryptoPulse-Timestamp': timestamp,
+    'X-CryptoPulse-Event': 'whale_move',
+    'X-CryptoPulse-Delivery': crypto.randomUUID(),
   };
-  if (!nosign) headers['X-CryptoPulse-Signature'] = `v1=${digest}`;
+  if (!nosign) headers['X-CryptoPulse-Signature'] = `sha256=${digest}`;
 
   const expectStatus = tamper || replay ? 401 : nosign ? 400 : 200;
   const label = tamper ? 'TAMPER' : replay ? 'REPLAY(6min old)' : nosign ? 'NO-SIGNATURE' : 'VALID';

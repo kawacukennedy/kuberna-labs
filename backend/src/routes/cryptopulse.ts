@@ -4,21 +4,27 @@ import * as fs from 'fs';
 import * as path from 'path';
 import logger from '../utils/logger.js';
 
+/**
+ * CryptoPulse delivers webhooks as an envelope:
+ *
+ *   { "event": "whale_move", "timestamp": <unix seconds>, "data": { ... } }
+ *
+ * The event-specific fields live under `data`, NOT at the top level. The
+ * confirmed `whale_move` shape (CryptoPulse, 2026-09-20) is:
+ *
+ *   data: { alertId, alertType, chain, chainName, token, tokenSymbol,
+ *           amount, usdValue, wallet, walletLabel, counterparty, hash,
+ *           explorerUrl }
+ *
+ * Note what is absent: there is no `direction`, no base-unit `amountRaw`, and
+ * the label is on the watched `wallet` only (the counterparty is unlabelled).
+ * Until CryptoPulse adds `direction` we deliberately keep `wallet` and
+ * `counterparty` as-is rather than guessing which side is `from`/`to`.
+ */
 export interface CryptoPulseEvent {
   event?: unknown;
-  eventId?: unknown;
   timestamp?: unknown;
-  txHash?: unknown;
-  block?: unknown;
-  chain?: unknown;
-  direction?: unknown;
-  from?: unknown;
-  fromLabel?: unknown;
-  to?: unknown;
-  toLabel?: unknown;
-  token?: unknown;
-  amountRaw?: unknown;
-  amountUsd?: unknown;
+  data?: unknown;
   [k: string]: unknown;
 }
 
@@ -30,6 +36,15 @@ interface NormalizedEvent {
 }
 
 const MONITORED_EVENTS = new Set(['whale_move']);
+
+/** Envelope fields that must be present on a monitored event for us to accept it. */
+const REQUIRED_DATA_FIELDS = ['chain', 'hash', 'wallet', 'counterparty'] as const;
+
+function asRecord(v: unknown): Record<string, unknown> | undefined {
+  return v !== null && typeof v === 'object' && !Array.isArray(v)
+    ? (v as Record<string, unknown>)
+    : undefined;
+}
 
 function toString(v: unknown): string | undefined {
   return v === undefined || v === null ? undefined : String(v);
@@ -90,10 +105,13 @@ function verifySignature(
   if (!Number.isFinite(tsNum)) return { ok: false, category: 'malformed' };
   const tsMs = tsNum > 1e11 ? tsNum : tsNum * 1000;
   const skewMs = Math.abs(Date.now() - tsMs);
+  // CryptoPulse does not reject stale deliveries on its side — this window is
+  // ours to enforce and is the only freshness guard on the path.
   if (skewMs > 5 * 60_000) return { ok: false, category: 'replay' };
+  // Verify over the exact bytes CryptoPulse signed: "<timestamp>.<raw body>".
   const expected = crypto
     .createHmac('sha256', secret)
-    .update(`${timestamp}.${rawBody.toString('utf8')}`)
+    .update(Buffer.concat([Buffer.from(`${timestamp}.`, 'utf8'), rawBody]))
     .digest('hex');
   const provided = Buffer.from(signature);
   const want = Buffer.from(expected);
@@ -103,45 +121,54 @@ function verifySignature(
 }
 
 function validateEvent(body: CryptoPulseEvent): { ok: boolean; error?: string; eventName?: string } {
-  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+  if (!asRecord(body)) {
     return { ok: false, error: 'body must be a JSON object' };
   }
   if (typeof body.event !== 'string' || body.event.trim() === '') {
     return { ok: false, error: 'missing or invalid "event" field' };
   }
-  const monitored = MONITORED_EVENTS.has(body.event);
-  if (monitored) {
-    for (const field of ['txHash', 'chain', 'from', 'to']) {
-      if (toString(body[field]) === undefined) {
-        return { ok: false, error: `missing required field "${field}" for ${body.event}` };
+  const eventName = body.event;
+  if (MONITORED_EVENTS.has(eventName)) {
+    const data = asRecord(body.data);
+    if (!data) {
+      return { ok: false, error: `missing "data" object for ${eventName}` };
+    }
+    for (const field of REQUIRED_DATA_FIELDS) {
+      if (toString(data[field]) === undefined) {
+        return { ok: false, error: `missing required field "data.${field}" for ${eventName}` };
       }
     }
   }
-  return { ok: true, eventName: body.event };
+  return { ok: true, eventName };
 }
 
-function normalize(body: CryptoPulseEvent): NormalizedEvent {
+function normalize(body: CryptoPulseEvent, deliveryId?: string): NormalizedEvent {
   const eventName = String(body.event);
-  const monitored = MONITORED_EVENTS.has(eventName);
+  const data = asRecord(body.data) ?? {};
   return {
     receivedAt: new Date().toISOString(),
     source: 'cryptopulse',
-    monitored,
+    monitored: MONITORED_EVENTS.has(eventName),
     event: {
       event: eventName,
-      eventId: toString(body.eventId) ?? undefined,
+      alertId: toString(data.alertId),
+      alertType: toString(data.alertType),
+      // Unique per delivery attempt (X-CryptoPulse-Delivery); useful for
+      // de-duplicating retries once persistence lands.
+      deliveryId: deliveryId,
       timestamp: normalizeTimestamp(body.timestamp),
-      txHash: toString(body.txHash) ?? undefined,
-      block: toNumber(body.block),
-      chain: toString(body.chain) ?? undefined,
-      direction: toString(body.direction) ?? undefined,
-      from: toString(body.from) ?? undefined,
-      fromLabel: toString(body.fromLabel) ?? undefined,
-      to: toString(body.to) ?? undefined,
-      toLabel: toString(body.toLabel) ?? undefined,
-      token: toString(body.token) ?? undefined,
-      amountRaw: toString(body.amountRaw) ?? undefined,
-      amountUsd: toNumber(body.amountUsd),
+      chain: toString(data.chain),
+      chainName: toString(data.chainName),
+      // CryptoPulse calls the tx hash `hash`; keep the canonical field name.
+      txHash: toString(data.hash),
+      wallet: toString(data.wallet),
+      walletLabel: toString(data.walletLabel),
+      counterparty: toString(data.counterparty),
+      token: toString(data.token),
+      tokenSymbol: toString(data.tokenSymbol),
+      amount: toNumber(data.amount),
+      usdValue: toNumber(data.usdValue),
+      explorerUrl: toString(data.explorerUrl),
     },
   };
 }
@@ -175,6 +202,7 @@ cryptopulseRouter.post(
       const body = req.body instanceof Buffer ? req.body : Buffer.from(JSON.stringify(req.body));
       const signatureHeader = req.headers['x-cryptopulse-signature'] as string | undefined;
       const timestampHeader = req.headers['x-cryptopulse-timestamp'] as string | undefined;
+      const deliveryId = req.headers['x-cryptopulse-delivery'] as string | undefined;
 
       const verified = verifySignature(body, signatureHeader, timestampHeader, secret);
       if (!verified.ok) {
@@ -196,7 +224,7 @@ cryptopulseRouter.post(
         return res.status(400).json({ error: 'validation_failed', detail: validated.error });
       }
 
-      const record = normalize(payload as CryptoPulseEvent);
+      const record = normalize(payload as CryptoPulseEvent, deliveryId);
       appendSink(record);
       logger.info(`cryptopulse webhook accepted (${validated.eventName}, monitored=${record.monitored})`);
 
