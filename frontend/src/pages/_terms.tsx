@@ -40,7 +40,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-bold text-on-surface mt-8 mb-4">1. Acceptance of Terms</h2>
             <p>
               By accessing or using the Kuberna Labs platform, website, SDK, or any related services
-              ("Services"), you agree to be bound by these Terms of Service. If you do not agree,
+              (&quot;Services&quot;), you agree to be bound by these Terms of Service. If you do not agree,
               you may not use the Services.
             </p>
 
