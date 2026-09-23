@@ -49,9 +49,7 @@ const LOGIN_PASSWORD = process.env.TOLLBEAM_PASSWORD ?? '';
 const SESSION_TOKEN = process.env.TOLLBEAM_SESSION_TOKEN ?? '';
 
 let activeToken = SESSION_TOKEN;
-let activeExpiresAtMs: number | undefined = parseExpiry(
-  process.env.TOLLBEAM_SESSION_EXPIRES_AT
-);
+let activeExpiresAtMs: number | undefined = parseExpiry(process.env.TOLLBEAM_SESSION_EXPIRES_AT);
 let tokenSource: 'env' | 'login' = SESSION_TOKEN ? 'env' : 'login';
 let expiryWarned = false;
 
@@ -120,7 +118,9 @@ async function login(): Promise<string> {
   activeExpiresAtMs = parseExpiry(data?.expiresAt ?? data?.expires_at ?? data?.expiresIn);
   tokenSource = 'login';
   if (activeExpiresAtMs === undefined) {
-    console.warn('  ⚠️  Login response had no usable expiresAt — proceeding without renewal checks.');
+    console.warn(
+      '  ⚠️  Login response had no usable expiresAt — proceeding without renewal checks.'
+    );
     expiryWarned = true;
   } else {
     const mins = Math.max(0, Math.round((activeExpiresAtMs - Date.now()) / 60_000));
@@ -156,7 +156,9 @@ async function api<T>(method: string, pathname: string, body?: unknown): Promise
   try {
     data = raw ? JSON.parse(raw) : null;
   } catch {
-    throw new Error(`non-JSON response (HTTP ${res.status}) from ${pathname}: ${raw.slice(0, 300)}`);
+    throw new Error(
+      `non-JSON response (HTTP ${res.status}) from ${pathname}: ${raw.slice(0, 300)}`
+    );
   }
   if (!res.ok) {
     throw new Error(
@@ -198,7 +200,10 @@ async function createPolicy(appId: string): Promise<string> {
   return policyId;
 }
 
-async function runRefusalProof(apiKey: string, appId: string): Promise<{ pass: boolean; details: Record<string, any> }> {
+async function runRefusalProof(
+  apiKey: string,
+  appId: string
+): Promise<{ pass: boolean; details: Record<string, any> }> {
   console.log(`\n=== 3/4 Run refusal proof (${RESOURCE_URL} @ ${RESOURCE_PRICE})`);
   const client = new TollbeamClient({ apiKey, baseUrl: BASE_URL, timeoutMs: 90_000 });
 
@@ -231,7 +236,10 @@ async function runRefusalProof(apiKey: string, appId: string): Promise<{ pass: b
     else throw err;
   }
   if (!refusal) {
-    return { pass: false, details: { fired: true, refused: false, note: 'payment settled or beat cap' } };
+    return {
+      pass: false,
+      details: { fired: true, refused: false, note: 'payment settled or beat cap' },
+    };
   }
 
   const budgetAfter = await client.getBudget();
@@ -241,7 +249,9 @@ async function runRefusalProof(apiKey: string, appId: string): Promise<{ pass: b
 
   const namesTxLimit =
     String(refusal.message).toLowerCase().includes('transaction') ||
-    String(refusal.body ?? '').toLowerCase().includes('transaction');
+    String(refusal.body ?? '')
+      .toLowerCase()
+      .includes('transaction');
   const noSpendWritten = numMinor(txAfter?.spent_minor) === 0;
   const rightCode = refusal.code === 'policy_limit_exceeded';
 
@@ -316,10 +326,7 @@ async function main(): Promise<void> {
     session: {
       source: tokenSource,
       token: activeToken,
-      expiresAt:
-        activeExpiresAtMs !== undefined
-          ? new Date(activeExpiresAtMs).toISOString()
-          : null,
+      expiresAt: activeExpiresAtMs !== undefined ? new Date(activeExpiresAtMs).toISOString() : null,
       handling:
         'session token is password-equivalent; stored only in this gitignored report, never in logs',
     },
@@ -338,7 +345,9 @@ async function main(): Promise<void> {
       observed_code: details.refusal?.code ?? null,
       expected_code: 'policy_limit_exceeded',
       spend_written: !(details.checks?.noSpendWritten ?? false),
-      limits_parity_demonstrated: Boolean(details.checks?.rightCode && details.checks?.namesTxLimit),
+      limits_parity_demonstrated: Boolean(
+        details.checks?.rightCode && details.checks?.namesTxLimit
+      ),
       gate:
         details.refusal?.code === 'policy_limit_exceeded'
           ? `the limits engine itself refused the zero-cap transaction (policy_limit_exceeded, names the transaction limit, spent stays 0) — the exact path a payable app takes`

@@ -24,11 +24,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  TollbeamClient,
-  TollbeamRefusalError,
-  REFUSAL_CODES,
-} from '@tollbeam/sdk';
+import { TollbeamClient, TollbeamRefusalError, REFUSAL_CODES } from '@tollbeam/sdk';
 
 const env = fs.readFileSync('.env', 'utf8');
 const API_KEY = (env.match(/^TOLLBEAM_API_KEY=(.*)$/m) ?? [])[1] ?? '';
@@ -84,15 +80,21 @@ async function main() {
   console.log(`  governed: ${before.budget.governed}`);
   console.log(`  transaction: ${JSON.stringify(before.tx)}`);
   console.log(`  daily:       ${JSON.stringify(before.daily)}`);
-  checks.push(before.budget.governed === true
-    ? 'PASS budget governed (policy active)'
-    : 'FAIL budget not governed — no policy enforced');
-  checks.push((before.tx?.limit_minor ?? 0) === 100
-    ? 'PASS default $1.00/transaction limit present'
-    : `INFO transaction limit = $${((before.tx?.limit_minor ?? 0) / 100).toFixed(2)}`);
-  checks.push((before.daily?.limit_minor ?? 0) === 500
-    ? 'PASS default $5.00 daily limit present'
-    : `INFO daily limit = $${((before.daily?.limit_minor ?? 0) / 100).toFixed(2)}`);
+  checks.push(
+    before.budget.governed === true
+      ? 'PASS budget governed (policy active)'
+      : 'FAIL budget not governed — no policy enforced'
+  );
+  checks.push(
+    (before.tx?.limit_minor ?? 0) === 100
+      ? 'PASS default $1.00/transaction limit present'
+      : `INFO transaction limit = $${((before.tx?.limit_minor ?? 0) / 100).toFixed(2)}`
+  );
+  checks.push(
+    (before.daily?.limit_minor ?? 0) === 500
+      ? 'PASS default $5.00 daily limit present'
+      : `INFO daily limit = $${((before.daily?.limit_minor ?? 0) / 100).toFixed(2)}`
+  );
 
   async function runLeg(url: string): Promise<LegOutcome> {
     const t0 = Date.now();
@@ -151,25 +153,34 @@ async function main() {
   // leg must not add anything beyond the two settled legs.
   const dailyDelta = (after.daily?.spent_minor ?? 0) - (before.daily?.spent_minor ?? 0);
 
-  checks.push(quote.settled
-    ? 'PASS quote ($0.01) settled — a spend event was written'
-    : `FAIL quote did not settle (${quote.code ?? quote.message})`);
-  checks.push(report.settled
-    ? 'PASS report ($0.25) settled — a spend event was written'
-    : `FAIL report did not settle (${report.code ?? report.message})`);
+  checks.push(
+    quote.settled
+      ? 'PASS quote ($0.01) settled — a spend event was written'
+      : `FAIL quote did not settle (${quote.code ?? quote.message})`
+  );
+  checks.push(
+    report.settled
+      ? 'PASS report ($0.25) settled — a spend event was written'
+      : `FAIL report did not settle (${report.code ?? report.message})`
+  );
 
   const auditOk =
-    !audit.settled && audit.code === 'policy_limit_exceeded' &&
+    !audit.settled &&
+    audit.code === 'policy_limit_exceeded' &&
     /600|2.50|250|cap|limit/.test(audit.message ?? '');
-  checks.push(auditOk
-    ? 'PASS audit ($2.50) refused pre-sign with policy_limit_exceeded, nothing signed'
-    : `FAIL audit expected policy_limit_exceeded, got settled=${audit.settled} code=${audit.code}`);
+  checks.push(
+    auditOk
+      ? 'PASS audit ($2.50) refused pre-sign with policy_limit_exceeded, nothing signed'
+      : `FAIL audit expected policy_limit_exceeded, got settled=${audit.settled} code=${audit.code}`
+  );
 
   const refusedAddedNothing =
     (after.daily?.spent_minor ?? 0) === (before.daily?.spent_minor ?? 0) + paidExpectedMinor;
-  checks.push(refusedAddedNothing
-    ? `PASS ledger moved by exactly $0.26 daily (${dailyDelta} minor) — quote + report only, refusal added nothing`
-    : `FAIL ledger delta ${dailyDelta} minor, expected ${paidExpectedMinor} (quote+report only)`);
+  checks.push(
+    refusedAddedNothing
+      ? `PASS ledger moved by exactly $0.26 daily (${dailyDelta} minor) — quote + report only, refusal added nothing`
+      : `FAIL ledger delta ${dailyDelta} minor, expected ${paidExpectedMinor} (quote+report only)`
+  );
 
   const verdict =
     quote.settled && report.settled && auditOk && refusedAddedNothing ? 'PASS' : 'FAIL';

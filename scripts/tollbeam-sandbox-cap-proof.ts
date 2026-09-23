@@ -29,8 +29,7 @@ const env = fs.readFileSync('.env', 'utf8');
 const API_KEY = (env.match(/^TOLLBEAM_API_KEY=(.*)$/m) ?? [])[1] ?? '';
 const BASE_URL = 'https://api.tollbeam.com';
 const RESOURCE_URL =
-  process.env.TOLLBEAM_RESOURCE_URL ??
-  'https://seller.tollbeam.com/priced/audit';
+  process.env.TOLLBEAM_RESOURCE_URL ?? 'https://seller.tollbeam.com/priced/audit';
 const ATTEMPT_MINOR = 250; // $2.50 — above the default $1.00 transaction cap
 
 interface AttemptInfo {
@@ -101,7 +100,9 @@ async function attemptOverride(): Promise<AttemptInfo> {
       executionId: typeof json?.executionId === 'string' ? json.executionId : null,
       settlement:
         json?.paid === true
-          ? (typeof json?.settlement === 'object' ? json?.settlement : null)
+          ? typeof json?.settlement === 'object'
+            ? json?.settlement
+            : null
           : null,
       body: json,
       elapsedMs,
@@ -181,7 +182,9 @@ async function main() {
   } else if (attempt.settlement) {
     checks.push('FAIL attempt SETTLED — expected a refusal against the $1.00 limit');
   } else {
-    checks.push(`FAIL unexpected result: ${attempt.code ?? 'no code'} (${attempt.message ?? 'no message'})`);
+    checks.push(
+      `FAIL unexpected result: ${attempt.code ?? 'no code'} (${attempt.message ?? 'no message'})`
+    );
   }
 
   const refusedMsg = (attempt.message ?? '').toLowerCase();
@@ -189,13 +192,12 @@ async function main() {
   const namesLimit =
     /transaction|limit|refused|exceeded|cap/.test(refusedMsg) ||
     (!!breach && Object.keys(breach).length > 0);
-  const namesAttempt = /2\.50|250|\$2\.50/.test(refusedMsg) || (Number(breach?.attempted_minor) === ATTEMPT_MINOR);
+  const namesAttempt =
+    /2\.50|250|\$2\.50/.test(refusedMsg) || Number(breach?.attempted_minor) === ATTEMPT_MINOR;
   if (attempt.refused && attempt.code === 'policy_limit_exceeded' && namesLimit) {
     checks.push(`PASS refusal names the limit${breach ? ` (${JSON.stringify(breach)})` : ''}`);
   } else {
-    checks.push(
-      `INFO refusal body: ${JSON.stringify((attempt.body as any)).slice(0, 300)}`
-    );
+    checks.push(`INFO refusal body: ${JSON.stringify(attempt.body as any).slice(0, 300)}`);
   }
 
   console.log('\n--- Post-attempt verification (no spend event written) ---');
@@ -238,10 +240,25 @@ async function main() {
         baseline: {
           governed: budget.governed,
           policy: budget.policy,
-          txLimit: tx ? { spent_minor: tx.spent_minor, limit_minor: tx.limit_minor, remaining_minor: tx.remaining_minor } : null,
+          txLimit: tx
+            ? {
+                spent_minor: tx.spent_minor,
+                limit_minor: tx.limit_minor,
+                remaining_minor: tx.remaining_minor,
+              }
+            : null,
         },
         attempt,
-        postState: { tx: txAfter ? { spent_minor: txAfter.spent_minor, limit_minor: txAfter.limit_minor, remaining_minor: txAfter.remaining_minor } : null, executionsToday: filedAfter.length },
+        postState: {
+          tx: txAfter
+            ? {
+                spent_minor: txAfter.spent_minor,
+                limit_minor: txAfter.limit_minor,
+                remaining_minor: txAfter.remaining_minor,
+              }
+            : null,
+          executionsToday: filedAfter.length,
+        },
         checks,
         verdict,
       },
@@ -254,10 +271,7 @@ async function main() {
   process.exit(verdict === 'PASS' ? 0 : 2);
 }
 
-function attemptsWriteSpend(
-  settled: any[],
-  spentAfter: number | undefined
-): boolean {
+function attemptsWriteSpend(settled: any[], spentAfter: number | undefined): boolean {
   if (Array.isArray(settled) && settled.length > 0) return true;
   return typeof spentAfter === 'number' && spentAfter > 0;
 }
