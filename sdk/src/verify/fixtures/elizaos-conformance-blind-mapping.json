@@ -1,0 +1,45 @@
+{
+  "bundle_version": "kuberna-elizaos-conformance-blind-v1",
+  "description": "Delayed mapping for the blinded companion bundle. Release after both sides have posted their predicted verdict tables. Pairs each opaque case id with the source case id, expected verdict, assertion text, and mutation provenance.",
+  "cases": {
+    "case-d717f69912c20896": {
+      "id": "positive-authority-work-link",
+      "expected": "pass",
+      "assertion": "authority.factId === work.preActionFactId; trust-model boundary (chain_derivable vs issuer_asserted) preserved; coverage.scope declares what the claim ranges over"
+    },
+    "case-ac145f79b94cc1d6": {
+      "id": "negative-factlink-drift",
+      "expected": "fail",
+      "assertion": "one-edit mutation of positive-authority-work-link: only work.preActionFactId changed (same 32-byte length, different value). Mismatch fails closed before subject/version checks"
+    },
+    "case-b8771640cae54af1": {
+      "id": "negative-chain-derivable-with-issuer-fields",
+      "expected": "fail",
+      "assertion": "chain_derivable authority carrying issuer_asserted fields (collectorSignature, collectorKeyId) fails closed \u2014 trust-model downgrade detection"
+    },
+    "case-97466d498506414c": {
+      "id": "negative-unknown-scheme",
+      "expected": "fail",
+      "assertion": "one-edit mutation of positive-authority-work-link: only work.scheme changed to unregistered value. Same issuer, same key, same body, same canonicalisation \u2014 the only variable is the discriminant. Allow-list invariant: KNOWN.has(tag) is the accept path, everything else is reject.",
+      "mutation_of": "positive-authority-work-link",
+      "mutated_field": "work.scheme"
+    },
+    "case-e4a346c3717dcf56": {
+      "id": "positive-degraded-coverage",
+      "expected": "pass",
+      "assertion": "coverage.complete: 'unknown' is reachable and not the default. Claim passes with degraded coverage \u2014 the consumer sees scope declared but no observation count. This proves the enum member is emitted, not just declared in the type."
+    },
+    "case-746dc543ab1a11b0": {
+      "id": "positive-chain-integrity",
+      "expected": "pass",
+      "assertion": "original chain: integrity valid, signatures valid \u2014 must pass. This is the control that makes the resealed negative meaningful."
+    },
+    "case-e901f43bd5080afa": {
+      "id": "negative-resealed-chain",
+      "expected": "fail",
+      "assertion": "one-edit mutation of positive-chain-integrity: only link_signatures changed from valid to invalid. Chain where content is adjusted and hashes recomputed passes chain integrity but per-link signature verification fails \u2014 resealed chain rejected.",
+      "mutation_of": "positive-chain-integrity",
+      "mutated_field": "authority.link_signatures"
+    }
+  }
+}
