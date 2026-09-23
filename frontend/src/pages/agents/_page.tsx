@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { Cpu, Play, Square, Settings, Plus, Bot } from 'lucide-react';
 import Link from 'next/link';
@@ -95,7 +95,11 @@ export default function AgentsPage() {
 
   return (
     <Layout variant="dashboard">
-      <Head><title>Agents — Kuberna Labs</title></Head>
+      <Seo
+        title="Agents"
+        description="Browse Kuberna Labs autonomous AI agents: deploy agentic Web3 solutions with TEE-backed security, cross-chain intents, and x402 payment rails."
+        path="/agents"
+      />
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-8">
           <div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import Link from 'next/link';
 import { Layout } from '@/components/layout/Layout';
 import { FileText, Code, BookOpen, Zap, ChevronRight, Copy, Check, Terminal, Shield, Link2 } from 'lucide-react';
@@ -31,7 +31,11 @@ function CodeBlock({ code }: { code: string }) {
 export default function DocsPage() {
   return (
     <Layout>
-      <Head><title>Documentation — Kuberna Labs</title></Head>
+      <Seo
+        title="Documentation"
+        description="Kuberna Labs developer documentation: SDK reference, x402 payment integration, TEE deployment, cross-chain intents, and conformance verification."
+        path="/docs"
+      />
       <div className="flex min-h-screen">
         <aside className="w-64 bg-surface border-r border-outline/10 fixed h-screen overflow-y-auto hidden lg:block">
           <div className="p-6">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { Mail, MapPin, Send, Loader2 } from 'lucide-react';
 
@@ -14,7 +14,11 @@ export default function ContactPage() {
 
   return (
     <Layout>
-      <Head><title>Contact — Kuberna Labs</title></Head>
+      <Seo
+        title="Contact"
+        description="Contact Kuberna Labs for partnerships, enterprise deployments, or questions about agentic Web3 and autonomous AI agents."
+        path="/contact"
+      />
       <section className="relative overflow-hidden pt-28 pb-20 px-6 text-center bg-surface">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
