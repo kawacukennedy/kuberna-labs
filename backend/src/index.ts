@@ -130,7 +130,11 @@ if (!fs.existsSync(frontendDistPath)) {
 logger.info(`Serving static files from: ${path.resolve(frontendDistPath)}`);
 app.use(express.static(frontendDistPath));
 
-app.use('*', (req, res, next) => {
+// Note: do NOT use `app.use('*', ...)` here — Express strips `req.path`/`req.url`
+// to `/` when a string path is passed to app.use(), which would silently disable the
+// `/api` check below and make every GET resolve to frontend/out/index.html (200).
+// A bare middleware (no path argument) matches every request and preserves req.path.
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     res.status(404).json({
       success: false,
