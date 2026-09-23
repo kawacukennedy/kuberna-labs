@@ -8,12 +8,13 @@ Kuberna Labs publishes **synthetic interoperability evidence** — not certifica
 
 ## Verification Suite Status
 
-| Artifact                                 | Location                                                                                                                 | Status                 |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
-| **Conformance fixture bundle** (7 cases) | [`sdk/src/verify/fixtures/elizaos-conformance-fixtures.json`](sdk/src/verify/fixtures/elizaos-conformance-fixtures.json) | ✅ 20/20 tests passing |
-| **Verification test suite**              | [`sdk/test/verify.test.ts`](sdk/test/verify.test.ts)                                                                     | ✅ All CI green        |
-| **JCS canonicalization**                 | [`sdk/src/verify/jcs.ts`](sdk/src/verify/jcs.ts)                                                                         | ✅ Tested              |
-| **SilentVerify E2E pipeline**            | [`scripts/test-silentverify-pipeline.ts`](scripts/test-silentverify-pipeline.ts)                                         | ✅ 7/7 stages passing  |
+| Artifact                                 | Location                                                                                                                 | Status                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| **Conformance fixture bundle** (7 cases) | [`sdk/src/verify/fixtures/elizaos-conformance-fixtures.json`](sdk/src/verify/fixtures/elizaos-conformance-fixtures.json) | ✅ 20/20 tests passing                                          |
+| **Verification test suite**              | [`sdk/test/verify.test.ts`](sdk/test/verify.test.ts)                                                                     | ✅ All CI green                                                 |
+| **JCS canonicalization**                 | [`sdk/src/verify/jcs.ts`](sdk/src/verify/jcs.ts)                                                                         | ✅ Tested                                                       |
+| **SilentVerify E2E pipeline**            | [`scripts/test-silentverify-pipeline.ts`](scripts/test-silentverify-pipeline.ts)                                         | ✅ 7/7 stages passing                                           |
+| **Tollbeam customer-parity runner**      | [`scripts/tollbeam-customer-parity.ts`](scripts/tollbeam-customer-parity.ts)                                             | 🔄 Three legs verified · deposit flow armed (awaiting endpoint) |
 
 The fixture bundle is **pinned at commit `9bd508e`** on the conformance PR branch. Every negative vector carries `mutation_of` + `mutated_field` provenance, so a failing test proves the invariant was exercised — not that a test ran against nothing.
 
@@ -60,6 +61,12 @@ Kuberna was the first external team to put real payments through the Tollbeam x4
 - **Kuberna-side harness:** [`scripts/tollbeam-harness.ts`](scripts/tollbeam-harness.ts)
 - **Reports:** `reports/tollbeam-base-sepolia-burst-1787408671649.json`
 - **Kuberna-side refusal test:** [`scripts/tollbeam-refusal-test.ts`](scripts/tollbeam-refusal-test.ts)
+- **Customer-path parity runner (three legs + deposit flow):** [`scripts/tollbeam-customer-parity.ts`](scripts/tollbeam-customer-parity.ts) — pre-positioned so the promised re-run is one command once a customer-facing path exists:
+  ```bash
+  TOLLBEAM_BASE_URL=<endpoint> TOLLBEAM_API_KEY=<key> npx tsx scripts/tollbeam-customer-parity.ts
+  ```
+  Three priced legs are verified by this harness today; the deposit-flow section reports `pending-endpoint` until Tollbeam exposes channel endpoints, and never claims otherwise.
+- **Registry observation (Tollbeam survey, Sep 2026):** of ~16,000 public x402 registry listings, 47 use batch settlement across 8 hosts (≈0.3%) vs 2,067 exact across 8 hosts. Batch is a real capability with independent adoption; exact remains the production requirement. Source: [x402 docs](https://docs.x402.org/schemes/batch-settlement) · [public registry](https://docs.x402.org/extensions/bazaar)
 
 ### 5. Rooster Agents — Founding Agent #1 sandbox lifecycle
 
