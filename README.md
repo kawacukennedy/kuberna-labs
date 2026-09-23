@@ -20,6 +20,8 @@
 
 [![Star History](/docs/assets/star-history.svg)](https://star-history.com/#kawacukennedy/kuberna-labs&Date)
 
+> **Market signal (Tollbeam survey of the [public x402 registry](https://docs.x402.org/extensions/bazaar), Sep 2026):** ~16,000 listed resources — **batch settlement = 47 listings across 8 hosts (≈0.3%)**; exact settlement = 2,067 across 8 hosts. Batch is real; **exact is the production requirement.**
+
 </div>
 
 ---
@@ -62,14 +64,15 @@ Kuberna Labs gives AI agents secure execution rails across any blockchain: agent
 
 This repo is **build in public**. Numbers below are measured, not aspirational.
 
-| Milestone            | Result                                                      | Evidence                                     |
-| -------------------- | ----------------------------------------------------------- | -------------------------------------------- |
-| **x402 payments**    | 5 payments settled on Base mainnet ($0.01 each, real money) | `reports/`, settlement hashes on BaseScan    |
-| **Burst load test**  | 128/128 UserOps submitted, 0 failures                       | `reports/tollbeam-base-sepolia-burst-*.json` |
-| **Conformance**      | 20/20 verification vectors pass                             | [`CONFORMANCE.md`](./CONFORMANCE.md)         |
-| **SilentVerify E2E** | 7/7 pipeline stages passing                                 | `scripts/test-silentverify-pipeline.ts`      |
-| **Contract tests**   | 33+ Dispute contract edge-case guards                       | `test/Dispute.ts`                            |
-| **Discord ops**      | CI + star alerts live, 4 scheduled broadcasts               | `.github/workflows/`                         |
+| Milestone            | Result                                                                              | Evidence                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **x402 payments**    | 5 payments settled on Base mainnet ($0.01 each, real money)                         | `reports/`, settlement hashes on BaseScan                                                 |
+| **Burst load test**  | 128/128 UserOps submitted, 0 failures                                               | `reports/tollbeam-base-sepolia-burst-*.json`                                              |
+| **Batch settlement** | 47/~16k x402 registry listings (≈0.3%) across 8 hosts vs 2,067 exact across 8 hosts | [public x402 registry](https://docs.x402.org/extensions/bazaar), Tollbeam survey Sep 2026 |
+| **Conformance**      | 20/20 verification vectors pass                                                     | [`CONFORMANCE.md`](./CONFORMANCE.md)                                                      |
+| **SilentVerify E2E** | 7/7 pipeline stages passing                                                         | `scripts/test-silentverify-pipeline.ts`                                                   |
+| **Contract tests**   | 33+ Dispute contract edge-case guards                                               | `test/Dispute.ts`                                                                         |
+| **Discord ops**      | CI + star alerts live, 4 scheduled broadcasts                                       | `.github/workflows/`                                                                      |
 
 ---
 
