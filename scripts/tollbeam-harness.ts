@@ -279,8 +279,17 @@ async function runBatch(args: {
   };
 
   let sharedGas: { maxFeePerGas: bigint; maxPriorityFeePerGas: bigint } | null = null;
+  const preFetchedNonces = new Map<number, bigint>();
+
   if (mode === 'burst') {
     sharedGas = await fetchGasPrices(client);
+    console.log(`pre-fetching ${count} nonces sequentially...`);
+    for (let i = 0; i < count; i++) {
+      const nonceKey = BigInt(i + 1);
+      const nonce = await getEntryPointNonce(client, SIMPLE_ACCOUNT, nonceKey);
+      preFetchedNonces.set(i, nonce);
+    }
+    console.log(`all ${count} nonces fetched`);
   }
 
   const run = async (index: number) => {
@@ -288,8 +297,10 @@ async function runBatch(args: {
     const rawErrors: string[] = [];
 
     const gas = sharedGas ?? (await fetchGasPrices(client));
-    const nonceKey = mode === 'burst' ? BigInt(index + 1) : 0n;
-    const nonce = await getEntryPointNonce(client, SIMPLE_ACCOUNT, nonceKey);
+    const nonce =
+      mode === 'burst'
+        ? preFetchedNonces.get(index)!
+        : await getEntryPointNonce(client, SIMPLE_ACCOUNT, 0n);
     const userOp: Partial<UserOperation> = {
       sender: SIMPLE_ACCOUNT,
       nonce: `0x${nonce.toString(16)}`,

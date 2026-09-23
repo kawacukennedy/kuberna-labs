@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { CourseCard } from '@/components/shared/CourseCard';
 import { Search, SlidersHorizontal, Grid, List, Sparkles } from 'lucide-react';
@@ -49,7 +49,11 @@ export default function CoursesPage() {
 
   return (
     <Layout>
-      <Head><title>Courses — Kuberna Labs</title></Head>
+      <Seo
+        title="Courses"
+        description="Kuberna Labs courses: learn to build, deploy, and monetize autonomous AI agents across Web3 — from SDK fundamentals to TEE deployment and x402 integration."
+        path="/courses"
+      />
       <section className="relative overflow-hidden pt-28 pb-16 px-6 text-center bg-surface">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-fixed/10 via-transparent to-transparent" />
         <motion.div

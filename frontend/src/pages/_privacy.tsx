@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { Scale, Shield, Lock } from 'lucide-react';
@@ -7,7 +7,12 @@ import { Scale, Shield, Lock } from 'lucide-react';
 export default function LegalPage() {
   return (
     <Layout>
-      <Head><title>Privacy Policy — Kuberna Labs</title></Head>
+      <Seo
+        title="Privacy Policy"
+        description="Kuberna Labs privacy policy: how we collect, use, and protect your data on the agentic Web3 platform."
+        path="/privacy"
+        noindex
+      />
       <div className="flex min-h-screen">
         <aside className="w-64 bg-surface border-r border-outline/10 fixed h-screen overflow-y-auto hidden lg:block">
           <div className="p-6">

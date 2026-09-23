@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import { ArrowRight, Shield, Zap, Globe, Code, Building2, ChevronRight } from 'lucide-react';
@@ -20,7 +20,11 @@ const cases = [
 export default function EnterprisePage() {
   return (
     <Layout>
-      <Head><title>Enterprise — Kuberna Labs</title></Head>
+      <Seo
+        title="Enterprise"
+        description="Deploy autonomous AI agents at enterprise scale: TEE-backed security, x402 payments, cross-chain intents, and conformance-tested infrastructure from Kuberna Labs."
+        path="/enterprise"
+      />
       <section className="relative overflow-hidden pt-28 pb-20 px-6 text-center bg-surface">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-fixed/10 via-transparent to-transparent" />
         <div className="max-w-4xl mx-auto">
