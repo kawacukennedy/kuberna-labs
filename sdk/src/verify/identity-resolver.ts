@@ -21,10 +21,12 @@ const KNOWN_DEPLOYMENTS: Record<number, string> = {
 
 export class IdentityResolver {
   private cache: Map<string, AgentIdentityRecord>;
+  private expirations: Map<string, number>;
   private cacheTtl: number;
 
   constructor(cacheTtlMs: number = 300_000) {
     this.cache = new Map();
+    this.expirations = new Map();
     this.cacheTtl = cacheTtlMs;
   }
 
@@ -38,13 +40,30 @@ export class IdentityResolver {
     return new ethers.Contract(this.contractAddress(chainId), REPUTATION_NFT_ABI, provider);
   }
 
+  private readCache(key: string): AgentIdentityRecord | undefined {
+    const record = this.cache.get(key);
+    if (!record) return undefined;
+
+    const expiresAt = this.expirations.get(key);
+    if (expiresAt === undefined || expiresAt <= Date.now()) {
+      this.cache.delete(key);
+      this.expirations.delete(key);
+      return undefined;
+    }
+
+    return record;
+  }
+
   async resolveAgent(
     tokenId: bigint,
     provider: Provider,
     chainId: number = 84532
   ): Promise<AgentIdentityRecord> {
     const cacheKey = `${chainId}:${tokenId.toString()}`;
-    const cached = this.cache.get(cacheKey);
+    // Expiry is checked on read rather than via a setTimeout: a timer would
+    // evict a re-fetched entry (deleting a fresher record) and would also keep
+    // the event loop alive for the lifetime of every lookup.
+    const cached = this.readCache(cacheKey);
     if (cached) return cached;
 
     const c = this.contract(provider, chainId);
@@ -75,7 +94,7 @@ export class IdentityResolver {
     };
 
     this.cache.set(cacheKey, record);
-    setTimeout(() => this.cache.delete(cacheKey), this.cacheTtl);
+    this.expirations.set(cacheKey, Date.now() + this.cacheTtl);
 
     return record;
   }
@@ -87,6 +106,9 @@ export class IdentityResolver {
   ): Promise<string> {
     const payload = JSON.stringify({ intent_id: intentId, agent_id: agentId });
     const hash = await jcsHash(JSON.parse(payload));
+    // Sign the 32 raw digest bytes. signMessage() would otherwise take the hex
+    // string, UTF-8 encode its characters and sign that instead, producing a
+    // commitment no verifier could reproduce from the digest.
     const signature = await signer.signMessage(ethers.getBytes(hash));
     return signature;
   }
@@ -101,6 +123,7 @@ export class IdentityResolver {
 
   clearCache(): void {
     this.cache.clear();
+    this.expirations.clear();
   }
 }
 
