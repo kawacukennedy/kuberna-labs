@@ -290,7 +290,10 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
      */
     function withdrawTokens(address token, address recipient, uint256 amount) external onlyOwner {
         require(recipient != address(0), "Invalid recipient");
-        require(IERC20(token).balanceOf(address(this)) - amount >= totalTokenEscrowed[token], "Cannot withdraw escrowed tokens");
+        require(
+            IERC20(token).balanceOf(address(this)) - amount >= totalTokenEscrowed[token],
+            "Cannot withdraw escrowed tokens"
+        );
         IERC20(token).safeTransfer(recipient, amount);
     }
 
