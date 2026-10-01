@@ -5,6 +5,8 @@ export const ESCROW_ABI = [
   "function submitCompletion(bytes32 escrowId, bytes32 proofHash) external",
   "function releaseFunds(bytes32 escrowId) external",
   "function raiseDispute(bytes32 escrowId, string calldata reason) external",
+  "function expireAndRefund(bytes32 escrowId) external",
+  "function expireAssignedEscrow(bytes32 escrowId) external",
   "function getEscrow(bytes32 escrowId) external view returns (tuple(address requester, address executor, address token, uint256 deadline, uint256 amount, uint256 fee, uint8 status, string intentId))",
   "function escrows(bytes32) external view returns (address, address, address, uint256, uint256, uint256, uint8, string)",
 ];
@@ -108,14 +110,23 @@ export const WORKSHOP_ABI = [
 ];
 
 export const DISPUTE_ABI = [
-  "function openDispute(bytes32 escrowId, address requester, address executor, string calldata reason, string calldata requesterEvidence) external returns (bytes32)",
-  "function submitEvidence(bytes32 disputeId, string calldata evidence) external",
-  "function castVote(bytes32 disputeId, uint8 vote) external",
-  "function resolveDispute(bytes32 disputeId) external",
-  "function appealDispute(bytes32 disputeId) external",
-  "function registerJuror() external payable",
+  "function openDispute(bytes32 escrowId, address requester, address executor, string calldata reason) external payable onlyOwner returns (bytes32)",
+  "function submitEvidence(bytes32 disputeId, string calldata evidence, bool isRequester) external",
+  "function vote(bytes32 disputeId, uint8 support) external",
+  "function resolveDispute(bytes32 disputeId) external onlyOwner",
+  "function appealDispute(bytes32 disputeId) external payable returns (bytes32 roundId)",
+  "function claimAppealRefund(bytes32 roundId) external",
+  "function registerJuror(address juror) external payable",
+  "function unstakeJuror() external",
   "function claimReward(bytes32 disputeId) external",
+  "function getDispute(bytes32 disputeId) external view returns (tuple(bytes32 escrowId, address requester, address executor, string reason, string requesterEvidence, string executorEvidence, uint256 createdAt, uint256 votingEndTime, uint256 requesterVotes, uint256 executorVotes, uint8 status, uint8 result, bool appealed))",
   "function disputes(bytes32) external view returns (tuple(bytes32 escrowId, address requester, address executor, string reason, string requesterEvidence, string executorEvidence, uint256 createdAt, uint256 votingEndTime, uint256 requesterVotes, uint256 executorVotes, uint8 status, uint8 result, bool appealed))",
+  "function activeDisputeByEscrow(bytes32) external view returns (bytes32)",
+  "function disputeRewardPools(bytes32) external view returns (uint256)",
+  "function rewardsPaid(bytes32) external view returns (uint256)",
+  "function appealFees(bytes32) external view returns (uint256)",
+  "function appealPayers(bytes32) external view returns (address)",
+  "function appealOf(bytes32) external view returns (bytes32)",
   "function hasVoted(bytes32, address) external view returns (bool)",
 ];
 
@@ -125,7 +136,6 @@ export const TREASURY_ABI = [
   "function castVote(uint256 id, bool support) external",
   "function executeProposal(uint256 id) external",
   "function cancelProposal(uint256 id) external",
-  "function setVotingPower(address account, uint256 power) external",
   "function getProposal(uint256 id) external view returns (address, address, uint256, string memory, uint256, uint256, bool, bool, uint256)",
   "function hasVotedOnProposal(uint256 id, address voter) external view returns (bool)",
 ];
@@ -135,11 +145,13 @@ export const FEE_MANAGER_ABI = [
   "function addRecipient(address account, uint256 share) external",
   "function removeRecipient(address account) external",
   "function distributeFees(address token, uint256 amount) external",
+  "function withdrawPlatformFees(address token, uint256 amount) external",
   "function addTier(uint256 threshold, uint256 percentage) external",
   "function removeTier(uint256 index) external",
   "function getTierFee(uint256 volume) external view returns (uint256)",
   "function getRecipients() external view returns (tuple(address account, uint256 share, bool active)[])",
   "function platformFee() external view returns (uint256)",
+  "function pendingPlatformFees(address) external view returns (uint256)",
 ];
 
 export const GOVERNANCE_TOKEN_ABI = [
@@ -199,8 +211,17 @@ export const CROSSCHAIN_ROUTER_ABI = [
   "function setChainSupport(uint256 chainId, bool supported) external",
   "function setBridgeFee(uint256 newFee) external",
   "function setSlippageTolerance(uint256 tolerance) external",
+  "function setTokenMapping(uint256 chainId, address localToken, address remoteToken) external",
+  "function emergencyHalt() external",
+  "function resume() external",
+  "function withdrawFees(address recipient, uint256 amount) external",
+  "function withdrawTokens(address token, address recipient, uint256 amount) external",
   "function getMinReceived(uint256 amount) external view returns (uint256)",
   "function getMessage(bytes32 messageId) external view returns (tuple(bytes32 messageId, uint256 sourceChainId, uint256 destinationChainId, address sender, address recipient, address token, uint256 amount, bytes data, uint256 nonce, bool executed, uint256 timestamp))",
   "function supportedChains(uint256) external view returns (bool)",
   "function bridgeFee() external view returns (uint256)",
+  "function senderNativeEscrow(address) external view returns (uint256)",
+  "function senderTokenEscrow(address, address) external view returns (uint256)",
+  "function totalNativeEscrowed() external view returns (uint256)",
+  "function totalTokenEscrowed(address) external view returns (uint256)",
 ];
