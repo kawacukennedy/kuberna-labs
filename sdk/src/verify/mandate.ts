@@ -61,6 +61,14 @@ export function hasMandateSignature(mandate: Mandate): boolean {
 }
 
 /**
+ * @deprecated Renamed to {@link hasMandateSignature}. Kept as a
+ * backward-compatible alias so existing callers keep compiling; it has always
+ * been — and remains — a presence check only, never a cryptographic
+ * verification.
+ */
+export const verifyMandateSignature = hasMandateSignature;
+
+/**
  * Canonical pre-image of a mandate, i.e. the mandate with its signature
  * removed. Exposed so callers can compute the exact bytes an agent must have
  * signed in order to verify a mandate.
