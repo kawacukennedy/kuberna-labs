@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import Image from 'next/image';
 import { Layout } from '@/components/layout/Layout';
 import { ArrowRight, Calendar, User } from 'lucide-react';
@@ -37,7 +37,11 @@ const posts = [
 export default function BlogPage() {
   return (
     <Layout>
-      <Head><title>Blog — Kuberna Labs</title></Head>
+      <Seo
+        title="Blog"
+        description="Kuberna Labs blog: engineering deep-dives on agentic Web3, x402 payments, TEEs, decentralized AI agents, and conformance testing."
+        path="/blog"
+      />
       <section className="relative overflow-hidden pt-28 pb-16 px-6 text-center bg-surface">
         <div className="max-w-4xl mx-auto">
           <span className="px-4 py-1.5 rounded-full bg-primary-container text-on-primary font-bold text-xs uppercase tracking-widest mb-6 inline-flex">

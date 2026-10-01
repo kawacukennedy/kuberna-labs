@@ -35,9 +35,7 @@ export class MandateBuilder {
     };
 
     if (options.sign) {
-      const forHash = { ...mandate };
-      delete forHash.signature;
-      const hash = await jcsHash(forHash);
+      const hash = await mandateSigningPreimage(mandate);
       mandate.signature = await options.sign(hash);
     }
 
@@ -49,6 +47,34 @@ export class MandateBuilder {
   }
 }
 
-export function verifyMandateSignature(mandate: Mandate): boolean {
+/**
+ * Reports whether a mandate carries a signature.
+ *
+ * This is a presence check ONLY. Signature material is opaque here (the SDK
+ * does not know the agent's key or signature scheme), so this function cannot
+ * and does not establish that a mandate is authentic. Callers must verify the
+ * signature against the agent's registered public key themselves; treat any
+ * caller that assumes this implies validity as vulnerable.
+ */
+export function hasMandateSignature(mandate: Mandate): boolean {
   return mandate.signature !== undefined && mandate.signature.length > 0;
+}
+
+/**
+ * @deprecated Renamed to {@link hasMandateSignature}. Kept as a
+ * backward-compatible alias so existing callers keep compiling; it has always
+ * been — and remains — a presence check only, never a cryptographic
+ * verification.
+ */
+export const verifyMandateSignature = hasMandateSignature;
+
+/**
+ * Canonical pre-image of a mandate, i.e. the mandate with its signature
+ * removed. Exposed so callers can compute the exact bytes an agent must have
+ * signed in order to verify a mandate.
+ */
+export async function mandateSigningPreimage(mandate: Mandate): Promise<string> {
+  const unsigned = { ...mandate };
+  delete unsigned.signature;
+  return jcsHash(unsigned);
 }

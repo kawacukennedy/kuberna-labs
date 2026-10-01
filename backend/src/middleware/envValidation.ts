@@ -9,6 +9,9 @@ interface EnvVar {
 const requiredEnvVars: EnvVar[] = [
   { name: 'DATABASE_URL', required: false },
   { name: 'JWT_SECRET', required: true, pattern: /^(?!.*(kuberna-secret-key|change-in-production|your-secret)).{16,}$/ },
+  // The refresh secret must be strong and distinct on its own; without this
+  // check a JWT_SECRET-derived fallback could silently protect refresh tokens.
+  { name: 'JWT_REFRESH_SECRET', required: false, pattern: /^(?!.*(kuberna-secret-key|change-in-production|your-secret)).{16,}$/ },
   { name: 'REDIS_URL', required: false },
   { name: 'NATS_URL', required: false },
   { name: 'PRIVATE_KEY', required: false },
@@ -53,6 +56,19 @@ export function validateEnvironment(): void {
 
   if (missingVars.length > 0) {
     logger.warn(`WARNING: Missing environment variables: ${missingVars.join(', ')}`);
+
+    if (process.env.NODE_ENV === 'production') {
+      logger.error('Production environment check failed — exiting');
+      process.exit(1);
+    }
+  }
+
+  // JWT_REFRESH_SECRET must be set explicitly in production. auth.ts would
+  // otherwise fall back to a value derived from JWT_SECRET, which means a
+  // single leaked signing key also compromises every refresh token.
+  if (process.env.NODE_ENV === 'production' && !process.env.JWT_REFRESH_SECRET) {
+    logger.error('JWT_REFRESH_SECRET is required in production — exiting');
+    process.exit(1);
   }
 
   if (insecureVars.length > 0) {

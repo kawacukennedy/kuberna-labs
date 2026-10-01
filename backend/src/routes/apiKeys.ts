@@ -5,8 +5,11 @@ import { prisma } from "../utils/prisma.js";
 import { createError } from "../middleware/errorHandler.js";
 import type { AuthRequest } from "../types/express.d.js";
 import { authenticate } from "../middleware/auth.js";
+import { apiLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
+
+const MAX_PAGE_SIZE = 100;
 
 const createApiKeySchema = z.object({
   name: z.string().min(1).max(100),
@@ -14,18 +17,45 @@ const createApiKeySchema = z.object({
   expiresAt: z.string().datetime().optional(),
 });
 
+/**
+ * Generates a raw API key and returns { rawKey, prefix, hash }.
+ * The database only ever stores the SHA-256 hash of the raw key.
+ */
+function generateKeyPair(): { rawKey: string; prefix: string; hash: string } {
+  const rawKey = crypto.randomBytes(32).toString("hex");
+  const hash = crypto.createHash("sha256").update(rawKey).digest("hex");
+  return { rawKey, prefix: rawKey.substring(0, 8), hash };
+}
+
+/**
+ * Extracts the raw key material from an accepted key string. Keys are issued
+ * as `kn_<prefix>_<raw>` but callers may submit either the full form or the
+ * bare 64-character hex string.
+ */
+function extractRawKey(key: string): string | null {
+  const candidate = key.startsWith("kn_") ? key.substring(3) : key;
+  const rawPart = candidate.split("_").pop() || candidate;
+
+  if (!/^[0-9a-f]{64}$/.test(rawPart)) {
+    return null;
+  }
+
+  return rawPart;
+}
+
 router.get(
   "/",
   authenticate,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { page = 1, limit = 20 } = req.query;
+      const page = Math.max(1, Number(req.query.page) || 1);
+      const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(req.query.limit) || 20));
 
       const [apiKeys, total] = await Promise.all([
         prisma.apiKey.findMany({
           where: { userId: req.user!.id },
-          skip: (Number(page) - 1) * Number(limit),
-          take: Number(limit),
+          skip: (page - 1) * limit,
+          take: limit,
           select: {
             id: true,
             name: true,
@@ -43,10 +73,10 @@ router.get(
       res.json({
         apiKeys,
         pagination: {
-          page: Number(page),
-          limit: Number(limit),
+          page,
+          limit,
           total,
-          pages: Math.ceil(total / Number(limit)),
+          pages: Math.ceil(total / limit),
         },
       });
     } catch (error) {
@@ -62,15 +92,13 @@ router.post(
     try {
       const data = createApiKeySchema.parse(req.body);
 
-      const key = crypto.randomBytes(32).toString("hex");
-      const keyPrefix = key.substring(0, 8);
-      const keyHash = crypto.createHash("sha256").update(key).digest("hex");
+      const { rawKey, prefix, hash } = generateKeyPair();
 
       const apiKey = await prisma.apiKey.create({
         data: {
           userId: req.user!.id,
           name: data.name,
-          key: `kn_${keyPrefix}_${keyHash}`,
+          key: hash,
           permissions: data.permissions,
           expiresAt: data.expiresAt ? new Date(data.expiresAt) : null,
         },
@@ -79,7 +107,7 @@ router.post(
       res.status(201).json({
         id: apiKey.id,
         name: apiKey.name,
-        key: `kn_${keyPrefix}_${key}`,
+        key: `kn_${prefix}_${rawKey}`,
         permissions: apiKey.permissions,
         expiresAt: apiKey.expiresAt,
         createdAt: apiKey.createdAt,
@@ -137,21 +165,19 @@ router.post(
         throw createError("Not authorized", 403, "FORBIDDEN");
       }
 
-      const key = crypto.randomBytes(32).toString("hex");
-      const keyPrefix = key.substring(0, 8);
-      const keyHash = crypto.createHash("sha256").update(key).digest("hex");
+      const { rawKey, prefix, hash } = generateKeyPair();
 
       const updated = await prisma.apiKey.update({
         where: { id },
         data: {
-          key: `kn_${keyPrefix}_${keyHash}`,
+          key: hash,
         },
       });
 
       res.json({
         id: updated.id,
         name: updated.name,
-        key: `kn_${keyPrefix}_${key}`,
+        key: `kn_${prefix}_${rawKey}`,
         permissions: updated.permissions,
         expiresAt: updated.expiresAt,
       });
@@ -163,28 +189,31 @@ router.post(
 
 router.post(
   "/validate",
+  apiLimiter,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { key } = req.body;
 
-      if (!key) {
+      if (!key || typeof key !== "string") {
         throw createError("API key required", 400, "MISSING_KEY");
       }
 
-      const keyHash = crypto.createHash("sha256").update(key).digest("hex");
-      const fullKey = key.startsWith("kn_") ? key : `kn_${key}`;
-
-      const parts = fullKey.split("_");
-      if (parts.length < 3) {
+      const rawKey = extractRawKey(key);
+      if (!rawKey) {
         throw createError("Invalid API key format", 400, "INVALID_KEY");
       }
 
-      const apiKey = await prisma.apiKey.findFirst({
+      const keyHash = crypto.createHash("sha256").update(rawKey).digest("hex");
+
+      const apiKey = await prisma.apiKey.findUnique({
         where: {
-          key: { contains: keyHash.substring(0, 20) },
-          OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+          key: keyHash,
         },
       });
+
+      if (apiKey && apiKey.expiresAt && apiKey.expiresAt <= new Date()) {
+        throw createError("Invalid or expired API key", 401, "INVALID_KEY");
+      }
 
       if (!apiKey) {
         throw createError("Invalid or expired API key", 401, "INVALID_KEY");

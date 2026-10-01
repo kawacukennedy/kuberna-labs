@@ -116,8 +116,12 @@ contract KubernaIntent is Ownable, ReentrancyGuard, Pausable {
         uint256 durationSeconds
     ) external whenNotPaused returns (bytes32) {
         if (budget == 0) revert Intent__InsufficientBudget();
-        if (durationSeconds < 1 hours) revert Intent__InvalidDeadline(); // Assuming 1 hour is the new minimum
+        // Single deadline boundary (CON: duplicated 1-hour check removed): the
+        // MIN_DEADLINE/MAX_DEADLINE require below is the only bound enforced.
         require(durationSeconds >= MIN_DEADLINE && durationSeconds <= MAX_DEADLINE);
+        // Cap the free-form structuredData blob to a sane size so malformed or
+        // abusive payloads can't bloat storage.
+        require(structuredData.length <= 4096, "structuredData too large");
         require(intents[intentId].requester == address(0));
 
         uint256 deadline = block.timestamp + durationSeconds;

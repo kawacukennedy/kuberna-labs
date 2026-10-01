@@ -130,7 +130,11 @@ if (!fs.existsSync(frontendDistPath)) {
 logger.info(`Serving static files from: ${path.resolve(frontendDistPath)}`);
 app.use(express.static(frontendDistPath));
 
-app.use('*', (req, res, next) => {
+// Note: do NOT use `app.use('*', ...)` here — Express strips `req.path`/`req.url`
+// to `/` when a string path is passed to app.use(), which would silently disable the
+// `/api` check below and make every GET resolve to frontend/out/index.html (200).
+// A bare middleware (no path argument) matches every request and preserves req.path.
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     res.status(404).json({
       success: false,
@@ -144,15 +148,40 @@ app.use('*', (req, res, next) => {
   if (req.method !== 'GET') {
     return next();
   }
-  const indexPath = path.resolve(frontendDistPath, 'index.html');
-  if (!fs.existsSync(indexPath)) {
-    res.status(404).json({
-      success: false,
-      error: { message: 'Not found', code: 'NOT_FOUND' },
-    });
+
+  // Static export (trailingSlash: true) writes pages as <route>/index.html.
+  const normalizedPath = req.path.replace(/\/+$/, '') || '';
+  const pageFile = path.resolve(frontendDistPath, `.${normalizedPath}`, 'index.html');
+  const directFile = path.resolve(frontendDistPath, `.${normalizedPath}`);
+
+  // Only serve files that remain inside the frontend dist directory.
+  const isInsideDist = (p: string) =>
+    p === frontendDistPath || p.startsWith(frontendDistPath + path.sep);
+
+  if (isInsideDist(pageFile) && fs.existsSync(pageFile)) {
+    res.sendFile(pageFile);
     return;
   }
-  res.sendFile(indexPath);
+  if (
+    normalizedPath &&
+    isInsideDist(directFile) &&
+    fs.existsSync(directFile) &&
+    fs.statSync(directFile).isFile()
+  ) {
+    res.sendFile(directFile);
+    return;
+  }
+
+  // Unknown route → real 404 page with a 404 status code.
+  const notFoundPath = path.resolve(frontendDistPath, '404.html');
+  if (fs.existsSync(notFoundPath)) {
+    res.status(404).sendFile(notFoundPath);
+    return;
+  }
+  res.status(404).json({
+    success: false,
+    error: { message: 'Not found', code: 'NOT_FOUND' },
+  });
 });
 
 Sentry.setupExpressErrorHandler(app);

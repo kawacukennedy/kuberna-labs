@@ -186,9 +186,17 @@ export class KitePaymentService {
     });
   }
 
-  async getKitePaymentsBySession(sessionId: string) {
+  /**
+   * Lists payments for a spending session. When `includeAllOwners` is false
+   * (the default for non-admins) results are restricted to `userId`, so a
+   * guessed session id cannot expose another user's payments.
+   */
+  async getKitePaymentsBySession(sessionId: string, userId?: string, includeAllOwners = false) {
     return prisma.kitePayment.findMany({
-      where: { sessionId },
+      where: {
+        sessionId,
+        ...(userId && !includeAllOwners ? { payment: { userId } } : {}),
+      },
       include: { payment: true },
       orderBy: { createdAt: 'desc' },
     });

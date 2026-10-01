@@ -58,7 +58,6 @@
     "NEXT_PUBLIC_API_URL": "https://api.kuberna.africa",
     "NEXT_PUBLIC_GRAPHQL_URL": "https://api.kuberna.africa/graphql"
   },
-  "regions": ["iad1"],
   "trailingSlash": false,
   "rewrites": [
     {

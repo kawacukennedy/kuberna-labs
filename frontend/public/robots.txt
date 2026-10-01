@@ -1,0 +1,16 @@
+# Kuberna Labs robots.txt
+# Allow search engines to index all public marketing + product pages.
+# Private/app pages are blocked from indexing.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /auth/
+Disallow: /learn/
+
+# Courses, marketplace, agents, docs and marketing pages are all indexable.
+
+Sitemap: https://kuberna-labs.onrender.com/sitemap.xml

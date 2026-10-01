@@ -490,6 +490,62 @@ describe('KubernaEscrow', function () {
     });
   });
 
+  describe('expireAssignedEscrow', function () {
+    let escrowId: string;
+    const amount = ethers.parseEther('1');
+    const duration = 3600;
+
+    beforeEach(async function () {
+      const timestamp = await time.latest();
+      await escrow
+        .connect(requester)
+        .createEscrow('intent-expire-assigned', ethers.ZeroAddress, amount, duration);
+      escrowId = getEscrowId('intent-expire-assigned', requester.address, BigInt(timestamp + 1));
+
+      const fee = (amount * 250n) / 10000n;
+      await escrow.connect(requester).fundEscrow(escrowId, { value: amount + fee });
+      await escrow.connect(requester).assignExecutor(escrowId, executor.address);
+    });
+
+    it('should expire an Assigned escrow whose executor never completed, and refund', async function () {
+      const balanceBefore = await ethers.provider.getBalance(requester.address);
+      await time.increase(duration + 1);
+
+      await expect(escrow.connect(requester).expireAssignedEscrow(escrowId)).to.not.be.reverted;
+
+      const escrowData = await escrow.escrows(escrowId);
+      expect(escrowData.status).to.equal(7); // Expired
+
+      const balanceAfter = await ethers.provider.getBalance(requester.address);
+      expect(balanceAfter > balanceBefore).to.equal(true);
+    });
+
+    it('should reject before the deadline', async function () {
+      await expect(
+        escrow.connect(requester).expireAssignedEscrow(escrowId)
+      ).to.be.revertedWith('Deadline not passed');
+    });
+
+    it('should reject if escrow is not Assigned', async function () {
+      const unassignedTimestamp = await time.latest();
+      await escrow
+        .connect(requester)
+        .createEscrow('intent-expire-unassigned', ethers.ZeroAddress, amount, duration);
+      const unassignedId = getEscrowId(
+        'intent-expire-unassigned',
+        requester.address,
+        BigInt(unassignedTimestamp + 1)
+      );
+      const fee = (amount * 250n) / 10000n;
+      await escrow.connect(requester).fundEscrow(unassignedId, { value: amount + fee });
+
+      await time.increase(duration + 1);
+      await expect(
+        escrow.connect(requester).expireAssignedEscrow(unassignedId)
+      ).to.be.revertedWith('Escrow not assigned');
+    });
+  });
+
   describe('autoRelease', function () {
     let escrowId: string;
     const amount = ethers.parseEther('1');

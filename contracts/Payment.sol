@@ -11,15 +11,24 @@ struct TokenConfig {
     bool enabled;
     uint256 minAmount;
     uint256 maxAmount;
-    address oracle;
+    // Token decimals (18 for ETH/standard ERC20; 6 for USDC-style tokens).
+    // Used to keep withdrawal minimums meaningful across token granularities.
+    uint8 decimals;
+    // Per-token minimum withdrawal, denominated in the token's own decimals.
+    uint256 minWithdrawal;
 }
 
 /**
  * @title KubernaPayment
  * @dev Handles user payments, balance tracking, and withdrawals for multiple tokens.
+ *
+ * Ledger invariant: userBalances + platformBalances always equals the assets the
+ * contract actually holds — a payment of `amount` credits the user `amount - fee`
+ * and the platform `fee`, so the ledger can never be inflated beyond real holdings.
  */
 contract KubernaPayment is Ownable, ReentrancyGuard {
-    uint256 public immutable MIN_WITHDRAWAL = 10 ether;
+    // Platform fee in basis points (2.5%).
+    uint256 public constant FEE_BPS = 250;
 
     mapping(address => TokenConfig) public tokenConfigs;
     // Per-token balance tracking: user => token => balance
@@ -29,6 +38,7 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
     address[] public supportedTokens;
 
     event TokenAdded(address token, uint256 minAmount, uint256 maxAmount);
+    event TokenConfigUpdated(address indexed token, uint8 decimals, uint256 minWithdrawal);
     event TokenRemoved(address token);
     event PaymentReceived(address user, address token, uint256 amount);
     event Withdrawal(address user, address token, uint256 amount);
@@ -40,7 +50,8 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
             enabled: true,
             minAmount: 0,
             maxAmount: type(uint256).max,
-            oracle: address(0)
+            decimals: 18,
+            minWithdrawal: 0.001 ether
         });
     }
 
@@ -51,13 +62,16 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
      * @param maxAmount The maximum payment amount.
      */
     function addToken(address token, uint256 minAmount, uint256 maxAmount) external onlyOwner {
+        require(token != address(0), "ETH is always supported");
         require(!tokenConfigs[token].enabled, "Token already enabled");
+        require(minAmount <= maxAmount, "Invalid amount range");
 
         tokenConfigs[token] = TokenConfig({
             enabled: true,
             minAmount: minAmount,
             maxAmount: maxAmount,
-            oracle: address(0)
+            decimals: 18,
+            minWithdrawal: 0
         });
         supportedTokens.push(token);
 
@@ -65,12 +79,38 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
     }
 
     /**
+     * @dev Sets the decimals and minimum withdrawal for a supported token.
+     * @param token The token address.
+     * @param decimals The token's decimals.
+     * @param minWithdrawal The minimum withdrawal amount in token units.
+     */
+    function setTokenConfig(address token, uint8 decimals, uint256 minWithdrawal) external onlyOwner {
+        require(tokenConfigs[token].enabled, "Token not enabled");
+        tokenConfigs[token].decimals = decimals;
+        tokenConfigs[token].minWithdrawal = minWithdrawal;
+        emit TokenConfigUpdated(token, decimals, minWithdrawal);
+    }
+
+    /**
      * @dev Removes a token from supported payments.
      * @param token The token address to remove.
      */
     function removeToken(address token) external onlyOwner {
+        require(token != address(0), "Cannot remove native token");
         require(tokenConfigs[token].enabled, "Token not enabled");
+
         tokenConfigs[token].enabled = false;
+
+        // Prune the supportedTokens array so getSupportedTokens stays accurate
+        // and re-adding the token does not create duplicates.
+        for (uint256 i = 0; i < supportedTokens.length; i++) {
+            if (supportedTokens[i] == token) {
+                supportedTokens[i] = supportedTokens[supportedTokens.length - 1];
+                supportedTokens.pop();
+                break;
+            }
+        }
+
         emit TokenRemoved(token);
     }
 
@@ -91,8 +131,12 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
             require(IERC20(token).transferFrom(msg.sender, address(this), amount), "Transfer failed");
         }
 
-        userBalances[msg.sender][token] += amount;
-        platformBalances[token] += amount;
+        // Fee split keeps the ledger backed by real holdings:
+        // the contract received `amount`, so the user can withdraw `amount - fee`
+        // and the platform can withdraw `fee` — never more than what is held.
+        uint256 fee = (amount * FEE_BPS) / 10000;
+        userBalances[msg.sender][token] += amount - fee;
+        platformBalances[token] += fee;
 
         emit PaymentReceived(msg.sender, token, amount);
     }
@@ -115,11 +159,13 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
             if (tokens[i] == address(0)) {
                 totalNativeAmount += amounts[i];
             } else {
+                require(msg.value == 0 || totalNativeAmount == 0, "Mixed ETH/token batch");
                 require(IERC20(tokens[i]).transferFrom(msg.sender, address(this), amounts[i]), "Transfer failed");
             }
 
-            userBalances[msg.sender][tokens[i]] += amounts[i];
-            platformBalances[tokens[i]] += amounts[i];
+            uint256 fee = (amounts[i] * FEE_BPS) / 10000;
+            userBalances[msg.sender][tokens[i]] += amounts[i] - fee;
+            platformBalances[tokens[i]] += fee;
 
             emit PaymentReceived(msg.sender, tokens[i], amounts[i]);
         }
@@ -134,7 +180,9 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
      * @param amount The withdrawal amount.
      */
     function withdraw(address token, uint256 amount) external nonReentrant {
-        require(amount >= MIN_WITHDRAWAL, "Below minimum withdrawal");
+        TokenConfig memory c = tokenConfigs[token];
+        require(c.enabled, "Token not supported");
+        require(amount >= c.minWithdrawal, "Below minimum withdrawal");
         require(userBalances[msg.sender][token] >= amount, "Insufficient balance");
 
         userBalances[msg.sender][token] -= amount;
@@ -187,5 +235,13 @@ contract KubernaPayment is Ownable, ReentrancyGuard {
         return supportedTokens;
     }
 
-    receive() external payable {}
+    /**
+     * @dev Credits a plain ETH transfer to the sender's spendable balance so it
+     * is never stranded unaccounted in the contract.
+     */
+    receive() external payable {
+        if (msg.value == 0) return;
+        userBalances[msg.sender][address(0)] += msg.value;
+        emit PaymentReceived(msg.sender, address(0), msg.value);
+    }
 }

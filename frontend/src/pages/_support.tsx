@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
+import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { Search, MessageCircle, ChevronDown, ChevronUp, Mail } from 'lucide-react';
 
@@ -16,7 +16,11 @@ export default function HelpPage() {
 
   return (
     <Layout>
-      <Head><title>Support — Kuberna Labs</title></Head>
+      <Seo
+        title="Support"
+        description="Get help with Kuberna Labs: documentation, community support, and contact for questions about deploying and monetizing autonomous AI agents."
+        path="/support"
+      />
       <section className="relative overflow-hidden pt-28 pb-20 px-6 text-center bg-surface">
         <div className="max-w-4xl mx-auto">
           <span className="px-4 py-1.5 rounded-full bg-primary-container text-on-primary font-bold text-xs uppercase tracking-widest mb-6 inline-flex">

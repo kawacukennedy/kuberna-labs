@@ -1,5 +1,10 @@
 import React from 'react';
-import Head from 'next/head';
+import {
+  Seo,
+  organizationJsonLd,
+  websiteJsonLd,
+  softwareApplicationJsonLd,
+} from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import Link from 'next/link';
 import {
@@ -46,7 +51,12 @@ const testimonials = [
 export default function LandingPage() {
   return (
     <Layout>
-      <Head><title>Kuberna Labs — Agentic Web3 Enterprise</title></Head>
+      <Seo
+        title="Build, deploy, and monetize autonomous AI agents"
+        description="Kuberna Labs is the full-stack platform for agentic Web3: build, deploy, certify, and monetize autonomous AI agents with x402 payments, TEE deployments, and a conformance-tested SDK — 128/128 x402 payments settled, 20/20 conformance vectors passing."
+        path="/"
+        jsonLd={[organizationJsonLd(), websiteJsonLd(), softwareApplicationJsonLd()]}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-container-low px-6 pt-24">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
