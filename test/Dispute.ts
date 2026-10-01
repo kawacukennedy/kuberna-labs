@@ -344,14 +344,25 @@ describe('KubernaDispute', function () {
       await dispute.connect(owner).resolveDispute(disputeId);
     });
 
-    it('should allow appeal by requester', async function () {
+    it('should allow appeal by requester and open a new round', async function () {
       await expect(
         dispute.connect(requester).appealDispute(disputeId, { value: ethers.parseEther('1') })
       ).to.emit(dispute, 'DisputeAppealed');
 
+      // Parent dispute is marked appealed but stays Resolved — the appeal
+      // opens a fresh voting round instead of ending in a dead-end state.
       const data = await dispute.getDispute(disputeId);
       expect(data.appealed).to.equal(true);
-      expect(data.status).to.equal(3);
+      expect(data.status).to.equal(2);
+
+      const newId = await dispute.activeDisputeByEscrow(
+        ethers.keccak256(ethers.toUtf8Bytes('escrow-123'))
+      );
+      const round = await dispute.getDispute(newId);
+      expect(round.status).to.equal(1); // Voting
+      expect(await dispute.appealOf(newId)).to.equal(disputeId);
+      expect(await dispute.appealPayers(newId)).to.equal(requester.address);
+      expect(await dispute.appealFees(newId)).to.equal(ethers.parseEther('1'));
     });
 
     it('should reject appeal with insufficient funds', async function () {
