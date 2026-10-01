@@ -50,7 +50,11 @@ const requireAgentOwner = (req: AuthRequest, _res: Response, next: NextFunction)
 
 router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { page = 1, limit = 20, status, framework, ownerId } = req.query;
+    const { status, framework, ownerId } = req.query;
+
+    // Clamp pagination so a caller cannot request an unbounded page size.
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(req.query.limit) || 20));
 
     const where: Record<string, unknown> = {};
 
@@ -61,8 +65,8 @@ router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: Next
     const [agents, total] = await Promise.all([
       prisma.agent.findMany({
         where,
-        skip: (Number(page) - 1) * Number(limit),
-        take: Number(limit),
+        skip: (page - 1) * limit,
+        take: limit,
         include: {
           owner: {
             select: {
@@ -81,10 +85,10 @@ router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: Next
     res.json({
       agents,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page,
+        limit,
         total,
-        pages: Math.ceil(total / Number(limit)),
+        pages: Math.ceil(total / limit),
       },
     });
   } catch (error) {
