@@ -1112,8 +1112,8 @@ export const WORKSHOP_ABI = [
 
 export const DISPUTE_ABI = [
   {
-    inputs: [{ name: 'disputeId', type: 'bytes32' }, { name: 'vote', type: 'uint8' }],
-    name: 'castVote', outputs: [], stateMutability: 'nonpayable', type: 'function',
+    inputs: [{ name: 'disputeId', type: 'bytes32' }, { name: 'support', type: 'uint8' }],
+    name: 'vote', outputs: [], stateMutability: 'nonpayable', type: 'function',
   },
   {
     inputs: [{ name: 'disputeId', type: 'bytes32' }],
