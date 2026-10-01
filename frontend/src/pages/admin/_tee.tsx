@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
+import { AdminGuard } from '@/components/auth/AdminGuard';
 import { Shield, Server, Activity, RefreshCw } from 'lucide-react';
 
 const nodes = [
@@ -11,6 +12,7 @@ const nodes = [
 
 export default function TEENodePage() {
   return (
+    <AdminGuard>
     <Layout variant="dashboard">
       <Head><title>TEE Nodes — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -109,5 +111,6 @@ export default function TEENodePage() {
         </div>
       </div>
     </Layout>
+    </AdminGuard>
   );
 }

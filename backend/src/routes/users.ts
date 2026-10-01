@@ -6,12 +6,28 @@ import { authenticate, requireRoles } from "../middleware/auth.js";
 
 const router = Router();
 
+const MAX_PAGE_SIZE = 100;
+
+/**
+ * Self-or-admin guard: the requested resource belongs to `req.params.id`.
+ * Only the owner or an ADMIN may read it (prevents IDOR / PII exposure).
+ */
+const requireSelfOrAdmin = (req: AuthRequest, _res: Response, next: NextFunction) => {
+  if (req.user!.id !== req.params.id && !req.user!.roles.includes('ADMIN')) {
+    return next(createError('Not authorized to access this user', 403, 'FORBIDDEN'));
+  }
+  next();
+};
+
 router.get(
   "/",
   authenticate,
+  requireRoles("ADMIN"),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { page = 1, limit = 20, role, search } = req.query;
+      const page = Math.max(1, Number(req.query.page) || 1);
+      const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(req.query.limit) || 20));
+      const { role, search } = req.query;
 
       const where: Record<string, unknown> = {};
 
@@ -48,10 +64,10 @@ router.get(
       res.json({
         users,
         pagination: {
-          page: Number(page),
-          limit: Number(limit),
+          page,
+          limit,
           total,
-          pages: Math.ceil(total / Number(limit)),
+          pages: Math.ceil(total / limit),
         },
       });
     } catch (error) {
@@ -63,6 +79,7 @@ router.get(
 router.get(
   "/:id",
   authenticate,
+  requireSelfOrAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -180,6 +197,7 @@ router.delete(
 router.get(
   "/:id/profile",
   authenticate,
+  requireSelfOrAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -270,6 +288,7 @@ router.patch(
 router.get(
   "/:id/agents",
   authenticate,
+  requireSelfOrAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -298,6 +317,7 @@ router.get(
 router.get(
   "/:id/enrollments",
   authenticate,
+  requireSelfOrAdmin,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;

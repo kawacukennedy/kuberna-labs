@@ -28,8 +28,17 @@ if (!JWT_SECRET) {
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || (JWT_SECRET ? JWT_SECRET + '_refresh' : undefined);
 if (!process.env.JWT_REFRESH_SECRET && process.env.NODE_ENV === 'production') {
-  logger.warn('JWT_REFRESH_SECRET not set - using derived secret. Set it explicitly for production.');
+  // Never fall back to a JWT_SECRET-derived refresh secret in production: if
+  // JWT_SECRET ever leaks, every refresh token signed with the derived value
+  // leaks with it. Fail fast instead of running with a weaker guarantee.
+  throw new Error(
+    'JWT_REFRESH_SECRET must be set explicitly in production (derived fallback is not allowed)'
+  );
 }
+
+/** Pin the accepted algorithms so a token cannot dictate its own "alg". */
+const JWT_ALGORITHM = 'HS256' as const;
+const JWT_ALGORITHMS: jwt.Algorithm[] = [JWT_ALGORITHM];
 
 function getJwtSecret(): string {
   if (!JWT_SECRET) throw new UnauthorizedError('Authentication not configured');
@@ -51,7 +60,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, secret) as unknown as UserPayload;
+    const decoded = jwt.verify(token, secret, { algorithms: JWT_ALGORITHMS }) as unknown as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -89,14 +98,18 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, getJwtSecret()) as unknown as UserPayload;
+    const decoded = jwt.verify(token, getJwtSecret(), {
+      algorithms: JWT_ALGORITHMS,
+    }) as unknown as UserPayload;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, roles: true },
+      select: { id: true, email: true, roles: true, deletedAt: true },
     });
 
-    if (user) {
+    // Honour soft-deletes on optional auth too, otherwise a deactivated
+    // account keeps full privileges on every optionalAuth-protected route.
+    if (user && !user.deletedAt) {
       req.user = {
         id: user.id,
         email: user.email,
@@ -128,16 +141,20 @@ export const requireRoles = (...roles: string[]) => {
 
 export const generateToken = (payload: UserPayload): string => {
   return jwt.sign(payload, getJwtSecret(), {
+    algorithm: JWT_ALGORITHM,
     expiresIn: '7d',
   } as SignOptions);
 };
 
 export const generateRefreshToken = (payload: UserPayload): string => {
   return jwt.sign(payload, getRefreshSecret(), {
+    algorithm: JWT_ALGORITHM,
     expiresIn: '30d',
   } as SignOptions);
 };
 
 export const verifyToken = (token: string): UserPayload => {
-  return jwt.verify(token, getJwtSecret()) as unknown as UserPayload;
+  return jwt.verify(token, getJwtSecret(), {
+    algorithms: JWT_ALGORITHMS,
+  }) as unknown as UserPayload;
 };

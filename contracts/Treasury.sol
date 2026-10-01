@@ -27,9 +27,11 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
     uint256 public proposalCount;
     uint256 public immutable QUORUM = 100 ether;
     uint256 public immutable VOTING_PERIOD = 3 days;
-    uint256 public proposalId;
 
     mapping(uint256 => Proposal) public proposals;
+    // Voting power is deposit-weighted: it accrues 1:1 with the value the
+    // voter actually locked in the treasury, so owner can no longer mint
+    // arbitrary governance influence via setVotingPower.
     mapping(address => uint256) public votingPower;
 
     event ProposalCreated(uint256, address, uint256, string);
@@ -42,16 +44,19 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
     constructor() Ownable(msg.sender) {}
 
     receive() external payable {
+        votingPower[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
 
     function deposit(address token, uint256 amount) external payable nonReentrant {
         if (token == address(0)) {
             require(msg.value > 0);
+            votingPower[msg.sender] += msg.value;
             emit Deposit(msg.sender, msg.value);
         } else {
             require(amount > 0);
             require(IERC20(token).transferFrom(msg.sender, address(this), amount));
+            votingPower[msg.sender] += amount;
             emit Deposit(msg.sender, amount);
         }
     }
@@ -104,7 +109,9 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
         require(p.createdAt > 0);
         require(block.timestamp >= p.createdAt + VOTING_PERIOD);
         require(!p.executed && !p.cancelled);
-        require(p.votesFor >= QUORUM);
+        // Quorum must be met AND a strict majority of votes must favor the
+        // proposal — prevents a single whale + quorum from steamrolling.
+        require(p.votesFor >= QUORUM && p.votesFor > p.votesAgainst);
 
         p.executed = true;
 
@@ -125,10 +132,6 @@ contract KubernaTreasury is Ownable, ReentrancyGuard {
 
         p.cancelled = true;
         emit ProposalCancelled(id);
-    }
-
-    function setVotingPower(address account, uint256 power) external onlyOwner {
-        votingPower[account] = power;
     }
 
     function getProposal(

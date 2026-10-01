@@ -21,6 +21,48 @@ const stripe = stripeSecretKey
   : null;
 
 /**
+ * Loads the kite payment referenced by `:kitePaymentId` or `:sessionId` and
+ * exposes it on the request so payment-scoped routes can authorize access.
+ */
+const loadKitePayment = async (req: AuthRequest, _res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.kitePaymentId || req.body.kitePaymentId;
+
+    if (!id || typeof id !== 'string') {
+      return next(createError('Payment ID required', 400, 'MISSING_PAYMENT_ID'));
+    }
+
+    const kitePayment = await prisma.kitePayment.findUnique({
+      where: { id },
+      include: { payment: true },
+    });
+
+    if (!kitePayment) {
+      return next(createError('Payment not found', 404, 'PAYMENT_NOT_FOUND'));
+    }
+
+    (req as any).kitePayment = kitePayment;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Owner-or-admin guard for payment-scoped resources. Prevents IDOR: a user
+ * must not be able to settle or read another user's payment records.
+ */
+const requirePaymentOwner = (req: AuthRequest, _res: Response, next: NextFunction) => {
+  const kitePayment = (req as any).kitePayment as { payment: { userId: string } | null };
+  const ownerId = kitePayment?.payment?.userId;
+
+  if (ownerId !== req.user!.id && !req.user!.roles.includes('ADMIN')) {
+    return next(createError('Not authorized to access this payment', 403, 'FORBIDDEN'));
+  }
+  next();
+};
+
+/**
  * @swagger
  * components:
  *   schemas:
@@ -311,16 +353,19 @@ router.post(
 router.post(
   '/x402/settle',
   authenticate,
+  loadKitePayment,
+  requirePaymentOwner,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { kitePaymentId, authorization, signature, network } = req.body;
+      const { authorization, signature, network } = req.body;
+      const kitePayment = (req as any).kitePayment as { id: string; paymentId: string };
 
-      if (!kitePaymentId || !authorization || !signature) {
+      if (!authorization || !signature) {
         throw createError('Missing required fields', 400, 'MISSING_FIELDS');
       }
 
       await kitePaymentService.updatePaymentAuthorization(
-        kitePaymentId,
+        kitePayment.id,
         authorization,
         'PAYMENT_AUTHORIZED'
       );
@@ -335,10 +380,10 @@ router.post(
         throw createError(result.error || 'Settlement failed', 502, 'SETTLEMENT_FAILED');
       }
 
-      await kitePaymentService.markSettled(kitePaymentId, result.txHash!);
+      await kitePaymentService.markSettled(kitePayment.id, result.txHash!);
 
       await prisma.payment.update({
-        where: { id: kitePaymentId },
+        where: { id: kitePayment.paymentId },
         data: {
           status: 'COMPLETED',
           txHash: result.txHash,
@@ -390,7 +435,17 @@ router.get(
     try {
       const { sessionId } = req.params;
 
-      const payments = await kitePaymentService.getKitePaymentsBySession(sessionId);
+      if (!sessionId) {
+        throw createError('Session ID required', 400, 'MISSING_SESSION_ID');
+      }
+
+      // Scope the lookup to the caller's own payments so a session id cannot
+      // be used to read another user's payment history.
+      const payments = await kitePaymentService.getKitePaymentsBySession(
+        sessionId,
+        req.user!.id,
+        req.user!.roles.includes('ADMIN')
+      );
 
       res.json({ success: true, data: payments });
     } catch (error) {
@@ -402,15 +457,11 @@ router.get(
 router.get(
   '/x402/payments/:kitePaymentId',
   authenticate,
+  loadKitePayment,
+  requirePaymentOwner,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const { kitePaymentId } = req.params;
-
-      const payment = await kitePaymentService.getKitePayment(kitePaymentId);
-
-      if (!payment) {
-        throw createError('Payment not found', 404, 'PAYMENT_NOT_FOUND');
-      }
+      const payment = (req as any).kitePayment;
 
       res.json({ success: true, data: payment });
     } catch (error) {
