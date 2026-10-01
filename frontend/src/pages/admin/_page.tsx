@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { Layout } from '@/components/layout/Layout';
+import { AdminGuard } from '@/components/auth/AdminGuard';
 import { Users, DollarSign, Bot, Shield, Search, MoreVertical, ChevronDown } from 'lucide-react';
 
 const users = [
@@ -12,6 +13,7 @@ const users = [
 
 export default function AdminDashboard() {
   return (
+    <AdminGuard>
     <Layout variant="dashboard" sidebarType="admin">
       <Head><title>Admin — Kuberna Labs</title></Head>
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -138,5 +140,6 @@ export default function AdminDashboard() {
         </div>
       </div>
     </Layout>
+    </AdminGuard>
   );
 }
