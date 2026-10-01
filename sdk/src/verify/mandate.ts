@@ -66,6 +66,7 @@ export function hasMandateSignature(mandate: Mandate): boolean {
  * signed in order to verify a mandate.
  */
 export async function mandateSigningPreimage(mandate: Mandate): Promise<string> {
-  const { signature: _signature, ...unsigned } = mandate;
+  const unsigned = { ...mandate };
+  delete unsigned.signature;
   return jcsHash(unsigned);
 }
