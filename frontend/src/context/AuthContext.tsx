@@ -58,22 +58,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-
-      // Optimistically apply the cached profile to avoid a logged-out flash,
-      // but never treat it as authoritative.
+      // The cached profile must be structurally valid before it is trusted,
+      // even optimistically. A missing or corrupt record means we cannot know
+      // who the token belongs to, so drop the whole session rather than leave
+      // a token (or a partial identity) lying around.
       const savedUser = localStorage.getItem(AUTH_USER_KEY);
+      let cachedUser: User | null = null;
       if (savedUser) {
         try {
           const parsed: unknown = JSON.parse(savedUser);
-          if (isUserShape(parsed)) {
-            setToken(savedToken);
-            setUser(parsed);
-          }
+          if (isUserShape(parsed)) cachedUser = parsed;
         } catch {
-          // Corrupt cache; the server revalidation below will correct it.
+          cachedUser = null;
         }
       }
+
+      if (!cachedUser) {
+        clearSession();
+        setIsLoading(false);
+        return;
+      }
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
+      // Optimistically apply the cached profile to avoid a logged-out flash,
+      // but never treat it as authoritative.
+      setToken(savedToken);
+      setUser(cachedUser);
 
       try {
         // The server is the source of truth for identity and roles. Persisted
