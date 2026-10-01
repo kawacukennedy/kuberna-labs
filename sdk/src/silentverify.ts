@@ -174,7 +174,11 @@ export class SilentVerifyManager {
   private baseURL: string;
 
   constructor(_sdk: KubernaSDK, config?: SilentVerifyConfig) {
-    this.apiKey = config?.apiKey || process.env.SILENTVERIFY_API_KEY || 'sv_dev_test_key';
+    // No hardcoded fallback key: shipping a known default credential means a
+    // misconfigured deployment silently authenticates as that shared identity.
+    // Callers must set `apiKey` or SILENTVERIFY_API_KEY; requests are sent
+    // unauthenticated when neither is present.
+    this.apiKey = config?.apiKey || process.env.SILENTVERIFY_API_KEY || '';
     this.baseURL = config?.baseUrl || process.env.SILENTVERIFY_BASE_URL || 'https://silentverify.up.railway.app';
   }
 
@@ -183,6 +187,15 @@ export class SilentVerifyManager {
       'Content-Type': 'application/json',
       ...(this.apiKey ? { 'X-API-Key': this.apiKey } : {}),
     };
+  }
+
+  private async readErrorDetail(response: Response): Promise<string> {
+    try {
+      const body = await response.json() as { detail?: unknown };
+      return JSON.stringify(body.detail ?? body);
+    } catch {
+      return response.statusText;
+    }
   }
 
   private async post<T>(path: string, data?: unknown): Promise<T> {
@@ -201,13 +214,7 @@ export class SilentVerifyManager {
     }
 
     if (!response.ok) {
-      let detail: string;
-      try {
-        const body = await response.json() as { detail?: unknown };
-        detail = JSON.stringify(body.detail ?? body);
-      } catch {
-        detail = response.statusText;
-      }
+      const detail = await this.readErrorDetail(response);
       throw new KubernaError(`SilentVerify API error: ${detail}`, 'SILENTVERIFY_ERROR', response.status);
     }
 
@@ -233,13 +240,7 @@ export class SilentVerifyManager {
     }
 
     if (!response.ok) {
-      let detail: string;
-      try {
-        const body = await response.json() as { detail?: unknown };
-        detail = JSON.stringify(body.detail ?? body);
-      } catch {
-        detail = response.statusText;
-      }
+      const detail = await this.readErrorDetail(response);
       throw new KubernaError(`SilentVerify API error: ${detail}`, 'SILENTVERIFY_ERROR', response.status);
     }
 
@@ -488,9 +489,10 @@ export class SilentVerifyManager {
   }
 
   async getFreeKey(): Promise<Record<string, unknown>> {
-    const url = `${this.baseURL}/api/v1/billing/free-key`;
-    const response = await fetch(url, { method: 'POST', headers: this.headers() });
-    return (await response.json()) as Record<string, unknown>;
+    // Routed through post() so this endpoint gets the same timeout, status
+    // checking and error typing as every other call. Previously it fetched
+    // directly, ignoring HTTP status and surfacing raw JSON parse errors.
+    return this.post<Record<string, unknown>>('/api/v1/billing/free-key');
   }
 
   async getUsage(): Promise<Record<string, unknown>> {
