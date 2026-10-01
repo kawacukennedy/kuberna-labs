@@ -67,7 +67,7 @@ interface MemoryBucket {
 const MEMORY_MAX_BUCKETS = 10_000;
 const memoryBuckets = new Map<string, MemoryBucket>();
 
-function memoryLimiterCheck(key: string, windowMs: number, maxRequests: number): number {
+function memoryLimiterCheck(key: string, windowMs: number): number {
   const now = Date.now();
   const existing = memoryBuckets.get(key);
 
@@ -137,7 +137,7 @@ export const createRateLimiter = (options: RateLimitOptions) => {
     const now = Date.now();
 
     if (!redis || !redisAvailable) {
-      const total = memoryLimiterCheck(key, windowMs, maxRequests);
+      const total = memoryLimiterCheck(key, windowMs);
       const bucket = memoryBuckets.get(key)!;
 
       req.rateLimit = {
@@ -187,7 +187,7 @@ export const createRateLimiter = (options: RateLimitOptions) => {
     } catch (error) {
       logger.error('Rate limiter error, falling back to in-memory limiter', { error: String(error) });
 
-      const total = memoryLimiterCheck(key, windowMs, maxRequests);
+      const total = memoryLimiterCheck(key, windowMs);
       const bucket = memoryBuckets.get(key)!;
 
       req.rateLimit = {
