@@ -139,7 +139,10 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
             require(msg.value >= totalRequired, "Insufficient ETH sent");
         } else {
             require(msg.value == 0, "ETH not accepted for token escrow");
-            IERC20(e.token).transferFrom(msg.sender, address(this), totalRequired);
+            // CON-04: use TransferHelper.safeTransferFrom so a token returning
+            // false (instead of reverting) cannot leave the escrow marked Funded
+            // while no assets were actually transferred.
+            TransferHelper.safeTransferFrom(e.token, msg.sender, address(this), totalRequired);
         }
 
         e.status = EscrowStatus.Funded;
@@ -263,6 +266,23 @@ contract KubernaEscrow is ReentrancyGuard, Ownable, Pausable {
         EscrowData storage e = escrows[escrowId];
         require(e.requester == msg.sender, "Only requester can expire");
         require(e.status == EscrowStatus.Funded, "Escrow not funded");
+        require(block.timestamp > e.deadline, "Deadline not passed");
+
+        e.status = EscrowStatus.Expired;
+
+        _transferFunds(e.token, e.requester, e.amount + e.fee);
+        emit FundsRefunded(escrowId, e.requester, e.amount + e.fee);
+    }
+
+    /**
+     * @dev Expires an Assigned escrow whose executor never submitted completion
+     * on or before the deadline, refunding principal + fee to the requester.
+     * @param escrowId The escrow identifier.
+     */
+    function expireAssignedEscrow(bytes32 escrowId) external nonReentrant {
+        EscrowData storage e = escrows[escrowId];
+        require(e.requester == msg.sender, "Only requester can expire");
+        require(e.status == EscrowStatus.Assigned, "Escrow not assigned");
         require(block.timestamp > e.deadline, "Deadline not passed");
 
         e.status = EscrowStatus.Expired;
