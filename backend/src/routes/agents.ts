@@ -8,6 +8,46 @@ import logger from '../utils/logger.js';
 
 const router = Router();
 
+const MAX_PAGE_SIZE = 100;
+
+/**
+ * Loads the agent referenced by `:id` and exposes its owner on the request.
+ * Shared by owner-scoped routes so authorization happens before any data is
+ * returned (prevents IDOR reads and cross-user state flips).
+ */
+const loadAgent = async (req: AuthRequest, _res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const agent = await prisma.agent.findUnique({
+      where: { id },
+      select: { id: true, ownerId: true },
+    });
+
+    if (!agent) {
+      return next(createError('Agent not found', 404, 'AGENT_NOT_FOUND'));
+    }
+
+    (req as any).agent = agent;
+    (req as any).agentOwnerId = agent.ownerId;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Owner-or-admin guard for agent-scoped resources. Reads (bids, tasks) and
+ * state flips (ping) against another user's agent must be authorized.
+ */
+const requireAgentOwner = (req: AuthRequest, _res: Response, next: NextFunction) => {
+  const ownerId = (req as any).agentOwnerId;
+  if (ownerId !== req.user!.id && !req.user!.roles.includes('ADMIN')) {
+    return next(createError('Not authorized to access this agent', 403, 'FORBIDDEN'));
+  }
+  next();
+};
+
 router.get('/', optionalAuth, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { page = 1, limit = 20, status, framework, ownerId } = req.query;
@@ -432,6 +472,8 @@ router.post(
 router.post(
   '/:id/ping',
   authenticate,
+  loadAgent,
+  requireAgentOwner,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -460,6 +502,8 @@ router.post(
 router.get(
   '/:id/bids',
   authenticate,
+  loadAgent,
+  requireAgentOwner,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
@@ -490,6 +534,8 @@ router.get(
 router.get(
   '/:id/tasks',
   authenticate,
+  loadAgent,
+  requireAgentOwner,
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
