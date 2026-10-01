@@ -64,11 +64,21 @@ export class WebhookService {
   }
 
   verifySignature(payload: string, signature: string, secret: string): boolean {
+    if (typeof signature !== "string" || signature.length === 0) {
+      return false;
+    }
+
     const expected = this.signPayload(payload, secret);
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected),
-    );
+    const provided = Buffer.from(signature, "utf8");
+    const computed = Buffer.from(expected, "utf8");
+
+    // crypto.timingSafeEqual throws when the buffers differ in length, so any
+    // malformed/short signature must be rejected before the comparison.
+    if (provided.length !== computed.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(provided, computed);
   }
 
   registerSubscription(subscription: WebhookSubscription): void {
@@ -105,7 +115,7 @@ export class WebhookService {
     payload: WebhookPayload,
   ): Promise<WebhookDelivery> {
     const delivery: WebhookDelivery = {
-      id: `del-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `del-${Date.now()}-${crypto.randomUUID()}`,
       webhookId: subscription.id,
       event: payload.event,
       payload: JSON.stringify(payload),
