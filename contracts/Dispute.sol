@@ -71,14 +71,29 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     uint256 public jurorCount;
     mapping(address => uint256) public activeDisputeDuties;
 
+    // CON-06: escrow -> current dispute round. openDispute requires this to be
+    // empty so the same escrow can never host two concurrent dispute rounds.
+    mapping(bytes32 => bytes32) public activeDisputeByEscrow;
+    // CON-07: per-round reward funding. Rewards are paid exclusively out of the
+    // seeded pool (bond / appeal fee), never minted from the staking pool.
+    mapping(bytes32 => uint256) public disputeRewardPools;
+    // Total rewards already accrued against a round's pool (for refund math).
+    mapping(bytes32 => uint256) public rewardsPaid;
+    // CON-03: appeal fee held against the *child* round, refundable once that
+    // round reaches a final (non-appealed) resolution.
+    mapping(bytes32 => uint256) public appealFees;
+    mapping(bytes32 => address) public appealPayers;
+    mapping(bytes32 => bytes32) public appealOf;
+
     event RewardClaimed(address indexed juror, uint256 amount);
 
     event DisputeOpened(bytes32, bytes32, address, address);
     event VoteCast(bytes32, address, Vote);
     event DisputeResolved(bytes32, Vote);
-    event DisputeAppealed(bytes32);
+    event DisputeAppealed(bytes32, bytes32);
     event JurorRegistered(address);
     event JurorUnregistered(address juror, uint256 amount);
+    event AppealRefundClaimed(address indexed appellant, bytes32 roundId, uint256 amount);
 
     constructor() Ownable(msg.sender) {}
 
@@ -113,7 +128,9 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         j.active = false;
         j.stakedAmount = 0;
 
-        payable(msg.sender).transfer(amount);
+        // CON-07: low-level .call instead of .transfer (2300 gas limit).
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        require(success, "Stake withdrawal failed");
         emit JurorUnregistered(msg.sender, amount);
     }
 
@@ -130,10 +147,16 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         address requester,
         address executor,
         string calldata reason
-    ) external onlyOwner returns (bytes32) {
-        require(disputes[escrowId].createdAt == 0);
+    ) external payable onlyOwner returns (bytes32) {
+        // CON-06: keyed by escrowId (the actual workload), not by a disputeId
+        // derived from a timestamp — the old guard could never fire.
+        require(
+            activeDisputeByEscrow[escrowId] == bytes32(0) ||
+                disputes[activeDisputeByEscrow[escrowId]].status != DisputeStatus.Voting,
+            "Escrow already in active dispute"
+        );
 
-        bytes32 disputeId = keccak256(abi.encodePacked(escrowId, block.timestamp));
+        bytes32 disputeId = keccak256(abi.encodePacked(escrowId, block.timestamp, disputeCount));
 
         disputes[disputeId] = DisputeData({
             escrowId: escrowId,
@@ -150,6 +173,11 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
             result: Vote.None,
             appealed: false
         });
+        activeDisputeByEscrow[escrowId] = disputeId;
+
+        // CON-07: rewards are funded from the bond sent with the dispute, so a
+        // resolution can never mint rewards out of other jurors' stakes.
+        disputeRewardPools[disputeId] = msg.value;
 
         unchecked {
             disputeCount++;
@@ -229,14 +257,21 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         _rewardJurors(disputeId);
         _clearDisputeDuties(disputeId);
 
+        // A resolved round that was never appealed is the final round for the
+        // escrow, so the escrow is no longer in an active dispute.
+        if (!d.appealed) delete activeDisputeByEscrow[d.escrowId];
+
         emit DisputeResolved(disputeId, d.result);
     }
 
     /**
-     * @dev Appeals a resolved dispute to trigger a new voting round.
-     * @param disputeId The dispute identifier.
+     * @dev Appeals a resolved dispute by opening a brand-new voting round for
+     * the same escrow (CON-03). The appeal fee is held and refundable once the
+     * new round reaches a final (non-appealed) resolution.
+     * @param disputeId The parent dispute identifier.
+     * @return roundId The new round's dispute identifier.
      */
-    function appealDispute(bytes32 disputeId) external payable {
+    function appealDispute(bytes32 disputeId) external payable returns (bytes32 roundId) {
         DisputeData storage d = disputes[disputeId];
         require(d.createdAt != 0);
         require(d.status == DisputeStatus.Resolved);
@@ -245,19 +280,82 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         require(msg.value >= 1 ether);
 
         d.appealed = true;
-        d.status = DisputeStatus.Appealed;
-        d.votingEndTime = block.timestamp + APPEAL_PERIOD;
 
-        emit DisputeAppealed(disputeId);
+        bytes32 newId = keccak256(abi.encodePacked(d.escrowId, block.timestamp, disputeCount));
+
+        disputes[newId] = DisputeData({
+            escrowId: d.escrowId,
+            requester: d.requester,
+            executor: d.executor,
+            reason: d.reason,
+            requesterEvidence: "",
+            executorEvidence: "",
+            createdAt: block.timestamp,
+            votingEndTime: block.timestamp + VOTING_PERIOD,
+            requesterVotes: 0,
+            executorVotes: 0,
+            status: DisputeStatus.Voting,
+            result: Vote.None,
+            appealed: false
+        });
+        activeDisputeByEscrow[d.escrowId] = newId;
+        appealOf[newId] = disputeId;
+        // Hold the appeal fee; returnable to the appellant on final resolution.
+        appealFees[newId] = msg.value;
+        appealPayers[newId] = msg.sender;
+
+        unchecked {
+            disputeCount++;
+        }
+
+        emit DisputeAppealed(disputeId, newId);
+        return newId;
+    }
+
+    /**
+     * @dev Refunds a held appeal fee once the appealed round has been finally
+     * resolved (Resolved and not re-appealed).
+     * @param roundId The appealed round's dispute identifier.
+     */
+    function claimAppealRefund(bytes32 roundId) external nonReentrant {
+        DisputeData storage round = disputes[roundId];
+        require(round.createdAt != 0);
+        require(round.status == DisputeStatus.Resolved);
+        require(!round.appealed, "Round still being appealed");
+        require(appealPayers[roundId] == msg.sender, "Not the appellant");
+
+        uint256 fee = appealFees[roundId];
+        require(fee > 0, "No appeal fee held");
+        appealFees[roundId] = 0;
+
+        (bool success, ) = payable(msg.sender).call{value: fee}("");
+        require(success, "Appeal refund failed");
+        emit AppealRefundClaimed(msg.sender, roundId, fee);
     }
 
     function _rewardJurors(bytes32 disputeId) internal {
         VoteRecord[] storage votes = disputeVotes[disputeId];
         Vote result = disputes[disputeId].result;
 
+        uint256 pool = disputeRewardPools[disputeId];
+        if (pool == 0) return; // no bond -> no rewards minted (CON-07)
+
+        // Winners are weighted 2x, everyone else 1x, so the sum of paid
+        // rewards can never exceed the per-dispute reward pool.
+        uint256 winnerCount = 0;
         for (uint256 i = 0; i < votes.length; i++) {
-            uint256 reward = votes[i].vote == result ? JUROR_REWARD * 2 : JUROR_REWARD;
+            if (votes[i].vote == result) winnerCount++;
+        }
+        if (votes.length == 0) return;
+
+        uint256 totalWeight = votes.length + winnerCount;
+        uint256 unitReward = pool / totalWeight;
+        if (unitReward == 0) return;
+
+        for (uint256 i = 0; i < votes.length; i++) {
+            uint256 reward = votes[i].vote == result ? unitReward * 2 : unitReward;
             pendingRewards[disputeId][votes[i].voter] += reward;
+            rewardsPaid[disputeId] += reward;
         }
     }
 
@@ -278,7 +376,9 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         uint256 reward = pendingRewards[disputeId][msg.sender];
         require(reward > 0, "No pending reward");
         pendingRewards[disputeId][msg.sender] = 0;
-        payable(msg.sender).transfer(reward);
+        // CON-07: low-level .call instead of .transfer.
+        (bool success, ) = payable(msg.sender).call{value: reward}("");
+        require(success, "Reward claim failed");
         emit RewardClaimed(msg.sender, reward);
     }
 
