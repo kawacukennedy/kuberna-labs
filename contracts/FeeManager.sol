@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 error FeeManager__Invalid();
 
@@ -21,12 +22,15 @@ struct Recipient {
  * @title KubernaFeeManager
  * @dev Manages platform fees, fee tiers, and fee distribution to recipients.
  */
-contract KubernaFeeManager is Ownable {
+contract KubernaFeeManager is Ownable, ReentrancyGuard {
     uint256 public platformFee = 250;
     FeeTier[] public tiers;
     Recipient[] public recipients;
+    // Source of truth for each recipient's share; kept in sync with the array.
     mapping(address => uint256) public recipientShares;
     mapping(address => bool) public isRecipient;
+    // Platform share withheld at distribution time, claimable by the owner.
+    mapping(address => uint256) public pendingPlatformFees;
 
     constructor() Ownable(msg.sender) {
         tiers.push(FeeTier({threshold: 0, percentage: 250}));
@@ -38,6 +42,7 @@ contract KubernaFeeManager is Ownable {
     event RecipientAdded(address, uint256);
     event RecipientRemoved(address);
     event FeeDistributed(address, uint256);
+    event PlatformFeesWithdrawn(address indexed token, uint256 amount);
     event TierAdded(uint256 threshold, uint256 percentage);
     event TierRemoved(uint256 index);
 
@@ -82,25 +87,29 @@ contract KubernaFeeManager is Ownable {
         }
 
         isRecipient[account] = false;
+        recipientShares[account] = 0;
         emit RecipientRemoved(account);
     }
 
     /**
-     * @dev Distributes fees to all active recipients.
+     * @dev Distributes fees to all active recipients, withholding the platform
+     * share into pendingPlatformFees. Owner-only and reentrancy-guarded.
      * @param token The token address (address(0) for ETH).
      * @param amount The total amount to distribute.
      */
-    function distributeFees(address token, uint256 amount) external {
+    function distributeFees(address token, uint256 amount) external onlyOwner nonReentrant {
         require(amount > 0);
 
         uint256 platformAmount = (amount * platformFee) / 10000;
         uint256 distributeAmount = amount - platformAmount;
 
+        pendingPlatformFees[token] += platformAmount;
+
         for (uint256 i = 0; i < recipients.length; i++) {
             Recipient memory r = recipients[i];
             if (!r.active) continue;
 
-            uint256 shareAmount = (distributeAmount * r.share) / 10000;
+            uint256 shareAmount = (distributeAmount * recipientShares[r.account]) / 10000;
             if (shareAmount == 0) continue;
 
             if (token == address(0)) {
@@ -112,6 +121,25 @@ contract KubernaFeeManager is Ownable {
 
             emit FeeDistributed(r.account, shareAmount);
         }
+    }
+
+    /**
+     * @dev Withdraws the platform's accumulated share of distributed fees.
+     * @param token The token address (address(0) for ETH).
+     * @param amount The amount to withdraw.
+     */
+    function withdrawPlatformFees(address token, uint256 amount) external onlyOwner nonReentrant {
+        require(amount <= pendingPlatformFees[token], "Insufficient pending platform fees");
+        pendingPlatformFees[token] -= amount;
+
+        if (token == address(0)) {
+            (bool success, ) = payable(owner()).call{value: amount}("");
+            require(success);
+        } else {
+            require(IERC20(token).transfer(owner(), amount));
+        }
+
+        emit PlatformFeesWithdrawn(token, amount);
     }
 
     /**
