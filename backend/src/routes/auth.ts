@@ -29,7 +29,10 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
-router.post('/register', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post(
+  '/register',
+  authLimiter,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const data = registerSchema.parse(req.body);
 
@@ -90,7 +93,7 @@ router.post('/login', authLimiter, async (req: AuthRequest, res: Response, next:
     const data = loginSchema.parse(req.body);
 
     const user = await prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: data.email, deletedAt: null },
     });
 
     if (!user || !user.passwordHash) {
@@ -180,12 +183,15 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response, next: Ne
   }
 });
 
-router.post('/forgot-password', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post(
+  '/forgot-password',
+  authLimiter,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
 
     if (!user) {
@@ -215,15 +221,41 @@ router.post('/forgot-password', async (req: AuthRequest, res: Response, next: Ne
   }
 });
 
-router.post('/reset-password', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post(
+  '/reset-password',
+  authLimiter,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { token, password } = req.body;
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    if (!token || !password) {
+      throw createError('Token and password are required', 400, 'MISSING_FIELDS');
+    }
+
+    if (typeof password !== 'string' || password.length < 8) {
+      throw createError('Validation error', 400, 'VALIDATION_ERROR');
+    }
+
+    let decoded: { id: string; type?: string };
+    try {
+      decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }) as {
+        id: string;
+        type?: string;
+      };
+    } catch {
+      throw createError('Invalid or expired token', 400, 'INVALID_TOKEN');
+    }
+
+    // Reject any JWT that is not explicitly a password-reset token, so a
+    // session/refresh token can never be replayed against this endpoint.
+    if (decoded.type !== 'password-reset') {
+      throw createError('Invalid or expired token', 400, 'INVALID_TOKEN');
+    }
 
     const user = await prisma.user.findFirst({
       where: {
         id: decoded.id,
+        deletedAt: null,
         resetPasswordToken: token,
         resetPasswordExpires: { gt: new Date() },
       },
