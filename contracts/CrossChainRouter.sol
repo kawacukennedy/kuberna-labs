@@ -17,11 +17,10 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
  * - Fee management for cross-chain operations
  * - Slippage protection
  *
- * Features:
- * - Multi-hop routing support
- * - Message authentication
- * - Emergency halt capability
- * - Fee distribution
+ * Escrow model: each initiated transfer escrows its exact principal on the
+ * source chain (native assets via msg.value, ERC20 via transferFrom) and the
+ * principal is tracked per sender. executeTransfer pays out only from that
+ * escrow, and the fee/withdrawal functions can never drain escrowed principal.
  */
 contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
@@ -61,6 +60,14 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     uint256 public constant BPS_DENOMINATOR = 10000;
     uint256 public slippageTolerance = 50; // 0.5%
     mapping(bytes32 => bytes32) public messageDataHash;
+
+    // --- Escrow accounting (per sender) ---
+    mapping(bytes32 => uint256) public escrowByMessage;
+    mapping(address => uint256) public senderNativeEscrow;
+    mapping(address => mapping(address => uint256)) public senderTokenEscrow;
+    // Aggregate escrow used to guard fee/withdrawal functions.
+    uint256 public totalNativeEscrowed;
+    mapping(address => uint256) public totalTokenEscrowed;
 
     event CrossChainTransferInitiated(
         bytes32 indexed messageId,
@@ -102,15 +109,24 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         require(supportedChains[destinationChainId], "Unsupported chain");
         require(recipient != address(0), "Invalid recipient");
         require(amount > 0, "Invalid amount");
-        require(msg.value >= bridgeFee, "Insufficient bridge fee");
+        require(minReceived > 0 && minReceived <= amount, "Invalid minReceived");
 
         if (token != address(0)) {
+            require(msg.value >= bridgeFee, "Insufficient bridge fee");
             IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+            senderTokenEscrow[msg.sender][token] += amount;
+            totalTokenEscrowed[token] += amount;
+        } else {
+            // Native principal must be escrowed exactly: amount + bridge fee.
+            require(msg.value == amount + bridgeFee, "Native principal must be escrowed");
+            senderNativeEscrow[msg.sender] += amount;
+            totalNativeEscrowed += amount;
         }
 
         uint256 nonce = nonces[msg.sender]++;
         bytes32 messageId = keccak256(abi.encodePacked(msg.sender, recipient, token, amount, nonce, block.timestamp));
 
+        escrowByMessage[messageId] = amount;
         messageDataHash[messageId] = keccak256(abi.encodePacked(recipient, token, amount));
 
         messages[messageId] = CrossChainMessage({
@@ -158,13 +174,24 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
         require(!message.executed, "Already executed");
         require(messageDataHash[messageId] == keccak256(abi.encodePacked(recipient, token, amount)), "Params mismatch");
         require(amount >= minReceived, "Slippage exceeded");
+        // The message's escrowed principal must cover the payout.
+        require(escrowByMessage[messageId] == message.amount, "Escrow mismatch");
 
         message.executed = true;
+        delete escrowByMessage[messageId];
 
         if (token != address(0)) {
+            require(senderTokenEscrow[message.sender][token] >= amount, "Token escrow insufficient");
+            senderTokenEscrow[message.sender][token] -= amount;
+            totalTokenEscrowed[token] -= amount;
             IERC20(token).safeTransfer(recipient, amount);
         } else {
-            payable(recipient).transfer(amount);
+            require(senderNativeEscrow[message.sender] >= amount, "Native escrow insufficient");
+            require(address(this).balance >= totalNativeEscrowed, "Native escrow insolvent");
+            senderNativeEscrow[message.sender] -= amount;
+            totalNativeEscrowed -= amount;
+            (bool success, ) = payable(recipient).call{value: amount}("");
+            require(success, "Native transfer failed");
         }
 
         emit CrossChainTransferExecuted(messageId, recipient, amount);
@@ -244,25 +271,29 @@ contract CrossChainRouter is Ownable, ReentrancyGuard, Pausable {
     }
 
     /**
-     * @dev Withdraws accumulated fees.
+     * @dev Withdraws accumulated fees — never below outstanding native escrow.
      * @param recipient The recipient address
      * @param amount The amount to withdraw
      */
     function withdrawFees(address recipient, uint256 amount) external onlyOwner {
         require(recipient != address(0), "Invalid recipient");
-        payable(recipient).transfer(amount);
+        require(address(this).balance - amount >= totalNativeEscrowed, "Cannot withdraw escrowed principal");
+        (bool success, ) = payable(recipient).call{value: amount}("");
+        require(success, "Native transfer failed");
     }
 
     /**
-     * @dev Withdraws ERC20 tokens.
+     * @dev Withdraws ERC20 tokens — never below outstanding token escrow.
      * @param token The token address
      * @param recipient The recipient address
      * @param amount The amount to withdraw
      */
     function withdrawTokens(address token, address recipient, uint256 amount) external onlyOwner {
         require(recipient != address(0), "Invalid recipient");
+        require(IERC20(token).balanceOf(address(this)) - amount >= totalTokenEscrowed[token], "Cannot withdraw escrowed tokens");
         IERC20(token).safeTransfer(recipient, amount);
     }
 
-    receive() external payable {}
+    // No receive() — native value must flow through initiateTransfer so every
+    // incoming unit is either escrowed principal or an accounted bridge fee.
 }
