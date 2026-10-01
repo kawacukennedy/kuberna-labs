@@ -3,6 +3,17 @@ import type { StructuredIntent } from '../intent.js';
 import type { OmWorldIntent, Executor, Attestation, Constraints, SuccessCriteria } from './omworld-types.js';
 import { jcsCanonicalize } from './jcs.js';
 
+/**
+ * Generates an intent nonce.
+ *
+ * Uses a CSPRNG rather than Math.random(): nonces participate in intent
+ * identity and replay protection, so a predictable value would let an
+ * attacker precompute or collide a nonce before it is used.
+ */
+function generateNonce(): string {
+  return globalThis.crypto.randomUUID();
+}
+
 export function kubernaToOmWorld(
   kubernaIntent: KubernaNormalizedIntent,
   options?: {
@@ -15,7 +26,7 @@ export function kubernaToOmWorld(
   }
 ): OmWorldIntent {
   const now = new Date();
-  const nonce = kubernaIntent.nonce || `${now.getTime()}-${Math.random().toString(36).slice(2)}`;
+  const nonce = kubernaIntent.nonce || generateNonce();
 
   const body = options?.body
     || `Swap ${kubernaIntent.originAmount} ${kubernaIntent.originToken} on chain ${kubernaIntent.originChainId}`
@@ -57,7 +68,7 @@ export function structuredToOmWorld(
   }
 ): OmWorldIntent {
   const now = new Date();
-  const nonce = `${now.getTime()}-${Math.random().toString(36).slice(2)}`;
+  const nonce = generateNonce();
 
   const body = options?.body
     || structured.rawDescription
@@ -82,11 +93,18 @@ export function structuredToOmWorld(
 }
 
 export function omWorldToKubernaNormalized(intent: OmWorldIntent): KubernaNormalizedIntent {
+  // kubernaToOmWorld reads `deadline` as SECONDS (`Number(deadline) * 1000`),
+  // so the inverse conversion must divide by 1000 too. Emitting milliseconds
+  // here produced a deadline ~50,000 years in the future on round-trip.
+  const deadlineSeconds = intent.expires_at
+    ? BigInt(Math.floor(new Date(intent.expires_at).getTime() / 1000))
+    : BigInt(0);
+
   return {
     standard: 'kuberna',
     originalFormat: 'kuberna',
     nonce: intent.nonce,
-    deadline: intent.expires_at ? BigInt(new Date(intent.expires_at).getTime()) : BigInt(0),
+    deadline: deadlineSeconds,
     swapper: intent.principal,
     originChainId: BigInt(0),
     destinationChainId: BigInt(0),
@@ -96,7 +114,7 @@ export function omWorldToKubernaNormalized(intent: OmWorldIntent): KubernaNormal
     destinationAmount: BigInt(0),
     destinationRecipient: '',
     signer: intent.principal,
-    fillDeadline: intent.expires_at ? BigInt(new Date(intent.expires_at).getTime()) : BigInt(0),
+    fillDeadline: deadlineSeconds,
     message: intent.body,
     attestationRequired: !!intent.attestation,
   };
