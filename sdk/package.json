@@ -1,6 +1,6 @@
 {
   "name": "@kuberna/sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Production-grade SDK for Kuberna Labs - Agentic Web3 Enterprise",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

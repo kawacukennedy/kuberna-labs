@@ -1,6 +1,7 @@
 {
   "name": "kuberna-backend",
   "version": "1.0.0",
+  "private": true,
   "description": "Kuberna Labs Backend API",
   "main": "dist/index.js",
   "scripts": {
