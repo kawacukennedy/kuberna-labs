@@ -51,11 +51,12 @@ jobs:
           fi
         working-directory: sdk
 
+      # Auth: npm Trusted Publishing (OIDC) via id-token: write — no NPM_TOKEN.
+      - name: Upgrade npm (Trusted Publishing requires >= 11.5.1)
+        run: npm install -g npm@^11.5.1
+
       - name: Publish to npm
         if: steps.check.outputs.needs_publish == 'true'
         run: |
           npm publish --provenance --access public
         working-directory: sdk
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
