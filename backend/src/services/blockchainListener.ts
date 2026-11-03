@@ -44,6 +44,8 @@ interface BlockchainListenerConfig {
     [chainName: string]: {
       rpc: string;
       wsRpc: string;
+      /** Earliest block this chain's contracts may be scanned from. */
+      startBlock?: number;
       contracts: {
         escrow?: string;
         intent?: string;
@@ -65,7 +67,17 @@ interface BlockchainListenerConfig {
   pollInterval: number;
   confirmations: number;
   natsUrl: string;
+  /** Hard ceiling on blocks per eth_getLogs request; wider ranges are chunked to fit. */
+  maxBlockRange?: number;
+  /** Blocks scanned back on a cold start when no START_BLOCK is configured. */
+  lookbackBlocks?: number;
 }
+
+// Providers reject eth_getLogs ranges wider than their ceiling (commonly ~10k
+// blocks), and on metered endpoints a full-history range also counts as a
+// deep-archive call. Both bounds are configurable; these are the safe defaults.
+const DEFAULT_MAX_BLOCK_RANGE = 10_000;
+const DEFAULT_LOOKBACK_BLOCKS = 50_000;
 
 export class BlockchainListener {
   private config: BlockchainListenerConfig;
@@ -906,7 +918,12 @@ export class BlockchainListener {
 
       const currentBlock = await provider.getBlockNumber();
       const lastProcessedBlock = await this.getLastProcessedBlock(chainName);
-      const fromBlock = lastProcessedBlock + 1;
+      const fromBlock = this.resolveFromBlock(
+        chainName,
+        chainConfig,
+        lastProcessedBlock,
+        currentBlock
+      );
 
       if (fromBlock > currentBlock) return;
 
@@ -915,50 +932,69 @@ export class BlockchainListener {
       );
 
       // Query event history for each contract
-      if (chainConfig.contracts.escrow) {
-        await this.queryContractEvents(
-          chainName,
-          chainConfig.contracts.escrow,
-          'escrow',
-          fromBlock,
-          currentBlock
-        );
-      }
+      // Some providers hard-cap eth_getLogs ranges; chunk to stay within the ceiling.
+      await this.queryContractEventsInChunks(
+        chainName,
+        chainConfig.contracts.escrow,
+        'escrow',
+        fromBlock,
+        currentBlock
+      );
 
-      if (chainConfig.contracts.intent) {
-        await this.queryContractEvents(
-          chainName,
-          chainConfig.contracts.intent,
-          'intent',
-          fromBlock,
-          currentBlock
-        );
-      }
+      // Some providers hard-cap eth_getLogs ranges; chunk to stay within the ceiling.
+      await this.queryContractEventsInChunks(
+        chainName,
+        chainConfig.contracts.intent,
+        'intent',
+        fromBlock,
+        currentBlock
+      );
 
-      if (chainConfig.contracts.certificate) {
-        await this.queryContractEvents(
-          chainName,
-          chainConfig.contracts.certificate,
-          'certificate',
-          fromBlock,
-          currentBlock
-        );
-      }
+      // Some providers hard-cap eth_getLogs ranges; chunk to stay within the ceiling.
+      await this.queryContractEventsInChunks(
+        chainName,
+        chainConfig.contracts.certificate,
+        'certificate',
+        fromBlock,
+        currentBlock
+      );
 
-      if (chainConfig.contracts.attestation) {
-        await this.queryContractEvents(
-          chainName,
-          chainConfig.contracts.attestation,
-          'attestation',
-          fromBlock,
-          currentBlock
-        );
-      }
+      // Some providers hard-cap eth_getLogs ranges; chunk to stay within the ceiling.
+      await this.queryContractEventsInChunks(
+        chainName,
+        chainConfig.contracts.attestation,
+        'attestation',
+        fromBlock,
+        currentBlock
+      );
 
       // Update last processed block
       await this.updateLastProcessedBlock(chainName, currentBlock);
     } catch (error) {
       logger.error(`Error polling missed events on ${chainName}:`, error);
+    }
+  }
+
+  private async queryContractEventsInChunks(
+    chainName: string,
+    contractAddress: string | undefined,
+    contractType: string,
+    fromBlock: number,
+    toBlock: number
+  ): Promise<void> {
+    if (!contractAddress) return;
+    const maxRange = Math.max(1, this.config.maxBlockRange ?? DEFAULT_MAX_BLOCK_RANGE);
+    if (toBlock - fromBlock + 1 <= maxRange) {
+      await this.queryContractEvents(chainName, contractAddress, contractType, fromBlock, toBlock);
+      return;
+    }
+
+    let start = fromBlock;
+    while (start <= toBlock) {
+      const end = Math.min(start + maxRange - 1, toBlock);
+      logger.debug(`Querying ${contractType} events on ${chainName} blocks ${start}-${end}`);
+      await this.queryContractEvents(chainName, contractAddress, contractType, start, end);
+      start = end + 1;
     }
   }
 
@@ -1056,6 +1092,45 @@ export class BlockchainListener {
       logger.error('Error getting last processed block', { chain: chainName, error: String(error) });
       return 0;
     }
+  }
+
+  /**
+   * Resolve the block a (re)scan should start at.
+   *
+   * A cold start has no processed-event row, and falling back to 0 asks the RPC
+   * for the entire chain history in a single unchunked eth_getLogs — a request
+   * most providers reject outright, and which counts as a deep-archive call on
+   * metered endpoints. Prefer, in order: the recorded high-water mark, an
+   * explicit START_BLOCK floor, else a bounded lookback from head. The lookback
+   * is warned rather than silent so the operator knows to pin a floor.
+   */
+  private resolveFromBlock(
+    chainName: string,
+    chainConfig: BlockchainListenerConfig['chains'][string],
+    lastProcessedBlock: number,
+    currentBlock: number
+  ): number {
+    if (lastProcessedBlock > 0) {
+      return lastProcessedBlock + 1;
+    }
+
+    const startBlock = chainConfig.startBlock;
+    if (startBlock && startBlock > 0) {
+      logger.info(
+        `No processed events for ${chainName}; scanning from configured START_BLOCK ${startBlock}`
+      );
+      return startBlock;
+    }
+
+    const lookback = Math.max(1, this.config.lookbackBlocks ?? DEFAULT_LOOKBACK_BLOCKS);
+    const fromBlock = Math.max(1, currentBlock - lookback + 1);
+    logger.warn(
+      `No processed events and no START_BLOCK for ${chainName}: limiting the cold-start scan to the ` +
+        `last ${currentBlock - fromBlock + 1} blocks (from ${fromBlock}, head ${currentBlock}). ` +
+        `Contract history before that is not scanned. Set ${chainName.toUpperCase()}_START_BLOCK to your ` +
+        `deployment block to scan further back.`
+    );
+    return fromBlock;
   }
 
   private async updateLastProcessedBlock(chainName: string, blockNumber: number): Promise<void> {
