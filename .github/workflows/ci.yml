@@ -265,3 +265,27 @@ jobs:
           npm test -- --passWithNoTests
 
 
+  test-aip-adapter:
+    name: Test AIP Adapter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # packages/aip-adapter is intentionally outside the root workspaces, so it
+      # needs its own install. Running it from a fresh checkout is what proves
+      # the `test:aip-adapter` leg works on a clean clone.
+      - name: Install dependencies
+        run: |
+          cd packages/aip-adapter
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd packages/aip-adapter
+          npm test
