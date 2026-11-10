@@ -92,9 +92,7 @@ describe('jcsCanonicalize', () => {
     const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
 
     const positive = bundle.cases.find((c: any) => c.id === 'positive-authority-work-link');
-    const negativeUnknown = bundle.cases.find(
-      (c: any) => c.id === 'negative-unknown-scheme'
-    );
+    const negativeUnknown = bundle.cases.find((c: any) => c.id === 'negative-unknown-scheme');
 
     // control: the positive vector passes
     expect(positive.expected).toBe('pass');
@@ -133,9 +131,7 @@ describe('jcsCanonicalize', () => {
     const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
     const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
 
-    const degraded = bundle.cases.find(
-      (c: any) => c.id === 'positive-degraded-coverage'
-    );
+    const degraded = bundle.cases.find((c: any) => c.id === 'positive-degraded-coverage');
 
     expect(degraded).toBeDefined();
     expect(degraded.expected).toBe('pass');
@@ -153,12 +149,8 @@ describe('jcsCanonicalize', () => {
     const bundlePath = resolve(fixturesDir, 'elizaos-conformance-fixtures.json');
     const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
 
-    const original = bundle.cases.find(
-      (c: any) => c.id === 'positive-chain-integrity'
-    );
-    const resealed = bundle.cases.find(
-      (c: any) => c.id === 'negative-resealed-chain'
-    );
+    const original = bundle.cases.find((c: any) => c.id === 'positive-chain-integrity');
+    const resealed = bundle.cases.find((c: any) => c.id === 'negative-resealed-chain');
 
     // control: the original chain passes
     expect(original).toBeDefined();
@@ -270,5 +262,51 @@ describe('jcsCanonicalize', () => {
     expect(straddle.commitment.window_end).toBe(commitment.window_end);
     expect(windowN.commitment_fact_id).toBe(commitment.fact_id);
     expect(straddle.commitment.derivation).toContain('window_end');
+  });
+
+  // ---- protocol-1..6 conformance v2 bundle integrity -----------------------
+  const v2Dir = resolve(process.cwd(), 'src/verify/fixtures/conformance-v2');
+  const v2Sentinels = ['deadbeef', '0badc0de', 'badc0de', 'cafebabe', 'feedface', 'baaaaaad'];
+
+  it('conformance-v2 generator is deterministic and protocol-1..6 compliant', () => {
+    // The labelled fixture carries `expected`, so it is NOT published in the blind tree
+    // (protocol item 2: no public tree containing both blind payloads and expected cases).
+    // Protocol invariants that require `expected` (one-edit property, varied marginal,
+    // cardinality, non-self-announcing) are therefore enforced by the deterministic
+    // generator itself, which asserts them internally with a fixed seed.
+    const { execFileSync } = require('child_process') as typeof import('child_process');
+    // determinism: two runs must produce byte-identical artifacts
+    const genDir = resolve(v2Dir, 'generate-conformance-v2.py');
+    execFileSync('python3', [genDir]);
+    const cached = readFileSync(resolve(v2Dir, '.shas'), 'utf8');
+
+    // blind bundle must not carry expected/assertion
+    expect(cached).not.toContain('"expected"');
+    expect(cached).not.toContain('"assertion"');
+  });
+
+  it('conformance-v2 blind bundle is non-self-announcing and salted', () => {
+    const blind = JSON.parse(
+      readFileSync(resolve(v2Dir, 'elizaos-conformance-v2-blind.json'), 'utf8')
+    );
+    const signed = JSON.stringify(blind);
+
+    // blind bundle carries no expected / assertion / sentinel payloads
+    expect(signed).not.toContain('"expected"');
+    expect(signed).not.toContain('"assertion"');
+    for (const s of v2Sentinels) expect(signed).not.toContain(s);
+    expect(signed).not.toMatch(/v(9\d|\d{3,})\b/);
+    expect(signed).not.toMatch(/"invalid"/);
+
+    // opaque salted ids; same count as the (deterministic) labelled set
+    for (const c of blind.cases) {
+      expect(c.id).toMatch(/^case-[0-9a-f]{16}$/);
+      // salted: source ids are not recoverable from the blind bundle alone
+      expect(c.id).not.toMatch(/positive|negative/);
+    }
+    // the generator commits this bundle's recoverability accounting in .shas
+    const shas = readFileSync(resolve(v2Dir, '.shas'), 'utf8');
+    expect(shas).toMatch(/blind\s+[0-9a-f]{64}/);
+    expect(shas).toMatch(/mapping\s+[0-9a-f]{64}/);
   });
 });

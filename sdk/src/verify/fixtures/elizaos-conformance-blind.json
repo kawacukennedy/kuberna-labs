@@ -1,0 +1,144 @@
+{
+  "bundle_version": "kuberna-elizaos-conformance-blind-v1",
+  "description": "Blinded companion to the Kuberna elizaOS conformance bundle (elizaOS/eliza discussion #9810). Case ids are deterministic hashes of the source ids; assertions, expected verdicts, and mutation provenance are withheld and published separately in the mapping file. Protocol: an independent runner states predicted verdicts against this file before the mapping is released, then both sides open the mapping and compare. Synthetic interoperability evidence only.",
+  "cases": [
+    {
+      "id": "case-746dc543ab1a11b0",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "chain_integrity": "valid",
+        "link_signatures": "valid"
+      }
+    },
+    {
+      "id": "case-97466d498506414c",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "derivation": "jcs-sha256 over authority-preimage.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "unregistered-scheme-v99",
+        "preActionFactId": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-08-22T00:00:00Z",
+          "complete": "enumerated"
+        }
+      }
+    },
+    {
+      "id": "case-ac145f79b94cc1d6",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "derivation": "jcs-sha256 over authority-preimage.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0xdeadbeef00000000000000000000000000000000000000000000000000000000",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-08-22T00:00:00Z",
+          "complete": "enumerated"
+        }
+      }
+    },
+    {
+      "id": "case-b8771640cae54af1",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "collectorSignature": "0x0badc0de00",
+        "collectorKeyId": "aipou-collector-001"
+      }
+    },
+    {
+      "id": "case-d717f69912c20896",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "derivation": "jcs-sha256 over authority-preimage.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 12,
+          "as_of": "2026-08-22T00:00:00Z",
+          "complete": "enumerated"
+        }
+      }
+    },
+    {
+      "id": "case-e4a346c3717dcf56",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "derivation": "jcs-sha256 over authority-preimage.json (version field excluded per AIPOU envelope convention)"
+      },
+      "work": {
+        "receipt_type": "issuer_asserted",
+        "scheme": "aipou-receipt-v1",
+        "preActionFactId": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "coverage": {
+          "scope": "agent-intent-executions",
+          "observed_n": 0,
+          "as_of": "2026-08-22T00:00:00Z",
+          "complete": "unknown"
+        }
+      }
+    },
+    {
+      "id": "case-e901f43bd5080afa",
+      "authority": {
+        "receipt_type": "chain_derivable",
+        "scope_version": "delegation-scope-v1",
+        "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
+        "subject": {
+          "erc8004_token_id": "10042",
+          "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B"
+        },
+        "chain_integrity": "valid",
+        "link_signatures": "invalid"
+      }
+    }
+  ]
+}
