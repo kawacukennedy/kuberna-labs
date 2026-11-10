@@ -7,6 +7,7 @@ import {
 } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { HeroField } from '@/components/motion/HeroField';
+import { ShaderPanel } from '@/components/motion/ShaderPanel';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -126,7 +127,28 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="w-full md:w-1/2">
-            <div className="rounded-xl overflow-hidden shadow-ambient border border-outline/20 relative aspect-square bg-surface" />
+            <ShaderPanel
+              tone="dark"
+              className="aspect-square rounded-xl border border-outline/20 shadow-ambient"
+            >
+              <div className="flex h-full w-full flex-col justify-between p-8">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+                  Agent lifecycle
+                </span>
+                <div className="rounded-lg bg-black/35 p-4 backdrop-blur-sm">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    {steps.map((step, index) => (
+                      <React.Fragment key={step.num}>
+                        <span className="text-sm font-medium text-white">{step.title}</span>
+                        {index < steps.length - 1 ? (
+                          <ArrowRight size={14} className="text-white/45" aria-hidden />
+                        ) : null}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </ShaderPanel>
           </div>
         </div>
       </section>

@@ -79,9 +79,9 @@ void main() {
     float fi = float(i);
     float offset = (fi - 1.0) * 0.26;
     float wobble = sin(p.x * (1.6 + fi * 0.7) + t * (0.35 + fi * 0.11) + fi * 2.1) * 0.16;
-    float drift = fbm(p * vec2(1.4, 2.2) + vec2(t * 0.09, -t * 0.05 + fi * 4.0)) - 0.5;
-    float band = p.y - offset - wobble - drift * 0.42;
-    float width = 0.085 + fi * 0.015;
+    float drift = fbm(p * vec2(2.4, 3.8) + vec2(t * 0.09, -t * 0.05 + fi * 4.0)) - 0.5;
+    float band = p.y - offset - wobble - drift * 0.34;
+    float width = 0.06 + fi * 0.012;
 
     float glow = smoothstep(width, 0.0, abs(band));
     glow = pow(glow, 2.4);
@@ -103,7 +103,10 @@ void main() {
 
   if (uLight > 0.5) {
     vec3 average = glowColor / max(glowAmount, 0.0001);
-    float alpha = clamp(glowAmount * 0.55, 0.0, 0.62);
+    // Push saturation so the field reads as brand colour rather than grey wash.
+    float luma = dot(average, vec3(0.299, 0.587, 0.114));
+    average = clamp(mix(vec3(luma), average, 1.7), 0.0, 1.0);
+    float alpha = clamp(glowAmount * 0.72, 0.0, 0.70);
     color = mix(color, average, alpha * uIntensity);
     // Faint grain in the same direction as the paper tone.
     color += (hash(vUv * uResolution + t) - 0.5) * 0.012;
