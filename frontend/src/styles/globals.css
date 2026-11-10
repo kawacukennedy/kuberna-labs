@@ -708,3 +708,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-secondary);
   max-width: 300px;
 }
+
+/* ── Immersive motion layer (Remotion) ── */
+@media (prefers-reduced-motion: reduce) {
+  .motion-ambient,
+  .motion-hero-stage {
+    display: none !important;
+  }
+}

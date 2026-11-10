@@ -6,6 +6,7 @@ import {
   softwareApplicationJsonLd,
 } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
+import { HeroField } from '@/components/motion/HeroField';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -58,30 +59,30 @@ export default function LandingPage() {
         jsonLd={[organizationJsonLd(), websiteJsonLd(), softwareApplicationJsonLd()]}
       />
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-surface-container-low px-6 pt-24">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary-fixed-dim/30 blur-[100px]" />
-          <div className="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-secondary-fixed-dim/20 blur-[100px]" />
-        </div>
-        <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-          <span className="px-4 py-1.5 rounded-full bg-surface-container text-primary font-bold text-xs uppercase tracking-widest mb-8 border border-outline/20 inline-flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-            Agentic Computing Environment
-          </span>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-on-surface mb-6 leading-[1.1]">
-            Architect the Agentic<br /><span className="text-primary">Web3 Enterprise</span>
-          </h1>
-          <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mb-12">
-            Build, deploy, and monetize autonomous AI agents on decentralized infrastructure. Secure, scalable, and fully sovereign.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
-            <Link href="/auth/register" className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center gap-2">
-              Start Building <ArrowRight size={20} />
-            </Link>
-            <button className="w-full sm:w-auto px-8 py-4 rounded-full glass-panel text-on-surface font-semibold text-lg border border-outline/20 flex items-center justify-center gap-2">
-              Watch Demo <PlayCircle size={20} />
-            </button>
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-surface-container-low px-6 pt-28 pb-20">
+        <HeroField />
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          <div className="flex flex-col items-start text-left">
+            <span className="px-4 py-1.5 rounded-full bg-surface-container text-primary font-bold text-xs uppercase tracking-widest mb-8 border border-outline/20 inline-flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+              Agentic Computing Environment
+            </span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-on-surface mb-6 leading-[1.05]">
+              Architect the Agentic <span className="text-primary">Web3 Enterprise</span>
+            </h1>
+            <p className="text-lg md:text-xl text-on-surface-variant max-w-xl mb-10">
+              Build, deploy, and monetize autonomous AI agents on decentralized infrastructure. Secure, scalable, and fully sovereign.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-start w-full">
+              <Link href="/auth/register" className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center gap-2">
+                Start Building <ArrowRight size={20} />
+              </Link>
+              <button className="w-full sm:w-auto px-8 py-4 rounded-full glass-panel text-on-surface font-semibold text-lg border border-outline/20 flex items-center justify-center gap-2">
+                Watch Demo <PlayCircle size={20} />
+              </button>
+            </div>
           </div>
+          <div aria-hidden className="hidden lg:block min-h-[420px]" />
         </div>
       </section>
 
