@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Player } from "@remotion/player";
-import { ShaderField } from "../../../motion/ShaderField";
+import React from "react";
+import dynamic from "next/dynamic";
+import { useMotionTier } from "./capabilities";
+import { MotionBoundary } from "./MotionBoundary";
+import { StaticAurora } from "./StaticAurora";
+
+const ShaderStage = dynamic(() => import("./ShaderStage"), { ssr: false });
 
 type ShaderPanelProps = {
   tone?: "dark" | "light";
@@ -9,19 +13,19 @@ type ShaderPanelProps = {
 };
 
 /**
- * A framed shader surface for content sections. Client-only (the Remotion
- * player needs the DOM), with a static gradient underneath so the frame never
- * flashes empty.
+ * A framed shader surface for content sections.
+ *
+ * The CSS aurora is the panel as far as most visitors are concerned; the live
+ * shader is an upgrade applied only on the `full` motion tier, and it sits
+ * behind an error boundary so a decorative chunk can never blank the section.
  */
 export const ShaderPanel: React.FC<ShaderPanelProps> = ({ tone = "dark", className, children }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const tier = useMotionTier();
 
   return (
     <div className={`relative overflow-hidden ${className ?? ""}`}>
+      {/* The dark surface lives here, not in the aurora, so the layer keeps its
+          contrast whether the bands are drawn by CSS or by the shader. */}
       <div
         aria-hidden
         className="absolute inset-0"
@@ -29,24 +33,20 @@ export const ShaderPanel: React.FC<ShaderPanelProps> = ({ tone = "dark", classNa
           background:
             tone === "dark"
               ? "radial-gradient(120% 100% at 20% 10%, #312e81 0%, #121c2a 55%, #0b1220 100%)"
-              : "radial-gradient(120% 100% at 20% 10%, #e8ecff 0%, #f8f9ff 60%, #eef4ff 100%)",
+              : "none",
         }}
       />
-      {mounted ? (
+      <StaticAurora tone={tone} className="absolute inset-0" />
+      {tier === "full" ? (
         <div aria-hidden className="absolute inset-0">
-          <Player
-            component={ShaderField}
-            inputProps={{ intensity: tone === "dark" ? 1 : 0.9, tone }}
-            durationInFrames={420}
-            fps={30}
-            compositionWidth={1080}
-            compositionHeight={1080}
-            autoPlay
-            loop
-            clickToPlay={false}
-            doubleClickToFullscreen={false}
-            style={{ width: "100%", height: "100%" }}
-          />
+          <MotionBoundary>
+            <ShaderStage
+              tone={tone}
+              intensity={tone === "dark" ? 1 : 0.9}
+              compositionWidth={1080}
+              compositionHeight={1080}
+            />
+          </MotionBoundary>
         </div>
       ) : null}
       <div className="relative z-10 h-full w-full">{children}</div>

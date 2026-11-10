@@ -710,21 +710,213 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ── Immersive motion layer (Remotion) ── */
-/* Static wash under the hero so the section never reads as an empty box while
-   the client-only stage hydrates, when WebGL is unavailable, or when the
-   visitor prefers reduced motion. */
-.motion-hero-fallback {
-  background:
-    radial-gradient(58% 52% at 78% 44%, rgba(70, 72, 212, 0.18), transparent 72%),
-    radial-gradient(42% 42% at 92% 18%, rgba(52, 211, 153, 0.16), transparent 70%),
-    radial-gradient(52% 42% at 12% 88%, rgba(129, 140, 248, 0.2), transparent 72%);
+
+/* The CSS aurora. Every visitor paints this first, and it is the only
+   rendition on phones, low-power devices, reduced-motion visitors and
+   machines without WebGL — so it has to carry the design on its own.
+   Soft gradient stops stand in for a blur, and only `transform` animates, so
+   the whole layer stays on the compositor. */
+.motion-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
 }
 
-/* The ambient wash is pure decoration, so it is the one layer that is dropped
-   entirely for reduced-motion visitors. The hero stage stays: it renders a
-   single static frame instead of animating. */
+.motion-aurora--light {
+  --aurora-indigo: rgba(70, 72, 212, 0.34);
+  --aurora-emerald: rgba(52, 211, 153, 0.38);
+  --aurora-amber: rgba(251, 191, 36, 0.32);
+  background: var(--background, #f8f9ff);
+}
+
+/* On the dark surface the bands are light, so they screen onto the panel
+   instead of sitting on top of it as grey rectangles. */
+.motion-aurora--dark {
+  --aurora-indigo: rgba(129, 140, 248, 0.55);
+  --aurora-emerald: rgba(52, 211, 153, 0.42);
+  --aurora-amber: rgba(251, 191, 36, 0.3);
+  mix-blend-mode: screen;
+}
+
+.motion-aurora__band {
+  position: absolute;
+  left: -30%;
+  width: 160%;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.motion-aurora__band--indigo {
+  top: 2%;
+  height: 46%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--aurora-indigo) 46%,
+    transparent 100%
+  );
+  animation: motion-aurora-a 68s ease-in-out infinite alternate;
+}
+
+.motion-aurora__band--emerald {
+  top: 26%;
+  height: 40%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--aurora-emerald) 52%,
+    transparent 100%
+  );
+  animation: motion-aurora-b 84s ease-in-out infinite alternate;
+}
+
+.motion-aurora__band--amber {
+  top: -14%;
+  left: 12%;
+  width: 104%;
+  height: 34%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--aurora-amber) 58%,
+    transparent 100%
+  );
+  animation: motion-aurora-c 96s ease-in-out infinite alternate;
+}
+
+.motion-aurora__glow {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+.motion-aurora__glow--indigo {
+  top: 40%;
+  left: 6%;
+  background: radial-gradient(
+    circle at center,
+    rgba(70, 72, 212, 0.26),
+    transparent 66%
+  );
+  animation: motion-aurora-breathe 26s ease-in-out infinite alternate;
+}
+
+.motion-aurora__glow--emerald {
+  top: 18%;
+  right: 2%;
+  background: radial-gradient(
+    circle at center,
+    rgba(52, 211, 153, 0.24),
+    transparent 64%
+  );
+  animation: motion-aurora-breathe 32s ease-in-out 2s infinite alternate-reverse;
+}
+
+@keyframes motion-aurora-a {
+  from {
+    transform: rotate(-15deg) translate3d(-2%, 0, 0);
+  }
+  to {
+    transform: rotate(-9deg) translate3d(3%, -4%, 0);
+  }
+}
+
+@keyframes motion-aurora-b {
+  from {
+    transform: rotate(-7deg) translate3d(1%, 2%, 0);
+  }
+  to {
+    transform: rotate(-13deg) translate3d(-4%, -3%, 0);
+  }
+}
+
+@keyframes motion-aurora-c {
+  from {
+    transform: rotate(-18deg) translate3d(0, -1%, 0);
+  }
+  to {
+    transform: rotate(-12deg) translate3d(-3%, 3%, 0);
+  }
+}
+
+@keyframes motion-aurora-breathe {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.75;
+  }
+  to {
+    transform: scale(1.12) translate3d(2%, -2%, 0);
+    opacity: 1;
+  }
+}
+
+/* SVG rendition of the 3D core. */
+.motion-static-core__spin,
+.motion-static-core__ring,
+.motion-static-core__pulse {
+  transform-box: view-box;
+  transform-origin: 310px 300px;
+}
+
+.motion-static-core__spin {
+  animation: motion-core-spin 52s linear infinite;
+}
+
+.motion-static-core__ring--outer {
+  animation: motion-core-spin 96s linear infinite reverse;
+}
+
+.motion-static-core__ring--inner {
+  animation: motion-core-spin 74s linear infinite;
+}
+
+.motion-static-core__pulse {
+  animation: motion-core-pulse 7s ease-in-out infinite;
+}
+
+@keyframes motion-core-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes motion-core-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+/* Once the live WebGL core is drawing, its SVG stand-in fades out. Kept on
+   `data-core-state` rather than `:has()` so it works on older browsers. */
+.motion-hero-stage[data-core-state="live"] .motion-static-core {
+  opacity: 0;
+}
+
+.motion-static-core {
+  transition: opacity 700ms ease;
+}
+
+/* The ambient wash is pure decoration, and so are the CSS animations on a
+   reduced-motion device: the layers stay for their colour, without movement. */
 @media (prefers-reduced-motion: reduce) {
   .motion-ambient {
     display: none !important;
+  }
+
+  .motion-aurora__band,
+  .motion-aurora__glow,
+  .motion-static-core__spin,
+  .motion-static-core__ring,
+  .motion-static-core__pulse {
+    animation: none !important;
   }
 }
