@@ -1,36 +1,28 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import { useMotionTier } from "./capabilities";
+import { MotionBoundary } from "./MotionBoundary";
 
-const AmbientFieldStage = dynamic(() => import("./AmbientFieldStage"), { ssr: false });
-
-/**
- * A decorative layer on every route, so a failure here must never take a page
- * down with it: if the client chunk 404s (a stale dev build is the usual cause)
- * the boundary drops the overlay and the page renders normally.
- */
-class AmbientErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { failed: boolean }
-> {
-  override state = { failed: false };
-
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-
-  override render() {
-    return this.state.failed ? null : this.props.children;
-  }
-}
+const ShaderStage = dynamic(() => import("./ShaderStage"), { ssr: false });
 
 /**
  * Immersive light-wash that runs above page backgrounds on every route.
  *
  * It is an additive overlay rather than a background because individual pages
  * paint their own opaque sections; blending on top means the motion reads on
- * all of them without rewriting each page's surface colors.
+ * all of them without rewriting each page's surface colours.
+ *
+ * This is the most expensive layer on the site — a full-viewport fragment
+ * shader on every route — so it is the first thing dropped: phones, low-power
+ * machines and reduced-motion visitors never request it.
  */
 export const AmbientField: React.FC = () => {
+  const tier = useMotionTier();
+
+  if (tier !== "full") {
+    return null;
+  }
+
   return (
     <div
       aria-hidden
@@ -42,9 +34,9 @@ export const AmbientField: React.FC = () => {
         WebkitMaskImage: "linear-gradient(to bottom, #000 0%, #000 34%, transparent 72%)",
       }}
     >
-      <AmbientErrorBoundary>
-        <AmbientFieldStage />
-      </AmbientErrorBoundary>
+      <MotionBoundary>
+        <ShaderStage tone="light" />
+      </MotionBoundary>
     </div>
   );
 };

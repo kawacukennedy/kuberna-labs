@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Player } from "@remotion/player";
-import { ShaderField } from "../../../motion/ShaderField";
 import { AgentCore3D } from "./AgentCore3D";
+import ShaderStage from "./ShaderStage";
 
 const usePrefersReducedMotion = () => {
   const [reduced, setReduced] = useState(false);
@@ -19,37 +18,29 @@ const usePrefersReducedMotion = () => {
 
 /**
  * Homepage hero motion: the aurora field full-bleed, with the 3D agentic core
- * anchored to the right on large screens. The field is a Remotion composition,
- * so what ships on the site is exactly what is editable in Remotion Studio; the
- * core is a plain three.js canvas so it paints independently of the player.
+ * anchored to the right on large screens.
  *
- * Visitors who prefer reduced motion get the same composition paused on a
- * composed frame rather than a blank half of the hero.
+ * This module is the expensive one — the Remotion player and three.js — so the
+ * page never imports it directly. `HeroField` pulls it in only for the `full`
+ * motion tier and only as a lazy chunk, with the CSS rendition already painted
+ * beneath it.
  */
-export default function HeroFieldStage() {
+type HeroFieldStageProps = {
+  onCoreLive?: (live: boolean) => void;
+};
+
+export default function HeroFieldStage({ onCoreLive }: HeroFieldStageProps) {
   const reducedMotion = usePrefersReducedMotion();
 
   return (
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute inset-0">
-        <Player
-          component={ShaderField}
-          inputProps={{ intensity: 1, tone: "light" as const }}
-          durationInFrames={420}
-          fps={30}
-          compositionWidth={1920}
-          compositionHeight={1080}
-          autoPlay={!reducedMotion}
-          loop
-          clickToPlay={false}
-          doubleClickToFullscreen={false}
-          style={{ width: "100%", height: "100%" }}
-        />
+        <ShaderStage tone="light" autoPlay={!reducedMotion} />
       </div>
 
-      <div className="motion-hero-stage absolute inset-y-0 right-0 hidden w-[54%] items-center justify-center lg:flex">
+      <div className="motion-hero-core absolute inset-y-0 right-0 hidden w-[54%] items-center justify-center lg:flex">
         <div className="aspect-square w-full max-w-[620px]">
-          <AgentCore3D />
+          <AgentCore3D onLiveChange={onCoreLive} />
         </div>
       </div>
     </div>

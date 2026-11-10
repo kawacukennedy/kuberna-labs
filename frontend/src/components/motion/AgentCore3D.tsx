@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { BRAND } from "../../../motion/theme";
 
@@ -14,8 +14,17 @@ import { BRAND } from "../../../motion/theme";
  * Rendering imperatively also keeps three.js out of the Remotion timeline, so
  * the site never waits on a player chunk to paint the hero.
  */
-export const AgentCore3D: React.FC = () => {
+type AgentCore3DProps = {
+  /**
+   * Called with `true` once the canvas is drawing, and `false` if it is torn
+   * down or loses its context. The parent uses it to retire the SVG stand-in.
+   */
+  onLiveChange?: (live: boolean) => void;
+};
+
+export const AgentCore3D: React.FC<AgentCore3DProps> = ({ onLiveChange }) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -27,7 +36,8 @@ export const AgentCore3D: React.FC = () => {
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     } catch {
-      // No WebGL (old browser, blocked GPU): the shader background still shows.
+      setFailed(true);
+      onLiveChange?.(false);
       return;
     }
 
@@ -177,8 +187,11 @@ export const AgentCore3D: React.FC = () => {
       halo.scale.setScalar(corePulse * 1.04);
       core.rotation.y = seconds * 0.12;
 
-      rings[0].rotation.set(Math.PI / 2.35, seconds * 0.6 * spin, 0.32);
-      rings[1].rotation.set(Math.PI / 1.75, -seconds * 0.6 * spin * 1.3, -0.45);
+      // Tilted, never spun about Y: a spinning ring passes through edge-on,
+      // which reads as a stray straight line across the hero. A slow wobble in
+      // the tilt keeps them alive without ever presenting a flat disc.
+      rings[0].rotation.set(1.12 + Math.sin(seconds * 0.35) * 0.05, 0, 0.32);
+      rings[1].rotation.set(1.34 + Math.cos(seconds * 0.28) * 0.06, 0, -0.4);
 
       satellites.forEach((satellite, index) => {
         const orbit = 1.95 + (index % 3) * 0.34;
@@ -246,8 +259,21 @@ export const AgentCore3D: React.FC = () => {
     );
     visibilityObserver.observe(mount);
 
+    onLiveChange?.(true);
+
+    // A driver reset mid-session leaves a frozen canvas; hand back to the SVG.
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      cancelAnimationFrame(frameId);
+      onLiveChange?.(false);
+      setFailed(true);
+    };
+    renderer.domElement.addEventListener("webglcontextlost", onContextLost);
+
     return () => {
       cancelAnimationFrame(frameId);
+      renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+      onLiveChange?.(false);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       disposables.forEach((item) => item.dispose());
@@ -256,7 +282,16 @@ export const AgentCore3D: React.FC = () => {
         mount.removeChild(renderer.domElement);
       }
     };
+    // `onLiveChange` is stable in the parent; re-running this effect would
+    // rebuild the whole scene, so it is deliberately not a dependency.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // `failed` is only read so a dead renderer re-renders instead of keeping a
+  // stale canvas mounted; the SVG stand-in underneath is already visible.
+  if (failed) {
+    return null;
+  }
 
   // The parent `<Player>` used to own the sizing; this wrapper keeps the
   // canvas square and centred the same way the composition does.
