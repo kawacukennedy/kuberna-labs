@@ -45,6 +45,7 @@ pnpm-debug.log*
 lerna-debug.log*
 .nyc_output/
 frontend/coverage/
+frontend/motion-renders/
 
 # internal ops docs (contain wallet addresses, financial data, personal info)
 AGENTS.md

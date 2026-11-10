@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
+import { AmbientField } from '../motion/AmbientField';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant = 'default', s
             {children}
           </main>
         </div>
+        <AmbientField />
       </div>
     );
   }
@@ -31,6 +33,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant = 'default', s
         <main className="flex-grow">
           {children}
         </main>
+        <AmbientField />
       </div>
     );
   }
@@ -42,6 +45,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant = 'default', s
         {children}
       </main>
       <Footer />
+      <AmbientField />
     </div>
   );
 };
