@@ -710,9 +710,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ── Immersive motion layer (Remotion) ── */
+/* Static wash under the hero so the section never reads as an empty box while
+   the client-only stage hydrates, when WebGL is unavailable, or when the
+   visitor prefers reduced motion. */
+.motion-hero-fallback {
+  background:
+    radial-gradient(58% 52% at 78% 44%, rgba(70, 72, 212, 0.18), transparent 72%),
+    radial-gradient(42% 42% at 92% 18%, rgba(52, 211, 153, 0.16), transparent 70%),
+    radial-gradient(52% 42% at 12% 88%, rgba(129, 140, 248, 0.2), transparent 72%);
+}
+
+/* The ambient wash is pure decoration, so it is the one layer that is dropped
+   entirely for reduced-motion visitors. The hero stage stays: it renders a
+   single static frame instead of animating. */
 @media (prefers-reduced-motion: reduce) {
-  .motion-ambient,
-  .motion-hero-stage {
+  .motion-ambient {
     display: none !important;
   }
 }
