@@ -1,43 +1,30 @@
 import React from "react";
-import { Player } from "@remotion/player";
-import { ShaderField } from "../../../motion/ShaderField";
+import { AnimatedShaderSurface } from "../../../motion/ShaderSurface";
 
 type ShaderStageProps = {
   tone?: "light" | "dark";
   intensity?: number;
-  compositionWidth?: number;
-  compositionHeight?: number;
-  autoPlay?: boolean;
+  className?: string;
 };
 
 /**
- * The animated shader, behind the Remotion `<Player>`.
+ * The animated shader as the site mounts it.
+ *
+ * This used to be a Remotion `<Player>`, which cost an 82 kB gzip chunk, logged
+ * a licence nag, warned that `ref` is not a prop, and created an AudioContext
+ * it was never allowed to start (three warnings per mount, plus one on every
+ * hot reload). None of that was doing any work: the player existed only to give
+ * the canvas a clock, and a canvas can own its own clock.
  *
  * Only ever loaded inside the `full` motion tier, and only through a lazy
- * import, so Remotion never reaches a visitor whose device cannot run it. Keep
- * this module free of anything but the player: it is a chunk, not a component
- * the page should import directly.
+ * import, so no shader code reaches a device that cannot run it. Keep this
+ * module free of anything but the surface: it is a chunk, not a component the
+ * page should import directly.
  */
 export default function ShaderStage({
   tone = "light",
   intensity = 1,
-  compositionWidth = 1920,
-  compositionHeight = 1080,
-  autoPlay = true,
+  className,
 }: ShaderStageProps) {
-  return (
-    <Player
-      component={ShaderField}
-      inputProps={{ intensity, tone }}
-      durationInFrames={420}
-      fps={30}
-      compositionWidth={compositionWidth}
-      compositionHeight={compositionHeight}
-      autoPlay={autoPlay}
-      loop
-      clickToPlay={false}
-      doubleClickToFullscreen={false}
-      style={{ width: "100%", height: "100%" }}
-    />
-  );
+  return <AnimatedShaderSurface tone={tone} intensity={intensity} className={className} />;
 }

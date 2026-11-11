@@ -40,12 +40,7 @@ export const ShaderPanel: React.FC<ShaderPanelProps> = ({ tone = "dark", classNa
       {tier === "full" ? (
         <div aria-hidden className="absolute inset-0">
           <MotionBoundary>
-            <ShaderStage
-              tone={tone}
-              intensity={tone === "dark" ? 1 : 0.9}
-              compositionWidth={1080}
-              compositionHeight={1080}
-            />
+            <ShaderStage tone={tone} intensity={tone === "dark" ? 1 : 0.9} />
           </MotionBoundary>
         </div>
       ) : null}
