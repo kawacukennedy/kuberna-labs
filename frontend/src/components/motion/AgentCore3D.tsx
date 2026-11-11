@@ -32,9 +32,33 @@ export const AgentCore3D: React.FC<AgentCore3DProps> = ({ onLiveChange }) => {
       return;
     }
 
+    // The context is created here, not by three, so a device without WebGL
+    // hands back to the SVG without three logging a stack-trace-shaped error
+    // three times per mount (which is what used to fill the console on a
+    // machine with hardware acceleration off).
+    const canvas = document.createElement("canvas");
+    let context: WebGLRenderingContext | null = null;
+    const attributes: WebGLContextAttributes = {
+      antialias: true,
+      alpha: true,
+      powerPreference: "low-power",
+    };
+    try {
+      context = (canvas.getContext("webgl2", attributes) ??
+        canvas.getContext("webgl", attributes)) as WebGLRenderingContext | null;
+    } catch {
+      context = null;
+    }
+
+    if (!context) {
+      setFailed(true);
+      onLiveChange?.(false);
+      return;
+    }
+
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ canvas, context, antialias: true, alpha: true });
     } catch {
       setFailed(true);
       onLiveChange?.(false);
