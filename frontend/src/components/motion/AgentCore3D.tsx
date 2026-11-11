@@ -317,8 +317,8 @@ export const AgentCore3D: React.FC<AgentCore3DProps> = ({ onLiveChange }) => {
     return null;
   }
 
-  // The parent `<Player>` used to own the sizing; this wrapper keeps the
-  // canvas square and centred the same way the composition does.
+  // The mount fills the hero panel; the renderer is sized from this element on
+  // mount and on every resize.
   return (
     <div className="relative h-full w-full">
       <div ref={mountRef} className="absolute inset-0" />
