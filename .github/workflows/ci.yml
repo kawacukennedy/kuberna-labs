@@ -176,6 +176,19 @@ jobs:
           cd frontend
           npm run build
 
+      # The site renders motion with its own shader + three.js renderer, so the
+      # Remotion player must never reach the static export again: it cost 82 kB
+      # gzip, printed a licence nag and started an AudioContext nobody asked for.
+      - name: Check the exported site has no Remotion player
+        run: |
+          cd frontend
+          test -d out/_next/static/chunks
+          if grep -rlE 'acknowledgeRemotionLicense|AbsoluteFillWithTiming|@remotion/player' out/_next/static/chunks; then
+            echo '::error::Remotion player code shipped in the site bundle'
+            exit 1
+          fi
+          echo 'Site bundle is free of the Remotion player.'
+
       - name: Collect git stats
         id: git-stats
         run: |
@@ -262,7 +275,7 @@ jobs:
       - name: Run tests
         run: |
           cd frontend
-          npm test -- --passWithNoTests
+          npm test
 
 
   test-aip-adapter:
