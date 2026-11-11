@@ -20,5 +20,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // Tests and test support live outside the app; Next strips devDependencies on
+  // build, so they must not be type-checked as app code.
+  "exclude": ["node_modules", "test"]
 }
