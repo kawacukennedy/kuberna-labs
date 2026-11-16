@@ -4,6 +4,17 @@ import { Layout } from '@/components/layout/Layout';
 import { Cpu, Play, Square, Settings, Plus, Bot } from 'lucide-react';
 import Link from 'next/link';
 import { AIAssistant } from '@/components/AIAssistant';
+import { useAuth } from '@/context/AuthContext';
+import { apiUrl, parseFailedResponse } from '@/lib/api';
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} role="alert" className="mt-2 text-xs text-error">
+      {message}
+    </p>
+  );
+}
 
 interface AgentSuggestion {
   name: string;
@@ -26,6 +37,7 @@ const DEPLOYMENT_OPTIONS = ['CLOUD', 'TEE', 'LOCAL'];
 const TOOL_OPTIONS = ['swap', 'monitor', 'bridge', 'alert', 'governance', 'nft', 'balance', 'price_feed', 'data_fetch', 'risk_analysis'];
 
 export default function AgentsPage() {
+  const { token } = useAuth();
   const [showWizard, setShowWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState<'ai' | 'manual' | 'create'>('ai');
   const [suggestion, setSuggestion] = useState<AgentSuggestion | null>(null);
@@ -35,6 +47,9 @@ export default function AgentsPage() {
   const [formTools, setFormTools] = useState<string[]>([]);
   const [formDeployment, setFormDeployment] = useState('CLOUD');
   const [formDescription, setFormDescription] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAISuggestion = (s: AgentSuggestion) => {
     setSuggestion(s);
@@ -47,8 +62,23 @@ export default function AgentsPage() {
   };
 
   const handleCreate = async () => {
+    setSubmitError(null);
+
+    if (!formName.trim()) {
+      setFieldErrors({ name: 'Agent name is required' });
+      return;
+    }
+
+    if (!token) {
+      setSubmitError('Sign in to create an agent.');
+      return;
+    }
+
+    setFieldErrors({});
+    setIsSubmitting(true);
+
     const payload = {
-      name: formName,
+      name: formName.trim(),
       description: formDescription,
       framework: formFramework.toLowerCase(),
       model: 'local',
@@ -63,12 +93,11 @@ export default function AgentsPage() {
     };
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('/api/agents', {
+      const res = await fetch(apiUrl('/agents'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -78,12 +107,16 @@ export default function AgentsPage() {
         setWizardStep('ai');
         setSuggestion(null);
         window.location.reload();
-      } else {
-        const err = await res.json();
-        alert(err.error?.message || 'Failed to create agent');
+        return;
       }
+
+      const parsed = await parseFailedResponse(res, 'Failed to create agent');
+      setFieldErrors(parsed.fieldErrors);
+      setSubmitError(parsed.message);
     } catch {
-      alert('Failed to create agent. Ensure the backend is running.');
+      setSubmitError('Could not reach the API. Check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -107,7 +140,13 @@ export default function AgentsPage() {
             <p className="text-on-surface-variant">Manage your autonomous agents</p>
           </div>
           <button
-            onClick={() => { setShowWizard(true); setWizardStep('ai'); setSuggestion(null); }}
+            onClick={() => {
+              setShowWizard(true);
+              setWizardStep('ai');
+              setSuggestion(null);
+              setFieldErrors({});
+              setSubmitError(null);
+            }}
             className="btn btn-primary flex items-center gap-2"
           >
             <Plus size={18} /> Create Agent
@@ -215,14 +254,20 @@ export default function AgentsPage() {
 
                 <div className="space-y-5">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Agent Name</label>
+                    <label htmlFor="agent-name" className="block text-xs font-bold uppercase tracking-widest text-on-surface mb-2">Agent Name</label>
                     <input
+                      id="agent-name"
                       type="text"
                       value={formName}
                       onChange={e => setFormName(e.target.value)}
-                      className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                      aria-invalid={Boolean(fieldErrors.name)}
+                      aria-describedby={fieldErrors.name ? 'agent-name-error' : undefined}
+                      className={`w-full px-4 py-3 bg-surface-container-low border rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none ${
+                        fieldErrors.name ? 'border-error' : 'border-outline/10'
+                      }`}
                       placeholder="My Agent"
                     />
+                    <FieldError id="agent-name-error" message={fieldErrors.name} />
                   </div>
 
                   <div>
@@ -230,10 +275,13 @@ export default function AgentsPage() {
                     <textarea
                       value={formDescription}
                       onChange={e => setFormDescription(e.target.value)}
+                      aria-invalid={Boolean(fieldErrors.description)}
+                      aria-describedby={fieldErrors.description ? 'agent-description-error' : undefined}
                       rows={3}
                       className="w-full px-4 py-3 bg-surface-container-low border border-outline/10 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none resize-none"
                       placeholder="What does this agent do?"
                     />
+                    <FieldError id="agent-description-error" message={fieldErrors.description} />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -282,12 +330,30 @@ export default function AgentsPage() {
                     </div>
                   </div>
 
+                  {submitError && (
+                    <p role="alert" className="rounded-xl border border-error/40 bg-error/10 px-4 py-3 text-sm text-error">
+                      {submitError}
+                      {!token && (
+                        <>
+                          {' '}
+                          <Link href="/auth/login" className="underline font-semibold">
+                            Sign in
+                          </Link>
+                        </>
+                      )}
+                    </p>
+                  )}
+
                   <div className="flex gap-3 pt-2">
                     <button onClick={() => setWizardStep('ai')} className="btn btn-glass flex-1">
                       Back
                     </button>
-                    <button onClick={handleCreate} className="btn btn-primary flex-1">
-                      Deploy Agent
+                    <button
+                      onClick={handleCreate}
+                      disabled={isSubmitting}
+                      className="btn btn-primary flex-1 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? 'Deploying…' : 'Deploy Agent'}
                     </button>
                   </div>
                 </div>
