@@ -7,12 +7,32 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      networks:
+        description: 'Comma-separated Hardhat networks to deploy (sepolia, baseSepolia, ogTestnet, mantleSepolia)'
+        required: true
+        default: 'baseSepolia'
+      allow_mainnet:
+        description: 'Deploy to mainnets too (polygon, arbitrum). Costs real gas.'
+        type: boolean
+        default: false
+      publish_sdk:
+        description: 'Publish @kuberna/sdk to npm'
+        type: boolean
+        default: false
 
 jobs:
-  deploy-contracts:
-    name: Deploy Smart Contracts
+  # A tag deploys the three testnets only. Mainnets are never deployed by a
+  # tag: an accidental tag push must not spend real gas.
+  deploy-testnets:
+    name: Deploy contracts (${{ matrix.network }})
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push'
+    strategy:
+      fail-fast: false
+      matrix:
+        network: [sepolia, baseSepolia, ogTestnet]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,49 +45,123 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Deploy to Sepolia
+      - name: Deploy to ${{ matrix.network }}
         env:
           PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
           SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy-all.ts --network sepolia
-
-      - name: Verify contracts on Sepolia
-        env:
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/verify.ts --network sepolia
-
-      - name: Deploy to Base Sepolia
-        env:
-          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy-all.ts --network baseSepolia
-
-      - name: Deploy to OG Testnet
-        env:
-          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
           OG_RPC_URL: ${{ secrets.OG_RPC_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy-all.ts --network ogTestnet
+        run: npx hardhat run scripts/deploy-all.ts --network ${{ matrix.network }}
 
-      - name: Deploy to Polygon
+      - name: Verify on ${{ matrix.network }}
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+        # Verification failures are reported by the script but do not undo a
+        # successful deployment.
+        run: npx hardhat run scripts/verify.ts --network ${{ matrix.network }}
+
+      - name: Upload deployment record
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ matrix.network }}
+          path: deployments/${{ matrix.network }}-latest.json
+          if-no-files-found: error
+
+  # Manual runs choose their own networks, so one job loops over the list
+  # instead of hard-coding a matrix.
+  deploy-selected:
+    name: Deploy contracts (selected networks)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Deploy and verify each selected network
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          OG_RPC_URL: ${{ secrets.OG_RPC_URL }}
+          MANTLE_SEPOLIA_RPC_URL: ${{ secrets.MANTLE_SEPOLIA_RPC_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          ALLOW_MAINNET_DEPLOY: ${{ inputs.allow_mainnet && 'true' || '' }}
+        run: |
+          set -euo pipefail
+          IFS=',' read -ra NETS <<< "${{ inputs.networks }}"
+          for raw in "${NETS[@]}"; do
+            net="$(echo "$raw" | tr -d '[:space:]')"
+            if [ -z "$net" ]; then continue; fi
+            echo "::group::Deploying $net"
+            npx hardhat run scripts/deploy-all.ts --network "$net"
+            echo "::endgroup::"
+            echo "::group::Verifying $net"
+            npx hardhat run scripts/verify.ts --network "$net"
+            echo "::endgroup::"
+          done
+
+      - name: Upload deployment records
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployments-manual
+          path: deployments/*-latest.json
+          if-no-files-found: error
+
+  deploy-mainnets:
+    name: Deploy contracts (${{ matrix.network }} mainnet)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.allow_mainnet
+    strategy:
+      fail-fast: false
+      matrix:
+        network: [polygon, arbitrum]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Deploy to ${{ matrix.network }}
         env:
           PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
           POLYGON_RPC_URL: ${{ secrets.POLYGON_RPC_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy-all.ts --network polygon
-
-      - name: Deploy to Arbitrum
-        env:
-          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
           ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-        run: npx hardhat run scripts/deploy-all.ts --network arbitrum
+          ALLOW_MAINNET_DEPLOY: 'true'
+        run: npx hardhat run scripts/deploy-all.ts --network ${{ matrix.network }}
+
+      - name: Verify on ${{ matrix.network }}
+        env:
+          POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+          ARBISCAN_API_KEY: ${{ secrets.ARBISCAN_API_KEY }}
+        run: npx hardhat run scripts/verify.ts --network ${{ matrix.network }}
+
+      - name: Upload deployment record
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ matrix.network }}
+          path: deployments/${{ matrix.network }}-latest.json
+          if-no-files-found: error
 
   publish-sdk:
     name: Publish SDK to NPM
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' || inputs.publish_sdk
     steps:
       - uses: actions/checkout@v4
 
@@ -95,66 +189,33 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  deploy-backend:
-    name: Deploy Backend Services
+  # Render deploys on every push to main, so a tag points at a build that is
+  # already live. This gate proves the single host is actually serving the
+  # backend and the static export from the same origin.
+  smoke-production:
+    name: Smoke test production
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy-testnets]
+    if: github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
+      - name: Check health, landing page and contracts page
         run: |
-          cd backend
-          npm ci --legacy-peer-deps
-
-      - name: Build backend
-        run: |
-          cd backend
-          npm run build
-
-      - name: Deploy to production
-        run: echo "Deploy backend to your hosting provider"
-        # Add your deployment commands here
-
-  deploy-frontend:
-    name: Deploy Frontend to Vercel
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_GRAPHQL_URL: ${{ secrets.NEXT_PUBLIC_GRAPHQL_URL }}
-          NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          set -euo pipefail
+          base="https://kuberna-labs.onrender.com"
+          for path in /health / /contracts/ /status; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$base$path")
+            echo "$path -> $code"
+            if [ "$code" != "200" ]; then
+              echo "::error::$base$path returned $code"
+              exit 1
+            fi
+          done
 
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [deploy-contracts, publish-sdk, deploy-backend, deploy-frontend]
+    needs: [deploy-testnets, publish-sdk]
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
 
