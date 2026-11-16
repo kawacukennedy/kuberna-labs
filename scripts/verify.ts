@@ -1,10 +1,5 @@
 import { run, network, ethers } from 'hardhat';
-import {
-  CONTRACTS,
-  ContractSpec,
-  DeploymentRecord,
-  readDeployment,
-} from './deployment-manifest';
+import { CONTRACTS, ContractSpec, DeploymentRecord, readDeployment } from './deployment-manifest';
 
 /**
  * Verifies every contract recorded in deployments/<network>-latest.json on the
@@ -51,7 +46,9 @@ async function main() {
         `${networkName}-latest.json has no "deployer" field and no signer is configured, so constructor arguments cannot be reconstructed.`
       );
     }
-    console.log(`\nℹ️  No deployer recorded in the deployment file; using ${owner} for constructor arguments.`);
+    console.log(
+      `\nℹ️  No deployer recorded in the deployment file; using ${owner} for constructor arguments.`
+    );
   }
 
   const outcomes: VerifyOutcome[] = [];
