@@ -173,8 +173,9 @@ jobs:
 
       - name: Build frontend
         run: |
+          set -o pipefail
           cd frontend
-          npm run build
+          npm run build 2>&1 | tee "$RUNNER_TEMP/next-build.log"
 
       # The site renders motion with its own shader + three.js renderer, so the
       # Remotion player must never reach the static export again: it cost 82 kB
@@ -188,6 +189,40 @@ jobs:
             exit 1
           fi
           echo 'Site bundle is free of the Remotion player.'
+
+      # First-load JS is the number users feel on a cold visit. The heaviest
+      # route sits at ~204 kB today, so this catches regressions without
+      # blocking unrelated work. Lower the budget when a route gets lighter.
+      - name: Check first-load JS budget
+        env:
+          MAX_FIRST_LOAD_KB: '220'
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/next-build.log"
+          if [ ! -s "$log" ]; then
+            echo '::error::next build log is missing, so the JS budget cannot be checked'
+            exit 1
+          fi
+          awk -v max="$MAX_FIRST_LOAD_KB" '
+            / kB$/ {
+              n = $(NF - 1)
+              if (n ~ /^[0-9]+(\.[0-9]+)?$/) {
+                seen++
+                if (n + 0 > worst) { worst = n + 0; where = $0 }
+              }
+            }
+            END {
+              if (!seen) {
+                print "::error::could not parse First Load JS from the next build output"
+                exit 1
+              }
+              printf "Heaviest first-load JS: %.1f kB (budget %s kB)\n%s\n", worst, max, where
+              if (worst + 0 > max + 0) {
+                printf "::error::first-load JS %.1f kB exceeds the %s kB budget\n", worst, max
+                exit 1
+              }
+            }
+          ' "$log"
 
       - name: Collect git stats
         id: git-stats

@@ -37,6 +37,53 @@ X-RateLimit-Reset: 1640000000
 
 ## Endpoints
 
+### Service Health
+
+#### Liveness
+
+```http
+GET /health
+```
+
+Returns `200` as soon as the process is up. Render uses it as the health check
+path, so it must not touch the database or any chain.
+
+#### Readiness / deploy check
+
+```http
+GET /status
+```
+
+Returns `200` when every dependency is reachable and `503` otherwise (the body
+has the same shape either way, so a failing deploy can be diagnosed from it):
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-11-16T12:00:00.000Z",
+  "environment": "production",
+  "commit": "5d8de95",
+  "uptimeSeconds": 412,
+  "checks": {
+    "api": { "status": "ok" },
+    "database": { "status": "ok" },
+    "rateLimiter": { "configured": true, "active": "redis" },
+    "blockchainListener": {
+      "configured": true,
+      "lastOnchainEvent": { "chain": "baseSepolia", "at": "2026-11-16T11:58:31.000Z" }
+    }
+  }
+}
+```
+
+`status` is `degraded` and the response is `503` when the database query fails;
+the `database` check then carries an `error` string. `rateLimiter.active` is
+`memory` when `REDIS_URL` is unset, which still rate limits per instance but not
+across instances. The listener is a separate process, so `lastOnchainEvent` being
+`null` means no event has ever been indexed, not that the API is unhealthy.
+
+`commit` comes from `RENDER_GIT_COMMIT` and is `null` outside Render.
+
 ### Payment Endpoints
 
 #### Create Payment Intent
@@ -812,22 +859,27 @@ POST /api/v1/wallets/sign
 
 ## Error Responses
 
-All error responses follow this format:
+All error responses use one envelope:
 
 ```json
 {
+  "success": false,
   "error": {
     "code": "ERROR_CODE",
     "message": "Human-readable error message",
-    "details": {
-      "field": "Additional error details"
-    }
+    "details": [{ "field": "description", "message": "Describe what the intent should accomplish" }]
   }
 }
 ```
 
+`details` is present for validation failures only: one `{ field, message }` entry
+per invalid body field, with `field` matching the request body key. Clients should
+render those next to the input they name and fall back to `error.message` beside
+the submit button.
+
 ### Common Error Codes
 
+- `400 VALIDATION_ERROR` - the request body failed schema validation (see `details`)
 - `400` - Bad Request
 - `401` - Unauthorized
 - `403` - Forbidden

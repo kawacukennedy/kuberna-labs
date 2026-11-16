@@ -53,6 +53,7 @@ export const Footer: React.FC = () => {
           <h4 className="font-semibold mb-4 font-heading">Resources</h4>
           <ul className="flex flex-col gap-2.5 text-sm text-text-secondary">
             <li><Link href="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
+            <li><Link href="/contracts" className="hover:text-primary transition-colors">Contracts</Link></li>
             <li><a href="https://discord.gg/kuberna" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Community</a></li>
             <li><Link href="/support" className="hover:text-primary transition-colors">Support</Link></li>
             <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
