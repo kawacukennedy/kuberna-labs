@@ -78,16 +78,20 @@ export const createModuleSchema = z.object({
 });
 
 export const createAgentSchema = z.object({
-  name: z.string().min(1).max(100),
+  name: z.string().trim().min(1, 'Agent name is required').max(100),
   description: z.string().max(2000).optional(),
-  framework: z.enum(['ELIZAOS', 'LANGCHAIN', 'AUTOGEN', 'RIG']),
-  model: z.string().min(1).max(100),
-  config: z.record(z.unknown()).default({}),
-  tools: z.array(z.string()).default([]),
-  pricingModel: z.enum(['FIXED', 'HOURLY', 'SUCCESS']).default('FIXED'),
-  price: z.number().optional(),
-  supportedChains: z.array(z.string()).default(['ethereum']),
-  ipWhitelist: z.array(z.string()).default([]),
+  // Framework and pricing model are stored as given: the API accepts
+  // "elizaos" and "ELIZAOS" alike, and the UI sends lowercase.
+  framework: z.string().trim().min(1, 'Framework is required').max(50),
+  model: z.string().trim().min(1).max(100).optional(),
+  config: z.record(z.unknown()).optional(),
+  tools: z.array(z.string().max(50)).max(50).optional(),
+  codeRepo: z.string().max(500).optional(),
+  deploymentType: z.enum(['CLOUD', 'TEE', 'LOCAL']).optional(),
+  pricingModel: z.string().trim().max(20).optional(),
+  price: z.number().nonnegative('Price cannot be negative').optional(),
+  supportedChains: z.array(z.string()).optional(),
+  ipWhitelist: z.array(z.string()).optional(),
 });
 
 export const updateAgentSchema = createAgentSchema.partial().extend({
@@ -96,23 +100,36 @@ export const updateAgentSchema = createAgentSchema.partial().extend({
   tools: z.array(z.string()).optional(),
 });
 
+// Amounts are accepted as either a number or a numeric string: callers send
+// both, and Prisma stores them as Decimal.
+const amountSchema = z.union([z.number(), z.string().trim().min(1)]);
+
 export const createIntentSchema = z.object({
-  description: z.string().min(10).max(5000),
+  description: z
+    .string()
+    .trim()
+    .min(3, 'Describe what the intent should accomplish')
+    .max(5000),
   structuredData: z.record(z.unknown()).optional(),
-  sourceChain: z.string().min(1),
-  sourceToken: z.string().min(1),
-  sourceAmount: z.string().regex(/^\d+$/),
-  destChain: z.string().min(1),
-  destToken: z.string().min(1),
-  minDestAmount: z.string().regex(/^\d+$/),
-  deadline: z.string().datetime(),
-  budget: z.string().regex(/^\d+$/),
+  sourceChain: z.string().trim().min(1, 'Source chain is required'),
+  sourceToken: z.string().trim().min(1, 'Source token is required'),
+  sourceAmount: amountSchema.optional(),
+  destChain: z.string().trim().min(1, 'Destination chain is required'),
+  destToken: z.string().trim().min(1, 'Destination token is required'),
+  minDestAmount: amountSchema.optional(),
+  deadline: z.coerce
+    .date()
+    .refine((date) => date.getTime() > Date.now(), 'Deadline must be in the future'),
+  budget: amountSchema,
   currency: z.string().default('NEAR'),
-  autoAcceptRules: z.object({
-    minReputation: z.number().optional(),
-    maxPrice: z.string().optional(),
-    maxTime: z.number().optional(),
-  }).optional(),
+  paymentMethod: z.string().optional(),
+  autoAcceptRules: z
+    .object({
+      minReputation: z.number().optional(),
+      maxPrice: amountSchema.optional(),
+      maxTime: z.number().optional(),
+    })
+    .optional(),
 });
 
 export const createBidSchema = z.object({

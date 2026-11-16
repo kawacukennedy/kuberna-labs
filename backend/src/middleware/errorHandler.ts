@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
 import logger from '../utils/logger';
 
 export interface ApiError extends Error {
   statusCode?: number;
   code?: string;
+  details?: unknown;
 }
 
 export class AppError extends Error {
@@ -66,6 +68,32 @@ export class ConflictError extends AppError {
 }
 
 export function errorHandler(err: ApiError, req: Request, res: Response, _next: NextFunction) {
+  // Routes call schema.parse() directly, so an invalid body reaches the error
+  // handler as a ZodError. Without this branch that surfaced as a generic 500
+  // and the client could not tell which field was wrong.
+  if (err instanceof ZodError) {
+    const details = err.errors.map((issue) => ({
+      field: issue.path.join('.') || 'body',
+      message: issue.message,
+    }));
+
+    logger.warn('VALIDATION_ERROR', {
+      path: req.path,
+      method: req.method,
+      fields: details.map((detail) => detail.field),
+    });
+
+    res.status(400).json({
+      success: false,
+      error: {
+        message: 'Validation failed',
+        code: 'VALIDATION_ERROR',
+        details,
+      },
+    });
+    return;
+  }
+
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal server error';
 
@@ -80,6 +108,7 @@ export function errorHandler(err: ApiError, req: Request, res: Response, _next: 
     error: {
       message,
       code: err.code,
+      ...(err.details !== undefined && { details: err.details }),
       ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
     },
   });

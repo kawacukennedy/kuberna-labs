@@ -96,6 +96,18 @@ function memoryLimiterCheck(key: string, windowMs: number): number {
   return existing.count;
 }
 
+/**
+ * Which store is enforcing limits right now. Redis is optional: when it is
+ * absent every limiter falls back to the in-process store, which is per-instance
+ * and resets on restart. Surfaced on /status so that fallback is visible.
+ */
+export function getRateLimitBackend(): { configured: boolean; active: 'redis' | 'memory' } {
+  return {
+    configured: Boolean(process.env.REDIS_URL),
+    active: redisAvailable ? 'redis' : 'memory',
+  };
+}
+
 export const createRateLimiter = (options: RateLimitOptions) => {
   const { windowMs, maxRequests, keyGenerator } = options;
 

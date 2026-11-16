@@ -4,6 +4,8 @@ import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
 import { intentLimiter } from '../middleware/rateLimiter.js';
+import { validateRequest } from '../middleware/validation.js';
+import { createIntentSchema } from '../validations/index.js';
 import { kitePassportService } from '../services/index.js';
 import logger from '../utils/logger.js';
 
@@ -107,6 +109,7 @@ router.post(
   '/',
   authenticate,
   intentLimiter,
+  validateRequest(createIntentSchema),
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const {
