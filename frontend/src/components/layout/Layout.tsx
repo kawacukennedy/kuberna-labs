@@ -3,6 +3,7 @@ import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { AmbientField } from '../motion/AmbientField';
+import { NetworkGuard } from '../web3/NetworkGuard';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant = 'default', s
         <Sidebar type={sidebarType} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Navbar variant="glass" />
+          <NetworkGuard />
           <main className="flex-1 overflow-auto">
             {children}
           </main>
