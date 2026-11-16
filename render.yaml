@@ -1,6 +1,19 @@
 # Kuberna Labs - Render Blueprint (Infrastructure as Code)
 # One-click deploy configuration for Render
 # https://render.com/docs/blueprint-spec
+#
+# Single host: this service runs the API and serves the exported Next.js site.
+#   /api/*        -> Express routers
+#   everything    -> express.static(frontend/out) from backend/src/index.ts
+# Render runs `npm ci` before buildCommand, so the build only needs to generate
+# the Prisma client, apply migrations, and compile every workspace.
+#
+# Blockchain listener: it is NOT started by `npm run start:render` (that only
+# runs the API). Event indexing therefore stays off in production; the API reads
+# state from the database, and `/status` reports the last processed event. To
+# turn indexing on, add a second Render service with startCommand
+# `npm run start:listener`, sharing DATABASE_URL / RPC_URL, and leave it out of
+# this web service.
 
 services:
   - type: web
@@ -8,7 +21,7 @@ services:
     env: node
     region: oregon
     plan: starter
-    buildCommand: npm run build:all
+    buildCommand: bash ./render-build.sh
     startCommand: npm run start:render
     healthCheckPath: /health
     autoDeploy: true
@@ -17,6 +30,8 @@ services:
         value: production
       - key: PORT
         value: "10000"
+      # Supabase: DATABASE_URL is the transaction pooler (:6543, pgbouncer=true),
+      # DIRECT_URL is the direct connection (:5432) used by `prisma migrate deploy`.
       - key: DATABASE_URL
         sync: false
       - key: DIRECT_URL
@@ -75,7 +90,10 @@ services:
         sync: false
       - key: FROM_EMAIL
         sync: false
+      # Same-origin in production, so this only has to name the public host.
       - key: ALLOWED_ORIGINS
+        value: https://kuberna-labs.onrender.com
+      - key: SENTRY_DSN
         sync: false
       - key: FRONTEND_DIST_PATH
         sync: false

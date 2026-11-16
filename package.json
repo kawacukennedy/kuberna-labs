@@ -38,10 +38,11 @@
     "build:all": "npm ci && npm run build:sdk:noci && npm run build:backend:noci && npm run build:frontend:noci",
     "build:sdk:noci": "cd sdk && npm run build",
     "build:backend:noci": "cd backend && npx prisma generate && npm run build",
-    "build:frontend:noci": "cd frontend && npm run build",
+    "build:frontend:noci": "npm run sync:deployments && cd frontend && npm run build",
     "start:render": "cd backend && node dist/index.js",
     "db:deploy": "cd backend && npx prisma migrate deploy",
     "db:generate": "cd backend && npx prisma generate",
+    "sync:deployments": "node scripts/sync-deployments.mjs",
     "notify:deploy": "ts-node scripts/notify-discord.ts",
     "test:all": "npm run test:backend && npm run test:sdk && npm run test:contracts && npm run test:frontend && npm run test:aip-adapter",
     "test:aip-adapter": "cd packages/aip-adapter && npm ci && npm test"
