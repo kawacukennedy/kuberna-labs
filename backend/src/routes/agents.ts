@@ -3,6 +3,8 @@ import { prisma } from '../utils/prisma.js';
 import { createError } from '../middleware/errorHandler.js';
 import type { AuthRequest } from '../types/express.d.js';
 import { authenticate, optionalAuth } from '../middleware/auth.js';
+import { validateRequest } from '../middleware/validation.js';
+import { createAgentSchema } from '../validations/index.js';
 import { kitePassportService } from '../services/index.js';
 import logger from '../utils/logger.js';
 
@@ -226,7 +228,7 @@ router.get('/:id', optionalAuth, async (req: AuthRequest, res: Response, next: N
   }
 });
 
-router.post('/', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/', authenticate, validateRequest(createAgentSchema), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const {
       name,

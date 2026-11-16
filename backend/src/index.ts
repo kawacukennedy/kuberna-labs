@@ -9,8 +9,9 @@ import * as Sentry from '@sentry/node';
 
 import { errorHandler } from './middleware/errorHandler.js';
 import { defaultTimeout } from './middleware/timeout.js';
-import { connectDatabase } from './utils/prisma.js';
+import { connectDatabase, prisma } from './utils/prisma.js';
 import logger from './utils/logger.js';
+import { getRateLimitBackend } from './middleware/rateLimiter.js';
 import { localMemory } from './services/localMemory.js';
 import { embeddingService } from './services/embeddingService.js';
 
@@ -99,11 +100,64 @@ app.use('/hooks', cryptopulseRouter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+const serverStartedAt = new Date();
+
 app.get('/health', async (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
+  });
+});
+
+/**
+ * Liveness of everything the site depends on. `/health` only proves the
+ * process is listening, which stays green while the database is unreachable.
+ * This route answers 503 when the database is down and reports the rate-limit
+ * store and the most recent on-chain event so an outage is visible without
+ * reading logs.
+ */
+app.get('/status', async (_req, res) => {
+  let database: 'ok' | 'down' = 'down';
+  let databaseError: string | undefined;
+  let lastOnchainEvent: { chain: string; at: string } | null = null;
+
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    database = 'ok';
+
+    const lastEvent = await prisma.processedEvent.findFirst({
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true, chain: true },
+    });
+    lastOnchainEvent = lastEvent
+      ? { chain: lastEvent.chain, at: lastEvent.createdAt.toISOString() }
+      : null;
+  } catch (error) {
+    databaseError = error instanceof Error ? error.message : String(error);
+    logger.warn('Status check: database unavailable', { error: databaseError });
+  }
+
+  const rateLimit = getRateLimitBackend();
+
+  res.status(database === 'ok' ? 200 : 503).json({
+    status: database === 'ok' ? 'ok' : 'degraded',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    commit: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || null,
+    uptimeSeconds: Math.round((Date.now() - serverStartedAt.getTime()) / 1000),
+    checks: {
+      api: { status: 'ok' },
+      database: { status: database, ...(databaseError && { error: databaseError }) },
+      rateLimiter: rateLimit,
+      // The listener is a separate process on Render (see render.yaml). A null
+      // timestamp means it has not recorded an event since this database was
+      // provisioned, not that it is necessarily down.
+      blockchainListener: {
+        configured: Boolean(process.env.RPC_URL || process.env.BASE_SEPOLIA_RPC_URL),
+        lastOnchainEvent,
+      },
+    },
   });
 });
 

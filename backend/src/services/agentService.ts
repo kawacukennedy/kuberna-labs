@@ -12,9 +12,11 @@ const REPUTATION_NFT_ABI = [
   'function agentIdentities(uint256) view returns (address agentAddress, string name, string framework, uint256 registeredAt, uint256 lastActiveAt, uint256 totalEarnings, string metadataURI)',
 ];
 
+// Only chains with a real ReputationNFT deployment belong here. Mantle Sepolia
+// used to point at a Base Sepolia address, so metadata writes from that chain
+// would have called an address where nothing of ours is deployed.
 const REPUTATION_NFT_ADDRESSES: Record<number, string> = {
-  84532: '0x10aC2c7cAA2d7C5fC8a561F8654d289eeb2E29F4',  // Base Sepolia
-  5003: '0x5e42c329Ef517B495261f57054d5844EAabD3dbf',   // Mantle Sepolia
+  84532: '0x10aC2c7cAA2d7C5fC8a561F8654d289eeb2E29F4', // Base Sepolia
 };
 
 interface CertIssueResponse {
