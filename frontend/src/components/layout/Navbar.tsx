@@ -65,7 +65,10 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'transparent' }) => {
 
         {isConnected ? (
           <>
-            <button className="p-2.5 hover:bg-surface rounded-full transition-colors relative">
+            <button
+              aria-label="Notifications"
+              className="grid size-11 place-items-center hover:bg-surface rounded-full transition-colors relative"
+            >
               <Bell size={20} className="text-text-secondary" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface" />
             </button>
@@ -91,7 +94,9 @@ export const Navbar: React.FC<NavbarProps> = ({ variant = 'transparent' }) => {
         )}
 
         <button
-          className="md:hidden p-2.5 hover:bg-surface rounded-full transition-colors"
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+          className="md:hidden grid size-11 place-items-center hover:bg-surface rounded-full transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}

@@ -124,11 +124,40 @@ export default function MarketplacePage() {
         </Section>
 
         <Section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredIntents.map((intent) => (
-            <motion.div key={intent.id} variants={fadeUp}>
-              <IntentCard {...intent} />
+          {filteredIntents.length === 0 ? (
+            <motion.div
+              variants={fadeUp}
+              className="col-span-full rounded-2xl border border-dashed border-outline/30 px-8 py-16 text-center"
+            >
+              <Activity size={32} className="mx-auto text-primary" aria-hidden />
+              <h2 className="mt-4 text-lg font-semibold text-on-surface">
+                No {activeTab === 'ALL' ? '' : activeTab.toLowerCase()} intents right now
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm text-on-surface-variant">
+                The marketplace is quiet at the moment. Post the first intent and solvers can start bidding on it.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/marketplace/post" className="btn btn-primary inline-flex min-h-11 items-center gap-2 px-6">
+                  <Plus size={16} aria-hidden /> Post an intent
+                </Link>
+                {activeTab !== 'ALL' && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('ALL')}
+                    className="btn btn-glass inline-flex min-h-11 items-center px-6"
+                  >
+                    Show all intents
+                  </button>
+                )}
+              </div>
             </motion.div>
-          ))}
+          ) : (
+            filteredIntents.map((intent) => (
+              <motion.div key={intent.id} variants={fadeUp}>
+                <IntentCard {...intent} />
+              </motion.div>
+            ))
+          )}
         </Section>
         
         <Section className="mt-20 text-center">
