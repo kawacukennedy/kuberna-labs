@@ -7,6 +7,16 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * One funded deployer can usually serve every network, so a network-specific
+ * key takes precedence but PRIVATE_KEY is an accepted fallback. Without this a
+ * deployment silently starts with zero signers and fails with "No deployer".
+ */
+function deployerAccounts(networkKey: string): string[] {
+  const key = process.env[networkKey] || process.env.PRIVATE_KEY;
+  return key ? [key] : [];
+}
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
@@ -50,44 +60,55 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       url: process.env.POLYGON_RPC_URL || 'https://polygon-rpc.com',
-      accounts: process.env.POLYGON_PRIVATE_KEY ? [process.env.POLYGON_PRIVATE_KEY] : [],
+      accounts: deployerAccounts('POLYGON_PRIVATE_KEY'),
       chainId: 137,
     },
     arbitrum: {
       url: process.env.ARBITRUM_RPC_URL || 'https://arb1.arbitrum.io/rpc',
-      accounts: process.env.ARBITRUM_PRIVATE_KEY ? [process.env.ARBITRUM_PRIVATE_KEY] : [],
+      accounts: deployerAccounts('ARBITRUM_PRIVATE_KEY'),
       chainId: 42161,
     },
     arbitrumSepolia: {
       url: process.env.ARBITRUM_SEPOLIA_RPC_URL || '',
-      accounts: process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY
-        ? [process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY]
-        : [],
+      accounts: deployerAccounts('ARBITRUM_SEPOLIA_PRIVATE_KEY'),
       chainId: 421614,
     },
     baseSepolia: {
-      url: 'https://sepolia.base.org',
-      accounts: process.env.BASE_SEPOLIA_PRIVATE_KEY ? [process.env.BASE_SEPOLIA_PRIVATE_KEY] : [],
+      url: process.env.BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org',
+      accounts: deployerAccounts('BASE_SEPOLIA_PRIVATE_KEY'),
       chainId: 84532,
     },
     // 0G Testnet (for 0G APAC Hackathon)
     ogTestnet: {
       url: process.env.OG_RPC_URL || 'https://evmrpc-testnet.0g.ai',
-      accounts: process.env.OG_PRIVATE_KEY ? [process.env.OG_PRIVATE_KEY] : [],
+      accounts: deployerAccounts('OG_PRIVATE_KEY'),
       chainId: 16602, // 0G Galileon Testnet
     },
     // Mantle Network (for Turing Test Hackathon 2026)
     mantle: {
       url: process.env.MANTLE_RPC_URL || 'https://rpc.mantle.xyz',
-      accounts: process.env.MANTLE_PRIVATE_KEY ? [process.env.MANTLE_PRIVATE_KEY] : [],
+      accounts: deployerAccounts('MANTLE_PRIVATE_KEY'),
       chainId: 5000,
     },
     mantleSepolia: {
       url: process.env.MANTLE_SEPOLIA_RPC_URL || 'https://rpc.sepolia.mantle.xyz',
-      accounts: process.env.MANTLE_SEPOLIA_PRIVATE_KEY
-        ? [process.env.MANTLE_SEPOLIA_PRIVATE_KEY]
-        : [],
+      accounts: deployerAccounts('MANTLE_SEPOLIA_PRIVATE_KEY'),
       chainId: 5003,
+    },
+  },
+  // Per-network explorer keys for `hardhat verify`. Without this block
+  // hardhat-verify falls back to a single ETHERSCAN_API_KEY against the
+  // Etherscan v1 endpoint, which cannot verify contracts on Base, Polygon or
+  // Arbitrum. Chain definitions for these networks ship with hardhat-verify;
+  // only the API keys need mapping here.
+  etherscan: {
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY || '',
+      sepolia: process.env.ETHERSCAN_API_KEY || '',
+      polygon: process.env.POLYGONSCAN_API_KEY || process.env.ETHERSCAN_API_KEY || '',
+      arbitrum: process.env.ARBISCAN_API_KEY || process.env.ETHERSCAN_API_KEY || '',
+      arbitrumSepolia: process.env.ARBISCAN_API_KEY || process.env.ETHERSCAN_API_KEY || '',
+      baseSepolia: process.env.BASESCAN_API_KEY || process.env.ETHERSCAN_API_KEY || '',
     },
   },
   gasReporter: {
