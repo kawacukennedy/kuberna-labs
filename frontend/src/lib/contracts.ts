@@ -2,6 +2,8 @@
  * @deprecated Import ABI definitions from `typechain-types/contracts` instead.
  * This file is kept for backward compatibility. New code should use TypeChain-generated types.
  */
+import { DEPLOYMENTS } from '../generated/deployments';
+
 export const ESCROW_ABI = [
   {
     inputs: [
@@ -370,60 +372,84 @@ export const ERC20_ABI = [
   },
 ] as const;
 
-// Fallback addresses (Base Sepolia)
-const FALLBACK_ADDRESSES = {
-  escrow: '0x360ec009ba6967F5f7C53a88FAD0452C6140493d',
-  intent: '0xB819ab0Bac2f22e8895C66fE3aDF23aa0a65145a',
-  certificate: '0x5e42c329Ef517B495261f57054d5844EAabD3dbf',
-  payment: '0xFFe8A88E9E99938174B8a3C9EcA1c1462315395A',
-  subscription: '0x9be7afE1793ad14F9026d7579cf7c2313184a7E0',
-  reputation: '0xCCa946e3E2c2C307Cb2613d5C8107356ddD08c35',
-  agentRegistry: '0x817fB0D00f033bb2982fF44855Fb6F8AE2D41324',
-  courseNft: '0x9b0D1d05A6EBafE6364648d9e7109E2C37e331BF',
-  workshop: '0x1Fa14FfB410EfA65b3aADBB9B65e2426A1fB0F66',
-  dispute: '0x8bcc424C07afCf231046F58B15d3677b8E842023',
-  treasury: '0x5DA30BDE4A774dcccE6099717d6b41A6329fDe34',
-  feeManager: '0xD27b4Dcec846bdfF2DB9D70B163bfb61A3090E2e',
-  attestation: '0xFB105A77806d365EdeCf45F677481043ec1D46F4',
-  crossChainRouter: '0xE2924838E5914cE099e5969aD63b0C4A4eeB8BAD',
-  governanceToken: '0x0000000000000000000000000000000000000000',
-  priceOracle: '0x0000000000000000000000000000000000000000',
-  multisig: '0x0000000000000000000000000000000000000000',
-  vesting: '0x0000000000000000000000000000000000000000',
+/**
+ * Addresses are resolved in this order: an explicit NEXT_PUBLIC_* override, the
+ * deployment record generated from deployments/baseSepolia-latest.json
+ * (`npm run sync:deployments`), then the zero address.
+ *
+ * Only Base Sepolia is registered. This table used to hand the Base Sepolia
+ * addresses to Sepolia, mainnet, Polygon and Arbitrum as well, which meant a
+ * wallet on any of those chains signed calls to addresses where nothing of ours
+ * is deployed. An unregistered chain must resolve to '' instead, and the UI
+ * warns the user (see NetworkGuard).
+ */
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+const BASE_SEPOLIA_CHAIN_ID = 84532;
+
+/** Frontend name -> key in deployments/<network>-latest.json. */
+const DEPLOYMENT_KEYS: Record<ContractName, string> = {
+  escrow: 'escrow',
+  intent: 'intent',
+  certificate: 'certificateNFT',
+  payment: 'payment',
+  subscription: 'subscription',
+  reputation: 'reputationNFT',
+  agentRegistry: 'agentRegistry',
+  courseNft: 'courseNFT',
+  workshop: 'workshop',
+  dispute: 'dispute',
+  treasury: 'treasury',
+  feeManager: 'feeManager',
+  attestation: 'attestation',
+  crossChainRouter: 'crossChainRouter',
+  governanceToken: 'governanceToken',
+  priceOracle: 'priceOracle',
+  multisig: 'multisig',
+  vesting: 'vesting',
+};
+
+const ENV_KEYS: Record<ContractName, string> = {
+  escrow: 'NEXT_PUBLIC_ESCROW_CONTRACT_ADDRESS',
+  intent: 'NEXT_PUBLIC_INTENT_CONTRACT_ADDRESS',
+  certificate: 'NEXT_PUBLIC_CERTIFICATE_NFT_CONTRACT_ADDRESS',
+  payment: 'NEXT_PUBLIC_PAYMENT_CONTRACT_ADDRESS',
+  subscription: 'NEXT_PUBLIC_SUBSCRIPTION_CONTRACT_ADDRESS',
+  reputation: 'NEXT_PUBLIC_REPUTATION_NFT_CONTRACT_ADDRESS',
+  agentRegistry: 'NEXT_PUBLIC_AGENT_REGISTRY_CONTRACT_ADDRESS',
+  courseNft: 'NEXT_PUBLIC_COURSE_NFT_CONTRACT_ADDRESS',
+  workshop: 'NEXT_PUBLIC_WORKSHOP_CONTRACT_ADDRESS',
+  dispute: 'NEXT_PUBLIC_DISPUTE_CONTRACT_ADDRESS',
+  treasury: 'NEXT_PUBLIC_TREASURY_CONTRACT_ADDRESS',
+  feeManager: 'NEXT_PUBLIC_FEE_MANAGER_CONTRACT_ADDRESS',
+  attestation: 'NEXT_PUBLIC_ATTESTATION_CONTRACT_ADDRESS',
+  crossChainRouter: 'NEXT_PUBLIC_CROSSCHAIN_ROUTER_CONTRACT_ADDRESS',
+  governanceToken: 'NEXT_PUBLIC_GOVERNANCE_TOKEN_CONTRACT_ADDRESS',
+  priceOracle: 'NEXT_PUBLIC_PRICE_ORACLE_CONTRACT_ADDRESS',
+  multisig: 'NEXT_PUBLIC_MULTISIG_CONTRACT_ADDRESS',
+  vesting: 'NEXT_PUBLIC_VESTING_CONTRACT_ADDRESS',
 };
 
 const readEnv = (key: string): string | undefined => {
   return process.env[key];
 };
 
-const envAddresses = {
-  escrow: readEnv('NEXT_PUBLIC_ESCROW_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.escrow,
-  intent: readEnv('NEXT_PUBLIC_INTENT_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.intent,
-  certificate: readEnv('NEXT_PUBLIC_CERTIFICATE_NFT_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.certificate,
-  payment: readEnv('NEXT_PUBLIC_PAYMENT_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.payment,
-  subscription: readEnv('NEXT_PUBLIC_SUBSCRIPTION_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.subscription,
-  reputation: readEnv('NEXT_PUBLIC_REPUTATION_NFT_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.reputation,
-  agentRegistry: readEnv('NEXT_PUBLIC_AGENT_REGISTRY_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.agentRegistry,
-  courseNft: readEnv('NEXT_PUBLIC_COURSE_NFT_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.courseNft,
-  workshop: readEnv('NEXT_PUBLIC_WORKSHOP_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.workshop,
-  dispute: readEnv('NEXT_PUBLIC_DISPUTE_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.dispute,
-  treasury: readEnv('NEXT_PUBLIC_TREASURY_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.treasury,
-  feeManager: readEnv('NEXT_PUBLIC_FEE_MANAGER_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.feeManager,
-  attestation: readEnv('NEXT_PUBLIC_ATTESTATION_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.attestation,
-  crossChainRouter: readEnv('NEXT_PUBLIC_CROSSCHAIN_ROUTER_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.crossChainRouter,
-  governanceToken: readEnv('NEXT_PUBLIC_GOVERNANCE_TOKEN_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.governanceToken,
-  priceOracle: readEnv('NEXT_PUBLIC_PRICE_ORACLE_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.priceOracle,
-  multisig: readEnv('NEXT_PUBLIC_MULTISIG_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.multisig,
-  vesting: readEnv('NEXT_PUBLIC_VESTING_CONTRACT_ADDRESS') || FALLBACK_ADDRESSES.vesting,
-};
+const baseSepoliaDeployment = DEPLOYMENTS.find(
+  (deployment) => deployment.chainId === BASE_SEPOLIA_CHAIN_ID
+);
+const deployedContracts = baseSepoliaDeployment?.contracts ?? {};
+
+const envAddresses = (Object.keys(DEPLOYMENT_KEYS) as ContractName[]).reduce(
+  (addresses, contract) => {
+    addresses[contract] =
+      readEnv(ENV_KEYS[contract]) || deployedContracts[DEPLOYMENT_KEYS[contract]] || ZERO_ADDRESS;
+    return addresses;
+  },
+  {} as Record<ContractName, string>
+);
 
 export const CONTRACT_ADDRESSES: Record<number, Record<ContractName, string>> = {
-  84532: { ...envAddresses }, // Base Sepolia
-  11155111: { ...envAddresses }, // Sepolia
-  1: { ...envAddresses }, // Ethereum Mainnet
-  137: { ...envAddresses }, // Polygon
-  42161: { ...envAddresses }, // Arbitrum
-  16602: { ...envAddresses }, // 0G Galileo Testnet
+  [BASE_SEPOLIA_CHAIN_ID]: { ...envAddresses },
 };
 
 export type ContractName =
