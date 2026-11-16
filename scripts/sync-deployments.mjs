@@ -59,7 +59,11 @@ const records = fs
     const contracts = {};
     for (const key of CONTRACT_KEYS) {
       const address = record[key];
-      if (typeof address === 'string' && ADDRESS_PATTERN.test(address) && address !== ZERO_ADDRESS) {
+      if (
+        typeof address === 'string' &&
+        ADDRESS_PATTERN.test(address) &&
+        address !== ZERO_ADDRESS
+      ) {
         contracts[key] = address;
       }
     }
