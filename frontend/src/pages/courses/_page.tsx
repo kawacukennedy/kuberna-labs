@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Seo } from '@/components/seo/Seo';
 import { Layout } from '@/components/layout/Layout';
 import { CourseCard } from '@/components/shared/CourseCard';
-import { Search, SlidersHorizontal, Grid, List, Sparkles } from 'lucide-react';
+import { Search, SlidersHorizontal, Grid, List, Sparkles, BookOpen } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 
 const fadeUp = {
@@ -122,11 +122,33 @@ export default function CoursesPage() {
         </Section>
 
         <Section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCourses.map((course) => (
-            <motion.div key={course.id} variants={fadeUp}>
-              <CourseCard {...course} />
+          {filteredCourses.length === 0 ? (
+            <motion.div
+              variants={fadeUp}
+              className="col-span-full rounded-2xl border border-dashed border-outline/30 px-8 py-16 text-center"
+            >
+              <BookOpen size={32} className="mx-auto text-primary" aria-hidden />
+              <h2 className="mt-4 text-lg font-semibold text-on-surface">
+                No {activeLevel === 'ALL' ? '' : activeLevel.toLowerCase()} courses yet
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm text-on-surface-variant">
+                New modules are added as cohorts open. Clear the filter to see everything that is published.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveLevel('ALL')}
+                className="btn btn-glass mt-6 inline-flex min-h-11 items-center px-6"
+              >
+                Show all courses
+              </button>
             </motion.div>
-          ))}
+          ) : (
+            filteredCourses.map((course) => (
+              <motion.div key={course.id} variants={fadeUp}>
+                <CourseCard {...course} />
+              </motion.div>
+            ))
+          )}
         </Section>
       </div>
     </Layout>
